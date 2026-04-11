@@ -3,128 +3,329 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tradehud | Servidores de WoW, Lineage, TBC y Albion</title>
+  <title>TradeHub | Comunidad de servidores MMO</title>
   <style>
     :root {
-      --bg: #0b1020;
-      --card: #111833;
-      --text: #e8ecff;
-      --accent: #6ee7ff;
-      --muted: #9aa7d7;
+      --bg: #070b14;
+      --bg-soft: #0e1424;
+      --panel: #111a30;
+      --text: #f3f6ff;
+      --muted: #9fb0d8;
+      --primary: #00d4ff;
+      --secondary: #7c4dff;
+      --success: #19e089;
+      --border: #26365f;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background: radial-gradient(circle at top, #18244f 0%, var(--bg) 45%, #060913 100%);
       min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% -10%, rgba(124, 77, 255, 0.35) 0, transparent 40%),
+        radial-gradient(circle at 90% 0%, rgba(0, 212, 255, 0.25) 0, transparent 30%),
+        linear-gradient(180deg, #0a1020 0%, var(--bg) 55%, #05070f 100%);
     }
 
-    .container {
-      width: min(920px, 100%);
-      background: color-mix(in oklab, var(--card) 90%, black);
-      border: 1px solid #26346b;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-      overflow: hidden;
+    .wrap {
+      width: min(1150px, 100% - 32px);
+      margin: 24px auto 48px;
     }
 
-    header {
-      padding: 28px 24px;
-      border-bottom: 1px solid #26346b;
-      background: linear-gradient(135deg, rgba(110, 231, 255, 0.15), rgba(153, 107, 255, 0.1));
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: rgba(9, 14, 27, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      font-size: 1.05rem;
+    }
+
+    .brand span { color: var(--primary); }
+
+    .lang {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .lang button {
+      border: 1px solid #36508f;
+      background: #121b34;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .lang button.active,
+    .lang button:hover {
+      background: linear-gradient(120deg, #00b8de, #7c4dff);
+      border-color: transparent;
+    }
+
+    .hero {
+      margin-top: 22px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: clamp(22px, 4vw, 42px);
+      background: linear-gradient(145deg, rgba(17, 26, 48, 0.95), rgba(8, 13, 26, 0.98));
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #b6c4eb;
+      border: 1px solid #314779;
+      border-radius: 999px;
+      padding: 6px 12px;
+      margin-bottom: 14px;
     }
 
     h1 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
       margin: 0;
-      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      line-height: 1.1;
     }
 
-    p {
-      margin: 10px 0 0;
+    .accent { color: var(--primary); }
+
+    .subtitle {
+      max-width: 760px;
       color: var(--muted);
-      line-height: 1.5;
+      line-height: 1.6;
+      margin: 14px 0 24px;
     }
 
-    .servers {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 14px;
-      padding: 22px;
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
-    .server {
-      background: #0f1630;
-      border: 1px solid #2a3978;
+    .btn {
+      text-decoration: none;
+      font-weight: 700;
+      padding: 12px 18px;
       border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+    }
+
+    .btn-primary {
+      color: #04111a;
+      background: linear-gradient(120deg, var(--primary), #42f0c4);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: linear-gradient(120deg, #253458, #1a2545);
+      border-color: #3b4f82;
+    }
+
+    .grid {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
       padding: 16px;
     }
 
-    .server h2 {
-      margin: 0;
-      font-size: 1.1rem;
-      color: var(--accent);
+    .card h3 {
+      margin: 0 0 8px;
+      color: var(--primary);
     }
 
-    .server span {
-      display: inline-block;
-      margin-top: 8px;
-      font-size: 0.9rem;
+    .card p {
+      margin: 0;
       color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.95rem;
+    }
+
+    .sections {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .panel {
+      background: #0c1327;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+      color: #cbd8ff;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
     footer {
-      padding: 18px 24px 24px;
-      border-top: 1px solid #26346b;
-      color: var(--muted);
-      font-size: 0.95rem;
+      margin-top: 18px;
       text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+      padding: 12px;
     }
 
-    .discord {
-      color: var(--accent);
-      font-weight: 700;
-    }
+    .discord { color: var(--success); font-weight: 700; }
   </style>
 </head>
 <body>
-  <main class="container">
-    <header>
-      <h1>Comunidad de servidores privados</h1>
-      <p>
-        Bienvenido. Aquí encontrarás una página simple para tus servidores de
-        <strong>WoW</strong>, <strong>Lineage</strong>, <strong>TBC</strong> y <strong>Albion</strong>.
+  <div class="wrap">
+    <nav class="topbar">
+      <div class="brand">Trade<span>Hub</span></div>
+      <div class="lang" aria-label="selector de idioma">
+        <button id="btn-es" class="active" type="button">ES</button>
+        <button id="btn-en" type="button">EN</button>
+      </div>
+    </nav>
+
+    <main class="hero">
+      <span class="badge" data-i18n="badge">Comunidad MMO segura y rápida</span>
+      <h1 data-i18n="title">Todo para tus servidores <span class="accent">MMO</span></h1>
+      <p class="subtitle" data-i18n="subtitle">
+        TradeHub reúne información, soporte y servicios para WoW, Lineage, TBC y Albion en un solo lugar.
       </p>
-    </header>
 
-    <section class="servers">
-      <article class="server">
-        <h2>WoW</h2>
-        <span>Noticias, eventos y enlaces del servidor.</span>
-      </article>
-      <article class="server">
-        <h2>Lineage</h2>
-        <span>Información rápida para jugadores nuevos y veteranos.</span>
-      </article>
-      <article class="server">
-        <h2>TBC</h2>
-        <span>Sección dedicada a The Burning Crusade.</span>
-      </article>
-      <article class="server">
-        <h2>Albion</h2>
-        <span>Guías y actualizaciones de actividades PvP/PvE.</span>
-      </article>
-    </section>
+      <div class="actions">
+        <a class="btn btn-primary" href="#servers" data-i18n="cta1">Ver servidores</a>
+        <a class="btn btn-secondary" href="#vision" data-i18n="cta2">Nuestra visión</a>
+      </div>
 
-    <footer>
-      Discord oficial: <span class="discord">Tradehud</span>
-    </footer>
-  </main>
+      <section id="servers" class="grid">
+        <article class="card">
+          <h3>WoW</h3>
+          <p data-i18n="wow">Eventos, guías y novedades para jugadores casuales y hardcore.</p>
+        </article>
+        <article class="card">
+          <h3>Lineage</h3>
+          <p data-i18n="lineage">Información clara para progresar más rápido y jugar mejor.</p>
+        </article>
+        <article class="card">
+          <h3>TBC</h3>
+          <p data-i18n="tbc">Contenido dedicado a The Burning Crusade y rutas de progreso.</p>
+        </article>
+        <article class="card">
+          <h3>Albion</h3>
+          <p data-i18n="albion">Tips de economía, PvP, PvE y coordinación de gremio.</p>
+        </article>
+      </section>
+
+      <section class="sections">
+        <article id="vision" class="panel">
+          <h2 data-i18n="vision_title">Visión</h2>
+          <p data-i18n="vision_text">
+            Ser la comunidad MMO en español e inglés más confiable para conectar jugadores, compartir estrategias y crecer juntos.
+          </p>
+        </article>
+        <article class="panel">
+          <h2 data-i18n="mission_title">Misión</h2>
+          <p data-i18n="mission_text">
+            Ofrecer una plataforma simple, rápida y atractiva donde los jugadores encuentren recursos útiles y soporte real 24/7.
+          </p>
+        </article>
+      </section>
+
+      <footer>
+        <span data-i18n="footer">Discord oficial:</span> <span class="discord">TradeHub</span>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const dict = {
+      es: {
+        badge: 'Comunidad MMO segura y rápida',
+        title: 'Todo para tus servidores <span class="accent">MMO</span>',
+        subtitle: 'TradeHub reúne información, soporte y servicios para WoW, Lineage, TBC y Albion en un solo lugar.',
+        cta1: 'Ver servidores',
+        cta2: 'Nuestra visión',
+        wow: 'Eventos, guías y novedades para jugadores casuales y hardcore.',
+        lineage: 'Información clara para progresar más rápido y jugar mejor.',
+        tbc: 'Contenido dedicado a The Burning Crusade y rutas de progreso.',
+        albion: 'Tips de economía, PvP, PvE y coordinación de gremio.',
+        vision_title: 'Visión',
+        vision_text: 'Ser la comunidad MMO en español e inglés más confiable para conectar jugadores, compartir estrategias y crecer juntos.',
+        mission_title: 'Misión',
+        mission_text: 'Ofrecer una plataforma simple, rápida y atractiva donde los jugadores encuentren recursos útiles y soporte real 24/7.',
+        footer: 'Discord oficial:'
+      },
+      en: {
+        badge: 'Fast and trusted MMO community',
+        title: 'Everything for your <span class="accent">MMO</span> servers',
+        subtitle: 'TradeHub brings support, updates, and helpful services for WoW, Lineage, TBC, and Albion in one place.',
+        cta1: 'View servers',
+        cta2: 'Our vision',
+        wow: 'Events, guides, and updates for casual and hardcore players.',
+        lineage: 'Clear information to progress faster and play smarter.',
+        tbc: 'Focused content for The Burning Crusade and progression routes.',
+        albion: 'Economy, PvP, PvE tips, and guild coordination insights.',
+        vision_title: 'Vision',
+        vision_text: 'To become the most trusted Spanish-English MMO community for connecting players and growing together.',
+        mission_title: 'Mission',
+        mission_text: 'Provide a simple, fast, and eye-catching platform where players find useful resources and real 24/7 support.',
+        footer: 'Official Discord:'
+      }
+    };
+
+    const btnEs = document.getElementById('btn-es');
+    const btnEn = document.getElementById('btn-en');
+
+    function setLang(lang) {
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.getAttribute('data-i18n');
+        el.innerHTML = dict[lang][key];
+      });
+      btnEs.classList.toggle('active', lang === 'es');
+      btnEn.classList.toggle('active', lang === 'en');
+    }
+
+    btnEs.addEventListener('click', () => setLang('es'));
+    btnEn.addEventListener('click', () => setLang('en'));
+  </script>
 </body>
 </html>
