@@ -1,1 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tradehud | Servidores de WoW, Lineage, TBC y Albion</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #111833;
+      --text: #e8ecff;
+      --accent: #6ee7ff;
+      --muted: #9aa7d7;
+    }
 
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #18244f 0%, var(--bg) 45%, #060913 100%);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .container {
+      width: min(920px, 100%);
+      background: color-mix(in oklab, var(--card) 90%, black);
+      border: 1px solid #26346b;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+
+    header {
+      padding: 28px 24px;
+      border-bottom: 1px solid #26346b;
+      background: linear-gradient(135deg, rgba(110, 231, 255, 0.15), rgba(153, 107, 255, 0.1));
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+    }
+
+    p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .servers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      padding: 22px;
+    }
+
+    .server {
+      background: #0f1630;
+      border: 1px solid #2a3978;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .server h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+
+    .server span {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 18px 24px 24px;
+      border-top: 1px solid #26346b;
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .discord {
+      color: var(--accent);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Comunidad de servidores privados</h1>
+      <p>
+        Bienvenido. Aquí encontrarás una página simple para tus servidores de
+        <strong>WoW</strong>, <strong>Lineage</strong>, <strong>TBC</strong> y <strong>Albion</strong>.
+      </p>
+    </header>
+
+    <section class="servers">
+      <article class="server">
+        <h2>WoW</h2>
+        <span>Noticias, eventos y enlaces del servidor.</span>
+      </article>
+      <article class="server">
+        <h2>Lineage</h2>
+        <span>Información rápida para jugadores nuevos y veteranos.</span>
+      </article>
+      <article class="server">
+        <h2>TBC</h2>
+        <span>Sección dedicada a The Burning Crusade.</span>
+      </article>
+      <article class="server">
+        <h2>Albion</h2>
+        <span>Guías y actualizaciones de actividades PvP/PvE.</span>
+      </article>
+    </section>
+
+    <footer>
+      Discord oficial: <span class="discord">Tradehud</span>
+    </footer>
+  </main>
+</body>
+</html>
