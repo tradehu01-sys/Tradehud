@@ -16,7 +16,6 @@
       --cyan: #00d3ff;
       --green: #14d88b;
     }
-
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -27,25 +26,23 @@
         radial-gradient(circle at 100% 0%, rgba(0, 211, 255, .15), transparent 35%),
         linear-gradient(180deg, #0a111f, var(--bg));
     }
-
     .wrap { width: min(1180px, 100% - 30px); margin: 16px auto 40px; }
 
     .topbar {
-      position: sticky; top: 10px; z-index: 20;
+      position: sticky; top: 10px; z-index: 30;
       display: flex; justify-content: space-between; align-items: center;
       border: 1px solid var(--line); border-radius: 14px;
       padding: 10px 14px; background: rgba(8, 12, 22, .85); backdrop-filter: blur(8px);
     }
-
     .brand { font-size: 1.1rem; font-weight: 900; }
     .brand span { color: var(--accent); }
 
     .menu { display: flex; flex-wrap: wrap; gap: 12px; font-size: .9rem; }
     .menu a { color: #dce6ff; text-decoration: none; opacity: .92; }
-    .menu a:hover { color: white; }
+    .menu a:hover { color: #fff; }
 
     .lang button {
-      background: #121d37; border: 1px solid #37508b; color: white;
+      background: #121d37; border: 1px solid #37508b; color: #fff;
       padding: 7px 11px; border-radius: 10px; font-weight: 800; cursor: pointer;
     }
     .lang button.active, .lang button:hover {
@@ -62,68 +59,35 @@
         radial-gradient(circle at 20% 100%, rgba(0,211,255,.18), transparent 30%);
       min-height: 420px;
     }
-
-    .hero h1 {
-      margin: 10px 0 12px;
-      max-width: 680px;
-      line-height: 1.08;
-      font-size: clamp(2rem, 5vw, 3.4rem);
-      text-transform: uppercase;
-    }
-
+    .hero h1 { margin: 10px 0 12px; max-width: 680px; line-height: 1.08; font-size: clamp(2rem, 5vw, 3.4rem); text-transform: uppercase; }
     .hero p { color: var(--muted); max-width: 680px; line-height: 1.6; }
 
-    .badge {
-      display: inline-block; font-size: .8rem; font-weight: 700;
-      border: 1px solid #40598e; border-radius: 999px; padding: 6px 12px; color: #c8d5f2;
-    }
+    .badge { display: inline-block; font-size: .8rem; font-weight: 700; border: 1px solid #40598e; border-radius: 999px; padding: 6px 12px; color: #c8d5f2; }
 
     .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
-    .btn {
-      text-decoration: none; padding: 12px 18px; border-radius: 12px;
-      font-weight: 800; border: 1px solid transparent; transition: .2s ease;
-      display: inline-block;
-    }
+    .btn { text-decoration: none; padding: 12px 18px; border-radius: 12px; font-weight: 800; border: 1px solid transparent; transition: .2s ease; display: inline-block; }
     .btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
     .btn-main { color: #1a0900; background: linear-gradient(120deg, var(--accent), #ffb300); }
     .btn-alt { color: #fff; background: linear-gradient(120deg, #1f3258, #172543); border-color: #3d5488; }
 
-    .game-icons {
-      position: absolute; right: 26px; bottom: 20px;
-      display: grid; grid-template-columns: repeat(2, 90px); gap: 12px;
-    }
-
+    .game-icons { position: absolute; right: 26px; bottom: 20px; display: grid; grid-template-columns: repeat(2, 90px); gap: 12px; }
     .game-icon {
-      width: 90px; height: 90px; border-radius: 50%;
-      border: 2px solid #4a6194;
-      display: grid; place-items: center;
-      font-weight: 900; font-size: .86rem;
-      background: radial-gradient(circle at 30% 25%, #243e72, #101a31);
-      box-shadow: 0 0 0 4px rgba(6, 10, 20, .65);
+      width: 90px; height: 90px; border-radius: 50%; border: 2px solid #4a6194;
+      display: grid; place-items: center; font-weight: 900; font-size: .86rem;
+      background: radial-gradient(circle at 30% 25%, #243e72, #101a31); box-shadow: 0 0 0 4px rgba(6, 10, 20, .65);
       animation: float 3.2s ease-in-out infinite;
     }
-
     .game-icon:nth-child(2) { animation-delay: .3s; }
     .game-icon:nth-child(3) { animation-delay: .6s; }
     .game-icon:nth-child(4) { animation-delay: .9s; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-7px); }
-    }
-
-    .stats {
-      margin-top: 14px;
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 10px;
-    }
+    .stats { margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 10px; }
     .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
     .stat b { color: var(--green); font-size: 1.25rem; display: block; }
     .stat small { color: var(--muted); }
 
-    .section {
-      margin-top: 16px; border: 1px solid var(--line); border-radius: 16px;
-      background: rgba(10, 18, 34, .9); padding: 18px;
-    }
+    .section { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; background: rgba(10, 18, 34, .9); padding: 18px; }
     .section h2 { margin: 0 0 10px; }
     .section p { margin: 0; color: var(--muted); line-height: 1.6; }
 
@@ -131,6 +95,30 @@
     .card { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); padding: 14px; }
     .card h3 { margin: 0 0 7px; color: var(--cyan); }
     .card ul { margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.5; }
+
+    .reviews { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 12px; }
+    .review { border: 1px solid var(--line); border-radius: 14px; background: #0d1629; padding: 14px; }
+    .review b { color: #ffd772; }
+    .review p { margin: 7px 0; }
+
+    .payments { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .pay {
+      border: 1px solid var(--line); border-radius: 999px; padding: 7px 12px;
+      background: #111c33; color: #d7e2ff; font-size: .9rem;
+    }
+
+    details.faq-item {
+      border: 1px solid var(--line); border-radius: 12px; background: #0e172b; padding: 10px 12px;
+      margin-top: 10px;
+    }
+    details.faq-item summary { cursor: pointer; font-weight: 700; }
+    details.faq-item p { margin: 8px 0 0; color: var(--muted); }
+
+    .cta-final {
+      margin-top: 16px; border: 1px solid #3a4f83; border-radius: 16px; padding: 18px;
+      background: linear-gradient(120deg, rgba(255,92,0,.12), rgba(0,211,255,.12));
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    }
 
     footer { margin-top: 16px; text-align: center; color: var(--muted); padding: 10px; }
     .discord { color: var(--green); font-weight: 800; }
@@ -151,6 +139,7 @@
         <a href="#servicios" data-i18n="m2">COMPRAR ORO</a>
         <a href="#servicios" data-i18n="m3">COMPRAR CUENTAS</a>
         <a href="#vision" data-i18n="m4">VISIÓN</a>
+        <a href="#faq" data-i18n="m5">FAQ</a>
       </nav>
       <div class="lang">
         <button id="es" class="active" type="button">ES</button>
@@ -214,6 +203,47 @@
             <li data-i18n="c3c">Seguimiento del pedido en tiempo real.</li>
           </ul>
         </article>
+        <article class="card">
+          <h3 data-i18n="c4t">Paquetes personalizados</h3>
+          <ul>
+            <li data-i18n="c4a">Arma tu pedido según tu presupuesto.</li>
+            <li data-i18n="c4b">Promociones semanales por juego.</li>
+            <li data-i18n="c4c">Atención para clanes y guilds.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="reviews" class="section">
+      <h2 data-i18n="r_t">Opiniones de clientes</h2>
+      <div class="reviews">
+        <article class="review">
+          <b>★★★★★</b>
+          <p data-i18n="r1">“Me entregaron el oro en minutos y me ayudaron por Discord todo el tiempo.”</p>
+          <small>— PlayerWoW</small>
+        </article>
+        <article class="review">
+          <b>★★★★★</b>
+          <p data-i18n="r2">“Compré una cuenta de Lineage y todo salió seguro, sin problemas.”</p>
+          <small>— LineagePro</small>
+        </article>
+        <article class="review">
+          <b>★★★★★</b>
+          <p data-i18n="r3">“El boosting de TBC fue rápido y siempre me respondieron.”</p>
+          <small>— TBCMain</small>
+        </article>
+      </div>
+    </section>
+
+    <section id="payments" class="section">
+      <h2 data-i18n="p_t">Métodos de pago</h2>
+      <p data-i18n="p_d">Aceptamos métodos confiables para que compres con tranquilidad.</p>
+      <div class="payments">
+        <span class="pay">Binance Pay</span>
+        <span class="pay">USDT</span>
+        <span class="pay">PayPal</span>
+        <span class="pay">Transferencia</span>
+        <span class="pay">Tarjeta</span>
       </div>
     </section>
 
@@ -226,6 +256,30 @@
       </div>
     </section>
 
+    <section id="faq" class="section">
+      <h2>FAQ</h2>
+      <details class="faq-item">
+        <summary data-i18n="f1q">¿Cuánto tarda una entrega?</summary>
+        <p data-i18n="f1a">La mayoría de pedidos se entregan entre 5 y 20 minutos según stock y servidor.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-i18n="f2q">¿Es seguro comprar?</summary>
+        <p data-i18n="f2a">Sí, trabajamos con métodos verificados y confirmación directa por Discord.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-i18n="f3q">¿Atienden en inglés?</summary>
+        <p data-i18n="f3a">Sí, tenemos atención en español e inglés 24/7.</p>
+      </details>
+    </section>
+
+    <section class="cta-final">
+      <div>
+        <h3 data-i18n="final_t" style="margin:0 0 6px;">¿Listo para empezar?</h3>
+        <p data-i18n="final_d" style="margin:0; color:var(--muted);">Escríbenos ahora y te ayudamos con tu pedido en minutos.</p>
+      </div>
+      <a class="btn btn-main" href="#" data-i18n="final_btn">Ir a Discord</a>
+    </section>
+
     <footer>
       <span data-i18n="foot">Discord oficial:</span> <span class="discord">TradeHub</span>
     </footer>
@@ -234,7 +288,7 @@
   <script>
     const i18n = {
       es: {
-        m1: 'INICIO', m2: 'COMPRAR ORO', m3: 'COMPRAR CUENTAS', m4: 'VISIÓN',
+        m1: 'INICIO', m2: 'COMPRAR ORO', m3: 'COMPRAR CUENTAS', m4: 'VISIÓN', m5: 'FAQ',
         badge: 'Proveedor de confianza para jugadores MMO',
         title: 'Tu proveedor para oro, cuentas y boosting en juegos MMO',
         sub: 'Somos un equipo dedicado a vender oro, cuentas y servicios de progreso con soporte real por Discord. Rápido, seguro y siempre activos.',
@@ -246,11 +300,21 @@
         c1t: 'Compra de oro', c1a: 'WoW, Lineage, TBC y Albion.', c1b: 'Stock estable y entrega rápida.', c1c: 'Atención en vivo por Discord.',
         c2t: 'Venta de cuentas', c2a: 'Cuentas verificadas y listas para jugar.', c2b: 'Información clara del progreso.', c2c: 'Métodos de pago seguros.',
         c3t: 'Boosting y farmeo', c3a: 'Subida de nivel y contenido endgame.', c3b: 'Opciones para jugadores casual y hardcore.', c3c: 'Seguimiento del pedido en tiempo real.',
+        c4t: 'Paquetes personalizados', c4a: 'Arma tu pedido según tu presupuesto.', c4b: 'Promociones semanales por juego.', c4c: 'Atención para clanes y guilds.',
+        r_t: 'Opiniones de clientes',
+        r1: '“Me entregaron el oro en minutos y me ayudaron por Discord todo el tiempo.”',
+        r2: '“Compré una cuenta de Lineage y todo salió seguro, sin problemas.”',
+        r3: '“El boosting de TBC fue rápido y siempre me respondieron.”',
+        p_t: 'Métodos de pago', p_d: 'Aceptamos métodos confiables para que compres con tranquilidad.',
         how_t: 'Cómo funciona', h1: 'Elige juego y servicio.', h2: 'Confirma por Discord con nuestro equipo.', h3: 'Recibe tu pedido rápido y seguro.',
+        f1q: '¿Cuánto tarda una entrega?', f1a: 'La mayoría de pedidos se entregan entre 5 y 20 minutos según stock y servidor.',
+        f2q: '¿Es seguro comprar?', f2a: 'Sí, trabajamos con métodos verificados y confirmación directa por Discord.',
+        f3q: '¿Atienden en inglés?', f3a: 'Sí, tenemos atención en español e inglés 24/7.',
+        final_t: '¿Listo para empezar?', final_d: 'Escríbenos ahora y te ayudamos con tu pedido en minutos.', final_btn: 'Ir a Discord',
         foot: 'Discord oficial:'
       },
       en: {
-        m1: 'HOME', m2: 'BUY GOLD', m3: 'BUY ACCOUNTS', m4: 'VISION',
+        m1: 'HOME', m2: 'BUY GOLD', m3: 'BUY ACCOUNTS', m4: 'VISION', m5: 'FAQ',
         badge: 'Trusted provider for MMO players',
         title: 'Your provider for gold, accounts, and MMO boosting',
         sub: 'We are a team focused on selling gold, accounts, and progression services with real Discord support. Fast, safe, and always available.',
@@ -262,7 +326,17 @@
         c1t: 'Gold purchase', c1a: 'WoW, Lineage, TBC, and Albion.', c1b: 'Stable stock and fast delivery.', c1c: 'Live support on Discord.',
         c2t: 'Account sales', c2a: 'Verified ready-to-play accounts.', c2b: 'Clear progression information.', c2c: 'Safe payment methods.',
         c3t: 'Boosting and farming', c3a: 'Leveling and endgame content.', c3b: 'Options for casual and hardcore players.', c3c: 'Real-time order tracking.',
+        c4t: 'Custom packages', c4a: 'Build your order based on your budget.', c4b: 'Weekly promotions per game.', c4c: 'Support for clans and guilds.',
+        r_t: 'Customer reviews',
+        r1: '"They delivered my gold in minutes and helped me on Discord the whole time."',
+        r2: '"I bought a Lineage account and everything was safe and smooth."',
+        r3: '"The TBC boost was fast and they always replied quickly."',
+        p_t: 'Payment methods', p_d: 'We accept trusted methods so you can buy with confidence.',
         how_t: 'How it works', h1: 'Choose game and service.', h2: 'Confirm with our team on Discord.', h3: 'Receive your order fast and safely.',
+        f1q: 'How long does delivery take?', f1a: 'Most orders are delivered in 5–20 minutes depending on stock and server.',
+        f2q: 'Is it safe to buy?', f2a: 'Yes, we use verified methods and direct Discord confirmation.',
+        f3q: 'Do you support English?', f3a: 'Yes, we provide Spanish and English support 24/7.',
+        final_t: 'Ready to start?', final_d: 'Message us now and we will help you with your order in minutes.', final_btn: 'Go to Discord',
         foot: 'Official Discord:'
       }
     };
