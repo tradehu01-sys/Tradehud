@@ -3,191 +3,226 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TradeHub | MMO Services Hub</title>
+  <title>TradeHub | Oro, cuentas y boosting MMO</title>
   <style>
     :root {
-      --bg: #060a13;
-      --bg2: #0b1222;
-      --panel: #101a31;
-      --panel2: #0c1529;
+      --bg: #05070d;
+      --bg-soft: #0b1220;
+      --panel: #0f182c;
+      --line: #26365f;
       --text: #eef3ff;
-      --muted: #9aaad0;
-      --line: #2a3a67;
-      --cyan: #00d7ff;
-      --purple: #8c5bff;
-      --green: #15df8c;
+      --muted: #9cadcf;
+      --accent: #ff5c00;
+      --cyan: #00d3ff;
+      --green: #14d88b;
     }
+
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       font-family: Inter, Segoe UI, Arial, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 0% 0%, rgba(140, 91, 255, .35), transparent 40%),
-        radial-gradient(circle at 100% 0%, rgba(0, 215, 255, .2), transparent 35%),
-        linear-gradient(180deg, var(--bg2), var(--bg));
+        radial-gradient(circle at 0% 0%, rgba(255, 92, 0, .16), transparent 30%),
+        radial-gradient(circle at 100% 0%, rgba(0, 211, 255, .15), transparent 35%),
+        linear-gradient(180deg, #0a111f, var(--bg));
     }
-    .ticker {
-      border-bottom: 1px solid var(--line);
-      background: #070d1a;
-      white-space: nowrap;
-      overflow: hidden;
-      font-size: .9rem;
-      color: #b8c7ed;
-    }
-    .ticker span {
-      display: inline-block;
-      padding: 10px 0;
-      min-width: 100%;
-      animation: move 20s linear infinite;
-    }
-    @keyframes move { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 
-    .wrap { width: min(1160px, 100% - 28px); margin: 16px auto 40px; }
+    .wrap { width: min(1180px, 100% - 30px); margin: 16px auto 40px; }
+
     .topbar {
+      position: sticky; top: 10px; z-index: 20;
       display: flex; justify-content: space-between; align-items: center;
-      gap: 12px; padding: 10px 14px; border: 1px solid var(--line);
-      border-radius: 14px; background: rgba(7, 13, 24, .85); position: sticky; top: 10px; z-index: 100;
-      backdrop-filter: blur(8px);
+      border: 1px solid var(--line); border-radius: 14px;
+      padding: 10px 14px; background: rgba(8, 12, 22, .85); backdrop-filter: blur(8px);
     }
-    .brand { font-weight: 900; letter-spacing: .3px; }
-    .brand span { color: var(--cyan); }
+
+    .brand { font-size: 1.1rem; font-weight: 900; }
+    .brand span { color: var(--accent); }
+
+    .menu { display: flex; flex-wrap: wrap; gap: 12px; font-size: .9rem; }
+    .menu a { color: #dce6ff; text-decoration: none; opacity: .92; }
+    .menu a:hover { color: white; }
+
     .lang button {
-      background: #111d36; color: white; border: 1px solid #39518f; border-radius: 10px;
-      padding: 7px 11px; cursor: pointer; font-weight: 800; margin-left: 6px;
+      background: #121d37; border: 1px solid #37508b; color: white;
+      padding: 7px 11px; border-radius: 10px; font-weight: 800; cursor: pointer;
     }
-    .lang button.active, .lang button:hover { background: linear-gradient(120deg, var(--cyan), var(--purple)); border-color: transparent; }
+    .lang button.active, .lang button:hover {
+      background: linear-gradient(120deg, var(--accent), var(--cyan)); border-color: transparent;
+    }
 
     .hero {
-      margin-top: 16px; border: 1px solid var(--line); border-radius: 20px;
-      padding: clamp(20px, 4vw, 38px);
-      background: linear-gradient(135deg, rgba(16,26,49,.95), rgba(10,17,34,.97));
+      margin-top: 16px; position: relative; overflow: hidden;
+      border: 1px solid var(--line); border-radius: 22px;
+      padding: clamp(24px, 4vw, 46px);
+      background:
+        linear-gradient(115deg, rgba(9,15,28,.96), rgba(13,23,41,.92)),
+        radial-gradient(circle at 70% 10%, rgba(255,92,0,.25), transparent 30%),
+        radial-gradient(circle at 20% 100%, rgba(0,211,255,.18), transparent 30%);
+      min-height: 420px;
     }
-    .badge { display: inline-block; padding: 6px 12px; border: 1px solid #37508a; border-radius: 999px; font-size: .8rem; color: #c7d2f3; }
-    h1 { margin: 14px 0 8px; font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.08; }
-    .sub { color: var(--muted); max-width: 760px; line-height: 1.6; margin-bottom: 20px; }
-    .cta { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    .hero h1 {
+      margin: 10px 0 12px;
+      max-width: 680px;
+      line-height: 1.08;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      text-transform: uppercase;
+    }
+
+    .hero p { color: var(--muted); max-width: 680px; line-height: 1.6; }
+
+    .badge {
+      display: inline-block; font-size: .8rem; font-weight: 700;
+      border: 1px solid #40598e; border-radius: 999px; padding: 6px 12px; color: #c8d5f2;
+    }
+
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
     .btn {
-      text-decoration: none; font-weight: 800; border-radius: 12px; padding: 12px 18px; display: inline-block;
-      transition: .2s ease; border: 1px solid transparent;
+      text-decoration: none; padding: 12px 18px; border-radius: 12px;
+      font-weight: 800; border: 1px solid transparent; transition: .2s ease;
+      display: inline-block;
     }
     .btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
-    .btn1 { background: linear-gradient(120deg, var(--cyan), #42f0c9); color: #04111a; }
-    .btn2 { background: linear-gradient(120deg, #22355f, #1a2748); color: white; border-color: #3a5188; }
+    .btn-main { color: #1a0900; background: linear-gradient(120deg, var(--accent), #ffb300); }
+    .btn-alt { color: #fff; background: linear-gradient(120deg, #1f3258, #172543); border-color: #3d5488; }
 
-    .stats { margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
-    .stat { background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
-    .stat b { font-size: 1.25rem; color: var(--green); display: block; }
+    .game-icons {
+      position: absolute; right: 26px; bottom: 20px;
+      display: grid; grid-template-columns: repeat(2, 90px); gap: 12px;
+    }
+
+    .game-icon {
+      width: 90px; height: 90px; border-radius: 50%;
+      border: 2px solid #4a6194;
+      display: grid; place-items: center;
+      font-weight: 900; font-size: .86rem;
+      background: radial-gradient(circle at 30% 25%, #243e72, #101a31);
+      box-shadow: 0 0 0 4px rgba(6, 10, 20, .65);
+      animation: float 3.2s ease-in-out infinite;
+    }
+
+    .game-icon:nth-child(2) { animation-delay: .3s; }
+    .game-icon:nth-child(3) { animation-delay: .6s; }
+    .game-icon:nth-child(4) { animation-delay: .9s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    .stats {
+      margin-top: 14px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 10px;
+    }
+    .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+    .stat b { color: var(--green); font-size: 1.25rem; display: block; }
     .stat small { color: var(--muted); }
 
-    .section { margin-top: 16px; border: 1px solid var(--line); border-radius: 16px; background: #0a1326; padding: 18px; }
+    .section {
+      margin-top: 16px; border: 1px solid var(--line); border-radius: 16px;
+      background: rgba(10, 18, 34, .9); padding: 18px;
+    }
     .section h2 { margin: 0 0 10px; }
     .section p { margin: 0; color: var(--muted); line-height: 1.6; }
 
-    .cards { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-    .card { border: 1px solid var(--line); background: var(--panel); border-radius: 14px; padding: 14px; }
-    .card h3 { margin: 0 0 6px; color: var(--cyan); }
-    .card p { margin: 0; color: var(--muted); }
+    .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 12px; }
+    .card { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); padding: 14px; }
+    .card h3 { margin: 0 0 7px; color: var(--cyan); }
+    .card ul { margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.5; }
 
-    .offers { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-    .offer { border: 1px solid var(--line); background: var(--panel); border-radius: 14px; padding: 14px; }
-    .price { font-size: 1.4rem; font-weight: 900; margin: 6px 0; }
-    .offer ul { margin: 8px 0 0 18px; color: var(--muted); padding: 0; }
-
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-    .feature { border: 1px solid var(--line); background: var(--panel2); border-radius: 14px; padding: 14px; }
-    .feature h4 { margin: 0 0 8px; }
-    .feature p { margin: 0; color: var(--muted); }
-
-    footer { margin-top: 16px; text-align: center; color: var(--muted); padding: 14px; }
+    footer { margin-top: 16px; text-align: center; color: var(--muted); padding: 10px; }
     .discord { color: var(--green); font-weight: 800; }
+
+    @media (max-width: 880px) {
+      .game-icons { position: static; margin-top: 20px; grid-template-columns: repeat(4, 70px); }
+      .game-icon { width: 70px; height: 70px; font-size: .72rem; }
+      .menu { display: none; }
+    }
   </style>
 </head>
 <body>
-  <div class="ticker"><span data-i18n="ticker">TradeHub • WoW • Lineage • TBC • Albion • Guías • Boost • Comunidad activa 24/7</span></div>
-
   <div class="wrap">
     <header class="topbar">
       <div class="brand">Trade<span>Hub</span></div>
-      <nav class="lang" aria-label="language">
+      <nav class="menu">
+        <a href="#inicio" data-i18n="m1">INICIO</a>
+        <a href="#servicios" data-i18n="m2">COMPRAR ORO</a>
+        <a href="#servicios" data-i18n="m3">COMPRAR CUENTAS</a>
+        <a href="#vision" data-i18n="m4">VISIÓN</a>
+      </nav>
+      <div class="lang">
         <button id="es" class="active" type="button">ES</button>
         <button id="en" type="button">EN</button>
-      </nav>
+      </div>
     </header>
 
-    <main class="hero">
-      <span class="badge" data-i18n="badge">Comunidad confiable para jugadores MMO</span>
-      <h1 data-i18n="title">Mejora tu progreso en <span style="color:var(--cyan)">TradeHub</span></h1>
-      <p class="sub" data-i18n="subtitle">Una plataforma rápida para encontrar servicios, soporte y recursos de WoW, Lineage, TBC y Albion con atención real en Discord.</p>
-      <div class="cta">
-        <a class="btn btn1" href="#ofertas" data-i18n="cta_buy">Ver ofertas</a>
-        <a class="btn btn2" href="#vision" data-i18n="cta_vision">Visión</a>
+    <main id="inicio" class="hero">
+      <span class="badge" data-i18n="badge">Proveedor de confianza para jugadores MMO</span>
+      <h1 data-i18n="title">Tu proveedor para oro, cuentas y boosting en juegos MMO</h1>
+      <p data-i18n="sub">Somos un equipo dedicado a vender oro, cuentas y servicios de progreso con soporte real por Discord. Rápido, seguro y siempre activos.</p>
+      <div class="actions">
+        <a class="btn btn-main" href="#servicios" data-i18n="cta1">Comprar ahora</a>
+        <a class="btn btn-alt" href="#como" data-i18n="cta2">Cómo funciona</a>
       </div>
 
-      <div class="stats">
-        <div class="stat"><b>99+</b><small data-i18n="st1">Jugadores activos hoy</small></div>
-        <div class="stat"><b>24/7</b><small data-i18n="st2">Soporte por Discord</small></div>
-        <div class="stat"><b>10m</b><small data-i18n="st3">Entrega promedio</small></div>
-        <div class="stat"><b>1000+</b><small data-i18n="st4">Clientes satisfechos</small></div>
+      <div class="game-icons">
+        <div class="game-icon">WoW</div>
+        <div class="game-icon">L2</div>
+        <div class="game-icon">TBC</div>
+        <div class="game-icon">ALB</div>
       </div>
     </main>
 
-    <section id="about" class="section">
-      <h2 data-i18n="about_title">Quiénes somos</h2>
-      <p data-i18n="about_text">TradeHub conecta jugadores que buscan avanzar más rápido, conseguir recursos y jugar con mayor seguridad. Nos enfocamos en soporte claro, tiempos rápidos y confianza a largo plazo.</p>
-    </section>
-
-    <section id="servers" class="section">
-      <h2 data-i18n="servers_title">Servidores y juegos</h2>
-      <div class="cards">
-        <article class="card"><h3>WoW</h3><p data-i18n="wow">Farmeo, oro, rutas y novedades para progresar mejor.</p></article>
-        <article class="card"><h3>Lineage</h3><p data-i18n="lineage">Guías prácticas para subir rápido y optimizar build.</p></article>
-        <article class="card"><h3>TBC</h3><p data-i18n="tbc">Contenido dedicado a The Burning Crusade.</p></article>
-        <article class="card"><h3>Albion</h3><p data-i18n="albion">Economía, PvP/PvE y coordinación de gremio.</p></article>
-      </div>
-    </section>
-
-    <section id="ofertas" class="section">
-      <h2 data-i18n="offers_title">Ofertas destacadas</h2>
-      <div class="offers">
-        <article class="offer">
-          <h3>WoW Realm A</h3>
-          <div class="price">100 Gold • $1.6</div>
-          <ul>
-            <li data-i18n="o1">Stock alto</li>
-            <li data-i18n="o2">Entrega rápida</li>
-            <li data-i18n="o3">Pago seguro</li>
-          </ul>
-        </article>
-        <article class="offer">
-          <h3>WoW Realm B</h3>
-          <div class="price">100 Gold • $1.4</div>
-          <ul>
-            <li data-i18n="o1">Stock alto</li>
-            <li data-i18n="o2">Entrega rápida</li>
-            <li data-i18n="o3">Pago seguro</li>
-          </ul>
-        </article>
-        <article class="offer">
-          <h3>WoW Realm C</h3>
-          <div class="price">100 Gold • $1.2</div>
-          <ul>
-            <li data-i18n="o1">Stock alto</li>
-            <li data-i18n="o2">Entrega rápida</li>
-            <li data-i18n="o3">Pago seguro</li>
-          </ul>
-        </article>
-      </div>
+    <section class="stats">
+      <div class="stat"><b>24/7</b><small data-i18n="s1">Soporte por Discord</small></div>
+      <div class="stat"><b>10m</b><small data-i18n="s2">Entrega promedio</small></div>
+      <div class="stat"><b>1000+</b><small data-i18n="s3">Clientes atendidos</small></div>
+      <div class="stat"><b>99%</b><small data-i18n="s4">Operaciones exitosas</small></div>
     </section>
 
     <section id="vision" class="section">
-      <h2 data-i18n="vision_title">Visión y ventajas</h2>
-      <div class="features">
-        <article class="feature"><h4 data-i18n="f1t">Soporte 24/7</h4><p data-i18n="f1d">Atención continua por Discord con respuesta rápida.</p></article>
-        <article class="feature"><h4 data-i18n="f2t">Mejor experiencia</h4><p data-i18n="f2d">Diseño simple y directo para encontrar lo que necesitas.</p></article>
-        <article class="feature"><h4 data-i18n="f3t">Pagos seguros</h4><p data-i18n="f3d">Métodos confiables y transparencia en cada operación.</p></article>
-        <article class="feature"><h4 data-i18n="f4t">Comunidad activa</h4><p data-i18n="f4d">Jugadores conectados, guías útiles y soporte constante.</p></article>
+      <h2 data-i18n="vision_t">Visión</h2>
+      <p data-i18n="vision_d">Ser la comunidad líder en español e inglés para compra segura de oro, cuentas y servicios MMO, con transparencia, rapidez y confianza real.</p>
+    </section>
+
+    <section id="servicios" class="section">
+      <h2 data-i18n="services_t">Servicios principales</h2>
+      <div class="grid">
+        <article class="card">
+          <h3 data-i18n="c1t">Compra de oro</h3>
+          <ul>
+            <li data-i18n="c1a">WoW, Lineage, TBC y Albion.</li>
+            <li data-i18n="c1b">Stock estable y entrega rápida.</li>
+            <li data-i18n="c1c">Atención en vivo por Discord.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3 data-i18n="c2t">Venta de cuentas</h3>
+          <ul>
+            <li data-i18n="c2a">Cuentas verificadas y listas para jugar.</li>
+            <li data-i18n="c2b">Información clara del progreso.</li>
+            <li data-i18n="c2c">Métodos de pago seguros.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3 data-i18n="c3t">Boosting y farmeo</h3>
+          <ul>
+            <li data-i18n="c3a">Subida de nivel y contenido endgame.</li>
+            <li data-i18n="c3b">Opciones para jugadores casual y hardcore.</li>
+            <li data-i18n="c3c">Seguimiento del pedido en tiempo real.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="como" class="section">
+      <h2 data-i18n="how_t">Cómo funciona</h2>
+      <div class="grid">
+        <article class="card"><h3>1</h3><p data-i18n="h1">Elige juego y servicio.</p></article>
+        <article class="card"><h3>2</h3><p data-i18n="h2">Confirma por Discord con nuestro equipo.</p></article>
+        <article class="card"><h3>3</h3><p data-i18n="h3">Recibe tu pedido rápido y seguro.</p></article>
       </div>
     </section>
 
@@ -197,70 +232,56 @@
   </div>
 
   <script>
-    const t = {
+    const i18n = {
       es: {
-        ticker: 'TradeHub • WoW • Lineage • TBC • Albion • Guías • Boost • Comunidad activa 24/7',
-        badge: 'Comunidad confiable para jugadores MMO',
-        title: 'Mejora tu progreso en <span style="color:var(--cyan)">TradeHub</span>',
-        subtitle: 'Una plataforma rápida para encontrar servicios, soporte y recursos de WoW, Lineage, TBC y Albion con atención real en Discord.',
-        cta_buy: 'Ver ofertas', cta_vision: 'Visión',
-        st1: 'Jugadores activos hoy', st2: 'Soporte por Discord', st3: 'Entrega promedio', st4: 'Clientes satisfechos',
-        about_title: 'Quiénes somos',
-        about_text: 'TradeHub conecta jugadores que buscan avanzar más rápido, conseguir recursos y jugar con mayor seguridad. Nos enfocamos en soporte claro, tiempos rápidos y confianza a largo plazo.',
-        servers_title: 'Servidores y juegos',
-        wow: 'Farmeo, oro, rutas y novedades para progresar mejor.',
-        lineage: 'Guías prácticas para subir rápido y optimizar build.',
-        tbc: 'Contenido dedicado a The Burning Crusade.',
-        albion: 'Economía, PvP/PvE y coordinación de gremio.',
-        offers_title: 'Ofertas destacadas',
-        o1: 'Stock alto', o2: 'Entrega rápida', o3: 'Pago seguro',
-        vision_title: 'Visión y ventajas',
-        f1t: 'Soporte 24/7', f1d: 'Atención continua por Discord con respuesta rápida.',
-        f2t: 'Mejor experiencia', f2d: 'Diseño simple y directo para encontrar lo que necesitas.',
-        f3t: 'Pagos seguros', f3d: 'Métodos confiables y transparencia en cada operación.',
-        f4t: 'Comunidad activa', f4d: 'Jugadores conectados, guías útiles y soporte constante.',
+        m1: 'INICIO', m2: 'COMPRAR ORO', m3: 'COMPRAR CUENTAS', m4: 'VISIÓN',
+        badge: 'Proveedor de confianza para jugadores MMO',
+        title: 'Tu proveedor para oro, cuentas y boosting en juegos MMO',
+        sub: 'Somos un equipo dedicado a vender oro, cuentas y servicios de progreso con soporte real por Discord. Rápido, seguro y siempre activos.',
+        cta1: 'Comprar ahora', cta2: 'Cómo funciona',
+        s1: 'Soporte por Discord', s2: 'Entrega promedio', s3: 'Clientes atendidos', s4: 'Operaciones exitosas',
+        vision_t: 'Visión',
+        vision_d: 'Ser la comunidad líder en español e inglés para compra segura de oro, cuentas y servicios MMO, con transparencia, rapidez y confianza real.',
+        services_t: 'Servicios principales',
+        c1t: 'Compra de oro', c1a: 'WoW, Lineage, TBC y Albion.', c1b: 'Stock estable y entrega rápida.', c1c: 'Atención en vivo por Discord.',
+        c2t: 'Venta de cuentas', c2a: 'Cuentas verificadas y listas para jugar.', c2b: 'Información clara del progreso.', c2c: 'Métodos de pago seguros.',
+        c3t: 'Boosting y farmeo', c3a: 'Subida de nivel y contenido endgame.', c3b: 'Opciones para jugadores casual y hardcore.', c3c: 'Seguimiento del pedido en tiempo real.',
+        how_t: 'Cómo funciona', h1: 'Elige juego y servicio.', h2: 'Confirma por Discord con nuestro equipo.', h3: 'Recibe tu pedido rápido y seguro.',
         foot: 'Discord oficial:'
       },
       en: {
-        ticker: 'TradeHub • WoW • Lineage • TBC • Albion • Guides • Boost • Active community 24/7',
-        badge: 'Trusted community for MMO players',
-        title: 'Boost your progress with <span style="color:var(--cyan)">TradeHub</span>',
-        subtitle: 'A fast platform to find services, support, and resources for WoW, Lineage, TBC, and Albion with real Discord assistance.',
-        cta_buy: 'View offers', cta_vision: 'Vision',
-        st1: 'Active players today', st2: 'Discord support', st3: 'Average delivery', st4: 'Happy customers',
-        about_title: 'Who we are',
-        about_text: 'TradeHub connects players who want to progress faster, get resources, and play safer. We focus on clear support, fast timing, and long-term trust.',
-        servers_title: 'Servers and games',
-        wow: 'Farming, gold, routes, and updates for better progress.',
-        lineage: 'Practical guides to level faster and optimize builds.',
-        tbc: 'Dedicated content for The Burning Crusade.',
-        albion: 'Economy, PvP/PvE, and guild coordination.',
-        offers_title: 'Featured offers',
-        o1: 'High stock', o2: 'Fast delivery', o3: 'Secure payment',
-        vision_title: 'Vision and benefits',
-        f1t: '24/7 support', f1d: 'Always-on Discord help with fast response.',
-        f2t: 'Better experience', f2d: 'Simple and direct layout to find what you need.',
-        f3t: 'Safe payments', f3d: 'Trusted methods and transparent operations.',
-        f4t: 'Active community', f4d: 'Connected players, useful guides, and constant support.',
+        m1: 'HOME', m2: 'BUY GOLD', m3: 'BUY ACCOUNTS', m4: 'VISION',
+        badge: 'Trusted provider for MMO players',
+        title: 'Your provider for gold, accounts, and MMO boosting',
+        sub: 'We are a team focused on selling gold, accounts, and progression services with real Discord support. Fast, safe, and always available.',
+        cta1: 'Buy now', cta2: 'How it works',
+        s1: 'Discord support', s2: 'Average delivery', s3: 'Customers served', s4: 'Successful operations',
+        vision_t: 'Vision',
+        vision_d: 'To become the leading Spanish-English community for safe MMO gold, accounts, and services, with transparency, speed, and real trust.',
+        services_t: 'Main services',
+        c1t: 'Gold purchase', c1a: 'WoW, Lineage, TBC, and Albion.', c1b: 'Stable stock and fast delivery.', c1c: 'Live support on Discord.',
+        c2t: 'Account sales', c2a: 'Verified ready-to-play accounts.', c2b: 'Clear progression information.', c2c: 'Safe payment methods.',
+        c3t: 'Boosting and farming', c3a: 'Leveling and endgame content.', c3b: 'Options for casual and hardcore players.', c3c: 'Real-time order tracking.',
+        how_t: 'How it works', h1: 'Choose game and service.', h2: 'Confirm with our team on Discord.', h3: 'Receive your order fast and safely.',
         foot: 'Official Discord:'
       }
     };
 
-    const esBtn = document.getElementById('es');
-    const enBtn = document.getElementById('en');
+    const es = document.getElementById('es');
+    const en = document.getElementById('en');
 
     function setLang(lang) {
       document.documentElement.lang = lang;
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const k = el.dataset.i18n;
-        if (t[lang][k]) el.innerHTML = t[lang][k];
+      document.querySelectorAll('[data-i18n]').forEach((node) => {
+        const key = node.getAttribute('data-i18n');
+        if (i18n[lang][key]) node.textContent = i18n[lang][key];
       });
-      esBtn.classList.toggle('active', lang === 'es');
-      enBtn.classList.toggle('active', lang === 'en');
+      es.classList.toggle('active', lang === 'es');
+      en.classList.toggle('active', lang === 'en');
     }
 
-    esBtn.addEventListener('click', () => setLang('es'));
-    enBtn.addEventListener('click', () => setLang('en'));
+    es.addEventListener('click', () => setLang('es'));
+    en.addEventListener('click', () => setLang('en'));
   </script>
 </body>
 </html>
