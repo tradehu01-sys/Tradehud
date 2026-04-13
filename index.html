@@ -120,6 +120,33 @@
       display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
     }
 
+    .lang-gate {
+      position: fixed; inset: 0; z-index: 200;
+      display: grid; place-items: center;
+      background: rgba(3, 5, 10, .78);
+      backdrop-filter: blur(4px);
+    }
+    .lang-box {
+      width: min(420px, calc(100% - 24px));
+      border: 1px solid var(--line);
+      background: #0d162a;
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+    }
+    .lang-box h3 { margin: 0 0 10px; }
+    .lang-box p { margin: 0 0 14px; color: var(--muted); }
+    .lang-box .btn { margin: 4px; }
+
+    .admin-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin-top: 12px; }
+    .admin-grid input {
+      width: 100%; border: 1px solid var(--line); background: #0d1628; color: #fff;
+      border-radius: 10px; padding: 10px;
+    }
+    .admin-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .mini-note { color: var(--muted); font-size: .9rem; margin-top: 8px; }
+    .admin-status { margin-top: 10px; color: #d2defe; font-size: .92rem; }
+
     footer { margin-top: 16px; text-align: center; color: var(--muted); padding: 10px; }
     .discord { color: var(--green); font-weight: 800; }
 
@@ -131,6 +158,15 @@
   </style>
 </head>
 <body>
+  <div class="lang-gate" id="langGate">
+    <div class="lang-box">
+      <h3>Choose your language / Elige tu idioma</h3>
+      <p>Selecciona un idioma para iniciar la página.</p>
+      <button class="btn btn-main" id="startEs" type="button">Español</button>
+      <button class="btn btn-alt" id="startEn" type="button">English</button>
+    </div>
+  </div>
+
   <div class="wrap">
     <header class="topbar">
       <div class="brand">Trade<span>Hub</span></div>
@@ -280,6 +316,32 @@
       <a class="btn btn-main" href="#" data-i18n="final_btn">Ir a Discord</a>
     </section>
 
+    <section class="section" id="admin">
+      <h2 data-i18n="admin_t">Sección de administrador (Supabase)</h2>
+      <p data-i18n="admin_d">Configura Supabase para iniciar sesión y publicar ofertas desde esta página.</p>
+      <div class="admin-grid">
+        <input id="sbUrl" placeholder="Supabase URL (https://xxxx.supabase.co)" />
+        <input id="sbAnonKey" placeholder="Supabase anon key" />
+      </div>
+      <div class="admin-grid">
+        <input id="adminEmail" placeholder="Admin email" />
+        <input id="adminPass" type="password" placeholder="Admin password" />
+      </div>
+      <div class="admin-actions">
+        <button class="btn btn-main" id="btnLogin" type="button" data-i18n="admin_login">Iniciar sesión</button>
+        <button class="btn btn-alt" id="btnLoadOffers" type="button" data-i18n="admin_load">Cargar ofertas</button>
+      </div>
+      <div class="admin-grid">
+        <input id="offerTitle" placeholder="Título oferta" />
+        <input id="offerPrice" placeholder="Precio (ej: 100 Gold • $1.4)" />
+      </div>
+      <div class="admin-actions">
+        <button class="btn btn-main" id="btnCreateOffer" type="button" data-i18n="admin_create">Crear oferta</button>
+      </div>
+      <div class="mini-note" data-i18n="admin_note">Tabla sugerida en Supabase: offers(id bigint, title text, price text, created_at timestamptz).</div>
+      <div class="admin-status" id="adminStatus">-</div>
+    </section>
+
     <section class="section">
       <h2 data-i18n="social_t">Redes sociales y políticas</h2>
       <p data-i18n="social_d">Síguenos en nuestras redes oficiales y revisa nuestras políticas antes de comprar.</p>
@@ -301,6 +363,7 @@
     </footer>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const i18n = {
       es: {
@@ -329,6 +392,10 @@
         final_t: '¿Listo para empezar?', final_d: 'Escríbenos ahora y te ayudamos con tu pedido en minutos.', final_btn: 'Ir a Discord',
         social_t: 'Redes sociales y políticas', social_d: 'Síguenos en nuestras redes oficiales y revisa nuestras políticas antes de comprar.',
         pol1: 'Política de privacidad', pol2: 'Términos y condiciones', pol3: 'Política de reembolsos',
+        admin_t: 'Sección de administrador (Supabase)',
+        admin_d: 'Configura Supabase para iniciar sesión y publicar ofertas desde esta página.',
+        admin_login: 'Iniciar sesión', admin_load: 'Cargar ofertas', admin_create: 'Crear oferta',
+        admin_note: 'Tabla sugerida en Supabase: offers(id bigint, title text, price text, created_at timestamptz).',
         foot: 'Discord oficial:'
       },
       en: {
@@ -357,12 +424,21 @@
         final_t: 'Ready to start?', final_d: 'Message us now and we will help you with your order in minutes.', final_btn: 'Go to Discord',
         social_t: 'Social media and policies', social_d: 'Follow our official channels and review our policies before purchasing.',
         pol1: 'Privacy policy', pol2: 'Terms and conditions', pol3: 'Refund policy',
+        admin_t: 'Admin section (Supabase)',
+        admin_d: 'Configure Supabase to sign in and publish offers from this page.',
+        admin_login: 'Sign in', admin_load: 'Load offers', admin_create: 'Create offer',
+        admin_note: 'Suggested Supabase table: offers(id bigint, title text, price text, created_at timestamptz).',
         foot: 'Official Discord:'
       }
     };
 
     const es = document.getElementById('es');
     const en = document.getElementById('en');
+    const langGate = document.getElementById('langGate');
+    const startEs = document.getElementById('startEs');
+    const startEn = document.getElementById('startEn');
+    const adminStatus = document.getElementById('adminStatus');
+    let sbClient = null;
 
     function setLang(lang) {
       document.documentElement.lang = lang;
@@ -372,10 +448,74 @@
       });
       es.classList.toggle('active', lang === 'es');
       en.classList.toggle('active', lang === 'en');
+      localStorage.setItem('tradehub_lang', lang);
+    }
+
+    function closeGateWith(lang) {
+      setLang(lang);
+      langGate.style.display = 'none';
+    }
+
+    function buildSupabaseClient() {
+      const url = document.getElementById('sbUrl').value.trim();
+      const key = document.getElementById('sbAnonKey').value.trim();
+      if (!url || !key) {
+        adminStatus.textContent = 'Completa Supabase URL y anon key.';
+        return null;
+      }
+      localStorage.setItem('tradehub_sb_url', url);
+      localStorage.setItem('tradehub_sb_key', key);
+      sbClient = window.supabase.createClient(url, key);
+      return sbClient;
+    }
+
+    async function adminLogin() {
+      const client = sbClient || buildSupabaseClient();
+      if (!client) return;
+      const email = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPass').value;
+      const { error } = await client.auth.signInWithPassword({ email, password });
+      adminStatus.textContent = error ? `Error login: ${error.message}` : 'Login correcto.';
+    }
+
+    async function loadOffers() {
+      const client = sbClient || buildSupabaseClient();
+      if (!client) return;
+      const { data, error } = await client.from('offers').select('title,price').order('id', { ascending: false }).limit(3);
+      if (error) {
+        adminStatus.textContent = `Error cargando ofertas: ${error.message}`;
+        return;
+      }
+      const cards = document.querySelectorAll('#servicios .card h3');
+      data.forEach((item, idx) => {
+        if (cards[idx]) cards[idx].textContent = item.title;
+      });
+      adminStatus.textContent = `Ofertas cargadas: ${data.length}`;
+    }
+
+    async function createOffer() {
+      const client = sbClient || buildSupabaseClient();
+      if (!client) return;
+      const title = document.getElementById('offerTitle').value.trim();
+      const price = document.getElementById('offerPrice').value.trim();
+      const { error } = await client.from('offers').insert([{ title, price }]);
+      adminStatus.textContent = error ? `Error creando oferta: ${error.message}` : 'Oferta creada correctamente.';
     }
 
     es.addEventListener('click', () => setLang('es'));
     en.addEventListener('click', () => setLang('en'));
+    startEs.addEventListener('click', () => closeGateWith('es'));
+    startEn.addEventListener('click', () => closeGateWith('en'));
+    document.getElementById('btnLogin').addEventListener('click', adminLogin);
+    document.getElementById('btnLoadOffers').addEventListener('click', loadOffers);
+    document.getElementById('btnCreateOffer').addEventListener('click', createOffer);
+
+    document.getElementById('sbUrl').value = localStorage.getItem('tradehub_sb_url') || '';
+    document.getElementById('sbAnonKey').value = localStorage.getItem('tradehub_sb_key') || '';
+    const lastLang = localStorage.getItem('tradehub_lang');
+    if (lastLang === 'es' || lastLang === 'en') {
+      closeGateWith(lastLang);
+    }
   </script>
 </body>
 </html>
