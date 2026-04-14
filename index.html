@@ -48,6 +48,7 @@
     .lang button.active, .lang button:hover {
       background: linear-gradient(120deg, var(--accent), var(--cyan)); border-color: transparent;
     }
+    .login-top { margin-left: 8px; }
 
     .hero {
       margin-top: 16px; position: relative; overflow: hidden;
@@ -147,6 +148,21 @@
     .mini-note { color: var(--muted); font-size: .9rem; margin-top: 8px; }
     .admin-status { margin-top: 10px; color: #d2defe; font-size: .92rem; }
 
+    .modal {
+      position: fixed; inset: 0; z-index: 220;
+      background: rgba(2, 4, 8, .75);
+      display: none; place-items: center;
+    }
+    .modal-card {
+      width: min(460px, calc(100% - 24px));
+      border: 1px solid var(--line);
+      background: #0d162a;
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .modal-card h3 { margin: 0 0 8px; }
+    .modal-card .admin-grid { margin-top: 8px; }
+
     footer { margin-top: 16px; text-align: center; color: var(--muted); padding: 10px; }
     .discord { color: var(--green); font-weight: 800; }
 
@@ -178,10 +194,26 @@
         <a href="#faq" data-i18n="m5">FAQ</a>
       </nav>
       <div class="lang">
+        <button id="openLoginModal" class="login-top" type="button" data-i18n="login_top">Iniciar sesión</button>
         <button id="es" class="active" type="button">ES</button>
         <button id="en" type="button">EN</button>
       </div>
     </header>
+
+    <div class="modal" id="loginModal">
+      <div class="modal-card">
+        <h3 data-i18n="modal_title">Iniciar sesión administrador</h3>
+        <p class="mini-note" data-i18n="modal_desc">Ingresa tus credenciales para entrar al panel.</p>
+        <div class="admin-grid">
+          <input id="modalEmail" placeholder="Admin email" />
+          <input id="modalPass" type="password" placeholder="Admin password" />
+        </div>
+        <div class="admin-actions">
+          <button class="btn btn-main" id="modalLoginBtn" type="button" data-i18n="modal_btn">Entrar</button>
+          <button class="btn btn-alt" id="closeLoginModal" type="button" data-i18n="modal_close">Cerrar</button>
+        </div>
+      </div>
+    </div>
 
     <main id="inicio" class="hero">
       <span class="badge" data-i18n="badge">Proveedor de confianza para jugadores MMO</span>
@@ -245,6 +277,37 @@
             <li data-i18n="c4a">Arma tu pedido según tu presupuesto.</li>
             <li data-i18n="c4b">Promociones semanales por juego.</li>
             <li data-i18n="c4c">Atención para clanes y guilds.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="turtle">
+      <h2 data-i18n="turtle_t">Sección de oro - Turtle</h2>
+      <p data-i18n="turtle_d">Servidores Turtle con presentación rápida y estilo redondo.</p>
+      <div class="grid">
+        <article class="card">
+          <div class="game-icon" style="position:static;margin-bottom:8px;">🐢</div>
+          <h3>Turtle Amber</h3>
+          <ul>
+            <li data-i18n="tu1">100 Gold • USDT $1.6</li>
+            <li data-i18n="tu2">Stock alto y entrega rápida</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="game-icon" style="position:static;margin-bottom:8px;">🐢</div>
+          <h3>Turtle Nord</h3>
+          <ul>
+            <li data-i18n="tu3">100 Gold • USDT $1.4</li>
+            <li data-i18n="tu2">Stock alto y entrega rápida</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="game-icon" style="position:static;margin-bottom:8px;">🐢</div>
+          <h3>Turtle South</h3>
+          <ul>
+            <li data-i18n="tu4">100 Gold • USDT $1.2</li>
+            <li data-i18n="tu2">Stock alto y entrega rápida</li>
           </ul>
         </article>
       </div>
@@ -368,6 +431,7 @@
     const i18n = {
       es: {
         m1: 'INICIO', m2: 'COMPRAR ORO', m3: 'COMPRAR CUENTAS', m4: 'VISIÓN', m5: 'FAQ',
+        login_top: 'Iniciar sesión', modal_title: 'Iniciar sesión administrador', modal_desc: 'Ingresa tus credenciales para entrar al panel.', modal_btn: 'Entrar', modal_close: 'Cerrar',
         badge: 'Proveedor de confianza para jugadores MMO',
         title: 'Tu proveedor para oro, cuentas y boosting en juegos MMO',
         sub: 'Somos un equipo dedicado a vender oro, cuentas y servicios de progreso con soporte real por Discord. Rápido, seguro y siempre activos.',
@@ -376,6 +440,8 @@
         vision_t: 'Visión',
         vision_d: 'Ser la comunidad líder en español e inglés para compra segura de oro, cuentas y servicios MMO, con transparencia, rapidez y confianza real.',
         services_t: 'Servicios principales',
+        turtle_t: 'Sección de oro - Turtle', turtle_d: 'Servidores Turtle con presentación rápida y estilo redondo.',
+        tu1: '100 Gold • USDT $1.6', tu2: 'Stock alto y entrega rápida', tu3: '100 Gold • USDT $1.4', tu4: '100 Gold • USDT $1.2',
         c1t: 'Compra de oro', c1a: 'WoW, Lineage, TBC y Albion.', c1b: 'Stock estable y entrega rápida.', c1c: 'Atención en vivo por Discord.',
         c2t: 'Venta de cuentas', c2a: 'Cuentas verificadas y listas para jugar.', c2b: 'Información clara del progreso.', c2c: 'Métodos de pago seguros.',
         c3t: 'Boosting y farmeo', c3a: 'Subida de nivel y contenido endgame.', c3b: 'Opciones para jugadores casual y hardcore.', c3c: 'Seguimiento del pedido en tiempo real.',
@@ -400,6 +466,7 @@
       },
       en: {
         m1: 'HOME', m2: 'BUY GOLD', m3: 'BUY ACCOUNTS', m4: 'VISION', m5: 'FAQ',
+        login_top: 'Sign in', modal_title: 'Admin sign in', modal_desc: 'Enter your credentials to access the panel.', modal_btn: 'Enter', modal_close: 'Close',
         badge: 'Trusted provider for MMO players',
         title: 'Your provider for gold, accounts, and MMO boosting',
         sub: 'We are a team focused on selling gold, accounts, and progression services with real Discord support. Fast, safe, and always available.',
@@ -408,6 +475,8 @@
         vision_t: 'Vision',
         vision_d: 'To become the leading Spanish-English community for safe MMO gold, accounts, and services, with transparency, speed, and real trust.',
         services_t: 'Main services',
+        turtle_t: 'Turtle gold section', turtle_d: 'Turtle realms shown with quick round-style cards.',
+        tu1: '100 Gold • USDT $1.6', tu2: 'High stock and fast delivery', tu3: '100 Gold • USDT $1.4', tu4: '100 Gold • USDT $1.2',
         c1t: 'Gold purchase', c1a: 'WoW, Lineage, TBC, and Albion.', c1b: 'Stable stock and fast delivery.', c1c: 'Live support on Discord.',
         c2t: 'Account sales', c2a: 'Verified ready-to-play accounts.', c2b: 'Clear progression information.', c2c: 'Safe payment methods.',
         c3t: 'Boosting and farming', c3a: 'Leveling and endgame content.', c3b: 'Options for casual and hardcore players.', c3c: 'Real-time order tracking.',
@@ -437,6 +506,9 @@
     const langGate = document.getElementById('langGate');
     const startEs = document.getElementById('startEs');
     const startEn = document.getElementById('startEn');
+    const openLoginModal = document.getElementById('openLoginModal');
+    const closeLoginModal = document.getElementById('closeLoginModal');
+    const loginModal = document.getElementById('loginModal');
     const adminStatus = document.getElementById('adminStatus');
     let sbClient = null;
 
@@ -478,6 +550,13 @@
       adminStatus.textContent = error ? `Error login: ${error.message}` : 'Login correcto.';
     }
 
+    async function modalLogin() {
+      document.getElementById('adminEmail').value = document.getElementById('modalEmail').value.trim();
+      document.getElementById('adminPass').value = document.getElementById('modalPass').value;
+      await adminLogin();
+      if (!adminStatus.textContent.startsWith('Error')) loginModal.style.display = 'none';
+    }
+
     async function loadOffers() {
       const client = sbClient || buildSupabaseClient();
       if (!client) return;
@@ -506,6 +585,9 @@
     en.addEventListener('click', () => setLang('en'));
     startEs.addEventListener('click', () => closeGateWith('es'));
     startEn.addEventListener('click', () => closeGateWith('en'));
+    openLoginModal.addEventListener('click', () => { loginModal.style.display = 'grid'; });
+    closeLoginModal.addEventListener('click', () => { loginModal.style.display = 'none'; });
+    document.getElementById('modalLoginBtn').addEventListener('click', modalLogin);
     document.getElementById('btnLogin').addEventListener('click', adminLogin);
     document.getElementById('btnLoadOffers').addEventListener('click', loadOffers);
     document.getElementById('btnCreateOffer').addEventListener('click', createOffer);
