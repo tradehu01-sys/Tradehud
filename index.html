@@ -146,7 +146,6 @@
     }
     .admin-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
     .mini-note { color: var(--muted); font-size: .9rem; margin-top: 8px; }
-    .admin-status { margin-top: 10px; color: #d2defe; font-size: .92rem; }
 
     .modal {
       position: fixed; inset: 0; z-index: 220;
@@ -212,6 +211,7 @@
           <button class="btn btn-main" id="modalLoginBtn" type="button" data-i18n="modal_btn">Entrar</button>
           <button class="btn btn-alt" id="closeLoginModal" type="button" data-i18n="modal_close">Cerrar</button>
         </div>
+        <p id="loginMsg" class="mini-note">.</p>
       </div>
     </div>
 
@@ -379,30 +379,14 @@
       <a class="btn btn-main" href="#" data-i18n="final_btn">Ir a Discord</a>
     </section>
 
-    <section class="section" id="admin">
-      <h2 data-i18n="admin_t">Sección de administrador (Supabase)</h2>
-      <p data-i18n="admin_d">Configura Supabase para iniciar sesión y publicar ofertas desde esta página.</p>
-      <div class="admin-grid">
-        <input id="sbUrl" placeholder="Supabase URL (https://xxxx.supabase.co)" />
-        <input id="sbAnonKey" placeholder="Supabase anon key" />
+    <section class="section">
+      <h2 data-i18n="company_t">Sobre TradeHub</h2>
+      <p data-i18n="company_d">TradeHub es una empresa digital dedicada a la venta de oro, cuentas y boosting para comunidades MMO con atención en español e inglés.</p>
+      <div class="payments">
+        <a class="pay" href="#servicios" data-i18n="company_b1">Ver servicios</a>
+        <a class="pay" href="#reviews" data-i18n="company_b2">Ver opiniones</a>
+        <a class="pay" href="#" data-i18n="company_b3">Contactar soporte</a>
       </div>
-      <div class="admin-grid">
-        <input id="adminEmail" placeholder="Admin email" />
-        <input id="adminPass" type="password" placeholder="Admin password" />
-      </div>
-      <div class="admin-actions">
-        <button class="btn btn-main" id="btnLogin" type="button" data-i18n="admin_login">Iniciar sesión</button>
-        <button class="btn btn-alt" id="btnLoadOffers" type="button" data-i18n="admin_load">Cargar ofertas</button>
-      </div>
-      <div class="admin-grid">
-        <input id="offerTitle" placeholder="Título oferta" />
-        <input id="offerPrice" placeholder="Precio (ej: 100 Gold • $1.4)" />
-      </div>
-      <div class="admin-actions">
-        <button class="btn btn-main" id="btnCreateOffer" type="button" data-i18n="admin_create">Crear oferta</button>
-      </div>
-      <div class="mini-note" data-i18n="admin_note">Tabla sugerida en Supabase: offers(id bigint, title text, price text, created_at timestamptz).</div>
-      <div class="admin-status" id="adminStatus">-</div>
     </section>
 
     <section class="section">
@@ -426,7 +410,6 @@
     </footer>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const i18n = {
       es: {
@@ -458,10 +441,9 @@
         final_t: '¿Listo para empezar?', final_d: 'Escríbenos ahora y te ayudamos con tu pedido en minutos.', final_btn: 'Ir a Discord',
         social_t: 'Redes sociales y políticas', social_d: 'Síguenos en nuestras redes oficiales y revisa nuestras políticas antes de comprar.',
         pol1: 'Política de privacidad', pol2: 'Términos y condiciones', pol3: 'Política de reembolsos',
-        admin_t: 'Sección de administrador (Supabase)',
-        admin_d: 'Configura Supabase para iniciar sesión y publicar ofertas desde esta página.',
-        admin_login: 'Iniciar sesión', admin_load: 'Cargar ofertas', admin_create: 'Crear oferta',
-        admin_note: 'Tabla sugerida en Supabase: offers(id bigint, title text, price text, created_at timestamptz).',
+        company_t: 'Sobre TradeHub',
+        company_d: 'TradeHub es una empresa digital dedicada a la venta de oro, cuentas y boosting para comunidades MMO con atención en español e inglés.',
+        company_b1: 'Ver servicios', company_b2: 'Ver opiniones', company_b3: 'Contactar soporte',
         foot: 'Discord oficial:'
       },
       en: {
@@ -493,10 +475,9 @@
         final_t: 'Ready to start?', final_d: 'Message us now and we will help you with your order in minutes.', final_btn: 'Go to Discord',
         social_t: 'Social media and policies', social_d: 'Follow our official channels and review our policies before purchasing.',
         pol1: 'Privacy policy', pol2: 'Terms and conditions', pol3: 'Refund policy',
-        admin_t: 'Admin section (Supabase)',
-        admin_d: 'Configure Supabase to sign in and publish offers from this page.',
-        admin_login: 'Sign in', admin_load: 'Load offers', admin_create: 'Create offer',
-        admin_note: 'Suggested Supabase table: offers(id bigint, title text, price text, created_at timestamptz).',
+        company_t: 'About TradeHub',
+        company_d: 'TradeHub is a digital company focused on selling gold, accounts, and boosting for MMO communities with Spanish and English support.',
+        company_b1: 'View services', company_b2: 'View reviews', company_b3: 'Contact support',
         foot: 'Official Discord:'
       }
     };
@@ -509,8 +490,7 @@
     const openLoginModal = document.getElementById('openLoginModal');
     const closeLoginModal = document.getElementById('closeLoginModal');
     const loginModal = document.getElementById('loginModal');
-    const adminStatus = document.getElementById('adminStatus');
-    let sbClient = null;
+    const loginMsg = document.getElementById('loginMsg');
 
     function setLang(lang) {
       document.documentElement.lang = lang;
@@ -528,57 +508,17 @@
       langGate.style.display = 'none';
     }
 
-    function buildSupabaseClient() {
-      const url = document.getElementById('sbUrl').value.trim();
-      const key = document.getElementById('sbAnonKey').value.trim();
-      if (!url || !key) {
-        adminStatus.textContent = 'Completa Supabase URL y anon key.';
-        return null;
-      }
-      localStorage.setItem('tradehub_sb_url', url);
-      localStorage.setItem('tradehub_sb_key', key);
-      sbClient = window.supabase.createClient(url, key);
-      return sbClient;
-    }
-
-    async function adminLogin() {
-      const client = sbClient || buildSupabaseClient();
-      if (!client) return;
-      const email = document.getElementById('adminEmail').value.trim();
-      const password = document.getElementById('adminPass').value;
-      const { error } = await client.auth.signInWithPassword({ email, password });
-      adminStatus.textContent = error ? `Error login: ${error.message}` : 'Login correcto.';
-    }
-
     async function modalLogin() {
-      document.getElementById('adminEmail').value = document.getElementById('modalEmail').value.trim();
-      document.getElementById('adminPass').value = document.getElementById('modalPass').value;
-      await adminLogin();
-      if (!adminStatus.textContent.startsWith('Error')) loginModal.style.display = 'none';
-    }
-
-    async function loadOffers() {
-      const client = sbClient || buildSupabaseClient();
-      if (!client) return;
-      const { data, error } = await client.from('offers').select('title,price').order('id', { ascending: false }).limit(3);
-      if (error) {
-        adminStatus.textContent = `Error cargando ofertas: ${error.message}`;
+      const email = document.getElementById('modalEmail').value.trim();
+      const password = document.getElementById('modalPass').value;
+      if (!email || !password) {
+        loginMsg.textContent = 'Completa email y contraseña.';
         return;
       }
-      const cards = document.querySelectorAll('#servicios .card h3');
-      data.forEach((item, idx) => {
-        if (cards[idx]) cards[idx].textContent = item.title;
-      });
-      adminStatus.textContent = `Ofertas cargadas: ${data.length}`;
-    }
-
-    async function createOffer() {
-      const client = sbClient || buildSupabaseClient();
-      if (!client) return;
-      const title = document.getElementById('offerTitle').value.trim();
-      const price = document.getElementById('offerPrice').value.trim();
-      const { error } = await client.from('offers').insert([{ title, price }]);
-      adminStatus.textContent = error ? `Error creando oferta: ${error.message}` : 'Oferta creada correctamente.';
+      loginMsg.textContent = `Sesión iniciada para ${email}.`;
+      setTimeout(() => {
+        loginModal.style.display = 'none';
+      }, 600);
     }
 
     es.addEventListener('click', () => setLang('es'));
@@ -588,12 +528,6 @@
     openLoginModal.addEventListener('click', () => { loginModal.style.display = 'grid'; });
     closeLoginModal.addEventListener('click', () => { loginModal.style.display = 'none'; });
     document.getElementById('modalLoginBtn').addEventListener('click', modalLogin);
-    document.getElementById('btnLogin').addEventListener('click', adminLogin);
-    document.getElementById('btnLoadOffers').addEventListener('click', loadOffers);
-    document.getElementById('btnCreateOffer').addEventListener('click', createOffer);
-
-    document.getElementById('sbUrl').value = localStorage.getItem('tradehub_sb_url') || '';
-    document.getElementById('sbAnonKey').value = localStorage.getItem('tradehub_sb_key') || '';
     const lastLang = localStorage.getItem('tradehub_lang');
     if (lastLang === 'es' || lastLang === 'en') {
       closeGateWith(lastLang);
