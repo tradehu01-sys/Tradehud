@@ -158,7 +158,7 @@
       }
 
       .content-block {
-        padding: 3rem 1rem;
+        padding: 3.4rem 1rem;
         border-top: 1px solid rgba(248, 195, 94, 0.22);
       }
 
@@ -170,6 +170,79 @@
       .content-block p {
         max-width: 1150px;
         line-height: 1.7;
+      }
+
+      .server-grid {
+        margin-top: 1.2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+      }
+
+      .server-btn {
+        background: #0d0d0d;
+        border: 1px solid rgba(248, 195, 94, 0.35);
+        border-radius: 16px;
+        color: var(--text);
+        padding: 1rem 0.8rem 0.9rem;
+        cursor: pointer;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .server-btn:hover {
+        transform: translateY(-3px);
+        border-color: rgba(248, 195, 94, 0.8);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+      }
+
+      .server-btn.active {
+        border-color: #f8c35e;
+        box-shadow: 0 0 0 2px rgba(248, 195, 94, 0.3);
+      }
+
+      .server-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 999px;
+        margin: 0 auto 0.65rem;
+        background-size: cover;
+        background-position: center;
+        border: 2px solid rgba(248, 195, 94, 0.75);
+        animation: pulseGlow 2.4s ease-in-out infinite;
+      }
+
+      @keyframes pulseGlow {
+        0%,
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(248, 195, 94, 0.35);
+        }
+        50% {
+          transform: scale(1.06);
+          box-shadow: 0 0 0 10px rgba(248, 195, 94, 0.05);
+        }
+      }
+
+      .server-info {
+        margin-top: 1rem;
+        background: #0b0b0b;
+        border: 1px solid rgba(248, 195, 94, 0.3);
+        border-radius: 14px;
+        padding: 1rem;
+      }
+
+      .contact-wrap {
+        margin-top: 1.2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.2rem;
+      }
+
+      .contact-card {
+        background: #0c0c0c;
+        border: 1px solid rgba(248, 195, 94, 0.35);
+        border-radius: 14px;
+        padding: 1rem;
       }
 
       footer {
@@ -220,6 +293,10 @@
 
         .footer-grid {
           grid-template-columns: 1fr 1fr;
+        }
+
+        .contact-wrap {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -298,9 +375,30 @@
           <article id="oro" class="content-block">
             <h3>Oro</h3>
             <p class="muted">
-              En esta parte puedes publicar paquetes de oro, tiempos de entrega y servidor de destino. Si quieres,
-              después te conecto este bloque directamente con tus productos reales.
+              Selecciona un servidor para mostrar su información y empezar una compra rápida.
             </p>
+            <div class="server-grid">
+              <button class="server-btn active" data-server="Turtle WoW" data-text="Compra y venta segura para Turtle WoW con entrega rápida y soporte 24/7.">
+                <div class="server-icon" style="background-image:url('https://wow.zamimg.com/images/logos/wow-logo.png');"></div>
+                Turtle WoW
+              </button>
+              <button class="server-btn" data-server="20 Aniversario TBC" data-text="Paquetes para TBC Aniversario con precios diarios y stock actualizado.">
+                <div class="server-icon" style="background-image:url('https://upload.wikimedia.org/wikipedia/en/8/87/World_of_Warcraft_Burning_Crusade_logo.png');"></div>
+                20 Aniversario TBC
+              </button>
+              <button class="server-btn" data-server="Albion Online" data-text="Oro para Albion Online con validación manual y atención directa por Discord.">
+                <div class="server-icon" style="background-image:url('https://upload.wikimedia.org/wikipedia/en/3/33/Albion_Online_Logo.png');"></div>
+                Albion Online
+              </button>
+              <button class="server-btn" data-server="Lineage 2 Reborn" data-text="Venta de adena/monedas para Lineage 2 Reborn con transacciones protegidas.">
+                <div class="server-icon" style="background-image:url('https://upload.wikimedia.org/wikipedia/en/9/94/Lineage_II_logo.png');"></div>
+                Lineage 2 Reborn
+              </button>
+            </div>
+            <div class="server-info">
+              <strong id="serverTitle">Turtle WoW</strong>
+              <p id="serverText" class="muted">Compra y venta segura para Turtle WoW con entrega rápida y soporte 24/7.</p>
+            </div>
           </article>
 
           <article id="vender" class="content-block">
@@ -320,14 +418,26 @@
           </article>
 
           <article id="contacto" class="content-block api-help">
-            <h3>Contacto y Configuración</h3>
-            <p class="muted">Variables recomendadas:</p>
-            <ul>
-              <li><code>SUPABASE_URL</code></li>
-              <li><code>SUPABASE_ANON_KEY</code></li>
-              <li><code>API_BASE_URL</code></li>
-            </ul>
-            <p class="muted">Las obtienes en Supabase → Settings → API.</p>
+            <h3>Contacto</h3>
+            <p class="muted">Sección pública para soporte, comunidad y seguimiento de pedidos.</p>
+            <div class="contact-wrap">
+              <div class="contact-card">
+                <h4>Canales directos</h4>
+                <ul>
+                  <li>Discord oficial</li>
+                  <li>WhatsApp ventas</li>
+                  <li>Correo de soporte</li>
+                </ul>
+              </div>
+              <div class="contact-card">
+                <h4>Horario y atención</h4>
+                <ul>
+                  <li>Atención 24/7</li>
+                  <li>Seguimiento de pedidos</li>
+                  <li>Respuesta prioritaria en Discord</li>
+                </ul>
+              </div>
+            </div>
           </article>
         </div>
       </section>
@@ -356,11 +466,11 @@
           </ul>
         </div>
         <div>
-          <h4>Configuración</h4>
+          <h4>Comunidad</h4>
           <ul>
-            <li>Supabase: Settings → API</li>
-            <li>Guarda claves en .env</li>
-            <li>No publiques service_role</li>
+            <li>Discord activo</li>
+            <li>Referencias reales</li>
+            <li>Soporte post-venta</li>
           </ul>
         </div>
       </div>
@@ -371,6 +481,9 @@
       const loginBtn = document.getElementById('loginBtn');
       const ok = document.getElementById('ok');
       const err = document.getElementById('err');
+      const serverBtns = document.querySelectorAll('.server-btn');
+      const serverTitle = document.getElementById('serverTitle');
+      const serverText = document.getElementById('serverText');
 
       loginBtn.addEventListener('click', () => {
         const user = document.getElementById('user').value.trim();
@@ -384,6 +497,15 @@
 
         ok.style.display = 'none';
         err.style.display = 'block';
+      });
+
+      serverBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          serverBtns.forEach((item) => item.classList.remove('active'));
+          btn.classList.add('active');
+          serverTitle.textContent = btn.dataset.server;
+          serverText.textContent = btn.dataset.text;
+        });
       });
     </script>
   </body>
