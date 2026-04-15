@@ -6,11 +6,11 @@
     <title>TradeHud - Panel Admin</title>
     <style>
       :root {
-        --bg: #071426;
-        --bg-soft: #0e223c;
-        --card: #112a48;
-        --text: #edf4ff;
-        --muted: #a9bdd8;
+        --bg: #050505;
+        --bg-soft: #101010;
+        --card: #161616;
+        --text: #e7e7e7;
+        --muted: #b4b4b4;
         --gold: #f8c35e;
         --gold-soft: #d6a447;
       }
@@ -23,7 +23,7 @@
         margin: 0;
         font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
         color: var(--text);
-        background: linear-gradient(180deg, #06101f 0%, #0a1c33 45%, #08152a 100%);
+        background: linear-gradient(180deg, #020202 0%, #090909 45%, #040404 100%);
       }
 
       .container {
@@ -33,7 +33,7 @@
 
       header {
         border-bottom: 1px solid rgba(248, 195, 94, 0.35);
-        background: rgba(9, 23, 43, 0.92);
+        background: rgba(8, 8, 8, 0.96);
         position: sticky;
         top: 0;
         backdrop-filter: blur(8px);
@@ -67,7 +67,7 @@
         border: 1px solid rgba(248, 195, 94, 0.45);
         padding: 0.48rem 0.9rem;
         border-radius: 8px;
-        background: linear-gradient(180deg, #17345c 0%, #132d4f 100%);
+        background: linear-gradient(180deg, #1d1d1d 0%, #141414 100%);
         font-size: 0.92rem;
         cursor: pointer;
       }
@@ -78,12 +78,12 @@
 
       .hero-grid {
         display: grid;
-        grid-template-columns: 1.3fr 1fr;
+        grid-template-columns: 1fr;
         gap: 1.4rem;
       }
 
       .card {
-        background: linear-gradient(180deg, rgba(18, 42, 71, 0.95), rgba(14, 35, 60, 0.95));
+        background: linear-gradient(180deg, rgba(24, 24, 24, 0.97), rgba(13, 13, 13, 0.97));
         border: 1px solid rgba(248, 195, 94, 0.35);
         border-radius: 14px;
         padding: 1.2rem;
@@ -107,7 +107,7 @@
       }
 
       .stat {
-        background: #0d2340;
+        background: #0d0d0d;
         border: 1px solid rgba(248, 195, 94, 0.25);
         border-radius: 12px;
         padding: 0.9rem;
@@ -125,8 +125,12 @@
         padding: 0.7rem;
         border-radius: 8px;
         border: 1px solid rgba(248, 195, 94, 0.35);
-        background: #0b1e37;
+        background: #070707;
         color: var(--text);
+      }
+
+      .admin-box {
+        display: none;
       }
 
       .admin-box small {
@@ -162,7 +166,7 @@
       footer {
         margin-top: 1.5rem;
         border-top: 1px solid rgba(248, 195, 94, 0.35);
-        background: #050f1e;
+        background: #020202;
       }
 
       .footer-grid {
@@ -194,7 +198,7 @@
 
       .copyright {
         text-align: center;
-        color: #8ca1c0;
+        color: #9b9b9b;
         font-size: 0.82rem;
         border-top: 1px solid rgba(248, 195, 94, 0.2);
         padding: 0.8rem 0 1rem;
@@ -263,7 +267,7 @@
           </article>
 
           <aside class="card admin-box">
-            <h2>Acceso Admin (temporal)</h2>
+            <h2>Acceso Admin</h2>
             <p class="muted">Usuario: <b>admin</b> / Contraseña: <b>admin123</b></p>
             <label for="user">Usuario</label>
             <input id="user" type="text" placeholder="admin" />
