@@ -1,1 +1,377 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TradeHud - Panel Admin</title>
+    <style>
+      :root {
+        --bg: #071426;
+        --bg-soft: #0e223c;
+        --card: #112a48;
+        --text: #edf4ff;
+        --muted: #a9bdd8;
+        --gold: #f8c35e;
+        --gold-soft: #d6a447;
+      }
 
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        color: var(--text);
+        background: linear-gradient(180deg, #06101f 0%, #0a1c33 45%, #08152a 100%);
+      }
+
+      .container {
+        width: min(1440px, 94vw);
+        margin: 0 auto;
+      }
+
+      header {
+        border-bottom: 1px solid rgba(248, 195, 94, 0.35);
+        background: rgba(9, 23, 43, 0.92);
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(8px);
+        z-index: 10;
+      }
+
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.9rem 0;
+      }
+
+      .brand {
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: var(--gold);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a,
+      .btn {
+        text-decoration: none;
+        color: var(--text);
+        border: 1px solid rgba(248, 195, 94, 0.45);
+        padding: 0.48rem 0.9rem;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #17345c 0%, #132d4f 100%);
+        font-size: 0.92rem;
+        cursor: pointer;
+      }
+
+      .hero {
+        padding: 2.8rem 0 2rem;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 1.4rem;
+      }
+
+      .card {
+        background: linear-gradient(180deg, rgba(18, 42, 71, 0.95), rgba(14, 35, 60, 0.95));
+        border: 1px solid rgba(248, 195, 94, 0.35);
+        border-radius: 14px;
+        padding: 1.2rem;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin-top: 0;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.9rem;
+        margin-top: 1rem;
+      }
+
+      .stat {
+        background: #0d2340;
+        border: 1px solid rgba(248, 195, 94, 0.25);
+        border-radius: 12px;
+        padding: 0.9rem;
+      }
+
+      .stat strong {
+        font-size: 1.25rem;
+        display: block;
+        margin-bottom: 0.2rem;
+      }
+
+      .admin-box input {
+        width: 100%;
+        margin: 0.45rem 0;
+        padding: 0.7rem;
+        border-radius: 8px;
+        border: 1px solid rgba(248, 195, 94, 0.35);
+        background: #0b1e37;
+        color: var(--text);
+      }
+
+      .admin-box small {
+        color: var(--muted);
+      }
+
+      .ok {
+        color: #7ef0a3;
+        display: none;
+        margin-top: 0.5rem;
+      }
+
+      .err {
+        color: #ff8c8c;
+        display: none;
+        margin-top: 0.5rem;
+      }
+
+      .sections {
+        padding: 0.5rem 0 2.3rem;
+      }
+
+      .sections-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+      }
+
+      .sections-grid .card h3 {
+        color: var(--gold);
+      }
+
+      footer {
+        margin-top: 1.5rem;
+        border-top: 1px solid rgba(248, 195, 94, 0.35);
+        background: #050f1e;
+      }
+
+      .footer-grid {
+        padding: 2rem 0;
+        display: grid;
+        gap: 1.2rem;
+        grid-template-columns: 1.1fr 1fr 1fr 1fr;
+      }
+
+      .footer-grid h4 {
+        color: var(--gold);
+        margin-top: 0;
+        margin-bottom: 0.7rem;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 1rem;
+      }
+
+      li {
+        margin: 0.45rem 0;
+        color: var(--muted);
+      }
+
+      .api-help code {
+        color: var(--gold-soft);
+      }
+
+      .copyright {
+        text-align: center;
+        color: #8ca1c0;
+        font-size: 0.82rem;
+        border-top: 1px solid rgba(248, 195, 94, 0.2);
+        padding: 0.8rem 0 1rem;
+      }
+
+      @media (max-width: 1024px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .sections-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .stats,
+        .sections-grid,
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <div class="brand">TRADEHUD</div>
+        <nav class="nav-links">
+          <a href="#">Cuentas</a>
+          <a href="#">Oro</a>
+          <a href="#">Vender</a>
+          <a href="#">Servicios</a>
+          <a href="#">Contacto</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <article class="card">
+            <h1>Panel más amplio y con mejor separación</h1>
+            <p class="muted">
+              Ajusté el ancho general para que no se vea “pegado”. También agregué zonas inferiores de categorías e
+              información rápida como pediste.
+            </p>
+            <div class="stats">
+              <div class="stat">
+                <strong>+1450</strong>
+                <span class="muted">Pedidos completados</span>
+              </div>
+              <div class="stat">
+                <strong>24/7</strong>
+                <span class="muted">Soporte activo</span>
+              </div>
+              <div class="stat">
+                <strong>99.8%</strong>
+                <span class="muted">Entregas exitosas</span>
+              </div>
+            </div>
+          </article>
+
+          <aside class="card admin-box">
+            <h2>Acceso Admin (temporal)</h2>
+            <p class="muted">Usuario: <b>admin</b> / Contraseña: <b>admin123</b></p>
+            <label for="user">Usuario</label>
+            <input id="user" type="text" placeholder="admin" />
+            <label for="pass">Contraseña</label>
+            <input id="pass" type="password" placeholder="admin123" />
+            <button class="btn" id="loginBtn">Entrar</button>
+            <p id="ok" class="ok">Acceso correcto. Bienvenido administrador.</p>
+            <p id="err" class="err">Credenciales incorrectas.</p>
+            <small>Nota: esto es un acceso simple de demostración en frontend.</small>
+          </aside>
+        </div>
+      </section>
+
+      <section class="sections">
+        <div class="container sections-grid">
+          <article class="card">
+            <h3>Categorías Activas</h3>
+            <ul>
+              <li>WoW Oficial</li>
+              <li>WoW Privado</li>
+              <li>Servicios WoW</li>
+              <li>Referencias</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Enlaces rápidos</h3>
+            <ul>
+              <li>Cuentas</li>
+              <li>Oro</li>
+              <li>Vender Oro</li>
+              <li>Contacto</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Pagos y seguridad</h3>
+            <ul>
+              <li>Transacciones protegidas</li>
+              <li>Verificación manual</li>
+              <li>Historial de compras</li>
+              <li>Soporte post-venta</li>
+            </ul>
+          </article>
+          <article class="card api-help">
+            <h3>API y Supabase</h3>
+            <p class="muted">Pon tus claves en variables de entorno:</p>
+            <ul>
+              <li><code>SUPABASE_URL</code></li>
+              <li><code>SUPABASE_ANON_KEY</code></li>
+              <li><code>API_BASE_URL</code></li>
+            </ul>
+            <p class="muted">Normalmente vienen de tu proyecto en el panel de Supabase (Settings → API).</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-grid">
+        <div>
+          <h4>TradeHud</h4>
+          <p class="muted">Tu tienda confiable para cuentas, oro y servicios de gaming.</p>
+        </div>
+        <div>
+          <h4>Categorías</h4>
+          <ul>
+            <li>Cuentas premium</li>
+            <li>Oro por servidor</li>
+            <li>Servicios express</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contacto</h4>
+          <ul>
+            <li>Discord: tu-servidor</li>
+            <li>correo@tradehud.com</li>
+            <li>Soporte 24/7</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Configuración</h4>
+          <ul>
+            <li>Supabase: Settings → API</li>
+            <li>Guarda claves en .env</li>
+            <li>No publiques service_role</li>
+          </ul>
+        </div>
+      </div>
+      <div class="container copyright">© 2026 TradeHud. Todos los derechos reservados.</div>
+    </footer>
+
+    <script>
+      const loginBtn = document.getElementById('loginBtn');
+      const ok = document.getElementById('ok');
+      const err = document.getElementById('err');
+
+      loginBtn.addEventListener('click', () => {
+        const user = document.getElementById('user').value.trim();
+        const pass = document.getElementById('pass').value;
+
+        if (user === 'admin' && pass === 'admin123') {
+          ok.style.display = 'block';
+          err.style.display = 'none';
+          return;
+        }
+
+        ok.style.display = 'none';
+        err.style.display = 'block';
+      });
+    </script>
+  </body>
+</html>
