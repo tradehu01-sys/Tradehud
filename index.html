@@ -3,16 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TradeHud - Panel Admin</title>
+    <title>TradeHud - Marketplace MMORPG</title>
     <style>
       :root {
-        --bg: #050505;
-        --bg-soft: #101010;
-        --card: #161616;
-        --text: #e7e7e7;
-        --muted: #b4b4b4;
-        --gold: #f8c35e;
-        --gold-soft: #d6a447;
+        --bg: #071a34;
+        --bg-2: #0b2243;
+        --card: #08203c;
+        --card-2: #0d2c52;
+        --text: #eaf2ff;
+        --muted: #c2d3ee;
+        --gold: #f0c46f;
+        --gold-2: #d8a84a;
       }
 
       * {
@@ -25,283 +26,339 @@
 
       body {
         margin: 0;
-        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        background: radial-gradient(circle at 20% 20%, #153764 0%, #0a2142 48%, #07172e 100%);
         color: var(--text);
-        background: linear-gradient(180deg, #020202 0%, #090909 45%, #040404 100%);
       }
 
       .container {
-        width: min(1680px, 96vw);
+        width: min(1280px, 94vw);
         margin: 0 auto;
       }
 
       header {
-        border-bottom: 1px solid rgba(248, 195, 94, 0.35);
-        background: rgba(8, 8, 8, 0.96);
         position: sticky;
         top: 0;
-        backdrop-filter: blur(8px);
         z-index: 10;
+        background: rgba(7, 24, 48, 0.96);
+        border-bottom: 1px solid rgba(240, 196, 111, 0.4);
+        backdrop-filter: blur(10px);
       }
 
-      .nav {
+      .topbar {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
         gap: 1rem;
-        padding: 0.9rem 0;
+        padding: 0.95rem 0;
       }
 
-      .brand {
-        font-weight: 800;
-        letter-spacing: 0.08em;
+      .logo-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid rgba(240, 196, 111, 0.7);
+        background: linear-gradient(145deg, #264f80, #17355e);
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 1.2rem;
         color: var(--gold);
       }
 
-      .nav-links {
-        display: flex;
-        gap: 0.55rem;
-        flex-wrap: wrap;
+      .brand p {
+        margin: 0;
+        font-size: 0.72rem;
+        color: #b8cbea;
       }
 
-      .nav-links a,
-      .btn {
-        text-decoration: none;
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+      }
+
+      nav a {
         color: var(--text);
-        border: 1px solid rgba(248, 195, 94, 0.45);
-        padding: 0.48rem 0.9rem;
+        text-decoration: none;
+        border: 1px solid rgba(240, 196, 111, 0.55);
+        background: linear-gradient(180deg, #1b3f6f, #143255);
+        padding: 0.45rem 0.9rem;
         border-radius: 8px;
-        background: linear-gradient(180deg, #1d1d1d 0%, #141414 100%);
-        font-size: 0.92rem;
-        cursor: pointer;
+        font-size: 0.82rem;
+        transition: 0.2s ease;
+      }
+
+      nav a:hover {
+        transform: translateY(-1px);
+        border-color: var(--gold);
       }
 
       .hero {
-        padding: 3.6rem 0 2.8rem;
+        padding: 2.4rem 0 1.6rem;
       }
 
-      .hero-grid {
+      .hero-card {
+        border: 1px solid rgba(240, 196, 111, 0.5);
+        border-radius: 14px;
+        background: linear-gradient(170deg, rgba(9, 35, 66, 0.95), rgba(8, 25, 45, 0.95));
+        padding: 1.5rem;
+      }
+
+      .hero-img {
+        width: min(440px, 100%);
+        display: block;
+        margin: 0 auto 1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(240, 196, 111, 0.5);
+      }
+
+      .hero-card h2 {
+        text-align: center;
+        font-size: clamp(1.7rem, 3.7vw, 2.6rem);
+        margin: 0.6rem 0;
+        color: var(--gold);
+      }
+
+      .hero-card p {
+        text-align: center;
+        max-width: 780px;
+        margin: 0 auto 1.1rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .hero-links {
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 1.4rem;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+
+      .hero-links a {
+        text-align: center;
+        text-decoration: none;
+        color: var(--text);
+        padding: 0.8rem;
+        border-radius: 10px;
+        border: 1px solid rgba(240, 196, 111, 0.55);
+        background: #123359;
+      }
+
+      section.section {
+        padding: 2.5rem 0;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .section-head h3 {
+        margin: 0;
+        color: var(--gold);
+        font-size: clamp(1.45rem, 2.2vw, 2rem);
+      }
+
+      .badge {
+        border: 1px solid rgba(240, 196, 111, 0.6);
+        border-radius: 999px;
+        padding: 0.33rem 0.7rem;
+        font-size: 0.72rem;
+        color: #f3d289;
+      }
+
+      .cards {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .cards.cuentas,
+      .cards.servicios {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
       .card {
-        background: linear-gradient(180deg, rgba(24, 24, 24, 0.97), rgba(13, 13, 13, 0.97));
-        border: 1px solid rgba(248, 195, 94, 0.35);
-        border-radius: 14px;
-        padding: 1.2rem;
-      }
-
-      h1,
-      h2,
-      h3 {
-        margin-top: 0;
-      }
-
-      .muted {
-        color: var(--muted);
-      }
-
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.9rem;
-        margin-top: 1rem;
-      }
-
-      .stat {
-        background: #0d0d0d;
-        border: 1px solid rgba(248, 195, 94, 0.25);
+        background: linear-gradient(180deg, #08203c, #06172e);
+        border: 1px solid rgba(240, 196, 111, 0.4);
         border-radius: 12px;
-        padding: 0.9rem;
+        padding: 0.8rem;
       }
 
-      .stat strong {
-        font-size: 1.25rem;
-        display: block;
-        margin-bottom: 0.2rem;
-      }
-
-      .admin-box input {
+      .card img {
         width: 100%;
-        margin: 0.45rem 0;
-        padding: 0.7rem;
-        border-radius: 8px;
-        border: 1px solid rgba(248, 195, 94, 0.35);
-        background: #070707;
-        color: var(--text);
+        aspect-ratio: 4 / 5;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid rgba(240, 196, 111, 0.35);
       }
 
-      .admin-box {
-        display: none;
+      .card h4 {
+        margin: 0.65rem 0 0.25rem;
+        color: #f6d38b;
       }
 
-      .admin-box small {
+      .card p {
+        margin: 0;
         color: var(--muted);
+        font-size: 0.9rem;
       }
 
-      .ok {
-        color: #7ef0a3;
-        display: none;
-        margin-top: 0.5rem;
+      .card .action {
+        margin-top: 0.85rem;
+        display: inline-block;
+        background: linear-gradient(180deg, #f0c46f, #d3a24a);
+        color: #121212;
+        font-weight: 700;
+        text-decoration: none;
+        padding: 0.55rem 0.85rem;
+        border-radius: 8px;
       }
 
-      .err {
-        color: #ff8c8c;
-        display: none;
-        margin-top: 0.5rem;
-      }
-
-      .sections {
-        padding: 0.8rem 0 3.2rem;
-      }
-
-      .content-block {
-        padding: 3.4rem 1rem;
-        border-top: 1px solid rgba(248, 195, 94, 0.22);
-      }
-
-      .content-block h3 {
-        color: var(--gold);
-        margin-bottom: 0.65rem;
-      }
-
-      .content-block p {
-        max-width: 1150px;
-        line-height: 1.7;
+      .oro-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
       }
 
       .server-grid {
-        margin-top: 1.2rem;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 1rem;
       }
 
       .server-btn {
-        background: #0d0d0d;
-        border: 1px solid rgba(248, 195, 94, 0.35);
-        border-radius: 16px;
+        border: 1px solid rgba(240, 196, 111, 0.45);
+        background: #0b294b;
+        border-radius: 12px;
         color: var(--text);
-        padding: 1rem 0.8rem 0.9rem;
+        padding: 0.9rem 0.5rem;
         cursor: pointer;
-        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-      }
-
-      .server-btn:hover {
-        transform: translateY(-3px);
-        border-color: rgba(248, 195, 94, 0.8);
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
       }
 
       .server-btn.active {
-        border-color: #f8c35e;
-        box-shadow: 0 0 0 2px rgba(248, 195, 94, 0.3);
+        border-color: var(--gold);
+        box-shadow: 0 0 0 2px rgba(240, 196, 111, 0.35);
       }
 
       .server-icon {
-        width: 80px;
-        height: 80px;
+        width: 82px;
+        height: 82px;
         border-radius: 999px;
-        margin: 0 auto 0.65rem;
+        margin: 0 auto 0.5rem;
+        border: 2px solid var(--gold);
         background-size: cover;
         background-position: center;
-        border: 2px solid rgba(248, 195, 94, 0.75);
-        animation: pulseGlow 2.4s ease-in-out infinite;
+        animation: orbit 2.6s ease-in-out infinite;
       }
 
-      @keyframes pulseGlow {
+      @keyframes orbit {
         0%,
         100% {
           transform: scale(1);
-          box-shadow: 0 0 0 0 rgba(248, 195, 94, 0.35);
+          box-shadow: 0 0 0 0 rgba(240, 196, 111, 0.3);
         }
         50% {
-          transform: scale(1.06);
-          box-shadow: 0 0 0 10px rgba(248, 195, 94, 0.05);
+          transform: scale(1.08);
+          box-shadow: 0 0 0 12px rgba(240, 196, 111, 0.08);
         }
       }
 
-      .server-info {
-        margin-top: 1rem;
-        background: #0b0b0b;
-        border: 1px solid rgba(248, 195, 94, 0.3);
-        border-radius: 14px;
+      .oro-info {
+        background: linear-gradient(180deg, #0c2a4d, #081f3a);
+        border: 1px solid rgba(240, 196, 111, 0.42);
+        border-radius: 12px;
         padding: 1rem;
       }
 
-      .contact-wrap {
-        margin-top: 1.2rem;
+      .oro-info h4 {
+        margin: 0 0 0.4rem;
+        color: #f6d38b;
+      }
+
+      .split {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 1.2rem;
+        gap: 1rem;
       }
 
-      .contact-card {
-        background: #0c0c0c;
-        border: 1px solid rgba(248, 195, 94, 0.35);
-        border-radius: 14px;
-        padding: 1rem;
+      .steps {
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .step {
+        background: #163a64;
+        border: 1px solid rgba(240, 196, 111, 0.3);
+        border-radius: 10px;
+        padding: 0.85rem;
+      }
+
+      .step strong {
+        color: #f4ce80;
       }
 
       footer {
-        margin-top: 1.5rem;
-        border-top: 1px solid rgba(248, 195, 94, 0.35);
-        background: #020202;
+        margin-top: 2rem;
+        border-top: 2px solid rgba(240, 196, 111, 0.55);
+        background: linear-gradient(180deg, #041327, #020d1f);
       }
 
       .footer-grid {
-        padding: 2rem 0;
+        padding: 1.8rem 0;
         display: grid;
-        gap: 1.2rem;
-        grid-template-columns: 1.1fr 1fr 1fr 1fr;
+        grid-template-columns: 1.2fr 1fr 1fr 1fr;
+        gap: 1rem;
       }
 
       .footer-grid h4 {
         color: var(--gold);
-        margin-top: 0;
-        margin-bottom: 0.7rem;
+        margin: 0 0 0.6rem;
       }
 
-      ul {
-        margin: 0;
-        padding-left: 1rem;
-      }
-
-      li {
-        margin: 0.45rem 0;
-        color: var(--muted);
-      }
-
-      .api-help code {
-        color: var(--gold-soft);
+      .footer-grid li,
+      .footer-grid p {
+        color: #b8cbea;
+        font-size: 0.9rem;
       }
 
       .copyright {
+        border-top: 1px solid rgba(240, 196, 111, 0.28);
         text-align: center;
-        color: #9b9b9b;
-        font-size: 0.82rem;
-        border-top: 1px solid rgba(248, 195, 94, 0.2);
-        padding: 0.8rem 0 1rem;
+        padding: 0.8rem 0;
+        color: #9ab1d1;
+        font-size: 0.8rem;
       }
 
-      @media (max-width: 1024px) {
-        .hero-grid {
-          grid-template-columns: 1fr;
-        }
-
+      @media (max-width: 980px) {
+        .hero-links,
+        .cards.cuentas,
+        .cards.servicios,
+        .server-grid,
+        .split,
         .footer-grid {
           grid-template-columns: 1fr 1fr;
         }
-
-        .contact-wrap {
-          grid-template-columns: 1fr;
-        }
       }
 
-      @media (max-width: 680px) {
-        .stats,
+      @media (max-width: 640px) {
+        nav {
+          justify-content: center;
+        }
+
+        .hero-links,
+        .cards.cuentas,
+        .cards.servicios,
+        .server-grid,
+        .split,
         .footer-grid {
           grid-template-columns: 1fr;
         }
@@ -310,135 +367,183 @@
   </head>
   <body>
     <header>
-        <div class="container nav">
-          <div class="brand">TRADEHUD</div>
-          <nav class="nav-links">
-            <a href="#cuentas">Cuentas</a>
-            <a href="#oro">Oro</a>
-            <a href="#vender">Vender</a>
-            <a href="#servicios">Servicios</a>
-            <a href="#contacto">Contacto</a>
-          </nav>
+      <div class="container topbar">
+        <div class="logo-wrap">
+          <div class="logo"></div>
+          <div class="brand">
+            <h1>EPIC GOLD SHOP</h1>
+            <p>Tienda premium de oro y cuentas MMORPG</p>
+          </div>
         </div>
-      </header>
+        <nav>
+          <a href="#cuentas">Cuentas</a>
+          <a href="#oro">Oro</a>
+          <a href="#vender">Vender</a>
+          <a href="#servicios">Servicios</a>
+          <a href="#contacto">Contacto</a>
+        </nav>
+      </div>
+    </header>
 
     <main>
-      <section class="hero">
-        <div class="container hero-grid">
-          <article class="card">
-            <h1>Panel más amplio y con mejor separación</h1>
-            <p class="muted">
-              Ajusté el ancho general para que no se vea “pegado”. También agregué zonas inferiores de categorías e
-              información rápida como pediste.
+      <section id="hero" class="hero">
+        <div class="container">
+          <article class="hero-card">
+            <img class="hero-img" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop" alt="Portada gaming" />
+            <h2>Compra Oro WoW Seguro | Vende Tu Oro</h2>
+            <p>
+              Marketplace especializado en MMORPG con entregas rápidas, soporte en vivo y métodos de pago seguros para
+              cada servidor.
             </p>
-            <div class="stats">
-              <div class="stat">
-                <strong>+1450</strong>
-                <span class="muted">Pedidos completados</span>
-              </div>
-              <div class="stat">
-                <strong>24/7</strong>
-                <span class="muted">Soporte activo</span>
-              </div>
-              <div class="stat">
-                <strong>99.8%</strong>
-                <span class="muted">Entregas exitosas</span>
-              </div>
+            <div class="hero-links">
+              <a href="#cuentas">Ver Cuentas</a>
+              <a href="#oro">Comprar Oro</a>
+              <a href="#vender">Vender Oro</a>
+              <a href="#servicios">Servicios</a>
             </div>
           </article>
-
-          <aside class="card admin-box">
-            <h2>Acceso Admin</h2>
-            <p class="muted">Usuario: <b>admin</b> / Contraseña: <b>admin123</b></p>
-            <label for="user">Usuario</label>
-            <input id="user" type="text" placeholder="admin" />
-            <label for="pass">Contraseña</label>
-            <input id="pass" type="password" placeholder="admin123" />
-            <button class="btn" id="loginBtn">Entrar</button>
-            <p id="ok" class="ok">Acceso correcto. Bienvenido administrador.</p>
-            <p id="err" class="err">Credenciales incorrectas.</p>
-            <small>Nota: esto es un acceso simple de demostración en frontend.</small>
-          </aside>
         </div>
       </section>
 
-      <section class="sections">
+      <section id="cuentas" class="section">
         <div class="container">
-          <article id="cuentas" class="content-block">
-            <h3>Cuentas</h3>
-            <p class="muted">
-              Aquí va el catálogo completo de cuentas por tipo de servidor, nivel, reputación y extras incluidos. Esta
-              sección está con más espacio para que se vea amplia y fácil de leer.
-            </p>
-          </article>
+          <div class="section-head">
+            <h3>Cuentas Premium WoW · Turtle · Albion</h3>
+            <span class="badge">Top ventas</span>
+          </div>
+          <div class="cards cuentas">
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1542751371-29b4a46f8d20?q=80&w=900&auto=format&fit=crop" alt="Cuenta nivel 60" />
+              <h4>Cuenta Nivel 60 Cazador</h4>
+              <p>Herbolistería 300, montura 75%, equipo azul inicial.</p>
+              <a class="action" href="#contacto">Abrir Ticket</a>
+            </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=900&auto=format&fit=crop" alt="Cuenta mago" />
+              <h4>Cuenta Nivel 60 Mago</h4>
+              <p>Minería 300, 1200 de oro y profesión lista para raideo.</p>
+              <a class="action" href="#contacto">Abrir Ticket</a>
+            </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=900&auto=format&fit=crop" alt="Cuenta pvp" />
+              <h4>Cuenta PvP Full Set</h4>
+              <p>Build lista para arena, ranking activo y consumibles.</p>
+              <a class="action" href="#contacto">Abrir Ticket</a>
+            </article>
+          </div>
+        </div>
+      </section>
 
-          <article id="oro" class="content-block">
-            <h3>Oro</h3>
-            <p class="muted">
-              Selecciona un servidor para mostrar su información y empezar una compra rápida.
-            </p>
+      <section id="oro" class="section">
+        <div class="container">
+          <div class="section-head">
+            <h3>Comprar Oro · Servidores Disponibles</h3>
+            <span class="badge">Entrega inmediata</span>
+          </div>
+          <div class="oro-layout">
             <div class="server-grid">
-              <button class="server-btn active" data-server="Turtle WoW" data-text="Compra y venta segura para Turtle WoW con entrega rápida y soporte 24/7.">
-                <div class="server-icon" style="background-image:url('https://wow.zamimg.com/images/logos/wow-logo.png');"></div>
+              <button class="server-btn active" data-name="Turtle WoW" data-desc="Compra rápida para Turtle WoW con precios por volumen y soporte 24/7.">
+                <div class="server-icon" style="background-image:url('https://wow.zamimg.com/images/logos/wow-logo.png')"></div>
                 Turtle WoW
               </button>
-              <button class="server-btn" data-server="20 Aniversario TBC" data-text="Paquetes para TBC Aniversario con precios diarios y stock actualizado.">
-                <div class="server-icon" style="background-image:url('https://upload.wikimedia.org/wikipedia/en/8/87/World_of_Warcraft_Burning_Crusade_logo.png');"></div>
+              <button class="server-btn" data-name="20 Aniversario TBC" data-desc="Paquetes semanales para TBC Aniversario con entrega en minutos.">
+                <div class="server-icon" style="background-image:url('https://upload.wikimedia.org/wikipedia/en/8/87/World_of_Warcraft_Burning_Crusade_logo.png')"></div>
                 20 Aniversario TBC
               </button>
-              <button class="server-btn" data-server="Albion Online" data-text="Oro para Albion Online con validación manual y atención directa por Discord.">
-                <div class="server-icon" style="background-image:url('https://upload.wikimedia.org/wikipedia/en/3/33/Albion_Online_Logo.png');"></div>
+              <button class="server-btn" data-name="Albion Online" data-desc="Oro seguro para Albion Online con verificación antes de cada entrega.">
+                <div class="server-icon" style="background-image:url('https://upload.wikimedia.org/wikipedia/en/3/33/Albion_Online_Logo.png')"></div>
                 Albion Online
               </button>
-              <button class="server-btn" data-server="Lineage 2 Reborn" data-text="Venta de adena/monedas para Lineage 2 Reborn con transacciones protegidas.">
-                <div class="server-icon" style="background-image:url('https://upload.wikimedia.org/wikipedia/en/9/94/Lineage_II_logo.png');"></div>
+              <button class="server-btn" data-name="Lineage 2 Reborn" data-desc="Monedas y adena para L2 Reborn con proceso transparente y seguro.">
+                <div class="server-icon" style="background-image:url('https://upload.wikimedia.org/wikipedia/en/9/94/Lineage_II_logo.png')"></div>
                 Lineage 2 Reborn
               </button>
             </div>
-            <div class="server-info">
-              <strong id="serverTitle">Turtle WoW</strong>
-              <p id="serverText" class="muted">Compra y venta segura para Turtle WoW con entrega rápida y soporte 24/7.</p>
+            <article class="oro-info">
+              <h4 id="oroTitulo">Turtle WoW</h4>
+              <p id="oroTexto">Compra rápida para Turtle WoW con precios por volumen y soporte 24/7.</p>
+              <a class="action" href="#contacto">Iniciar Compra</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="vender" class="section">
+        <div class="container">
+          <div class="section-head">
+            <h3>Vende Tu Oro Fácilmente</h3>
+            <span class="badge">Proceso guiado</span>
+          </div>
+          <div class="split">
+            <div class="steps">
+              <div class="step"><strong>1)</strong> Únete a Discord y abre ticket de venta.</div>
+              <div class="step"><strong>2)</strong> Publica servidor, cantidad de oro y precio esperado.</div>
+              <div class="step"><strong>3)</strong> Coordinamos comprador y validación de seguridad.</div>
+              <div class="step"><strong>4)</strong> Recibe tu pago por método acordado.</div>
             </div>
-          </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1614680376408-81e91ffe3db7?q=80&w=900&auto=format&fit=crop" alt="Comunidad en Discord" />
+              <h4>Comunidad Activa en Discord</h4>
+              <p>Más de 1,000 gamers conectados para compra, venta y soporte.</p>
+              <a class="action" href="#contacto">Entrar al Discord</a>
+            </article>
+          </div>
+        </div>
+      </section>
 
-          <article id="vender" class="content-block">
-            <h3>Vender</h3>
-            <p class="muted">
-              Zona para que clientes o proveedores publiquen sus ofertas con validación manual. Se puede enlazar con
-              Supabase para guardar solicitudes y estados.
-            </p>
-          </article>
+      <section id="servicios" class="section">
+        <div class="container">
+          <div class="section-head">
+            <h3>Servicios WoW</h3>
+            <span class="badge">10 servicios</span>
+          </div>
+          <div class="cards servicios">
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=900&auto=format&fit=crop" alt="Boosting" />
+              <h4>Boosting Épico</h4>
+              <p>Subida de nivel y acompañamiento personalizado.</p>
+              <a class="action" href="#contacto">Abrir Ticket</a>
+            </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=900&auto=format&fit=crop" alt="Mining" />
+              <h4>Mining 1-375</h4>
+              <p>Farmeo y subida completa de minería.</p>
+              <a class="action" href="#contacto">Abrir Ticket</a>
+            </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?q=80&w=900&auto=format&fit=crop" alt="Fishing" />
+              <h4>Fishing 1-375</h4>
+              <p>Servicio rápido de leveo de profesiones.</p>
+              <a class="action" href="#contacto">Abrir Ticket</a>
+            </article>
+          </div>
+        </div>
+      </section>
 
-          <article id="servicios" class="content-block">
-            <h3>Servicios</h3>
-            <p class="muted">
-              Sección dedicada a boosts, logros, raids y acompañamiento. El menú superior ya baja automáticamente hasta
-              aquí al presionar el botón “Servicios”.
-            </p>
-          </article>
-
-          <article id="contacto" class="content-block api-help">
-            <h3>Contacto</h3>
-            <p class="muted">Sección pública para soporte, comunidad y seguimiento de pedidos.</p>
-            <div class="contact-wrap">
-              <div class="contact-card">
-                <h4>Canales directos</h4>
-                <ul>
-                  <li>Discord oficial</li>
-                  <li>WhatsApp ventas</li>
-                  <li>Correo de soporte</li>
-                </ul>
-              </div>
-              <div class="contact-card">
-                <h4>Horario y atención</h4>
-                <ul>
-                  <li>Atención 24/7</li>
-                  <li>Seguimiento de pedidos</li>
-                  <li>Respuesta prioritaria en Discord</li>
-                </ul>
-              </div>
-            </div>
-          </article>
+      <section id="contacto" class="section">
+        <div class="container">
+          <div class="section-head">
+            <h3>Contáctanos</h3>
+            <span class="badge">Soporte 24/7</span>
+          </div>
+          <div class="split">
+            <article class="card">
+              <h4>Métodos de Contacto</h4>
+              <p>Discord principal, WhatsApp y correo de soporte para pedidos y consultas.</p>
+              <ul>
+                <li>Discord: discord.gg/tradehub</li>
+                <li>WhatsApp: +1 000 000 0000</li>
+                <li>Email: soporte@tradehub.com</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h4>Comunidad y Garantía</h4>
+              <p>
+                Transacciones seguras, atención personalizada y seguimiento hasta completar tu compra o venta.
+              </p>
+              <a class="action" href="#hero">Unirme a la Comunidad</a>
+            </article>
+          </div>
         </div>
       </section>
     </main>
@@ -447,30 +552,32 @@
       <div class="container footer-grid">
         <div>
           <h4>TradeHud</h4>
-          <p class="muted">Tu tienda confiable para cuentas, oro y servicios de gaming.</p>
+          <p>Tienda confiable para cuentas, oro y servicios MMORPG.</p>
+        </div>
+        <div>
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li>Cuentas</li>
+            <li>Oro</li>
+            <li>Vender Oro</li>
+            <li>Servicios</li>
+          </ul>
         </div>
         <div>
           <h4>Categorías</h4>
           <ul>
-            <li>Cuentas premium</li>
-            <li>Oro por servidor</li>
-            <li>Servicios express</li>
+            <li>WoW Turtle</li>
+            <li>WoW Oficial</li>
+            <li>Albion Online</li>
+            <li>Lineage 2 Reborn</li>
           </ul>
         </div>
         <div>
-          <h4>Contacto</h4>
+          <h4>Información</h4>
           <ul>
-            <li>Discord: tu-servidor</li>
-            <li>correo@tradehud.com</li>
             <li>Soporte 24/7</li>
-          </ul>
-        </div>
-        <div>
-          <h4>Comunidad</h4>
-          <ul>
-            <li>Discord activo</li>
-            <li>Referencias reales</li>
-            <li>Soporte post-venta</li>
+            <li>Transacciones seguras</li>
+            <li>Comunidad activa</li>
           </ul>
         </div>
       </div>
@@ -478,33 +585,16 @@
     </footer>
 
     <script>
-      const loginBtn = document.getElementById('loginBtn');
-      const ok = document.getElementById('ok');
-      const err = document.getElementById('err');
-      const serverBtns = document.querySelectorAll('.server-btn');
-      const serverTitle = document.getElementById('serverTitle');
-      const serverText = document.getElementById('serverText');
+      const serverButtons = document.querySelectorAll('.server-btn');
+      const oroTitulo = document.getElementById('oroTitulo');
+      const oroTexto = document.getElementById('oroTexto');
 
-      loginBtn.addEventListener('click', () => {
-        const user = document.getElementById('user').value.trim();
-        const pass = document.getElementById('pass').value;
-
-        if (user === 'admin' && pass === 'admin123') {
-          ok.style.display = 'block';
-          err.style.display = 'none';
-          return;
-        }
-
-        ok.style.display = 'none';
-        err.style.display = 'block';
-      });
-
-      serverBtns.forEach((btn) => {
+      serverButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
-          serverBtns.forEach((item) => item.classList.remove('active'));
+          serverButtons.forEach((item) => item.classList.remove('active'));
           btn.classList.add('active');
-          serverTitle.textContent = btn.dataset.server;
-          serverText.textContent = btn.dataset.text;
+          oroTitulo.textContent = btn.dataset.name;
+          oroTexto.textContent = btn.dataset.desc;
         });
       });
     </script>
