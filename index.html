@@ -243,26 +243,6 @@
         border: 1px solid #3f66b5;
       }
 
-      .footer-links {
-        border-top: 1px solid #2d3b64;
-        margin-top: 0.4rem;
-        padding-top: 1rem;
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 0.7rem;
-      }
-
-      .footer-links a {
-        text-align: center;
-        text-decoration: none;
-        color: var(--text);
-        border: 1px solid #36518f;
-        border-radius: 10px;
-        padding: 0.55rem;
-        background: linear-gradient(180deg, #132448, #0f1a33);
-        font-size: 0.86rem;
-      }
-
       .copyright { text-align: center; border-top: 1px solid #24283f; padding: .8rem 0; color: #8f97bf; font-size: .8rem; }
 
       .admin-modal {
@@ -343,12 +323,45 @@
         color: #9ecaff;
       }
 
+      .config-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(4, 6, 12, 0.75);
+        display: none;
+        place-items: center;
+        z-index: 130;
+      }
+
+      .config-modal.show { display: grid; }
+
+      .config-card {
+        width: min(560px, 94vw);
+        background: linear-gradient(165deg, #162e57, #0f1a30);
+        border: 1px solid #3f66b5;
+        border-radius: 16px;
+        padding: 1rem;
+      }
+
+      .config-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.7rem;
+        margin-top: 0.8rem;
+      }
+
+      .config-item {
+        background: #121f3c;
+        border: 1px solid #35518e;
+        border-radius: 10px;
+        padding: 0.75rem;
+      }
+
       @media (max-width: 980px) {
         .hero-wrap,.grid-3,.server-row,.split,.footer-grid { grid-template-columns: 1fr 1fr; }
-        .footer-links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .config-grid { grid-template-columns: 1fr; }
       }
       @media (max-width: 640px) {
-        .hero-wrap,.grid-3,.server-row,.split,.footer-grid,.footer-links { grid-template-columns: 1fr; }
+        .hero-wrap,.grid-3,.server-row,.split,.footer-grid { grid-template-columns: 1fr; }
         .social-buttons { grid-template-columns: 1fr; }
         nav { justify-content: center; }
       }
@@ -517,13 +530,6 @@
         <div><h4>Categorías</h4><ul><li>WoW</li><li>Albion</li><li>Lineage</li></ul></div>
         <div><h4>Soporte</h4><ul><li>24/7</li><li>Comunidad activa</li><li>Atención rápida</li></ul></div>
       </div>
-      <div class="container footer-links">
-        <a href="#cuentas">Cuentas</a>
-        <a href="#oro">Oro</a>
-        <a href="#vender">Vender</a>
-        <a href="#servicios">Servicios</a>
-        <a href="#contacto">Soporte</a>
-      </div>
       <div class="container copyright">© 2026 TradeHud. Todos los derechos reservados.</div>
     </footer>
 
@@ -547,6 +553,22 @@
       </div>
     </div>
 
+    <div id="configModal" class="config-modal" aria-hidden="true">
+      <div class="config-card">
+        <div class="admin-head">
+          <strong>Configuraciones</strong>
+          <button id="closeConfig" class="close-btn">✕</button>
+        </div>
+        <p class="lead" style="margin:0;">Aquí puedes ajustar opciones generales del panel.</p>
+        <div class="config-grid">
+          <div class="config-item"><strong>Modo de sitio</strong><br /><small>Público</small></div>
+          <div class="config-item"><strong>Soporte</strong><br /><small>Activado 24/7</small></div>
+          <div class="config-item"><strong>Servidor destacado</strong><br /><small>Turtle WoW</small></div>
+          <div class="config-item"><strong>Estado tienda</strong><br /><small>Operativa</small></div>
+        </div>
+      </div>
+    </div>
+
     <script>
       const servers = document.querySelectorAll('.server');
       const oroTitle = document.getElementById('oroTitle');
@@ -556,6 +578,8 @@
       const adminModal = document.getElementById('adminModal');
       const adminLogin = document.getElementById('adminLogin');
       const adminMsg = document.getElementById('adminMsg');
+      const configModal = document.getElementById('configModal');
+      const closeConfig = document.getElementById('closeConfig');
 
       servers.forEach((server) => {
         server.addEventListener('click', () => {
@@ -587,11 +611,27 @@
         const user = document.getElementById('adminUser').value.trim();
         const pass = document.getElementById('adminPass').value.trim();
         if (user === 'admin' && pass === 'admin123') {
-          adminMsg.textContent = 'Acceso correcto. Bienvenido admin.';
+          adminMsg.textContent = '';
           adminMsg.style.color = '#8fffd8';
+          adminModal.classList.remove('show');
+          adminModal.setAttribute('aria-hidden', 'true');
+          configModal.classList.add('show');
+          configModal.setAttribute('aria-hidden', 'false');
         } else {
           adminMsg.textContent = 'Credenciales incorrectas.';
           adminMsg.style.color = '#ff9ea7';
+        }
+      });
+
+      closeConfig.addEventListener('click', () => {
+        configModal.classList.remove('show');
+        configModal.setAttribute('aria-hidden', 'true');
+      });
+
+      configModal.addEventListener('click', (e) => {
+        if (e.target === configModal) {
+          configModal.classList.remove('show');
+          configModal.setAttribute('aria-hidden', 'true');
         }
       });
     </script>
