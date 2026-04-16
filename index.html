@@ -180,6 +180,42 @@
         word-break: break-all;
       }
 
+      .social-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+        margin-top: 0.8rem;
+      }
+
+      .social-btn {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        border: 1px solid #36518f;
+        border-radius: 10px;
+        padding: 0.62rem;
+        color: #fff;
+        background: linear-gradient(180deg, #132448, #0f1a33);
+        font-size: 0.88rem;
+      }
+
+      .social-btn .icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+
+      .yt .icon { background: #ff2222; }
+      .tt .icon { background: #111; border: 1px solid #666; }
+      .fb .icon { background: #1877f2; }
+      .ig .icon { background: linear-gradient(120deg, #833ab4, #fd1d1d, #fcb045); color: #151515; }
+
       footer {
         margin-top: 2rem;
         border-top: 1px solid var(--line);
@@ -313,6 +349,7 @@
       }
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.server-row,.split,.footer-grid,.footer-links { grid-template-columns: 1fr; }
+        .social-buttons { grid-template-columns: 1fr; }
         nav { justify-content: center; }
       }
     </style>
@@ -451,12 +488,12 @@
             <article class="glass">
               <strong>Canales activos</strong>
               <p class="lead">Canales oficiales para pedidos, soporte y seguimiento en tiempo real.</p>
-              <ul>
-                <li>▶ <a href="https://www.youtube.com/channel/UCJvhSvnlYs8pKYx3lwy4p2g" target="_blank" rel="noopener noreferrer">https://www.youtube.com/channel/UCJvhSvnlYs8pKYx3lwy4p2g</a></li>
-                <li>♪ <a href="https://www.tiktok.com/@tradehubmmoprg?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">https://www.tiktok.com/@tradehubmmoprg?is_from_webapp=1&sender_device=pc</a></li>
-                <li>f <a href="https://www.facebook.com/profile.php?id=61582836070089" target="_blank" rel="noopener noreferrer">https://www.facebook.com/profile.php?id=61582836070089</a></li>
-                <li>◎ <a href="https://www.instagram.com/tradehubmmoprg/" target="_blank" rel="noopener noreferrer">https://www.instagram.com/tradehubmmoprg/</a></li>
-              </ul>
+              <div class="social-buttons">
+                <a class="social-btn yt" href="https://www.youtube.com/channel/UCJvhSvnlYs8pKYx3lwy4p2g" target="_blank" rel="noopener noreferrer"><span class="icon">YT</span> YouTube</a>
+                <a class="social-btn tt" href="https://www.tiktok.com/@tradehubmmoprg?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer"><span class="icon">TT</span> TikTok</a>
+                <a class="social-btn fb" href="https://www.facebook.com/profile.php?id=61582836070089" target="_blank" rel="noopener noreferrer"><span class="icon">f</span> Facebook</a>
+                <a class="social-btn ig" href="https://www.instagram.com/tradehubmmoprg/" target="_blank" rel="noopener noreferrer"><span class="icon">IG</span> Instagram</a>
+              </div>
             </article>
             <article class="glass">
               <strong>Garantía TradeHud</strong>
@@ -496,18 +533,17 @@
           <div style="display:flex;gap:.6rem;align-items:center;">
             <div class="logo-mini"></div>
             <div>
-              <strong>Panel de acceso</strong><br />
-              <small style="color:#9ba9d6;">Acceso administrativo</small>
+              <strong>Ingreso</strong>
             </div>
           </div>
           <button id="closeAdmin" class="close-btn">✕</button>
         </div>
         <label for="adminUser">Usuario</label>
-        <input id="adminUser" type="text" placeholder="admin" />
+        <input id="adminUser" type="text" placeholder="Usuario" />
         <label for="adminPass">Contraseña</label>
-        <input id="adminPass" type="password" placeholder="admin123" />
+        <input id="adminPass" type="password" placeholder="Contraseña" />
         <button id="adminLogin" class="admin-login">Entrar</button>
-        <div id="adminMsg" class="admin-msg">Usuario: admin · Clave: admin123</div>
+        <div id="adminMsg" class="admin-msg"></div>
       </div>
     </div>
 
