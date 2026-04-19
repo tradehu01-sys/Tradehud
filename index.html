@@ -167,6 +167,20 @@
       }
       .info p { color: var(--muted); }
 
+      .server-list {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem;
+      }
+
+      .server-list .item {
+        background: #101a31;
+        border: 1px solid #34508d;
+        border-radius: 10px;
+        padding: 0.75rem;
+      }
+
       .split { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
       .step {
         background: #12203d;
@@ -359,6 +373,7 @@
 
       @media (max-width: 980px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid { grid-template-columns: 1fr 1fr; }
+        .server-list { grid-template-columns: 1fr; }
         .config-grid { grid-template-columns: 1fr; }
       }
       @media (max-width: 640px) {
@@ -381,6 +396,7 @@
           <a href="#vender">Vender</a>
           <a href="#servicios">Servicios</a>
           <a href="#marketplace">Marketplace</a>
+          <a href="#servidores">Servidores</a>
           <a href="#contacto">Contacto</a>
         </nav>
         <button id="openAdmin" class="admin-open">Acceso Admin</button>
@@ -430,29 +446,44 @@
 
       <section id="oro">
         <div class="container">
-          <h2 class="section-title">Oro por <span>Servidor</span></h2>
+          <h2 class="section-title">Sección de <span>oro de juegos</span></h2>
           <article class="oro-panel">
+            <h3 style="margin-top:0;">Lista de juegos admin</h3>
             <div class="server-row">
-              <button class="server active" data-name="Turtle WoW" data-desc="Compra inmediata para Turtle WoW con soporte personalizado.">
+              <button class="server active" data-name="World of Warcraft" data-desc="Compra de oro y servicios premium para WoW clásico y retail.">
                 <div class="server-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3ETW%3C/text%3E%3C/svg%3E" alt="Turtle WoW" /></div>
-                Turtle WoW
+                World of Warcraft
               </button>
-              <button class="server" data-name="20 Aniversario TBC" data-desc="Paquetes de oro para TBC aniversario con entrega por lotes.">
+              <button class="server" data-name="WoW TBC" data-desc="Paquetes de oro para servidores TBC con entrega por lotes.">
                 <div class="server-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E" alt="20 Aniversario TBC" /></div>
-                20 Aniversario TBC
+                WoW TBC
               </button>
-              <button class="server" data-name="Albion Online" data-desc="Venta de plata/oro en Albion con verificación manual.">
+              <button class="server" data-name="Albion Online" data-desc="Venta de oro/plata con validación manual y soporte directo.">
                 <div class="server-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E" alt="Albion Online" /></div>
                 Albion Online
               </button>
-              <button class="server" data-name="Lineage 2 Reborn" data-desc="Monedas para L2 Reborn con transacciones seguras.">
+              <button class="server" data-name="Lineage 2 Reborn" data-desc="Monedas para L2 Reborn con entrega segura.">
                 <div class="server-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E" alt="Lineage 2 Reborn" /></div>
                 Lineage 2 Reborn
               </button>
             </div>
             <div class="info">
-              <strong id="oroTitle">Turtle WoW</strong>
-              <p id="oroDesc">Compra inmediata para Turtle WoW con soporte personalizado.</p>
+              <strong id="oroTitle">World of Warcraft</strong>
+              <p id="oroDesc">Compra de oro y servicios premium para WoW clásico y retail.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="servidores">
+        <div class="container">
+          <h2 class="section-title">Lista de <span>servidores de juegos</span></h2>
+          <article class="oro-panel">
+            <div class="server-list">
+              <div class="item"><strong>WoW Turtle</strong><br /><small>Servidor privado - oro y cuentas</small></div>
+              <div class="item"><strong>WoW Oficial</strong><br /><small>Retail / Classic - entrega segura</small></div>
+              <div class="item"><strong>Albion Global</strong><br /><small>Mercado de plata y servicios</small></div>
+              <div class="item"><strong>Lineage Reborn</strong><br /><small>Monedas y soporte de compra</small></div>
             </div>
           </article>
         </div>
