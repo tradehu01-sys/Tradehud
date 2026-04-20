@@ -158,6 +158,44 @@
         display: block;
         font-size: 0.86rem;
       }
+
+      .selected-game {
+        margin-top: 0.9rem;
+        border: 1px solid #2f4f91;
+        background: linear-gradient(150deg, #132448, #0e1a31);
+        border-radius: 12px;
+        padding: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .selected-game-icon {
+        width: 62px;
+        height: 62px;
+        border-radius: 999px;
+        border: 2px solid var(--gold);
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .selected-game-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .selected-game-title {
+        margin: 0;
+        font-weight: 700;
+      }
+
+      .selected-game-subtitle {
+        margin: 0.2rem 0 0;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
       @keyframes floatIcon {
         0%,100%{transform:translateY(0)}
         50%{transform:translateY(-5px)}
@@ -429,7 +467,7 @@
       <section class="hero" id="inicio">
         <div class="container hero-wrap">
           <article class="glass">
-            <h1>TradeHub: compra, venta y servicios para gamers (PR test)</h1>
+            <h1>TradeHub: compra, venta y servicios para gamers</h1>
             <p class="lead">
               Plataforma enfocada en personas, con navegación simple, procesos claros y atención directa para cada pedido.
             </p>
@@ -471,6 +509,7 @@
           <h2 class="section-title">Sección de <span>oro de juegos</span></h2>
           <article class="oro-panel">
             <div id="gameList" class="server-row"></div>
+            <div id="selectedGameInfo" class="selected-game" aria-live="polite"></div>
           </article>
         </div>
       </section>
@@ -638,6 +677,7 @@
 
     <script>
       const gameList = document.getElementById('gameList');
+      const selectedGameInfo = document.getElementById('selectedGameInfo');
       const openAdmin = document.getElementById('openAdmin');
       const closeAdmin = document.getElementById('closeAdmin');
       const adminModal = document.getElementById('adminModal');
@@ -662,6 +702,12 @@
         { name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E" }
       ];
 
+      function setSelectedGame(index) {
+        const game = games[index];
+        if (!game) return;
+        selectedGameInfo.innerHTML = `<div class=\"selected-game-icon\"><img src=\"${game.icon}\" alt=\"${game.name}\" /></div><div><p class=\"selected-game-title\">${game.name}</p><p class=\"selected-game-subtitle\">Sección de oro activa para ${game.name}</p></div>`;
+      }
+
       function renderGameList() {
         gameList.innerHTML = '';
         games.forEach((game, index) => {
@@ -671,9 +717,11 @@
           btn.addEventListener('click', () => {
             document.querySelectorAll('#gameList .server').forEach((s) => s.classList.remove('active'));
             btn.classList.add('active');
+            setSelectedGame(index);
           });
           gameList.appendChild(btn);
         });
+        setSelectedGame(0);
       }
 
       function renderAdminSelect() {
