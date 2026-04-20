@@ -159,41 +159,73 @@
         font-size: 0.86rem;
       }
 
-      .selected-game {
-        margin-top: 0.9rem;
-        border: 1px solid #2f4f91;
+      .game-detail {
+        display: none;
+      }
+
+      .game-detail.show {
+        display: block;
+      }
+
+      .game-detail-card {
         background: linear-gradient(150deg, #132448, #0e1a31);
-        border-radius: 12px;
-        padding: 0.85rem;
+        border: 1px solid #2f4f91;
+        border-radius: 14px;
+        padding: 1rem;
+      }
+
+      .game-detail-head {
         display: flex;
         align-items: center;
         gap: 0.8rem;
+        margin-bottom: 0.9rem;
       }
 
-      .selected-game-icon {
-        width: 62px;
-        height: 62px;
+      .game-detail-icon {
+        width: 66px;
+        height: 66px;
         border-radius: 999px;
         border: 2px solid var(--gold);
         overflow: hidden;
         flex-shrink: 0;
       }
 
-      .selected-game-icon img {
+      .game-detail-icon img {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
 
-      .selected-game-title {
+      .game-detail-title {
         margin: 0;
-        font-weight: 700;
+        font-size: 1.15rem;
       }
 
-      .selected-game-subtitle {
-        margin: 0.2rem 0 0;
-        color: var(--muted);
-        font-size: 0.88rem;
+      .game-detail-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7rem;
+      }
+
+      .game-action {
+        border: 1px solid #35518e;
+        border-radius: 12px;
+        background: #0f1b36;
+        color: #fff;
+        padding: 0.8rem 0.55rem;
+        cursor: pointer;
+        text-align: center;
+      }
+
+      .game-action-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 999px;
+        border: 2px solid #4c6fc0;
+        margin: 0 auto 0.35rem;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
       }
 
       @keyframes floatIcon {
@@ -440,6 +472,7 @@
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid { grid-template-columns: 1fr; }
         .social-buttons { grid-template-columns: 1fr; }
+        .game-detail-actions { grid-template-columns: 1fr; }
         nav { justify-content: center; }
       }
     </style>
@@ -509,7 +542,32 @@
           <h2 class="section-title">Sección de <span>oro de juegos</span></h2>
           <article class="oro-panel">
             <div id="gameList" class="server-row"></div>
-            <div id="selectedGameInfo" class="selected-game" aria-live="polite"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="gameDetailPage" class="game-detail">
+        <div class="container">
+          <h2 class="section-title"><span>Página</span> del juego</h2>
+          <article class="game-detail-card">
+            <div class="game-detail-head">
+              <div id="gameDetailIcon" class="game-detail-icon"></div>
+              <h3 id="gameDetailTitle" class="game-detail-title"></h3>
+            </div>
+            <div class="game-detail-actions">
+              <button class="game-action" type="button">
+                <div class="game-action-icon">B</div>
+                Boosting
+              </button>
+              <button class="game-action" type="button">
+                <div class="game-action-icon">C</div>
+                Cuentas
+              </button>
+              <button class="game-action" type="button">
+                <div class="game-action-icon">O</div>
+                Oro
+              </button>
+            </div>
           </article>
         </div>
       </section>
@@ -677,7 +735,9 @@
 
     <script>
       const gameList = document.getElementById('gameList');
-      const selectedGameInfo = document.getElementById('selectedGameInfo');
+      const gameDetailPage = document.getElementById('gameDetailPage');
+      const gameDetailTitle = document.getElementById('gameDetailTitle');
+      const gameDetailIcon = document.getElementById('gameDetailIcon');
       const openAdmin = document.getElementById('openAdmin');
       const closeAdmin = document.getElementById('closeAdmin');
       const adminModal = document.getElementById('adminModal');
@@ -702,10 +762,13 @@
         { name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E" }
       ];
 
-      function setSelectedGame(index) {
+      function openGamePage(index) {
         const game = games[index];
         if (!game) return;
-        selectedGameInfo.innerHTML = `<div class=\"selected-game-icon\"><img src=\"${game.icon}\" alt=\"${game.name}\" /></div><div><p class=\"selected-game-title\">${game.name}</p><p class=\"selected-game-subtitle\">Sección de oro activa para ${game.name}</p></div>`;
+        gameDetailTitle.textContent = game.name;
+        gameDetailIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
+        gameDetailPage.classList.add('show');
+        gameDetailPage.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
       function renderGameList() {
@@ -717,11 +780,10 @@
           btn.addEventListener('click', () => {
             document.querySelectorAll('#gameList .server').forEach((s) => s.classList.remove('active'));
             btn.classList.add('active');
-            setSelectedGame(index);
+            openGamePage(index);
           });
           gameList.appendChild(btn);
         });
-        setSelectedGame(0);
       }
 
       function renderAdminSelect() {
