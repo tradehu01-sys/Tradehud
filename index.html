@@ -153,19 +153,15 @@
         height: 100%;
         object-fit: cover;
       }
+
+      .server-name {
+        display: block;
+        font-size: 0.86rem;
+      }
       @keyframes floatIcon {
         0%,100%{transform:translateY(0)}
         50%{transform:translateY(-5px)}
       }
-
-      .info {
-        margin-top: 0.85rem;
-        background: #0d1020;
-        border: 1px solid #36518f;
-        border-radius: 12px;
-        padding: 0.9rem;
-      }
-      .info p { color: var(--muted); }
 
       .split { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
       .step {
@@ -343,23 +339,8 @@
         padding: 1rem;
       }
 
-      .config-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.7rem;
-        margin-top: 0.8rem;
-      }
-
-      .config-item {
-        background: #121f3c;
-        border: 1px solid #35518e;
-        border-radius: 10px;
-        padding: 0.75rem;
-      }
-
       .admin-panel-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        display: flex;
         gap: 0.65rem;
         margin-top: 0.7rem;
       }
@@ -379,26 +360,20 @@
         border: 1px solid #34508d;
         border-radius: 10px;
         padding: 0.75rem;
-        display: none;
       }
 
-      .editor-box.show {
-        display: block;
-      }
-
-      .editor-box textarea {
+      .editor-box input, .editor-box select {
         width: 100%;
-        min-height: 120px;
         border-radius: 8px;
         border: 1px solid #3d5b99;
         background: #0d162b;
         color: #fff;
         padding: 0.6rem;
+        margin-bottom: 0.6rem;
       }
 
       @media (max-width: 980px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid { grid-template-columns: 1fr 1fr; }
-        .config-grid { grid-template-columns: 1fr; }
       }
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid { grid-template-columns: 1fr; }
@@ -471,29 +446,7 @@
         <div class="container">
           <h2 class="section-title">Sección de <span>oro de juegos</span></h2>
           <article class="oro-panel">
-            <h3 style="margin-top:0;">Lista de juegos admin</h3>
-            <div class="server-row">
-              <button class="server active" data-name="World of Warcraft" data-desc="Compra de oro y servicios premium para WoW clásico y retail.">
-                <div class="server-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3ETW%3C/text%3E%3C/svg%3E" alt="Turtle WoW" /></div>
-                World of Warcraft
-              </button>
-              <button class="server" data-name="WoW TBC" data-desc="Paquetes de oro para servidores TBC con entrega por lotes.">
-                <div class="server-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E" alt="20 Aniversario TBC" /></div>
-                WoW TBC
-              </button>
-              <button class="server" data-name="Albion Online" data-desc="Venta de oro/plata con validación manual y soporte directo.">
-                <div class="server-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E" alt="Albion Online" /></div>
-                Albion Online
-              </button>
-              <button class="server" data-name="Lineage 2 Reborn" data-desc="Monedas para L2 Reborn con entrega segura.">
-                <div class="server-icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E" alt="Lineage 2 Reborn" /></div>
-                Lineage 2 Reborn
-              </button>
-            </div>
-            <div class="info">
-              <strong id="oroTitle">World of Warcraft</strong>
-              <p id="oroDesc">Compra de oro y servicios premium para WoW clásico y retail.</p>
-            </div>
+            <div id="gameList" class="server-row"></div>
           </article>
         </div>
       </section>
@@ -639,24 +592,24 @@
         </div>
         <p class="lead" style="margin:0;">Panel admin para editar casillas de juegos.</p>
         <div class="admin-panel-actions">
-          <button id="btnListaJuego" class="panel-btn">Lista de juego</button>
-          <button id="btnListaServidores" class="panel-btn">Lista de servidores de juegos</button>
+          <button id="guardarCambios" class="panel-btn">Guardar cambios</button>
         </div>
-        <div id="editorJuegos" class="editor-box show">
+        <div id="editorJuegos" class="editor-box">
           <strong>Editar lista de juego</strong>
-          <textarea>World of Warcraft\nWoW TBC\nAlbion Online\nLineage 2 Reborn</textarea>
-        </div>
-        <div id="editorServidores" class="editor-box">
-          <strong>Editar lista de servidores de juegos</strong>
-          <textarea>WoW Turtle\nWoW Oficial\nAlbion Global\nLineage Reborn</textarea>
+          <select id="juegoSelect"></select>
+          <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
+          <input id="juegoImagen" type="text" placeholder="URL imagen del icono redondo" />
+          <div class="admin-panel-actions">
+            <button id="agregarJuego" class="panel-btn">Agregar</button>
+            <button id="editarJuego" class="panel-btn">Editar</button>
+            <button id="eliminarJuego" class="panel-btn">Eliminar</button>
+          </div>
         </div>
       </div>
     </div>
 
     <script>
-      const servers = document.querySelectorAll('.server');
-      const oroTitle = document.getElementById('oroTitle');
-      const oroDesc = document.getElementById('oroDesc');
+      const gameList = document.getElementById('gameList');
       const openAdmin = document.getElementById('openAdmin');
       const closeAdmin = document.getElementById('closeAdmin');
       const adminModal = document.getElementById('adminModal');
@@ -664,19 +617,56 @@
       const adminMsg = document.getElementById('adminMsg');
       const configModal = document.getElementById('configModal');
       const closeConfig = document.getElementById('closeConfig');
-      const btnListaJuego = document.getElementById('btnListaJuego');
-      const btnListaServidores = document.getElementById('btnListaServidores');
-      const editorJuegos = document.getElementById('editorJuegos');
-      const editorServidores = document.getElementById('editorServidores');
+      const juegoSelect = document.getElementById('juegoSelect');
+      const juegoNombre = document.getElementById('juegoNombre');
+      const juegoImagen = document.getElementById('juegoImagen');
+      const agregarJuego = document.getElementById('agregarJuego');
+      const editarJuego = document.getElementById('editarJuego');
+      const eliminarJuego = document.getElementById('eliminarJuego');
+      const guardarCambios = document.getElementById('guardarCambios');
 
-      servers.forEach((server) => {
-        server.addEventListener('click', () => {
-          servers.forEach((s) => s.classList.remove('active'));
-          server.classList.add('active');
-          oroTitle.textContent = server.dataset.name;
-          oroDesc.textContent = server.dataset.desc;
+      const games = [
+        { name: 'World of Warcraft', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E" },
+        { name: 'WoW TBC', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E" },
+        { name: 'Albion Online', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E" },
+        { name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E" }
+      ];
+
+      function renderGameList() {
+        gameList.innerHTML = '';
+        games.forEach((game, index) => {
+          const btn = document.createElement('button');
+          btn.className = `server${index === 0 ? ' active' : ''}`;
+          btn.innerHTML = `<div class=\"server-icon\"><img src=\"${game.icon}\" alt=\"${game.name}\" /></div><span class=\"server-name\">${game.name}</span>`;
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('#gameList .server').forEach((s) => s.classList.remove('active'));
+            btn.classList.add('active');
+          });
+          gameList.appendChild(btn);
         });
-      });
+      }
+
+      function renderAdminSelect() {
+        juegoSelect.innerHTML = '';
+        games.forEach((game, index) => {
+          const option = document.createElement('option');
+          option.value = index;
+          option.textContent = game.name;
+          juegoSelect.appendChild(option);
+        });
+      }
+
+      function loadSelectedGame() {
+        const i = Number(juegoSelect.value || 0);
+        const game = games[i];
+        if (!game) return;
+        juegoNombre.value = game.name;
+        juegoImagen.value = game.icon;
+      }
+
+      renderGameList();
+      renderAdminSelect();
+      loadSelectedGame();
 
       openAdmin.addEventListener('click', () => {
         adminModal.classList.add('show');
@@ -723,14 +713,42 @@
         }
       });
 
-      btnListaJuego.addEventListener('click', () => {
-        editorJuegos.classList.add('show');
-        editorServidores.classList.remove('show');
+      juegoSelect.addEventListener('change', loadSelectedGame);
+
+      agregarJuego.addEventListener('click', () => {
+        if (!juegoNombre.value.trim()) return;
+        games.push({
+          name: juegoNombre.value.trim(),
+          icon: juegoImagen.value.trim() || games[0].icon
+        });
+        renderGameList();
+        renderAdminSelect();
+        juegoSelect.value = String(games.length - 1);
+        loadSelectedGame();
       });
 
-      btnListaServidores.addEventListener('click', () => {
-        editorServidores.classList.add('show');
-        editorJuegos.classList.remove('show');
+      editarJuego.addEventListener('click', () => {
+        const i = Number(juegoSelect.value || 0);
+        if (!games[i]) return;
+        games[i].name = juegoNombre.value.trim() || games[i].name;
+        games[i].icon = juegoImagen.value.trim() || games[i].icon;
+        renderGameList();
+        renderAdminSelect();
+        juegoSelect.value = String(i);
+      });
+
+      eliminarJuego.addEventListener('click', () => {
+        const i = Number(juegoSelect.value || 0);
+        if (games.length <= 1) return;
+        games.splice(i, 1);
+        renderGameList();
+        renderAdminSelect();
+        loadSelectedGame();
+      });
+
+      guardarCambios.addEventListener('click', () => {
+        configModal.classList.remove('show');
+        configModal.setAttribute('aria-hidden', 'true');
       });
     </script>
   </body>
