@@ -1,1 +1,755 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TradeHud | Nuevo Modelo</title>
+    <style>
+      :root {
+        --bg: #050506;
+        --panel: #0e1220;
+        --panel-2: #12182a;
+        --line: #2a3554;
+        --text: #f9fbff;
+        --muted: #c6d4ef;
+        --primary: #2e7bff;
+        --accent: #00d1ff;
+        --hot: #ff3d2e;
+        --gold: #ffb347;
+      }
 
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: 'Inter', system-ui, sans-serif;
+        color: var(--text);
+        background: #050505;
+      }
+
+      .container { width: min(1200px, 92vw); margin: 0 auto; }
+
+      header {
+        position: sticky; top: 0; z-index: 99;
+        background: rgba(8, 8, 14, 0.86);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(8px);
+      }
+
+      .nav {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0.95rem 0; gap: 1rem;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: var(--gold);
+      }
+
+      .logo img {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        border: 1px solid #3f66b5;
+      }
+
+      nav { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+      nav a {
+        text-decoration: none; color: var(--text);
+        border: 1px solid #335192;
+        background: linear-gradient(180deg, #132448, #0f1a33);
+        border-radius: 999px;
+        padding: 0.42rem 0.9rem;
+        font-size: 0.82rem;
+      }
+
+      .admin-open {
+        border: 1px solid #3f66b5;
+        background: linear-gradient(120deg, #16447a, #112442);
+        color: #fff;
+        border-radius: 999px;
+        padding: 0.42rem 0.9rem;
+        cursor: pointer;
+      }
+
+      .hero { padding: 4.5rem 0 2.5rem; }
+      .hero-wrap {
+        display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1rem;
+      }
+
+      .glass {
+        background: linear-gradient(155deg, rgba(24, 41, 76, 0.9), rgba(14, 20, 34, 0.96));
+        border: 1px solid #36518f;
+        border-radius: 18px;
+        padding: 1.2rem;
+      }
+
+      h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.8rem); }
+      .lead { color: var(--muted); line-height: 1.7; margin: 0.8rem 0 1.1rem; }
+
+      .cta-row { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+      .btn {
+        text-decoration: none; color: #07070d; font-weight: 700;
+        border-radius: 10px; padding: 0.65rem 0.95rem;
+        background: linear-gradient(120deg, var(--accent), #77ffd4);
+      }
+      .btn.alt { background: linear-gradient(120deg, var(--primary), #b3a8ff); }
+
+      .hero-right {
+        display: grid; gap: 0.8rem;
+      }
+      .mini {
+        background: #111425;
+        border: 1px solid #2f3452;
+        border-radius: 12px;
+        padding: 0.85rem;
+      }
+
+      section { padding: 2.4rem 0; }
+
+      .section-title {
+        margin: 0 0 1rem;
+        font-size: 1.45rem;
+      }
+      .section-title span { color: var(--gold); }
+
+      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+      .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+      .card {
+        background: var(--panel);
+        border: 1px solid #334f8f;
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .card img { width: 100%; height: 180px; object-fit: cover; }
+      .card-body { padding: 0.9rem; }
+      .card-body p { color: var(--muted); margin: 0.35rem 0 0; }
+
+      .oro-panel { background: var(--panel-2); border: 1px solid #36518f; border-radius: 16px; padding: 1rem; }
+      .server-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem; }
+      .server {
+        border: 1px solid #2f4f91;
+        background: #111d35;
+        color: var(--text);
+        border-radius: 12px;
+        padding: 0.75rem 0.5rem;
+        cursor: pointer;
+      }
+      .server.active { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(255,179,71,.25); }
+      .server-icon {
+        width: 68px; height: 68px; border-radius: 999px;
+        margin: 0 auto .45rem;
+        border: 2px solid var(--hot);
+        animation: floatIcon 2.2s ease-in-out infinite;
+        overflow: hidden;
+      }
+
+      .server-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .server-name {
+        display: block;
+        font-size: 0.86rem;
+      }
+      @keyframes floatIcon {
+        0%,100%{transform:translateY(0)}
+        50%{transform:translateY(-5px)}
+      }
+
+      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .step {
+        background: #12203d;
+        border: 1px solid #36518f;
+        border-radius: 10px;
+        padding: 0.75rem;
+        margin-bottom: 0.55rem;
+      }
+
+      ul a {
+        color: #8fdcff;
+        word-break: break-all;
+      }
+
+      .social-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+        margin-top: 0.8rem;
+      }
+
+      .social-btn {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        border: 1px solid #36518f;
+        border-radius: 10px;
+        padding: 0.62rem;
+        color: #fff;
+        background: linear-gradient(180deg, #132448, #0f1a33);
+        font-size: 0.88rem;
+      }
+
+      .social-btn .icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+
+      .yt .icon { background: #ff2222; }
+      .tt .icon { background: #111; border: 1px solid #666; }
+      .fb .icon { background: #1877f2; }
+      .ig .icon { background: linear-gradient(120deg, #833ab4, #fd1d1d, #fcb045); color: #151515; }
+
+      footer {
+        margin-top: 2rem;
+        border-top: 1px solid var(--line);
+        background: #080a14;
+      }
+      .footer-grid {
+        display: grid; gap: 1rem;
+        grid-template-columns: 1.2fr 1fr 1fr 1fr;
+        padding: 1.6rem 0;
+      }
+      footer h4 { margin: 0 0 .55rem; color: var(--gold); }
+      footer li, footer p { color: var(--muted); font-size: .92rem; }
+
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-brand img {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        border: 1px solid #3f66b5;
+      }
+
+      .copyright { text-align: center; border-top: 1px solid #24283f; padding: .8rem 0; color: #8f97bf; font-size: .8rem; }
+
+      .admin-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 7, 15, 0.7);
+        display: none;
+        place-items: center;
+        z-index: 120;
+      }
+
+      .admin-modal.show { display: grid; }
+
+      .admin-card {
+        width: min(420px, 92vw);
+        background: linear-gradient(165deg, #182f58, #0f1a30);
+        border: 1px solid #3f66b5;
+        border-radius: 16px;
+        padding: 1rem;
+        box-shadow: 0 12px 50px rgba(0, 0, 0, 0.45);
+      }
+
+      .admin-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.9rem;
+      }
+
+      .logo-mini {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        background: radial-gradient(circle at 30% 30%, var(--accent), transparent 40%),
+          radial-gradient(circle at 70% 70%, var(--hot), transparent 45%),
+          #0d1020;
+        border: 1px solid #5f6bc0;
+      }
+
+      .close-btn {
+        border: 1px solid #4f5585;
+        border-radius: 8px;
+        background: #1b2142;
+        color: white;
+        cursor: pointer;
+        padding: 0.35rem 0.55rem;
+      }
+
+      .admin-card label {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .admin-card input {
+        width: 100%;
+        margin: 0.35rem 0 0.75rem;
+        border-radius: 8px;
+        border: 1px solid #434a74;
+        background: #0c1126;
+        color: #fff;
+        padding: 0.65rem;
+      }
+
+      .admin-login {
+        width: 100%;
+        border: 0;
+        border-radius: 10px;
+        padding: 0.68rem;
+        font-weight: 700;
+        cursor: pointer;
+        background: linear-gradient(120deg, var(--gold), var(--hot));
+        color: #1b0f04;
+      }
+
+      .admin-msg {
+        margin-top: 0.65rem;
+        font-size: 0.88rem;
+        color: #9ecaff;
+      }
+
+      .config-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(4, 6, 12, 0.75);
+        display: none;
+        place-items: center;
+        z-index: 130;
+      }
+
+      .config-modal.show { display: grid; }
+
+      .config-card {
+        width: min(560px, 94vw);
+        background: linear-gradient(165deg, #162e57, #0f1a30);
+        border: 1px solid #3f66b5;
+        border-radius: 16px;
+        padding: 1rem;
+      }
+
+      .admin-panel-actions {
+        display: flex;
+        gap: 0.65rem;
+        margin-top: 0.7rem;
+      }
+
+      .panel-btn {
+        border: 1px solid #35518e;
+        border-radius: 10px;
+        background: #12203d;
+        color: white;
+        padding: 0.6rem;
+        cursor: pointer;
+      }
+
+      .editor-box {
+        margin-top: 0.8rem;
+        background: #101a31;
+        border: 1px solid #34508d;
+        border-radius: 10px;
+        padding: 0.75rem;
+      }
+
+      .editor-box input, .editor-box select {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #3d5b99;
+        background: #0d162b;
+        color: #fff;
+        padding: 0.6rem;
+        margin-bottom: 0.6rem;
+      }
+
+      @media (max-width: 980px) {
+        .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 640px) {
+        .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid { grid-template-columns: 1fr; }
+        .social-buttons { grid-template-columns: 1fr; }
+        nav { justify-content: center; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <div class="logo">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2300d1ff'/%3E%3Cstop offset='1' stop-color='%23ff3d2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='18' fill='%230f1a30'/%3E%3Ccircle cx='50' cy='50' r='34' fill='url(%23g)'/%3E%3Ctext x='50' y='58' text-anchor='middle' fill='white' font-size='28' font-family='Arial' font-weight='700'%3ETH%3C/text%3E%3C/svg%3E" alt="Logo TradeHub" />
+          <span>TRADEHUB</span>
+        </div>
+        <nav>
+          <a href="#cuentas">Cuentas</a>
+          <a href="#oro">Oro</a>
+          <a href="#vender">Vender</a>
+          <a href="#servicios">Servicios</a>
+          <a href="#marketplace">Marketplace</a>
+          <a href="#contacto">Contacto</a>
+        </nav>
+        <button id="openAdmin" class="admin-open">Acceso Admin</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="inicio">
+        <div class="container hero-wrap">
+          <article class="glass">
+            <h1>TradeHub: compra, venta y servicios para gamers</h1>
+            <p class="lead">
+              Plataforma enfocada en personas, con navegación simple, procesos claros y atención directa para cada pedido.
+            </p>
+            <div class="cta-row">
+              <a class="btn" href="#oro">Comprar Oro</a>
+              <a class="btn alt" href="#contacto">Ver contacto</a>
+            </div>
+          </article>
+          <aside class="hero-right">
+            <div class="mini"><strong>Entrega inmediata</strong><br /><small>Stocks y respuesta rápida.</small></div>
+            <div class="mini"><strong>Soporte 24/7</strong><br /><small>Atención por Discord y WhatsApp.</small></div>
+            <div class="mini"><strong>Marketplace seguro</strong><br /><small>Proceso guiado para compra/venta.</small></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="cuentas">
+        <div class="container">
+          <h2 class="section-title">Cuentas <span>Premium</span></h2>
+          <div class="grid-3">
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop" alt="Cuenta 1" />
+              <div class="card-body"><strong>Cuenta Nivel 60</strong><p>Lista para PvE y PvP competitivo.</p></div>
+            </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=1200&auto=format&fit=crop" alt="Cuenta 2" />
+              <div class="card-body"><strong>Cuenta Mago 60</strong><p>Profesiones completas y oro inicial.</p></div>
+            </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1542751371-29b4a46f8d20?q=80&w=1200&auto=format&fit=crop" alt="Cuenta 3" />
+              <div class="card-body"><strong>Cuenta Full Set</strong><p>Equipamiento alto y monturas incluidas.</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="oro">
+        <div class="container">
+          <h2 class="section-title">Sección de <span>oro de juegos</span></h2>
+          <article class="oro-panel">
+            <div id="gameList" class="server-row"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="vender">
+        <div class="container">
+          <h2 class="section-title">Vender <span>Oro</span></h2>
+          <div class="split">
+            <div>
+              <div class="step">1) Abre ticket en Discord.</div>
+              <div class="step">2) Indica servidor y cantidad disponible.</div>
+              <div class="step">3) Confirmamos comprador y seguridad.</div>
+              <div class="step">4) Recibe tu pago.</div>
+            </div>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=1200&auto=format&fit=crop" alt="Discord" />
+              <div class="card-body"><strong>Venta directa por comunidad</strong><p>Canal dedicado para compra/venta con moderación.</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="servicios">
+        <div class="container">
+          <h2 class="section-title">Servicios <span>WoW</span></h2>
+          <div class="grid-3">
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" alt="Boost" />
+              <div class="card-body"><strong>Boosting</strong><p>Leveo y progreso guiado.</p></div>
+            </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=1200&auto=format&fit=crop" alt="Mining" />
+              <div class="card-body"><strong>Mining</strong><p>Subida 1-375 optimizada.</p></div>
+            </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?q=80&w=1200&auto=format&fit=crop" alt="Fishing" />
+              <div class="card-body"><strong>Fishing</strong><p>Servicio rápido de profesión.</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="marketplace">
+        <div class="container">
+          <h2 class="section-title">Marketplace de <span>Servicios</span></h2>
+          <div class="grid-4">
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop" alt="Boosteo" />
+              <div class="card-body">
+                <strong>Servicios de Boosteo</strong>
+                <p>Subida de rango, raids, logros y acompañamiento personalizado.</p>
+              </div>
+            </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop" alt="Tiempo de juego WoW" />
+              <div class="card-body">
+                <strong>Tiempo de Juego WoW</strong>
+                <p>Recargas, saldo y game time para mantener activa tu cuenta.</p>
+              </div>
+            </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?q=80&w=1200&auto=format&fit=crop" alt="Streaming" />
+              <div class="card-body">
+                <strong>Servicio de Streaming</strong>
+                <p>Gestión de canales, overlays, packs visuales y optimización en vivo.</p>
+              </div>
+            </article>
+            <article class="card">
+              <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=1200&auto=format&fit=crop" alt="Apps" />
+              <div class="card-body">
+                <strong>Apps y Herramientas</strong>
+                <p>Configuración de apps gaming, utilidades y soporte de instalación.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="contacto">
+        <div class="container">
+          <h2 class="section-title">Contacto <span>24/7</span></h2>
+          <div class="split">
+            <article class="glass">
+              <strong>Canales activos</strong>
+              <p class="lead">Canales oficiales para pedidos, soporte y seguimiento en tiempo real.</p>
+              <div class="social-buttons">
+                <a class="social-btn yt" href="https://www.youtube.com/channel/UCJvhSvnlYs8pKYx3lwy4p2g" target="_blank" rel="noopener noreferrer"><span class="icon">YT</span> YouTube</a>
+                <a class="social-btn tt" href="https://www.tiktok.com/@tradehubmmoprg?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer"><span class="icon">TT</span> TikTok</a>
+                <a class="social-btn fb" href="https://www.facebook.com/profile.php?id=61582836070089" target="_blank" rel="noopener noreferrer"><span class="icon">f</span> Facebook</a>
+                <a class="social-btn ig" href="https://www.instagram.com/tradehubmmoprg/" target="_blank" rel="noopener noreferrer"><span class="icon">IG</span> Instagram</a>
+              </div>
+            </article>
+            <article class="glass">
+              <strong>Garantía TradeHud</strong>
+              <p class="lead">Transacciones seguras y acompañamiento hasta finalizar la entrega.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-grid">
+        <div>
+          <div class="footer-brand">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2300d1ff'/%3E%3Cstop offset='1' stop-color='%23ff3d2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='18' fill='%230f1a30'/%3E%3Ccircle cx='50' cy='50' r='34' fill='url(%23g)'/%3E%3Ctext x='50' y='58' text-anchor='middle' fill='white' font-size='28' font-family='Arial' font-weight='700'%3ETH%3C/text%3E%3C/svg%3E" alt="Logo TradeHub" />
+            <h4>TradeHub</h4>
+          </div>
+          <p>Marketplace MMORPG para cuentas, oro y servicios.</p>
+        </div>
+        <div><h4>Enlaces</h4><ul><li>Cuentas</li><li>Oro</li><li>Vender</li><li>Marketplace</li></ul></div>
+        <div><h4>Categorías</h4><ul><li>WoW</li><li>Albion</li><li>Lineage</li></ul></div>
+        <div><h4>Soporte</h4><ul><li>24/7</li><li>Comunidad activa</li><li>Atención rápida</li></ul></div>
+      </div>
+      <div class="container copyright">© 2026 TradeHud. Todos los derechos reservados.</div>
+    </footer>
+
+    <div id="adminModal" class="admin-modal" aria-hidden="true">
+      <div class="admin-card">
+        <div class="admin-head">
+          <div style="display:flex;gap:.6rem;align-items:center;">
+            <div class="logo-mini"></div>
+            <div>
+              <strong>Ingreso</strong>
+            </div>
+          </div>
+          <button id="closeAdmin" class="close-btn">✕</button>
+        </div>
+        <label for="adminUser">Usuario</label>
+        <input id="adminUser" type="text" placeholder="Usuario" />
+        <label for="adminPass">Contraseña</label>
+        <input id="adminPass" type="password" placeholder="Contraseña" />
+        <button id="adminLogin" class="admin-login">Entrar</button>
+        <div id="adminMsg" class="admin-msg"></div>
+      </div>
+    </div>
+
+      <div id="configModal" class="config-modal" aria-hidden="true">
+      <div class="config-card">
+        <div class="admin-head">
+          <strong>Configuraciones</strong>
+          <button id="closeConfig" class="close-btn">✕</button>
+        </div>
+        <p class="lead" style="margin:0;">Panel admin para editar casillas de juegos.</p>
+        <div class="admin-panel-actions">
+          <button id="guardarCambios" class="panel-btn">Guardar cambios</button>
+        </div>
+        <div id="editorJuegos" class="editor-box">
+          <strong>Editar lista de juego</strong>
+          <select id="juegoSelect"></select>
+          <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
+          <input id="juegoImagen" type="text" placeholder="URL imagen del icono redondo" />
+          <div class="admin-panel-actions">
+            <button id="agregarJuego" class="panel-btn">Agregar</button>
+            <button id="editarJuego" class="panel-btn">Editar</button>
+            <button id="eliminarJuego" class="panel-btn">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const gameList = document.getElementById('gameList');
+      const openAdmin = document.getElementById('openAdmin');
+      const closeAdmin = document.getElementById('closeAdmin');
+      const adminModal = document.getElementById('adminModal');
+      const adminLogin = document.getElementById('adminLogin');
+      const adminMsg = document.getElementById('adminMsg');
+      const configModal = document.getElementById('configModal');
+      const closeConfig = document.getElementById('closeConfig');
+      const juegoSelect = document.getElementById('juegoSelect');
+      const juegoNombre = document.getElementById('juegoNombre');
+      const juegoImagen = document.getElementById('juegoImagen');
+      const agregarJuego = document.getElementById('agregarJuego');
+      const editarJuego = document.getElementById('editarJuego');
+      const eliminarJuego = document.getElementById('eliminarJuego');
+      const guardarCambios = document.getElementById('guardarCambios');
+
+      const games = [
+        { name: 'World of Warcraft', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E" },
+        { name: 'WoW TBC', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E" },
+        { name: 'Albion Online', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E" },
+        { name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E" }
+      ];
+
+      function renderGameList() {
+        gameList.innerHTML = '';
+        games.forEach((game, index) => {
+          const btn = document.createElement('button');
+          btn.className = `server${index === 0 ? ' active' : ''}`;
+          btn.innerHTML = `<div class=\"server-icon\"><img src=\"${game.icon}\" alt=\"${game.name}\" /></div><span class=\"server-name\">${game.name}</span>`;
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('#gameList .server').forEach((s) => s.classList.remove('active'));
+            btn.classList.add('active');
+          });
+          gameList.appendChild(btn);
+        });
+      }
+
+      function renderAdminSelect() {
+        juegoSelect.innerHTML = '';
+        games.forEach((game, index) => {
+          const option = document.createElement('option');
+          option.value = index;
+          option.textContent = game.name;
+          juegoSelect.appendChild(option);
+        });
+      }
+
+      function loadSelectedGame() {
+        const i = Number(juegoSelect.value || 0);
+        const game = games[i];
+        if (!game) return;
+        juegoNombre.value = game.name;
+        juegoImagen.value = game.icon;
+      }
+
+      renderGameList();
+      renderAdminSelect();
+      loadSelectedGame();
+
+      openAdmin.addEventListener('click', () => {
+        adminModal.classList.add('show');
+        adminModal.setAttribute('aria-hidden', 'false');
+      });
+
+      closeAdmin.addEventListener('click', () => {
+        adminModal.classList.remove('show');
+        adminModal.setAttribute('aria-hidden', 'true');
+      });
+
+      adminModal.addEventListener('click', (e) => {
+        if (e.target === adminModal) {
+          adminModal.classList.remove('show');
+          adminModal.setAttribute('aria-hidden', 'true');
+        }
+      });
+
+      adminLogin.addEventListener('click', () => {
+        const user = document.getElementById('adminUser').value.trim();
+        const pass = document.getElementById('adminPass').value.trim();
+        if (user === 'admin' && pass === 'admin123') {
+          adminMsg.textContent = '';
+          adminMsg.style.color = '#8fffd8';
+          adminModal.classList.remove('show');
+          adminModal.setAttribute('aria-hidden', 'true');
+          configModal.classList.add('show');
+          configModal.setAttribute('aria-hidden', 'false');
+        } else {
+          adminMsg.textContent = 'Credenciales incorrectas.';
+          adminMsg.style.color = '#ff9ea7';
+        }
+      });
+
+      closeConfig.addEventListener('click', () => {
+        configModal.classList.remove('show');
+        configModal.setAttribute('aria-hidden', 'true');
+      });
+
+      configModal.addEventListener('click', (e) => {
+        if (e.target === configModal) {
+          configModal.classList.remove('show');
+          configModal.setAttribute('aria-hidden', 'true');
+        }
+      });
+
+      juegoSelect.addEventListener('change', loadSelectedGame);
+
+      agregarJuego.addEventListener('click', () => {
+        if (!juegoNombre.value.trim()) return;
+        games.push({
+          name: juegoNombre.value.trim(),
+          icon: juegoImagen.value.trim() || games[0].icon
+        });
+        renderGameList();
+        renderAdminSelect();
+        juegoSelect.value = String(games.length - 1);
+        loadSelectedGame();
+      });
+
+      editarJuego.addEventListener('click', () => {
+        const i = Number(juegoSelect.value || 0);
+        if (!games[i]) return;
+        games[i].name = juegoNombre.value.trim() || games[i].name;
+        games[i].icon = juegoImagen.value.trim() || games[i].icon;
+        renderGameList();
+        renderAdminSelect();
+        juegoSelect.value = String(i);
+      });
+
+      eliminarJuego.addEventListener('click', () => {
+        const i = Number(juegoSelect.value || 0);
+        if (games.length <= 1) return;
+        games.splice(i, 1);
+        renderGameList();
+        renderAdminSelect();
+        loadSelectedGame();
+      });
+
+      guardarCambios.addEventListener('click', () => {
+        configModal.classList.remove('show');
+        configModal.setAttribute('aria-hidden', 'true');
+      });
+    </script>
+  </body>
+</html>
