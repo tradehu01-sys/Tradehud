@@ -584,11 +584,16 @@
       .juego-form-modal.show { display: grid; }
 
       .juego-form-card {
-        width: min(520px, 92vw);
+        width: min(680px, 94vw);
         background: linear-gradient(165deg, #0f223f, #091423);
         border: 1px solid #8c6d2a;
         border-radius: 14px;
         padding: 0.9rem;
+      }
+
+      #juegoImagen {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        letter-spacing: 0.01em;
       }
 
       .form-group { margin-bottom: 0.7rem; }
@@ -974,9 +979,12 @@
       }
 
       function updateGamePreview() {
+        const desc = juegoDescripcion.value.trim();
+        const dynamicColors = ['#9fd6ff', '#ffd39a', '#9affcc', '#d1b7ff'];
         previewImagenJuego.src = juegoImagen.value.trim() || games[0].icon;
         previewNombreJuego.textContent = juegoNombre.value.trim() || 'Nombre del juego';
-        previewDescripcionJuego.textContent = juegoDescripcion.value.trim() || 'Descripción del juego.';
+        previewDescripcionJuego.textContent = desc || 'Descripción del juego.';
+        previewDescripcionJuego.style.color = desc ? dynamicColors[desc.length % dynamicColors.length] : '#b9c9ef';
       }
 
       function openGameForm(mode, index = null) {
