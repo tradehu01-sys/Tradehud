@@ -77,6 +77,8 @@
       }
 
       .hero { padding: 4.5rem 0 2.5rem; }
+      .page-section { display: none; }
+      .page-section.active-page { display: block; }
       .hero-wrap {
         display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1rem;
       }
@@ -660,17 +662,16 @@
           <span>TRADEHUB</span>
         </div>
         <nav>
-          <a href="#oro">Oro</a>
-          <a href="#vender">Vender</a>
-          <a href="#marketplace">Marketplace</a>
-          <a href="#contacto">Contacto</a>
+          <a href="#inicio" data-page-link data-page="inicio">Inicio</a>
+          <a href="#oro" data-page-link data-page="oro">Oro</a>
+          <a href="#marketplace" data-page-link data-page="marketplace">Marketplace</a>
         </nav>
         <button id="openAdmin" class="admin-open">Acceso Admin</button>
       </div>
     </header>
 
     <main>
-      <section class="hero" id="inicio">
+      <section class="hero page-section" id="inicio" data-page="inicio">
         <div class="container hero-wrap">
           <article class="glass">
             <h1>TradeHub: compra, venta y servicios para gamers</h1>
@@ -690,7 +691,7 @@
         </div>
       </section>
 
-      <section id="oro">
+      <section id="oro" class="page-section" data-page="oro">
         <div class="container">
           <h2 class="section-title">Sección de <span>oro de juegos</span></h2>
           <article class="oro-panel">
@@ -728,7 +729,7 @@
         </div>
       </div>
 
-      <section id="vender">
+      <section id="vender" class="page-section" data-page="inicio">
         <div class="container">
           <h2 class="section-title">Vender <span>Oro</span></h2>
           <div class="split">
@@ -746,7 +747,7 @@
         </div>
       </section>
 
-      <section id="marketplace">
+      <section id="marketplace" class="page-section" data-page="marketplace">
         <div class="container">
           <h2 class="section-title">Marketplace de <span>Servicios</span></h2>
           <div class="grid-4">
@@ -782,7 +783,7 @@
         </div>
       </section>
 
-      <section id="contacto">
+      <section id="contacto" class="page-section" data-page="inicio">
         <div class="container">
           <h2 class="section-title">Contacto <span>24/7</span></h2>
           <div class="split">
@@ -901,6 +902,8 @@
 
     <script>
       const gameList = document.getElementById('gameList');
+      const pageLinks = document.querySelectorAll('[data-page-link]');
+      const pageSections = document.querySelectorAll('.page-section');
       const gameWindowModal = document.getElementById('gameWindowModal');
       const gameWindowTitle = document.getElementById('gameWindowTitle');
       const gameWindowDesc = document.getElementById('gameWindowDesc');
@@ -949,6 +952,12 @@
         gameWindowIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
         gameWindowModal.classList.add('show');
         gameWindowModal.setAttribute('aria-hidden', 'false');
+      }
+
+      function showPage(page) {
+        pageSections.forEach((section) => {
+          section.classList.toggle('active-page', section.dataset.page === page);
+        });
       }
 
       function renderGameList() {
@@ -1024,6 +1033,21 @@
       renderGameList();
       renderAdminSelect();
       loadSelectedGame();
+      showPage('inicio');
+
+      pageLinks.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          showPage(link.dataset.page);
+        });
+      });
+
+      document.querySelectorAll('a[href="#oro"]').forEach((link) => {
+        link.addEventListener('click', () => showPage('oro'));
+      });
+      document.querySelectorAll('a[href="#marketplace"]').forEach((link) => {
+        link.addEventListener('click', () => showPage('marketplace'));
+      });
 
       closeGameWindow.addEventListener('click', () => {
         gameWindowModal.classList.remove('show');
