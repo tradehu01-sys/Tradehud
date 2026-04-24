@@ -549,6 +549,25 @@
 
       .admin-game-form.hidden { display: none; }
 
+      .juego-form-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(4, 8, 16, 0.76);
+        display: none;
+        place-items: center;
+        z-index: 140;
+      }
+
+      .juego-form-modal.show { display: grid; }
+
+      .juego-form-card {
+        width: min(520px, 92vw);
+        background: linear-gradient(165deg, #13264a, #0b1427);
+        border: 1px solid #3e5f9e;
+        border-radius: 14px;
+        padding: 0.9rem;
+      }
+
       .image-preview {
         border: 1px dashed #4c69a8;
         border-radius: 10px;
@@ -788,21 +807,29 @@
             <button id="abrirFormularioJuego" class="panel-btn" type="button">+ Agregar juego</button>
           </div>
           <div id="juegoLista" class="admin-game-list"></div>
-          <div id="juegoForm" class="admin-game-form hidden">
-            <strong id="juegoFormTitulo">Agregar juego</strong>
-            <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
-            <input id="juegoImagen" type="text" placeholder="URL imagen del icono redondo" />
-            <textarea id="juegoDescripcion" placeholder="Descripción del juego"></textarea>
-            <div class="image-preview">
-              <small>Vista previa</small>
-              <img id="previewImagenJuego" src="" alt="Preview juego" />
-              <strong id="previewNombreJuego">Nombre del juego</strong>
-              <p id="previewDescripcionJuego" class="admin-game-desc">Descripción del juego.</p>
-            </div>
-            <div class="admin-panel-actions">
-              <button id="cancelarJuegoForm" class="panel-btn" type="button">Cancelar</button>
-              <button id="guardarJuegoForm" class="panel-btn" type="button">Guardar juego</button>
-            </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="juegoFormModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card">
+        <div class="admin-head">
+          <strong id="juegoFormTitulo">Agregar juego</strong>
+          <button id="cerrarJuegoFormModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div id="juegoForm" class="admin-game-form">
+          <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
+          <input id="juegoImagen" type="text" placeholder="URL imagen del icono redondo" />
+          <textarea id="juegoDescripcion" placeholder="Descripción del juego"></textarea>
+          <div class="image-preview">
+            <small>Vista previa</small>
+            <img id="previewImagenJuego" src="" alt="Preview juego" />
+            <strong id="previewNombreJuego">Nombre del juego</strong>
+            <p id="previewDescripcionJuego" class="admin-game-desc">Descripción del juego.</p>
+          </div>
+          <div class="admin-panel-actions">
+            <button id="cancelarJuegoForm" class="panel-btn" type="button">Cancelar</button>
+            <button id="guardarJuegoForm" class="panel-btn" type="button">Guardar juego</button>
           </div>
         </div>
       </div>
@@ -824,6 +851,8 @@
       const closeConfig = document.getElementById('closeConfig');
       const juegoLista = document.getElementById('juegoLista');
       const abrirFormularioJuego = document.getElementById('abrirFormularioJuego');
+      const juegoFormModal = document.getElementById('juegoFormModal');
+      const cerrarJuegoFormModal = document.getElementById('cerrarJuegoFormModal');
       const juegoForm = document.getElementById('juegoForm');
       const juegoFormTitulo = document.getElementById('juegoFormTitulo');
       const juegoNombre = document.getElementById('juegoNombre');
@@ -906,7 +935,8 @@
       }
 
       function openGameForm(mode, index = null) {
-        juegoForm.classList.remove('hidden');
+        juegoFormModal.classList.add('show');
+        juegoFormModal.setAttribute('aria-hidden', 'false');
         if (mode === 'edit' && index !== null && games[index]) {
           editingAdminIndex = index;
           selectedAdminIndex = index;
@@ -1010,7 +1040,6 @@
           renderGameList();
           renderAdminSelect();
           clearGameForm();
-          juegoForm.classList.add('hidden');
         }
       });
 
@@ -1020,8 +1049,25 @@
 
       cancelarJuegoForm.addEventListener('click', () => {
         editingAdminIndex = null;
-        juegoForm.classList.add('hidden');
+        juegoFormModal.classList.remove('show');
+        juegoFormModal.setAttribute('aria-hidden', 'true');
         clearGameForm();
+      });
+
+      cerrarJuegoFormModal.addEventListener('click', () => {
+        editingAdminIndex = null;
+        juegoFormModal.classList.remove('show');
+        juegoFormModal.setAttribute('aria-hidden', 'true');
+        clearGameForm();
+      });
+
+      juegoFormModal.addEventListener('click', (e) => {
+        if (e.target === juegoFormModal) {
+          editingAdminIndex = null;
+          juegoFormModal.classList.remove('show');
+          juegoFormModal.setAttribute('aria-hidden', 'true');
+          clearGameForm();
+        }
       });
 
       guardarJuegoForm.addEventListener('click', () => {
@@ -1041,7 +1087,8 @@
         renderGameList();
         renderAdminSelect();
         editingAdminIndex = null;
-        juegoForm.classList.add('hidden');
+        juegoFormModal.classList.remove('show');
+        juegoFormModal.setAttribute('aria-hidden', 'true');
         clearGameForm();
       });
 
