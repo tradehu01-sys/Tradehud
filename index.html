@@ -490,29 +490,41 @@
 
       .admin-game-list {
         margin: 0.6rem 0 0.8rem;
-        border: 1px solid #34508d;
-        border-radius: 10px;
-        background: #0d162b;
+        display: grid;
+        gap: 0.6rem;
         max-height: 180px;
         overflow-y: auto;
       }
 
       .admin-game-item {
         display: flex;
-        align-items: center;
-        gap: 0.55rem;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
         width: 100%;
-        background: transparent;
-        border: 0;
-        border-bottom: 1px solid #243f73;
+        background: #0d162b;
+        border: 1px solid #34508d;
+        border-radius: 10px;
         color: #dce8ff;
-        padding: 0.55rem;
+        padding: 0.65rem;
         text-align: left;
-        cursor: pointer;
       }
 
-      .admin-game-item:last-child { border-bottom: 0; }
-      .admin-game-item.active { background: #1a2f57; }
+      .admin-game-item.active { background: #1a2f57; border-color: #ffb347; }
+
+      .admin-game-main { display: flex; gap: 0.55rem; }
+      .admin-game-desc { margin: 0.25rem 0 0; color: #b9c9ef; font-size: 0.82rem; }
+      .admin-game-actions { display: flex; gap: 0.45rem; }
+      .mini-btn {
+        border: 1px solid #4868ac;
+        border-radius: 8px;
+        background: #12203d;
+        color: #fff;
+        padding: 0.42rem 0.6rem;
+        cursor: pointer;
+        font-size: 0.78rem;
+      }
+      .mini-btn.danger { border-color: #a93a48; background: #3a1420; }
 
       .admin-game-thumb {
         width: 28px;
@@ -526,6 +538,33 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+      }
+
+      .admin-game-form {
+        border: 1px solid #35518e;
+        border-radius: 10px;
+        background: #0d162b;
+        padding: 0.75rem;
+      }
+
+      .admin-game-form.hidden { display: none; }
+
+      .image-preview {
+        border: 1px dashed #4c69a8;
+        border-radius: 10px;
+        padding: 0.7rem;
+        min-height: 90px;
+        background: #11203f;
+      }
+
+      .image-preview img {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 1px solid #7390ce;
+        object-fit: cover;
+        display: block;
+        margin-bottom: 0.45rem;
       }
 
       @media (max-width: 980px) {
@@ -744,15 +783,26 @@
           <button id="guardarCambios" class="panel-btn">Guardar cambios</button>
         </div>
         <div id="editorJuegos" class="editor-box">
-          <strong>Editar lista de juegos</strong>
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Editar lista de juegos</strong>
+            <button id="abrirFormularioJuego" class="panel-btn" type="button">+ Agregar juego</button>
+          </div>
           <div id="juegoLista" class="admin-game-list"></div>
-          <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
-          <input id="juegoImagen" type="text" placeholder="URL imagen del icono redondo" />
-          <textarea id="juegoDescripcion" placeholder="Pequeña descripción del juego"></textarea>
-          <div class="admin-panel-actions">
-            <button id="agregarJuego" class="panel-btn">Agregar</button>
-            <button id="editarJuego" class="panel-btn">Editar</button>
-            <button id="eliminarJuego" class="panel-btn">Eliminar</button>
+          <div id="juegoForm" class="admin-game-form hidden">
+            <strong id="juegoFormTitulo">Agregar juego</strong>
+            <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
+            <input id="juegoImagen" type="text" placeholder="URL imagen del icono redondo" />
+            <textarea id="juegoDescripcion" placeholder="Descripción del juego"></textarea>
+            <div class="image-preview">
+              <small>Vista previa</small>
+              <img id="previewImagenJuego" src="" alt="Preview juego" />
+              <strong id="previewNombreJuego">Nombre del juego</strong>
+              <p id="previewDescripcionJuego" class="admin-game-desc">Descripción del juego.</p>
+            </div>
+            <div class="admin-panel-actions">
+              <button id="cancelarJuegoForm" class="panel-btn" type="button">Cancelar</button>
+              <button id="guardarJuegoForm" class="panel-btn" type="button">Guardar juego</button>
+            </div>
           </div>
         </div>
       </div>
@@ -773,12 +823,17 @@
       const configModal = document.getElementById('configModal');
       const closeConfig = document.getElementById('closeConfig');
       const juegoLista = document.getElementById('juegoLista');
+      const abrirFormularioJuego = document.getElementById('abrirFormularioJuego');
+      const juegoForm = document.getElementById('juegoForm');
+      const juegoFormTitulo = document.getElementById('juegoFormTitulo');
       const juegoNombre = document.getElementById('juegoNombre');
       const juegoImagen = document.getElementById('juegoImagen');
       const juegoDescripcion = document.getElementById('juegoDescripcion');
-      const agregarJuego = document.getElementById('agregarJuego');
-      const editarJuego = document.getElementById('editarJuego');
-      const eliminarJuego = document.getElementById('eliminarJuego');
+      const previewImagenJuego = document.getElementById('previewImagenJuego');
+      const previewNombreJuego = document.getElementById('previewNombreJuego');
+      const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
+      const cancelarJuegoForm = document.getElementById('cancelarJuegoForm');
+      const guardarJuegoForm = document.getElementById('guardarJuegoForm');
       const guardarCambios = document.getElementById('guardarCambios');
       const tabListaJuegos = document.getElementById('tabListaJuegos');
       const tabListaServidores = document.getElementById('tabListaServidores');
@@ -790,6 +845,7 @@
         { name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E", description: 'Market activo para adena y cuentas.' }
       ];
       let selectedAdminIndex = 0;
+      let editingAdminIndex = null;
 
       function openGamePage(index) {
         const game = games[index];
@@ -819,15 +875,9 @@
       function renderAdminSelect() {
         juegoLista.innerHTML = '';
         games.forEach((game, index) => {
-          const item = document.createElement('button');
-          item.type = 'button';
+          const item = document.createElement('article');
           item.className = `admin-game-item${index === selectedAdminIndex ? ' active' : ''}`;
-          item.innerHTML = `<span class="admin-game-thumb"><img src="${game.icon}" alt="${game.name}" /></span><span>${game.name}</span>`;
-          item.addEventListener('click', () => {
-            selectedAdminIndex = index;
-            renderAdminSelect();
-            loadSelectedGame();
-          });
+          item.innerHTML = `<div class="admin-game-main"><span class="admin-game-thumb"><img src="${game.icon}" alt="${game.name}" /></span><div><strong>${game.name}</strong><p class="admin-game-desc">${game.description || ''}</p></div></div><div class="admin-game-actions"><button class="mini-btn" type="button" data-action="edit" data-index="${index}">Editar</button><button class="mini-btn danger" type="button" data-action="delete" data-index="${index}">Eliminar</button></div>`;
           juegoLista.appendChild(item);
         });
       }
@@ -839,12 +889,34 @@
         juegoNombre.value = game.name;
         juegoImagen.value = game.icon;
         juegoDescripcion.value = game.description || '';
+        updateGamePreview();
       }
 
       function clearGameForm() {
         juegoNombre.value = '';
         juegoImagen.value = '';
         juegoDescripcion.value = '';
+        updateGamePreview();
+      }
+
+      function updateGamePreview() {
+        previewImagenJuego.src = juegoImagen.value.trim() || games[0].icon;
+        previewNombreJuego.textContent = juegoNombre.value.trim() || 'Nombre del juego';
+        previewDescripcionJuego.textContent = juegoDescripcion.value.trim() || 'Descripción del juego.';
+      }
+
+      function openGameForm(mode, index = null) {
+        juegoForm.classList.remove('hidden');
+        if (mode === 'edit' && index !== null && games[index]) {
+          editingAdminIndex = index;
+          selectedAdminIndex = index;
+          juegoFormTitulo.textContent = 'Editar juego';
+          loadSelectedGame();
+        } else {
+          editingAdminIndex = null;
+          juegoFormTitulo.textContent = 'Agregar juego';
+          clearGameForm();
+        }
       }
 
       renderGameList();
@@ -918,50 +990,62 @@
         tabListaJuegos.classList.remove('active');
       });
 
-      agregarJuego.addEventListener('click', () => {
-        if (!juegoNombre.value.trim()) return;
-        games.push({
-          name: juegoNombre.value.trim(),
-          icon: juegoImagen.value.trim() || games[0].icon,
-          description: juegoDescripcion.value.trim()
-        });
-        selectedAdminIndex = games.length - 1;
-        renderGameList();
-        renderAdminSelect();
+      abrirFormularioJuego.addEventListener('click', () => {
+        openGameForm('add');
+      });
+
+      juegoLista.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        const index = Number(btn.dataset.index);
+        if (btn.dataset.action === 'edit') {
+          openGameForm('edit', index);
+          renderAdminSelect();
+        }
+        if (btn.dataset.action === 'delete') {
+          if (games.length <= 1) return;
+          games.splice(index, 1);
+          selectedAdminIndex = Math.max(0, index - 1);
+          editingAdminIndex = null;
+          renderGameList();
+          renderAdminSelect();
+          clearGameForm();
+          juegoForm.classList.add('hidden');
+        }
+      });
+
+      juegoNombre.addEventListener('input', updateGamePreview);
+      juegoImagen.addEventListener('input', updateGamePreview);
+      juegoDescripcion.addEventListener('input', updateGamePreview);
+
+      cancelarJuegoForm.addEventListener('click', () => {
+        editingAdminIndex = null;
+        juegoForm.classList.add('hidden');
         clearGameForm();
       });
 
-      editarJuego.addEventListener('click', () => {
-        const i = selectedAdminIndex;
-        if (!games[i]) return;
-        games[i].name = juegoNombre.value.trim() || games[i].name;
-        games[i].icon = juegoImagen.value.trim() || games[i].icon;
-        games[i].description = juegoDescripcion.value.trim() || games[i].description || '';
+      guardarJuegoForm.addEventListener('click', () => {
+        if (!juegoNombre.value.trim()) return;
+        const payload = {
+          name: juegoNombre.value.trim(),
+          icon: juegoImagen.value.trim() || games[0].icon,
+          description: juegoDescripcion.value.trim()
+        };
+        if (editingAdminIndex === null) {
+          games.push(payload);
+          selectedAdminIndex = games.length - 1;
+        } else {
+          games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
+          selectedAdminIndex = editingAdminIndex;
+        }
         renderGameList();
         renderAdminSelect();
-        loadSelectedGame();
-      });
-
-      eliminarJuego.addEventListener('click', () => {
-        const i = selectedAdminIndex;
-        if (games.length <= 1) return;
-        games.splice(i, 1);
-        selectedAdminIndex = Math.max(0, i - 1);
-        renderGameList();
-        renderAdminSelect();
-        loadSelectedGame();
+        editingAdminIndex = null;
+        juegoForm.classList.add('hidden');
+        clearGameForm();
       });
 
       guardarCambios.addEventListener('click', () => {
-        const i = selectedAdminIndex;
-        if (games[i]) {
-          games[i].name = juegoNombre.value.trim() || games[i].name;
-          games[i].icon = juegoImagen.value.trim() || games[i].icon;
-          games[i].description = juegoDescripcion.value.trim() || games[i].description || '';
-          renderGameList();
-          renderAdminSelect();
-          loadSelectedGame();
-        }
         configModal.classList.remove('show');
         configModal.setAttribute('aria-hidden', 'true');
       });
