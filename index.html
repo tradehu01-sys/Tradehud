@@ -496,7 +496,11 @@
         padding: 0.75rem;
       }
 
-      .editor-box input, .editor-box select, .editor-box textarea {
+      .editor-box input,
+      .editor-box select,
+      .editor-box textarea,
+      .admin-game-form input,
+      .admin-game-form textarea {
         width: 100%;
         border-radius: 8px;
         border: 1px solid #d6b361;
@@ -504,11 +508,18 @@
         color: #ffffff;
         padding: 0.75rem;
         margin-bottom: 0.6rem;
+        display: block;
       }
 
-      .editor-box textarea {
+      .editor-box textarea,
+      .admin-game-form textarea {
         min-height: 220px;
         resize: none;
+      }
+
+      .admin-game-form input::placeholder,
+      .admin-game-form textarea::placeholder {
+        color: #c6d7ff;
       }
 
       .admin-game-list {
