@@ -436,16 +436,71 @@
 
       footer {
         margin-top: 2rem;
-        border-top: 1px solid var(--line);
-        background: #080a14;
+        border-top: 1px solid #274077;
+        background: linear-gradient(180deg, #070d1a, #060a14 70%, #050912);
       }
+      .footer-top {
+        text-align: center;
+        padding: 2rem 0 1.2rem;
+        border-bottom: 1px solid rgba(86, 111, 170, 0.35);
+      }
+      .footer-title {
+        margin: 0;
+        font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+        letter-spacing: 0.06em;
+      }
+      .footer-top p {
+        margin: 0.5rem auto 0;
+        max-width: 700px;
+        color: var(--muted);
+      }
+      .footer-social {
+        margin-top: 0.9rem;
+        display: flex;
+        justify-content: center;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+      }
+      .footer-social a {
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        text-decoration: none;
+        color: #fff;
+        border: 1px solid #4367b5;
+        background: #0f1b34;
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+      .footer-social a:hover { border-color: var(--gold); }
       .footer-grid {
         display: grid; gap: 1rem;
-        grid-template-columns: 1.2fr 1fr 1fr 1fr;
-        padding: 1.6rem 0;
+        grid-template-columns: 1fr 1fr 1fr 1.1fr;
+        padding: 1.25rem 0 1.6rem;
       }
-      footer h4 { margin: 0 0 .55rem; color: var(--gold); }
+      .footer-box {
+        background: rgba(13, 21, 40, 0.75);
+        border: 1px solid rgba(72, 102, 165, 0.38);
+        border-radius: 12px;
+        padding: 0.85rem;
+      }
+      footer h4 { margin: 0 0 .55rem; color: #edf3ff; }
+      footer ul { margin: 0; padding-left: 1.05rem; }
       footer li, footer p { color: var(--muted); font-size: .92rem; }
+      footer li { margin-bottom: 0.3rem; }
+      footer a { color: #b5ccfa; text-decoration: none; }
+      footer a:hover { color: #ffffff; text-decoration: underline; }
+      .footer-note {
+        border: 1px dashed rgba(126, 154, 215, 0.5);
+        border-radius: 10px;
+        padding: 0.75rem;
+        background: rgba(8, 14, 28, 0.88);
+        font-size: 0.85rem;
+        line-height: 1.45;
+        color: #9fbae9;
+      }
 
       .footer-brand {
         display: flex;
@@ -985,17 +1040,51 @@
     </main>
 
     <footer>
-      <div class="container footer-grid">
-        <div>
-          <div class="footer-brand">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2300d1ff'/%3E%3Cstop offset='1' stop-color='%23ff3d2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='18' fill='%230f1a30'/%3E%3Ccircle cx='50' cy='50' r='34' fill='url(%23g)'/%3E%3Ctext x='50' y='58' text-anchor='middle' fill='white' font-size='28' font-family='Arial' font-weight='700'%3ETH%3C/text%3E%3C/svg%3E" alt="Logo TradeHub" />
-            <h4>TradeHub</h4>
-          </div>
-          <p>Marketplace MMORPG para cuentas, oro y servicios.</p>
+      <div class="container footer-top">
+        <h3 class="footer-title">TRADEHUD</h3>
+        <p>Marketplace especializado en la compra y venta de monedas, cuentas y servicios MMORPG.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/profile.php?id=61582836070089" target="_blank" rel="noopener noreferrer" aria-label="Facebook">f</a>
+          <a href="https://www.youtube.com/channel/UCJvhSvnlYs8pKYx3lwy4p2g" target="_blank" rel="noopener noreferrer" aria-label="YouTube">YT</a>
+          <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer" aria-label="Discord">DS</a>
+          <a href="https://www.tiktok.com/@tradehubmmoprg?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="TikTok">TT</a>
+          <a href="https://t.me" target="_blank" rel="noopener noreferrer" aria-label="Telegram">TG</a>
         </div>
-        <div><h4>Enlaces</h4><ul><li>Oro</li><li>Vender</li><li>Marketplace</li></ul></div>
-        <div><h4>Categorías</h4><ul><li>WoW</li><li>Albion</li><li>Lineage</li></ul></div>
-        <div><h4>Soporte</h4><ul><li>24/7</li><li>Comunidad activa</li><li>Atención rápida</li></ul></div>
+      </div>
+      <div class="container footer-grid">
+        <div class="footer-box">
+          <h4>Servicios confiables</h4>
+          <ul>
+            <li><a href="#inicio" data-page-link data-page="inicio">Términos y condiciones</a></li>
+            <li><a href="#inicio" data-page-link data-page="inicio">Política de privacidad</a></li>
+            <li><a href="#inicio" data-page-link data-page="inicio">Política de reembolso</a></li>
+            <li><a href="#contacto" data-page-link data-page="inicio">Comunidades</a></li>
+          </ul>
+        </div>
+        <div class="footer-box">
+          <h4>Enlaces importantes</h4>
+          <ul>
+            <li><a href="#oro" data-page-link data-page="oro">Marketplace de monedas</a></li>
+            <li><a href="#marketplace" data-page-link data-page="marketplace">Marketplace de cuentas</a></li>
+            <li><a href="#marketplace" data-page-link data-page="marketplace">Marketplace de servicios</a></li>
+            <li><a href="#inicio" data-page-link data-page="inicio">Centro de guías</a></li>
+          </ul>
+        </div>
+        <div class="footer-box">
+          <h4>Soporte y ayuda</h4>
+          <ul>
+            <li><a href="https://wa.me" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+            <li><a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Discord</a></li>
+            <li><a href="https://t.me" target="_blank" rel="noopener noreferrer">Telegram</a></li>
+            <li><a href="#contacto" data-page-link data-page="inicio">Atención para compradores y proveedores</a></li>
+          </ul>
+        </div>
+        <div class="footer-box">
+          <div class="footer-note">
+            TradeHud no está afiliado oficialmente con los desarrolladores de los juegos mencionados.
+            Todas las marcas pertenecen a sus respectivos propietarios.
+          </div>
+        </div>
       </div>
       <div class="container copyright">© 2026 TradeHud. Todos los derechos reservados.</div>
     </footer>
