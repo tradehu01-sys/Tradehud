@@ -78,7 +78,34 @@
 
       .hero { padding: 4.5rem 0 2.5rem; }
       .page-section { display: none; }
-      .page-section.active-page { display: block; }
+      .page-section.active-page {
+        display: block;
+        animation: pageFade .32s ease;
+      }
+
+      @keyframes pageFade {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .page-loader {
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 8, 16, 0.62);
+        display: none;
+        place-items: center;
+        z-index: 150;
+      }
+
+      .page-loader.show { display: grid; }
+      .page-loader span {
+        border: 1px solid #4e67a1;
+        background: #101a31;
+        color: #d7e5ff;
+        border-radius: 999px;
+        padding: 0.55rem 0.95rem;
+        font-size: 0.86rem;
+      }
       .hero-wrap {
         display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1rem;
       }
@@ -655,6 +682,7 @@
     </style>
   </head>
   <body>
+    <div id="pageLoader" class="page-loader" aria-hidden="true"><span>Cargando sección...</span></div>
     <header>
       <div class="container nav">
         <div class="logo">
@@ -902,6 +930,7 @@
 
     <script>
       const gameList = document.getElementById('gameList');
+      const pageLoader = document.getElementById('pageLoader');
       const pageLinks = document.querySelectorAll('[data-page-link]');
       const pageSections = document.querySelectorAll('.page-section');
       const gameWindowModal = document.getElementById('gameWindowModal');
@@ -943,6 +972,7 @@
       ];
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
+      let pageSwitchTimer = null;
 
       function openGamePage(index) {
         const game = games[index];
@@ -954,10 +984,21 @@
         gameWindowModal.setAttribute('aria-hidden', 'false');
       }
 
-      function showPage(page) {
+      function setActivePage(page) {
         pageSections.forEach((section) => {
           section.classList.toggle('active-page', section.dataset.page === page);
         });
+      }
+
+      function showPage(page) {
+        pageLoader.classList.add('show');
+        pageLoader.setAttribute('aria-hidden', 'false');
+        clearTimeout(pageSwitchTimer);
+        pageSwitchTimer = setTimeout(() => {
+          setActivePage(page);
+          pageLoader.classList.remove('show');
+          pageLoader.setAttribute('aria-hidden', 'true');
+        }, 220);
       }
 
       function renderGameList() {
@@ -1033,7 +1074,7 @@
       renderGameList();
       renderAdminSelect();
       loadSelectedGame();
-      showPage('inicio');
+      setActivePage('inicio');
 
       pageLinks.forEach((link) => {
         link.addEventListener('click', (e) => {
