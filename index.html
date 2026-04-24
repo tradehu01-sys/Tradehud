@@ -465,6 +465,29 @@
         cursor: pointer;
       }
 
+      .admin-head-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        align-items: flex-end;
+      }
+
+      .logout-btn {
+        border: 1px solid #8a6a2b;
+        border-radius: 8px;
+        background: linear-gradient(120deg, #2e2514, #5b4418);
+        color: #ffe6a8;
+        font-size: 0.78rem;
+        padding: 0.35rem 0.55rem;
+        cursor: pointer;
+      }
+
+      .admin-notice {
+        margin: 0.6rem 0 0;
+        font-size: 0.86rem;
+        color: #9fd6ff;
+      }
+
       .editor-box {
         margin-top: 0.8rem;
         background: #101a31;
@@ -791,15 +814,16 @@
       <div class="config-card">
         <div class="admin-head">
           <strong>Configuraciones</strong>
-          <button id="closeConfig" class="close-btn">✕</button>
+          <div class="admin-head-actions">
+            <button id="closeConfig" class="close-btn">✕</button>
+            <button id="cerrarSesionAdmin" class="logout-btn" type="button">Cerrar sesión</button>
+          </div>
         </div>
         <p class="lead" style="margin:0;">Panel admin para editar casillas de juegos.</p>
+        <div id="adminNotice" class="admin-notice"></div>
         <div class="panel-tabs">
           <button id="tabListaJuegos" class="panel-tab active" type="button">Lista de juegos</button>
           <button id="tabListaServidores" class="panel-tab" type="button">Lista de servidores de juegos</button>
-        </div>
-        <div class="admin-panel-actions">
-          <button id="guardarCambios" class="panel-btn">Guardar cambios</button>
         </div>
         <div id="editorJuegos" class="editor-box">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -818,8 +842,11 @@
           <button id="cerrarJuegoFormModal" class="close-btn" type="button">✕</button>
         </div>
         <div id="juegoForm" class="admin-game-form">
+          <label for="juegoNombre">Nombre del juego</label>
           <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
+          <label for="juegoImagen">Imagen (URL)</label>
           <input id="juegoImagen" type="text" placeholder="URL imagen del icono redondo" />
+          <label for="juegoDescripcion">Descripción</label>
           <textarea id="juegoDescripcion" placeholder="Descripción del juego"></textarea>
           <div class="image-preview">
             <small>Vista previa</small>
@@ -849,6 +876,8 @@
       const adminMsg = document.getElementById('adminMsg');
       const configModal = document.getElementById('configModal');
       const closeConfig = document.getElementById('closeConfig');
+      const cerrarSesionAdmin = document.getElementById('cerrarSesionAdmin');
+      const adminNotice = document.getElementById('adminNotice');
       const juegoLista = document.getElementById('juegoLista');
       const abrirFormularioJuego = document.getElementById('abrirFormularioJuego');
       const juegoFormModal = document.getElementById('juegoFormModal');
@@ -863,7 +892,6 @@
       const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
       const cancelarJuegoForm = document.getElementById('cancelarJuegoForm');
       const guardarJuegoForm = document.getElementById('guardarJuegoForm');
-      const guardarCambios = document.getElementById('guardarCambios');
       const tabListaJuegos = document.getElementById('tabListaJuegos');
       const tabListaServidores = document.getElementById('tabListaServidores');
 
@@ -947,6 +975,11 @@
           juegoFormTitulo.textContent = 'Agregar juego';
           clearGameForm();
         }
+      }
+
+      function showAdminNotice(message, kind = 'info') {
+        adminNotice.textContent = message;
+        adminNotice.style.color = kind === 'ok' ? '#9affcc' : kind === 'warn' ? '#ffd39a' : '#9fd6ff';
       }
 
       renderGameList();
@@ -1040,6 +1073,7 @@
           renderGameList();
           renderAdminSelect();
           clearGameForm();
+          showAdminNotice('Juego eliminado de la categoría correctamente.', 'warn');
         }
       });
 
@@ -1052,6 +1086,7 @@
         juegoFormModal.classList.remove('show');
         juegoFormModal.setAttribute('aria-hidden', 'true');
         clearGameForm();
+        showAdminNotice('Operación cancelada. No se guardaron cambios.', 'info');
       });
 
       cerrarJuegoFormModal.addEventListener('click', () => {
@@ -1059,6 +1094,7 @@
         juegoFormModal.classList.remove('show');
         juegoFormModal.setAttribute('aria-hidden', 'true');
         clearGameForm();
+        showAdminNotice('Ventana de edición cerrada.', 'info');
       });
 
       juegoFormModal.addEventListener('click', (e) => {
@@ -1067,6 +1103,7 @@
           juegoFormModal.classList.remove('show');
           juegoFormModal.setAttribute('aria-hidden', 'true');
           clearGameForm();
+          showAdminNotice('Ventana cerrada desde fondo del modal.', 'info');
         }
       });
 
@@ -1080,9 +1117,11 @@
         if (editingAdminIndex === null) {
           games.push(payload);
           selectedAdminIndex = games.length - 1;
+          showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
         } else {
           games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
           selectedAdminIndex = editingAdminIndex;
+          showAdminNotice(`Juego actualizado: ${payload.name}.`, 'ok');
         }
         renderGameList();
         renderAdminSelect();
@@ -1092,9 +1131,16 @@
         clearGameForm();
       });
 
-      guardarCambios.addEventListener('click', () => {
-        configModal.classList.remove('show');
-        configModal.setAttribute('aria-hidden', 'true');
+      cerrarSesionAdmin.addEventListener('click', () => {
+        showAdminNotice('Sección cerrada ✨ ¡Buen trabajo, admin!', 'ok');
+        setTimeout(() => {
+          configModal.classList.remove('show');
+          configModal.setAttribute('aria-hidden', 'true');
+          adminModal.classList.add('show');
+          adminModal.setAttribute('aria-hidden', 'false');
+          adminMsg.textContent = 'Sesión cerrada correctamente.';
+          adminMsg.style.color = '#8fdcff';
+        }, 450);
       });
     </script>
   </body>
