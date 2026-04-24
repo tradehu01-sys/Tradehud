@@ -499,16 +499,16 @@
       .editor-box input, .editor-box select, .editor-box textarea {
         width: 100%;
         border-radius: 8px;
-        border: 1px solid #3d5b99;
-        background: #0d162b;
-        color: #fff;
+        border: 1px solid #8a6b2a;
+        background: #152847;
+        color: #f4f8ff;
         padding: 0.6rem;
         margin-bottom: 0.6rem;
       }
 
       .editor-box textarea {
-        min-height: 92px;
-        resize: vertical;
+        min-height: 160px;
+        resize: none;
       }
 
       .admin-game-list {
@@ -613,6 +613,10 @@
         padding: 0.7rem;
         min-height: 90px;
         background: #11203f;
+      }
+
+      #previewDescripcionJuego {
+        color: #b9c9ef;
       }
 
       .image-preview img {
@@ -980,11 +984,10 @@
 
       function updateGamePreview() {
         const desc = juegoDescripcion.value.trim();
-        const dynamicColors = ['#9fd6ff', '#ffd39a', '#9affcc', '#d1b7ff'];
         previewImagenJuego.src = juegoImagen.value.trim() || games[0].icon;
         previewNombreJuego.textContent = juegoNombre.value.trim() || 'Nombre del juego';
         previewDescripcionJuego.textContent = desc || 'Descripción del juego.';
-        previewDescripcionJuego.style.color = desc ? dynamicColors[desc.length % dynamicColors.length] : '#b9c9ef';
+        previewDescripcionJuego.style.color = '#b9c9ef';
       }
 
       function openGameForm(mode, index = null) {
