@@ -138,6 +138,34 @@
         padding: 0.85rem;
       }
 
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 1rem;
+      }
+
+      .about-list {
+        margin: 0.6rem 0 0;
+        padding-left: 1.1rem;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .badge-row {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+        margin-top: 0.6rem;
+      }
+
+      .badge {
+        border: 1px solid #385aa0;
+        border-radius: 999px;
+        padding: 0.35rem 0.7rem;
+        font-size: 0.78rem;
+        background: #101d36;
+      }
+
       section { padding: 2.4rem 0; }
 
       .section-title {
@@ -670,10 +698,10 @@
       }
 
       @media (max-width: 980px) {
-        .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid { grid-template-columns: 1fr 1fr; }
+        .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr 1fr; }
       }
       @media (max-width: 640px) {
-        .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid { grid-template-columns: 1fr; }
+        .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
         .social-buttons { grid-template-columns: 1fr; }
         .game-window-grid { grid-template-columns: 1fr; }
         .game-window-grid .game-option:last-child { grid-column: auto; }
@@ -716,6 +744,41 @@
             <div class="mini"><strong>Soporte 24/7</strong><br /><small>Atención por Discord y WhatsApp.</small></div>
             <div class="mini"><strong>Marketplace seguro</strong><br /><small>Proceso guiado para compra/venta.</small></div>
           </aside>
+        </div>
+      </section>
+
+      <section id="quienes-somos" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">¿Quiénes <span>somos?</span></h2>
+          <div class="about-grid">
+            <article class="glass">
+              <p class="lead" style="margin-top:0;">
+                En TradeHud somos una comunidad enfocada en comercio seguro para MMORPG. Ayudamos a jugadores a comprar oro,
+                vender recursos y contratar servicios con procesos claros, soporte humano y seguimiento en cada operación.
+              </p>
+              <p class="lead" style="margin-top:0.35rem;">
+                Nuestra prioridad es la confianza: verificamos pedidos, confirmamos disponibilidad en tiempo real y mantenemos
+                comunicación directa durante todo el flujo, desde la solicitud hasta la entrega final.
+              </p>
+              <ul class="about-list">
+                <li>Atención personalizada para cada cliente y servidor.</li>
+                <li>Protocolos de validación para reducir riesgos en transacciones.</li>
+                <li>Soporte activo para dudas, seguimiento y postventa.</li>
+              </ul>
+            </article>
+            <article class="glass">
+              <strong style="font-size:1.05rem;">Nuestra misión</strong>
+              <p class="lead" style="margin-top:0.45rem;">
+                Convertir el comercio gaming en una experiencia profesional, rápida y transparente.
+              </p>
+              <div class="badge-row">
+                <span class="badge">Transparencia</span>
+                <span class="badge">Rapidez</span>
+                <span class="badge">Soporte real</span>
+                <span class="badge">Comunidad activa</span>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
