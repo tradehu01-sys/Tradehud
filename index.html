@@ -1808,9 +1808,12 @@
 
       function updateGamePreview() {
         const desc = juegoDescripcion.value.trim();
+        const selectedServicesLabel = getSelectedServices()
+          .map((service) => serviceCatalog[service]?.title || service.toUpperCase())
+          .join(' • ');
         previewImagenJuego.src = juegoImagen.value.trim() || games[0].icon;
         previewNombreJuego.textContent = juegoNombre.value.trim() || 'Nombre del juego';
-        previewDescripcionJuego.textContent = desc || 'Descripción del juego.';
+        previewDescripcionJuego.textContent = `${desc || 'Descripción del juego.'} | Opciones: ${selectedServicesLabel}`;
         previewDescripcionJuego.style.color = '#b9c9ef';
       }
 
@@ -2126,10 +2129,6 @@
 
       guardarJuegoForm.addEventListener('click', async () => {
         if (!juegoNombre.value.trim()) return;
-        if (!supabaseClient) {
-          showAdminNotice('Debes conectar Supabase para guardar juegos.', 'warn');
-          return;
-        }
         const payload = {
           name: juegoNombre.value.trim(),
           icon: juegoImagen.value.trim() || games[0].icon,
@@ -2137,42 +2136,54 @@
           services: getSelectedServices()
         };
         if (editingAdminIndex === null) {
-          const supabasePayload = {
-            name: payload.name,
-            icon: payload.icon,
-            description: payload.description
-          };
-          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description').single();
-          if (error) {
-            showAdminNotice('No se pudo guardar el juego en Supabase.', 'warn');
-            return;
+          if (supabaseClient) {
+            const supabasePayload = {
+              name: payload.name,
+              icon: payload.icon,
+              description: payload.description
+            };
+            const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description').single();
+            if (error) {
+              games.push({ id: null, ...payload });
+              selectedAdminIndex = games.length - 1;
+              showAdminNotice('No se pudo guardar en Supabase. Se guardó localmente.', 'warn');
+            } else {
+              games.push({ ...data, services: payload.services });
+              selectedAdminIndex = games.length - 1;
+              showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
+            }
+          } else {
+            games.push({ id: null, ...payload });
+            selectedAdminIndex = games.length - 1;
+            showAdminNotice(`Juego agregado localmente: ${payload.name}.`, 'info');
           }
-          games.push({ ...data, services: payload.services });
-          selectedAdminIndex = games.length - 1;
-          showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
         } else {
-          if (!games[editingAdminIndex]?.id) {
-            showAdminNotice('Juego sin ID remoto. Recarga datos desde Supabase.', 'warn');
-            return;
+          if (supabaseClient && games[editingAdminIndex]?.id) {
+            const supabasePayload = {
+              name: payload.name,
+              icon: payload.icon,
+              description: payload.description
+            };
+            const { data, error } = await supabaseClient
+              .from('games')
+              .update(supabasePayload)
+              .eq('id', games[editingAdminIndex].id)
+              .select('id,name,icon,description')
+              .single();
+            if (error) {
+              games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
+              selectedAdminIndex = editingAdminIndex;
+              showAdminNotice('No se pudo actualizar en Supabase. Se actualizó localmente.', 'warn');
+            } else {
+              games[editingAdminIndex] = { ...data, services: payload.services };
+              selectedAdminIndex = editingAdminIndex;
+              showAdminNotice(`Juego actualizado: ${payload.name}.`, 'ok');
+            }
+          } else {
+            games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
+            selectedAdminIndex = editingAdminIndex;
+            showAdminNotice(`Juego actualizado localmente: ${payload.name}.`, 'info');
           }
-          const supabasePayload = {
-            name: payload.name,
-            icon: payload.icon,
-            description: payload.description
-          };
-          const { data, error } = await supabaseClient
-            .from('games')
-            .update(supabasePayload)
-            .eq('id', games[editingAdminIndex].id)
-            .select('id,name,icon,description')
-            .single();
-          if (error) {
-            showAdminNotice('No se pudo actualizar el juego en Supabase.', 'warn');
-            return;
-          }
-          games[editingAdminIndex] = { ...data, services: payload.services };
-          selectedAdminIndex = editingAdminIndex;
-          showAdminNotice(`Juego actualizado: ${payload.name}.`, 'ok');
         }
         renderGameList();
         renderAdminSelect();
