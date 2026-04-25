@@ -571,16 +571,27 @@
         justify-content: center;
         gap: 0.65rem;
         flex-wrap: wrap;
+        align-items: stretch;
       }
       .payment-btn {
         border: 1px solid #3a4d79;
         background: #111a2e;
         color: #dce8ff;
         border-radius: 10px;
-        padding: 0.58rem 0.82rem;
+        padding: 0.55rem 0.7rem;
         min-width: 108px;
         text-align: center;
-        font-size: 0.82rem;
+        font-size: 0.8rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+      }
+      .payment-btn img {
+        width: 25px;
+        height: 25px;
+        object-fit: contain;
       }
 
       .footer-brand {
@@ -1170,11 +1181,11 @@
       <div class="container payment-strip">
         <h4>Métodos de pago disponibles</h4>
         <div class="payment-row">
-          <div class="payment-btn">Binance</div>
-          <div class="payment-btn">Bitcoin</div>
-          <div class="payment-btn">Zinli</div>
-          <div class="payment-btn">PayPal</div>
-          <div class="payment-btn">Cryptomonedas</div>
+          <div class="payment-btn"><img src="https://cdn.simpleicons.org/binance/F3BA2F" alt="Binance" /><span>Binance</span></div>
+          <div class="payment-btn"><img src="https://cdn.simpleicons.org/bitcoin/F7931A" alt="Bitcoin" /><span>Bitcoin</span></div>
+          <div class="payment-btn"><img src="https://cdn.simpleicons.org/zelle/6D1ED4" alt="Zinli" /><span>Zinli</span></div>
+          <div class="payment-btn"><img src="https://cdn.simpleicons.org/paypal/00457C" alt="PayPal" /><span>PayPal</span></div>
+          <div class="payment-btn"><img src="https://cdn.simpleicons.org/coinmarketcap/16C784" alt="Cryptomonedas" /><span>Cryptomonedas</span></div>
         </div>
       </div>
       <div class="container copyright">© 2026 TradeHud. Todos los derechos reservados.</div>
