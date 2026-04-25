@@ -582,6 +582,18 @@
 
       .sell-list li { margin-bottom: .35rem; }
 
+      .sell-pay-item {
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+      }
+
+      .sell-pay-icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+      }
+
       .sell-steps {
         display: grid;
         gap: .55rem;
@@ -622,6 +634,16 @@
         margin-top: .6rem;
         font-size: .84rem;
         color: #b8c9ef;
+      }
+
+      .sell-payment-photo {
+        width: 88px;
+        height: 88px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid #4868b5;
+        margin-top: .65rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
       }
 
       ul a {
@@ -1442,10 +1464,10 @@
                 </ul>
                 <h3 style="margin-top:.8rem;">Métodos de pago</h3>
                 <ul class="sell-list">
-                  <li>💳 Transferencia bancaria</li>
-                  <li>🟡 USDT</li>
-                  <li>🅿️ PayPal</li>
-                  <li>🟨 Binance</li>
+                  <li class="sell-pay-item"><img class="sell-pay-icon" src="https://img.icons8.com/fluency/48/bank-building.png" alt="Transferencia" /> Transferencia bancaria</li>
+                  <li class="sell-pay-item"><img class="sell-pay-icon" src="https://cdn.simpleicons.org/tether/50AF95" alt="USDT" /> USDT</li>
+                  <li class="sell-pay-item"><img class="sell-pay-icon" src="https://cdn.simpleicons.org/paypal/00457C" alt="PayPal" /> PayPal</li>
+                  <li class="sell-pay-item"><img class="sell-pay-icon" src="https://cdn.simpleicons.org/binance/F3BA2F" alt="Binance" /> Binance</li>
                 </ul>
                 <h3 style="margin-top:.8rem;">Requisitos mínimos para vender</h3>
                 <ul class="sell-list">
@@ -1463,6 +1485,11 @@
                   <div class="sell-step"><strong>3)</strong> Confirmamos comprador y seguridad.</div>
                   <div class="sell-step"><strong>4)</strong> Recibe tu pago (transferencia, USDT o PayPal).</div>
                 </div>
+                <img
+                  class="sell-payment-photo"
+                  src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412299370266787/photo_2026-03-26_10-15-34.jpg?ex=69ee1620&is=69ecc4a0&hm=935f1c122ef4b1e5635ea825c0eaca35b4873c77e8067a84e88fbda29400c80f&"
+                  alt="Recibe tu pago TradeHud"
+                />
                 <a class="discord-sell-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Ir al Discord de venta</a>
                 <p class="sell-note">🛡️ <strong>Transacción moderada y protegida por TradeHud.</strong></p>
                 <p class="sell-note"><strong>FAQ breve:</strong> ¿Qué pasa si me intentan estafar? El equipo de TradeHud modera y congela la transacción hasta resolver.</p>
@@ -1766,17 +1793,17 @@
         boosting: {
           className: 'boost',
           title: 'BOOSTING',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006601390428240/ChatGPT_Image_20_abr_2026_06_42_34_p.m..png'
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006601390428240/ChatGPT_Image_20_abr_2026_06_42_34_p.m..png?ex=69ee3ef8&is=69eced78&hm=34489a6b7f658cfee76304d1a03280ca83019ac2e2b8e2c925d3fe446515ec9e&'
         },
         accounts: {
           className: 'accounts',
           title: 'ACCOUNTS',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006645220905070/ChatGPT_Image_20_abr_2026_06_43_30_p.m..png'
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006645220905070/ChatGPT_Image_20_abr_2026_06_43_30_p.m..png?ex=69ee3f02&is=69eced82&hm=f87b74e259fd5a4082b4412a7993cb1a32fb60ddb07b24a42aba02f61d5a1c6b&'
         },
         gold: {
           className: 'gold',
           title: 'GOLD',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006561200472115/ChatGPT_Image_20_abr_2026_06_41_28_p.m..png'
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006561200472115/ChatGPT_Image_20_abr_2026_06_41_28_p.m..png?ex=69ee3eee&is=69eced6e&hm=88042dec6f5c77cd69acb68c4734b5906c6db955a214fdd4e14751acd9e0294c&'
         }
       };
       const SUPABASE_URL =
