@@ -63,10 +63,11 @@
       }
 
       .logo img {
-        width: 34px;
-        height: 34px;
+        width: 138px;
+        height: 42px;
         border-radius: 8px;
         border: 1px solid #3f66b5;
+        object-fit: cover;
       }
 
       nav { display: flex; gap: 0.55rem; flex-wrap: wrap; }
@@ -876,13 +877,14 @@
     <header>
       <div class="container nav">
         <div class="logo">
-          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2300d1ff'/%3E%3Cstop offset='1' stop-color='%23ff3d2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='18' fill='%230f1a30'/%3E%3Ccircle cx='50' cy='50' r='34' fill='url(%23g)'/%3E%3Ctext x='50' y='58' text-anchor='middle' fill='white' font-size='28' font-family='Arial' font-weight='700'%3ETH%3C/text%3E%3C/svg%3E" alt="Logo TradeHub" />
-          <span>TRADEHUB</span>
+          <a href="#inicio" data-page-link data-page="inicio" aria-label="Ir al inicio">
+            <img src="https://cdn.discordapp.com/attachments/1492284382977855689/1497413092953428058/ChatGPT_Image_24_abr_2026_09_44_47_p.m..png?ex=69ed6e1d&is=69ec1c9d&hm=bb3fd7d6d56af74deedc387fb38c16131ce33210758043a8edf310036413fec3&" alt="TradeHud" />
+          </a>
         </div>
         <nav>
           <a href="#inicio" data-page-link data-page="inicio">Inicio</a>
           <a href="#oro" data-page-link data-page="oro">Oro</a>
-          <a href="#vender" data-page-link data-page="vendemos-oro">Vendemos tu oro</a>
+          <a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a>
           <a href="#marketplace" data-page-link data-page="marketplace">Marketplace</a>
         </nav>
         <div class="nav-actions">
@@ -911,7 +913,7 @@
             </p>
             <div class="cta-row">
               <a class="btn" href="#oro">Comprar Oro</a>
-              <a class="btn alt" href="#vender" data-page-link data-page="vendemos-oro">Vendemos tu oro</a>
+              <a class="btn alt" href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a>
             </div>
           </article>
           <aside class="hero-right">
@@ -997,8 +999,8 @@
 
       <section id="vender" class="page-section" data-page="vendemos-oro">
         <div class="container">
-          <h2 class="section-title">Vendemos tu <span>oro</span></h2>
-          <p class="lead" style="margin:0 0 1rem 0;">Vendemos tu oro con atención por Discord, confirmación rápida y proceso seguro.</p>
+          <h2 class="section-title">Vender tu <span>oro</span></h2>
+          <p class="lead" style="margin:0 0 1rem 0;">Vender tu oro con atención por Discord, confirmación rápida y proceso seguro.</p>
           <div class="split">
             <div>
               <div class="step">1) Abre ticket en Discord.</div>
@@ -1084,7 +1086,7 @@
           <ul>
             <li><a href="#inicio" data-page-link data-page="inicio">Inicio</a></li>
             <li><a href="#oro" data-page-link data-page="oro">Oro</a></li>
-            <li><a href="#vender" data-page-link data-page="vendemos-oro">Vendemos tu oro</a></li>
+            <li><a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a></li>
             <li><a href="#marketplace" data-page-link data-page="marketplace">Marketplace</a></li>
           </ul>
         </div>
