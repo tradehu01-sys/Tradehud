@@ -24,10 +24,7 @@
         margin: 0;
         font-family: 'Inter', system-ui, sans-serif;
         color: var(--text);
-        background:
-          radial-gradient(circle at 10% 5%, rgba(34, 95, 191, 0.32), transparent 32%),
-          radial-gradient(circle at 85% 0%, rgba(255, 179, 71, 0.18), transparent 30%),
-          linear-gradient(180deg, #06070d, #070911 35%, #090d17 100%);
+        background: #000000;
         background-attachment: fixed;
         overflow-x: hidden;
       }
@@ -36,12 +33,10 @@
         content: '';
         position: fixed;
         inset: -20%;
-        background:
-          radial-gradient(circle at 30% 30%, rgba(0, 209, 255, 0.1), transparent 36%),
-          radial-gradient(circle at 70% 55%, rgba(46, 123, 255, 0.1), transparent 40%);
+        background: none;
         pointer-events: none;
         z-index: -1;
-        animation: auroraShift 14s ease-in-out infinite alternate;
+        animation: none;
       }
 
       .container { width: min(1200px, 92vw); margin: 0 auto; }
@@ -91,6 +86,28 @@
         border-radius: 999px;
         padding: 0.42rem 0.9rem;
         cursor: pointer;
+      }
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .discord-nav-btn {
+        border: 1px solid #4c6ad5;
+        background: #141d3d;
+        color: #fff;
+        border-radius: 999px;
+        padding: 0.35rem 0.75rem;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 0.82rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .discord-nav-btn img {
+        width: 16px;
+        height: 16px;
       }
 
       .hero { padding: 4.5rem 0 2.5rem; }
@@ -474,6 +491,10 @@
         font-size: 0.78rem;
         font-weight: 700;
       }
+      .footer-social a img {
+        width: 17px;
+        height: 17px;
+      }
       .footer-social a:hover { border-color: var(--gold); }
       .footer-grid {
         display: grid; gap: 1rem;
@@ -492,6 +513,15 @@
       footer li { margin-bottom: 0.3rem; }
       footer a { color: #b5ccfa; text-decoration: none; }
       footer a:hover { color: #ffffff; text-decoration: underline; }
+      .link-with-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .link-with-icon img {
+        width: 14px;
+        height: 14px;
+      }
       .footer-note {
         border: 1px dashed rgba(126, 154, 215, 0.5);
         border-radius: 10px;
@@ -852,9 +882,16 @@
         <nav>
           <a href="#inicio" data-page-link data-page="inicio">Inicio</a>
           <a href="#oro" data-page-link data-page="oro">Oro</a>
+          <a href="#vender" data-page-link data-page="vendemos-oro">Vendemos tu oro</a>
           <a href="#marketplace" data-page-link data-page="marketplace">Marketplace</a>
         </nav>
-        <button id="openAdmin" class="admin-open">Acceso Admin</button>
+        <div class="nav-actions">
+          <a class="discord-nav-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">
+            <img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />
+            Discord
+          </a>
+          <button id="openAdmin" class="admin-open">Acceso Admin</button>
+        </div>
       </div>
     </header>
 
@@ -874,7 +911,7 @@
             </p>
             <div class="cta-row">
               <a class="btn" href="#oro">Comprar Oro</a>
-              <a class="btn alt" href="#contacto">Ver contacto</a>
+              <a class="btn alt" href="#vender" data-page-link data-page="vendemos-oro">Vendemos tu oro</a>
             </div>
           </article>
           <aside class="hero-right">
@@ -958,9 +995,10 @@
         </div>
       </div>
 
-      <section id="vender" class="page-section" data-page="inicio">
+      <section id="vender" class="page-section" data-page="vendemos-oro">
         <div class="container">
-          <h2 class="section-title">Vender <span>Oro</span></h2>
+          <h2 class="section-title">Vendemos tu <span>oro</span></h2>
+          <p class="lead" style="margin:0 0 1rem 0;">Vendemos tu oro con atención por Discord, confirmación rápida y proceso seguro.</p>
           <div class="split">
             <div>
               <div class="step">1) Abre ticket en Discord.</div>
@@ -1045,11 +1083,11 @@
         <h3 class="footer-title">TRADEHUD</h3>
         <p>Marketplace especializado en la compra y venta de monedas, cuentas y servicios MMORPG.</p>
         <div class="footer-social">
-          <a href="https://www.facebook.com/profile.php?id=61582836070089" target="_blank" rel="noopener noreferrer" aria-label="Facebook">f</a>
-          <a href="https://www.youtube.com/channel/UCJvhSvnlYs8pKYx3lwy4p2g" target="_blank" rel="noopener noreferrer" aria-label="YouTube">YT</a>
-          <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer" aria-label="Discord">DS</a>
-          <a href="https://www.tiktok.com/@tradehubmmoprg?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="TikTok">TT</a>
-          <a href="https://t.me" target="_blank" rel="noopener noreferrer" aria-label="Telegram">TG</a>
+          <a href="https://www.facebook.com/profile.php?id=61582836070089" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><img src="https://cdn.simpleicons.org/facebook/1877F2" alt="Facebook" /></a>
+          <a href="https://www.youtube.com/channel/UCJvhSvnlYs8pKYx3lwy4p2g" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="https://cdn.simpleicons.org/youtube/FF0000" alt="YouTube" /></a>
+          <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer" aria-label="Discord"><img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" /></a>
+          <a href="https://www.tiktok.com/@tradehubmmoprg?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><img src="https://cdn.simpleicons.org/tiktok/FFFFFF" alt="TikTok" /></a>
+          <a href="https://t.me" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram" /></a>
         </div>
       </div>
       <div class="container footer-grid">
@@ -1059,25 +1097,25 @@
             <li><a href="#inicio" data-page-link data-page="inicio">Términos y condiciones</a></li>
             <li><a href="#inicio" data-page-link data-page="inicio">Política de privacidad</a></li>
             <li><a href="#inicio" data-page-link data-page="inicio">Política de reembolso</a></li>
-            <li><a href="#contacto" data-page-link data-page="inicio">Comunidades</a></li>
+            <li><a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Comunidades</a></li>
           </ul>
         </div>
         <div class="footer-box">
           <h4>Enlaces importantes</h4>
           <ul>
-            <li><a href="#oro" data-page-link data-page="oro">Marketplace de monedas</a></li>
-            <li><a href="#marketplace" data-page-link data-page="marketplace">Marketplace de cuentas</a></li>
-            <li><a href="#marketplace" data-page-link data-page="marketplace">Marketplace de servicios</a></li>
-            <li><a href="#inicio" data-page-link data-page="inicio">Centro de guías</a></li>
+            <li><a href="#inicio" data-page-link data-page="inicio">Inicio</a></li>
+            <li><a href="#oro" data-page-link data-page="oro">Oro</a></li>
+            <li><a href="#vender" data-page-link data-page="vendemos-oro">Vendemos tu oro</a></li>
+            <li><a href="#marketplace" data-page-link data-page="marketplace">Marketplace</a></li>
           </ul>
         </div>
         <div class="footer-box">
           <h4>Soporte y ayuda</h4>
           <ul>
-            <li><a href="https://wa.me" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
-            <li><a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Discord</a></li>
-            <li><a href="https://t.me" target="_blank" rel="noopener noreferrer">Telegram</a></li>
-            <li><a href="#contacto" data-page-link data-page="inicio">Atención para compradores y proveedores</a></li>
+            <li><a class="link-with-icon" href="https://wa.me" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp" />WhatsApp</a></li>
+            <li><a class="link-with-icon" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />Discord</a></li>
+            <li><a class="link-with-icon" href="https://t.me" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram" />Telegram</a></li>
+            <li><a href="#vender" data-page-link data-page="vendemos-oro">Atención para compradores y proveedores</a></li>
           </ul>
         </div>
         <div class="footer-box">
