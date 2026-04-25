@@ -24,7 +24,19 @@
         margin: 0;
         font-family: 'Inter', system-ui, sans-serif;
         color: var(--text);
-        background: #050505;
+        background: #000000;
+        background-attachment: fixed;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: '';
+        position: fixed;
+        inset: -20%;
+        background: none;
+        pointer-events: none;
+        z-index: -1;
+        animation: none;
       }
 
       .container { width: min(1200px, 92vw); margin: 0 auto; }
@@ -51,12 +63,12 @@
       }
 
       .logo img {
-        width: 34px;
-        height: 34px;
+        width: 156px;
+        height: 48px;
         border-radius: 8px;
-        border: 1px solid #3f66b5;
+        border: 0;
+        object-fit: cover;
       }
-
       nav { display: flex; gap: 0.55rem; flex-wrap: wrap; }
       nav a {
         text-decoration: none; color: var(--text);
@@ -75,18 +87,130 @@
         padding: 0.42rem 0.9rem;
         cursor: pointer;
       }
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .discord-nav-btn {
+        border: 1px solid #4c6ad5;
+        background: #141d3d;
+        color: #fff;
+        border-radius: 999px;
+        padding: 0.35rem 0.75rem;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 0.82rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .discord-nav-btn img {
+        width: 16px;
+        height: 16px;
+      }
 
       .hero { padding: 4.5rem 0 2.5rem; }
+      .wow-ambient { display: none; }
+      .page-section { display: none; }
+      .page-section.active-page {
+        display: block;
+        animation: pageFade .32s ease;
+      }
+
+      @keyframes pageFade {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes auroraShift {
+        from { transform: translate3d(-1%, -1%, 0) scale(1); }
+        to { transform: translate3d(2%, 1%, 0) scale(1.08); }
+      }
+
+      @keyframes mistPulse {
+        0%, 100% { transform: scale(0.96); opacity: 0.28; }
+        50% { transform: scale(1.08); opacity: 0.4; }
+      }
+
+      @keyframes runeFloat {
+        0%, 100% { transform: translateY(0); opacity: 0.26; }
+        50% { transform: translateY(-8px); opacity: 0.45; }
+      }
+
+      .page-loader {
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 8, 16, 0.62);
+        display: none;
+        place-items: center;
+        z-index: 150;
+      }
+
+      .page-loader.show { display: grid; }
+      .page-loader span {
+        border: 1px solid #4e67a1;
+        background: #101a31;
+        color: #d7e5ff;
+        border-radius: 999px;
+        padding: 0.55rem 0.95rem;
+        font-size: 0.86rem;
+      }
       .hero-wrap {
         display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1rem;
       }
 
       .glass {
+        position: relative;
+        overflow: hidden;
         background: linear-gradient(155deg, rgba(24, 41, 76, 0.9), rgba(14, 20, 34, 0.96));
         border: 1px solid #36518f;
         border-radius: 18px;
         padding: 1.2rem;
       }
+
+      .wow-ambient {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .wow-ambient .mist {
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border-radius: 999px;
+        filter: blur(24px);
+        opacity: 0.35;
+        animation: mistPulse 7s ease-in-out infinite;
+      }
+
+      .wow-ambient .mist.gold {
+        top: -90px;
+        left: -120px;
+        background: radial-gradient(circle, rgba(255, 179, 71, 0.7), transparent 65%);
+      }
+
+      .wow-ambient .mist.arcane {
+        right: -110px;
+        bottom: -130px;
+        background: radial-gradient(circle, rgba(0, 209, 255, 0.55), transparent 65%);
+        animation-delay: 1.6s;
+      }
+
+      .wow-ambient .rune {
+        position: absolute;
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        color: rgba(188, 214, 255, 0.32);
+        text-transform: uppercase;
+        text-shadow: 0 0 14px rgba(70, 136, 255, 0.6);
+        animation: runeFloat 9s ease-in-out infinite;
+      }
+
+      .wow-ambient .rune.r1 { top: 18px; right: 30px; }
+      .wow-ambient .rune.r2 { bottom: 20px; left: 24px; animation-delay: 2.2s; }
 
       h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.8rem); }
       .lead { color: var(--muted); line-height: 1.7; margin: 0.8rem 0 1.1rem; }
@@ -109,7 +233,36 @@
         padding: 0.85rem;
       }
 
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 1rem;
+      }
+
+      .about-list {
+        margin: 0.6rem 0 0;
+        padding-left: 1.1rem;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .badge-row {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+        margin-top: 0.6rem;
+      }
+
+      .badge {
+        border: 1px solid #385aa0;
+        border-radius: 999px;
+        padding: 0.35rem 0.7rem;
+        font-size: 0.78rem;
+        background: #101d36;
+      }
+
       section { padding: 2.4rem 0; }
+      .hidden { display: none !important; }
 
       .section-title {
         margin: 0 0 1rem;
@@ -130,18 +283,42 @@
       .card-body p { color: var(--muted); margin: 0.35rem 0 0; }
 
       .oro-panel { background: var(--panel-2); border: 1px solid #36518f; border-radius: 16px; padding: 1rem; }
-      .server-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem; }
+      .oro-toolbar {
+        display: flex;
+        gap: 0.6rem;
+        margin-bottom: 0.9rem;
+        flex-wrap: wrap;
+      }
+      .oro-search {
+        flex: 1;
+        min-width: 220px;
+        border-radius: 12px;
+        border: 1px solid #32518f;
+        background: #0b1325;
+        color: #fff;
+        padding: 0.74rem 0.8rem;
+      }
+      .oro-category-btn {
+        border: 1px solid #2f2f2f;
+        border-radius: 12px;
+        background: #000000;
+        color: #fff;
+        padding: 0.74rem 0.9rem;
+        cursor: pointer;
+      }
+      .server-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; }
       .server {
         border: 1px solid #2f4f91;
         background: #111d35;
         color: var(--text);
         border-radius: 12px;
-        padding: 0.75rem 0.5rem;
+        padding: 1rem 0.75rem;
         cursor: pointer;
+        min-height: 150px;
       }
       .server.active { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(255,179,71,.25); }
       .server-icon {
-        width: 68px; height: 68px; border-radius: 999px;
+        width: 106px; height: 106px; border-radius: 999px;
         margin: 0 auto .45rem;
         border: 2px solid var(--hot);
         animation: floatIcon 2.2s ease-in-out infinite;
@@ -156,8 +333,108 @@
 
       .server-name {
         display: block;
-        font-size: 0.86rem;
+        font-size: 1.02rem;
       }
+      nav a,
+      .admin-open,
+      .discord-nav-btn,
+      .btn,
+      .btn.alt,
+      .oro-category-btn,
+      .panel-btn,
+      .mini-btn,
+      .payment-btn {
+        background: #000000 !important;
+        border: 1px solid #2f2f2f !important;
+        color: #ffffff !important;
+      }
+
+      .game-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 4, 10, 0.82);
+        display: none;
+        place-items: center;
+        z-index: 135;
+      }
+
+      .game-modal.show { display: grid; }
+
+      .game-window {
+        width: min(900px, 94vw);
+        background: radial-gradient(circle at 20% 10%, rgba(255, 60, 46, 0.12), transparent 45%), #06080f;
+        border: 1px solid #2f3b59;
+        border-radius: 16px;
+        padding: 1rem;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+      }
+
+      .game-window-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.95rem;
+      }
+
+      .game-window-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .game-window-icon {
+        width: 62px;
+        height: 62px;
+        border-radius: 999px;
+        border: 2px solid var(--gold);
+        overflow: hidden;
+      }
+
+      .game-window-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .game-window-title {
+        margin: 0;
+        font-size: clamp(1.05rem, 2.5vw, 1.8rem);
+      }
+
+      .game-window-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+
+      .game-window-grid .game-option:last-child {
+        grid-column: span 2;
+      }
+
+      .game-option {
+        border: 1px solid #3a4667;
+        border-radius: 12px;
+        background: linear-gradient(180deg, #11151f, #090d16);
+        color: #fff;
+        padding: 1.4rem 1rem;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .game-option strong {
+        display: block;
+        font-size: 1.35rem;
+        letter-spacing: 0.04em;
+      }
+
+      .game-option small {
+        color: #c7d2ee;
+      }
+
+      .game-option.boost strong { color: #d9d9d9; }
+      .game-option.accounts strong { color: #ff4f4f; }
+      .game-option.gold strong { color: #ffcf59; }
+
       @keyframes floatIcon {
         0%,100%{transform:translateY(0)}
         50%{transform:translateY(-5px)}
@@ -215,16 +492,122 @@
 
       footer {
         margin-top: 2rem;
-        border-top: 1px solid var(--line);
-        background: #080a14;
+        border-top: 1px solid #274077;
+        background: linear-gradient(180deg, #070d1a, #060a14 70%, #050912);
       }
+      .footer-top {
+        text-align: center;
+        padding: 2rem 0 1.2rem;
+        border-bottom: 1px solid rgba(86, 111, 170, 0.35);
+      }
+      .footer-title {
+        margin: 0;
+        font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+        letter-spacing: 0.06em;
+      }
+      .footer-top p {
+        margin: 0.5rem auto 0;
+        max-width: 700px;
+        color: var(--muted);
+      }
+      .footer-social {
+        margin-top: 0.9rem;
+        display: flex;
+        justify-content: center;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+      }
+      .footer-social a {
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        text-decoration: none;
+        color: #fff;
+        border: 1px solid #4367b5;
+        background: #0f1b34;
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+      .footer-social a img {
+        width: 17px;
+        height: 17px;
+      }
+      .footer-social a:hover { border-color: var(--gold); }
       .footer-grid {
         display: grid; gap: 1rem;
-        grid-template-columns: 1.2fr 1fr 1fr 1fr;
-        padding: 1.6rem 0;
+        grid-template-columns: 1fr 1fr 1fr 1.1fr;
+        padding: 1.25rem 0 1.6rem;
       }
-      footer h4 { margin: 0 0 .55rem; color: var(--gold); }
+      .footer-box {
+        background: rgba(13, 21, 40, 0.75);
+        border: 1px solid rgba(72, 102, 165, 0.38);
+        border-radius: 12px;
+        padding: 0.85rem;
+      }
+      footer h4 { margin: 0 0 .55rem; color: #edf3ff; }
+      footer ul { margin: 0; padding-left: 1.05rem; }
       footer li, footer p { color: var(--muted); font-size: .92rem; }
+      footer li { margin-bottom: 0.3rem; }
+      footer a { color: #b5ccfa; text-decoration: none; }
+      footer a:hover { color: #ffffff; text-decoration: underline; }
+      .link-with-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .link-with-icon img {
+        width: 14px;
+        height: 14px;
+      }
+      .footer-note {
+        border: 1px dashed rgba(126, 154, 215, 0.5);
+        border-radius: 10px;
+        padding: 0.75rem;
+        background: rgba(8, 14, 28, 0.88);
+        font-size: 0.85rem;
+        line-height: 1.45;
+        color: #9fbae9;
+      }
+      .payment-strip {
+        margin: 0.35rem auto 1rem;
+        padding: 1rem 0 0.4rem;
+        border-top: 1px solid #1f2a46;
+        max-width: 720px;
+      }
+      .payment-strip h4 {
+        margin: 0 0 0.7rem;
+        text-align: center;
+      }
+      .payment-row {
+        display: flex;
+        justify-content: center;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+        align-items: stretch;
+        margin: 0 auto;
+      }
+      .payment-btn {
+        border: 1px solid #3a4d79;
+        background: #111a2e;
+        color: #dce8ff;
+        border-radius: 10px;
+        padding: 0.55rem 0.7rem;
+        min-width: 108px;
+        text-align: center;
+        font-size: 0.8rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+      }
+      .payment-btn img {
+        width: 25px;
+        height: 25px;
+        object-fit: contain;
+      }
 
       .footer-brand {
         display: flex;
@@ -255,8 +638,8 @@
 
       .admin-card {
         width: min(420px, 92vw);
-        background: linear-gradient(165deg, #182f58, #0f1a30);
-        border: 1px solid #3f66b5;
+        background: linear-gradient(165deg, #171a22, #111723);
+        border: 1px solid #36518f;
         border-radius: 16px;
         padding: 1rem;
         box-shadow: 0 12px 50px rgba(0, 0, 0, 0.45);
@@ -297,8 +680,8 @@
         width: 100%;
         margin: 0.35rem 0 0.75rem;
         border-radius: 8px;
-        border: 1px solid #434a74;
-        background: #0c1126;
+        border: 1px solid #2e4f8f;
+        background: #0c1324;
         color: #fff;
         padding: 0.65rem;
       }
@@ -310,8 +693,15 @@
         padding: 0.68rem;
         font-weight: 700;
         cursor: pointer;
-        background: linear-gradient(120deg, var(--gold), var(--hot));
-        color: #1b0f04;
+        background: linear-gradient(120deg, #3f7cff, #2f5bb3);
+        color: #eaf2ff;
+      }
+      .category-item {
+        border: 1px solid #2e4f8f;
+        border-radius: 10px;
+        background: #101a31;
+        padding: 0.7rem;
+        margin-top: 0.55rem;
       }
 
       .admin-msg {
@@ -332,11 +722,35 @@
       .config-modal.show { display: grid; }
 
       .config-card {
-        width: min(560px, 94vw);
+        width: min(820px, 96vw);
+        min-height: 520px;
         background: linear-gradient(165deg, #162e57, #0f1a30);
         border: 1px solid #3f66b5;
         border-radius: 16px;
-        padding: 1rem;
+        padding: 1.2rem;
+      }
+
+      .panel-tabs {
+        display: flex;
+        gap: 0.65rem;
+        margin: 0.85rem 0 0.25rem;
+        flex-wrap: wrap;
+      }
+
+      .panel-tab {
+        border: 1px solid #35518e;
+        border-radius: 10px;
+        background: #0f1b36;
+        color: #d8e6ff;
+        padding: 0.6rem 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .panel-tab.active {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 2px rgba(255,179,71,.2);
+        color: #fff;
       }
 
       .admin-panel-actions {
@@ -354,6 +768,29 @@
         cursor: pointer;
       }
 
+      .admin-head-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        align-items: flex-end;
+      }
+
+      .logout-btn {
+        border: 1px solid #8a6a2b;
+        border-radius: 8px;
+        background: linear-gradient(120deg, #2e2514, #5b4418);
+        color: #ffe6a8;
+        font-size: 0.78rem;
+        padding: 0.35rem 0.55rem;
+        cursor: pointer;
+      }
+
+      .admin-notice {
+        margin: 0.6rem 0 0;
+        font-size: 0.86rem;
+        color: #9fd6ff;
+      }
+
       .editor-box {
         margin-top: 0.8rem;
         background: #101a31;
@@ -362,56 +799,204 @@
         padding: 0.75rem;
       }
 
-      .editor-box input, .editor-box select {
+      .editor-box input,
+      .editor-box select,
+      .editor-box textarea,
+      .admin-game-form input,
+      .admin-game-form textarea {
         width: 100%;
         border-radius: 8px;
-        border: 1px solid #3d5b99;
-        background: #0d162b;
-        color: #fff;
-        padding: 0.6rem;
+        border: 1px solid #d6b361;
+        background: #1d3359;
+        color: #ffffff;
+        padding: 0.75rem;
         margin-bottom: 0.6rem;
+        display: block;
+      }
+
+      .editor-box textarea,
+      .admin-game-form textarea {
+        min-height: 170px;
+        resize: none;
+      }
+
+      .admin-game-form input::placeholder,
+      .admin-game-form textarea::placeholder {
+        color: #c6d7ff;
+      }
+
+      .admin-game-list {
+        margin: 0.6rem 0 0.8rem;
+        display: grid;
+        gap: 0.6rem;
+        max-height: 180px;
+        overflow-y: auto;
+      }
+
+      .admin-game-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
+        width: 100%;
+        background: #0d162b;
+        border: 1px solid #34508d;
+        border-radius: 10px;
+        color: #dce8ff;
+        padding: 0.65rem;
+        text-align: left;
+      }
+
+      .admin-game-item.active { background: #1a2f57; border-color: #ffb347; }
+
+      .admin-game-main { display: flex; gap: 0.55rem; }
+      .admin-game-desc { margin: 0.25rem 0 0; color: #b9c9ef; font-size: 0.82rem; }
+      .admin-game-actions { display: flex; gap: 0.45rem; }
+      .mini-btn {
+        border: 1px solid #4868ac;
+        border-radius: 8px;
+        background: #12203d;
+        color: #fff;
+        padding: 0.42rem 0.6rem;
+        cursor: pointer;
+        font-size: 0.78rem;
+      }
+      .mini-btn.danger { border-color: #a93a48; background: #3a1420; }
+
+      .admin-game-thumb {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1px solid #4f6fb3;
+      }
+
+      .admin-game-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .admin-game-form {
+        border: 1px solid #7a642f;
+        border-radius: 10px;
+        background: linear-gradient(180deg, #081a33, #091423);
+        padding: 0.9rem;
+      }
+
+      .admin-game-form.hidden { display: none; }
+
+      .juego-form-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(4, 8, 16, 0.76);
+        display: none;
+        place-items: center;
+        z-index: 140;
+      }
+
+      .juego-form-modal.show { display: grid; }
+
+      .juego-form-card {
+        width: min(680px, 94vw);
+        background: linear-gradient(165deg, #0f223f, #091423);
+        border: 1px solid #8c6d2a;
+        border-radius: 14px;
+        padding: 0.9rem;
+      }
+
+      #juegoImagen {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        letter-spacing: 0.01em;
+      }
+
+      .form-group { margin-bottom: 0.7rem; }
+      .form-group label {
+        display: block;
+        margin: 0 0 0.35rem;
+        color: #f0cf7b;
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+
+      .form-actions { justify-content: flex-end; }
+
+      .image-preview {
+        border: 1px dashed #4c69a8;
+        border-radius: 10px;
+        padding: 0.7rem;
+        min-height: 90px;
+        background: #11203f;
+      }
+
+      #previewDescripcionJuego {
+        color: #b9c9ef;
+      }
+
+      .image-preview img {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 1px solid #7390ce;
+        object-fit: cover;
+        display: block;
+        margin-bottom: 0.45rem;
       }
 
       @media (max-width: 980px) {
-        .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid { grid-template-columns: 1fr 1fr; }
+        .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr 1fr; }
       }
       @media (max-width: 640px) {
-        .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid { grid-template-columns: 1fr; }
+        .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
         .social-buttons { grid-template-columns: 1fr; }
+        .game-window-grid { grid-template-columns: 1fr; }
+        .game-window-grid .game-option:last-child { grid-column: auto; }
         nav { justify-content: center; }
       }
     </style>
   </head>
   <body>
+    <div id="pageLoader" class="page-loader" aria-hidden="true"><span>Cargando sección...</span></div>
     <header>
       <div class="container nav">
         <div class="logo">
-          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2300d1ff'/%3E%3Cstop offset='1' stop-color='%23ff3d2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='18' fill='%230f1a30'/%3E%3Ccircle cx='50' cy='50' r='34' fill='url(%23g)'/%3E%3Ctext x='50' y='58' text-anchor='middle' fill='white' font-size='28' font-family='Arial' font-weight='700'%3ETH%3C/text%3E%3C/svg%3E" alt="Logo TradeHub" />
-          <span>TRADEHUB</span>
+          <a href="#inicio" data-page-link data-page="inicio" aria-label="Ir al inicio">
+            <img src="https://cdn.discordapp.com/attachments/1492284382977855689/1497413092953428058/ChatGPT_Image_24_abr_2026_09_44_47_p.m..png?ex=69ed6e1d&is=69ec1c9d&hm=bb3fd7d6d56af74deedc387fb38c16131ce33210758043a8edf310036413fec3&" alt="TradeHud" />
+          </a>
         </div>
         <nav>
-          <a href="#cuentas">Cuentas</a>
-          <a href="#oro">Oro</a>
-          <a href="#vender">Vender</a>
-          <a href="#servicios">Servicios</a>
-          <a href="#marketplace">Marketplace</a>
-          <a href="#contacto">Contacto</a>
+          <a href="#inicio" data-page-link data-page="inicio">Inicio</a>
+          <a href="#oro" data-page-link data-page="oro">Oro</a>
+          <a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a>
+          <a href="#marketplace" data-page-link data-page="marketplace">Marketplace</a>
         </nav>
-        <button id="openAdmin" class="admin-open">Acceso Admin</button>
+        <div class="nav-actions">
+          <a class="discord-nav-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">
+            <img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />
+            Discord
+          </a>
+          <button id="openAdmin" class="admin-open">Acceso Admin</button>
+        </div>
       </div>
     </header>
 
     <main>
-      <section class="hero" id="inicio">
+      <section class="hero page-section" id="inicio" data-page="inicio">
         <div class="container hero-wrap">
           <article class="glass">
+            <div class="wow-ambient" aria-hidden="true">
+              <span class="mist gold"></span>
+              <span class="mist arcane"></span>
+              <span class="rune r1">arcane • valor • horda</span>
+              <span class="rune r2">alliance • mythic • gold</span>
+            </div>
             <h1>TradeHub: compra, venta y servicios para gamers</h1>
             <p class="lead">
               Plataforma enfocada en personas, con navegación simple, procesos claros y atención directa para cada pedido.
             </p>
             <div class="cta-row">
               <a class="btn" href="#oro">Comprar Oro</a>
-              <a class="btn alt" href="#contacto">Ver contacto</a>
+              <a class="btn alt" href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a>
             </div>
           </article>
           <aside class="hero-right">
@@ -422,38 +1007,87 @@
         </div>
       </section>
 
-      <section id="cuentas">
+      <section id="quienes-somos" class="page-section" data-page="inicio">
         <div class="container">
-          <h2 class="section-title">Cuentas <span>Premium</span></h2>
-          <div class="grid-3">
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop" alt="Cuenta 1" />
-              <div class="card-body"><strong>Cuenta Nivel 60</strong><p>Lista para PvE y PvP competitivo.</p></div>
+          <h2 class="section-title">¿Quiénes <span>somos?</span></h2>
+          <div class="about-grid">
+            <article class="glass">
+              <p class="lead" style="margin-top:0;">
+                En TradeHud somos una comunidad enfocada en comercio seguro para MMORPG. Ayudamos a jugadores a comprar oro,
+                vender recursos y contratar servicios con procesos claros, soporte humano y seguimiento en cada operación.
+              </p>
+              <p class="lead" style="margin-top:0.35rem;">
+                Nuestra prioridad es la confianza: verificamos pedidos, confirmamos disponibilidad en tiempo real y mantenemos
+                comunicación directa durante todo el flujo, desde la solicitud hasta la entrega final.
+              </p>
+              <ul class="about-list">
+                <li>Atención personalizada para cada cliente y servidor.</li>
+                <li>Protocolos de validación para reducir riesgos en transacciones.</li>
+                <li>Soporte activo para dudas, seguimiento y postventa.</li>
+              </ul>
             </article>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=1200&auto=format&fit=crop" alt="Cuenta 2" />
-              <div class="card-body"><strong>Cuenta Mago 60</strong><p>Profesiones completas y oro inicial.</p></div>
-            </article>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1542751371-29b4a46f8d20?q=80&w=1200&auto=format&fit=crop" alt="Cuenta 3" />
-              <div class="card-body"><strong>Cuenta Full Set</strong><p>Equipamiento alto y monturas incluidas.</p></div>
+            <article class="glass">
+              <strong style="font-size:1.05rem;">Nuestra misión</strong>
+              <p class="lead" style="margin-top:0.45rem;">
+                Convertir el comercio gaming en una experiencia profesional, rápida y transparente.
+              </p>
+              <div class="badge-row">
+                <span class="badge">Transparencia</span>
+                <span class="badge">Rapidez</span>
+                <span class="badge">Soporte real</span>
+                <span class="badge">Comunidad activa</span>
+              </div>
             </article>
           </div>
         </div>
       </section>
 
-      <section id="oro">
+      <section id="oro" class="page-section" data-page="oro">
         <div class="container">
           <h2 class="section-title">Sección de <span>oro de juegos</span></h2>
           <article class="oro-panel">
+            <div class="oro-toolbar">
+              <button id="verCategoriasOro" class="oro-category-btn" type="button">Ver categorías</button>
+              <input id="oroSearch" class="oro-search" type="text" placeholder="Buscar juego..." />
+            </div>
             <div id="gameList" class="server-row"></div>
           </article>
         </div>
       </section>
 
-      <section id="vender">
+      <div id="gameWindowModal" class="game-modal" aria-hidden="true">
+        <div class="game-window">
+          <div class="game-window-head">
+            <div class="game-window-title-wrap">
+              <div id="gameWindowIcon" class="game-window-icon"></div>
+              <div>
+                <h3 id="gameWindowTitle" class="game-window-title"></h3>
+                <small id="gameWindowDesc" style="color:#b9c6e6;"></small>
+              </div>
+            </div>
+            <button id="closeGameWindow" class="close-btn">✕</button>
+          </div>
+          <div class="game-window-grid">
+            <button class="game-option boost" type="button">
+              <strong>BOOSTING</strong>
+              <small>Servicio rápido y seguro</small>
+            </button>
+            <button class="game-option accounts" type="button">
+              <strong>ACCOUNTS</strong>
+              <small>Cuentas verificadas</small>
+            </button>
+            <button class="game-option gold" type="button">
+              <strong>GOLD</strong>
+              <small>Compra y venta de oro</small>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <section id="vender" class="page-section" data-page="vendemos-oro">
         <div class="container">
-          <h2 class="section-title">Vender <span>Oro</span></h2>
+          <h2 class="section-title">Vender tu <span>oro</span></h2>
+          <p class="lead" style="margin:0 0 1rem 0;">Vender tu oro con atención por Discord, confirmación rápida y proceso seguro.</p>
           <div class="split">
             <div>
               <div class="step">1) Abre ticket en Discord.</div>
@@ -463,33 +1097,17 @@
             </div>
             <article class="card">
               <img src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=1200&auto=format&fit=crop" alt="Discord" />
-              <div class="card-body"><strong>Venta directa por comunidad</strong><p>Canal dedicado para compra/venta con moderación.</p></div>
+              <div class="card-body">
+                <strong>Venta directa por comunidad</strong>
+                <p>Canal dedicado para compra/venta con moderación.</p>
+                <p><a class="btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Ir al Discord de venta</a></p>
+              </div>
             </article>
           </div>
         </div>
       </section>
 
-      <section id="servicios">
-        <div class="container">
-          <h2 class="section-title">Servicios <span>WoW</span></h2>
-          <div class="grid-3">
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" alt="Boost" />
-              <div class="card-body"><strong>Boosting</strong><p>Leveo y progreso guiado.</p></div>
-            </article>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=1200&auto=format&fit=crop" alt="Mining" />
-              <div class="card-body"><strong>Mining</strong><p>Subida 1-375 optimizada.</p></div>
-            </article>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?q=80&w=1200&auto=format&fit=crop" alt="Fishing" />
-              <div class="card-body"><strong>Fishing</strong><p>Servicio rápido de profesión.</p></div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section id="marketplace">
+      <section id="marketplace" class="page-section" data-page="marketplace">
         <div class="container">
           <h2 class="section-title">Marketplace de <span>Servicios</span></h2>
           <div class="grid-4">
@@ -525,41 +1143,65 @@
         </div>
       </section>
 
-      <section id="contacto">
-        <div class="container">
-          <h2 class="section-title">Contacto <span>24/7</span></h2>
-          <div class="split">
-            <article class="glass">
-              <strong>Canales activos</strong>
-              <p class="lead">Canales oficiales para pedidos, soporte y seguimiento en tiempo real.</p>
-              <div class="social-buttons">
-                <a class="social-btn yt" href="https://www.youtube.com/channel/UCJvhSvnlYs8pKYx3lwy4p2g" target="_blank" rel="noopener noreferrer"><span class="icon">YT</span> YouTube</a>
-                <a class="social-btn tt" href="https://www.tiktok.com/@tradehubmmoprg?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer"><span class="icon">TT</span> TikTok</a>
-                <a class="social-btn fb" href="https://www.facebook.com/profile.php?id=61582836070089" target="_blank" rel="noopener noreferrer"><span class="icon">f</span> Facebook</a>
-                <a class="social-btn ig" href="https://www.instagram.com/tradehubmmoprg/" target="_blank" rel="noopener noreferrer"><span class="icon">IG</span> Instagram</a>
-              </div>
-            </article>
-            <article class="glass">
-              <strong>Garantía TradeHud</strong>
-              <p class="lead">Transacciones seguras y acompañamiento hasta finalizar la entrega.</p>
-            </article>
-          </div>
-        </div>
-      </section>
     </main>
 
+    <!-- Trigger update for deploy/preview pipeline -->
     <footer>
-      <div class="container footer-grid">
-        <div>
-          <div class="footer-brand">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2300d1ff'/%3E%3Cstop offset='1' stop-color='%23ff3d2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='18' fill='%230f1a30'/%3E%3Ccircle cx='50' cy='50' r='34' fill='url(%23g)'/%3E%3Ctext x='50' y='58' text-anchor='middle' fill='white' font-size='28' font-family='Arial' font-weight='700'%3ETH%3C/text%3E%3C/svg%3E" alt="Logo TradeHub" />
-            <h4>TradeHub</h4>
-          </div>
-          <p>Marketplace MMORPG para cuentas, oro y servicios.</p>
+      <div class="container footer-top">
+        <h3 class="footer-title">TRADEHUD</h3>
+        <p>Marketplace especializado en la compra y venta de monedas, cuentas y servicios MMORPG.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/profile.php?id=61582836070089" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><img src="https://cdn.simpleicons.org/facebook/1877F2" alt="Facebook" /></a>
+          <a href="https://www.youtube.com/channel/UCJvhSvnlYs8pKYx3lwy4p2g" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="https://cdn.simpleicons.org/youtube/FF0000" alt="YouTube" /></a>
+          <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer" aria-label="Discord"><img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" /></a>
+          <a href="https://www.tiktok.com/@tradehubmmoprg?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><img src="https://cdn.simpleicons.org/tiktok/FFFFFF" alt="TikTok" /></a>
+          <a href="https://t.me" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram" /></a>
         </div>
-        <div><h4>Enlaces</h4><ul><li>Cuentas</li><li>Oro</li><li>Vender</li><li>Marketplace</li></ul></div>
-        <div><h4>Categorías</h4><ul><li>WoW</li><li>Albion</li><li>Lineage</li></ul></div>
-        <div><h4>Soporte</h4><ul><li>24/7</li><li>Comunidad activa</li><li>Atención rápida</li></ul></div>
+      </div>
+      <div class="container footer-grid">
+        <div class="footer-box">
+          <h4>Servicios confiables</h4>
+          <ul>
+            <li><a href="#inicio" data-page-link data-page="inicio">Términos y condiciones</a></li>
+            <li><a href="#inicio" data-page-link data-page="inicio">Política de privacidad</a></li>
+            <li><a href="#inicio" data-page-link data-page="inicio">Política de reembolso</a></li>
+            <li><a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Comunidades</a></li>
+          </ul>
+        </div>
+        <div class="footer-box">
+          <h4>Enlaces importantes</h4>
+          <ul>
+            <li><a href="#inicio" data-page-link data-page="inicio">Inicio</a></li>
+            <li><a href="#oro" data-page-link data-page="oro">Oro</a></li>
+            <li><a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a></li>
+            <li><a href="#marketplace" data-page-link data-page="marketplace">Marketplace</a></li>
+          </ul>
+        </div>
+        <div class="footer-box">
+          <h4>Soporte y ayuda</h4>
+          <ul>
+            <li><a class="link-with-icon" href="https://wa.me" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp" />WhatsApp</a></li>
+            <li><a class="link-with-icon" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />Discord</a></li>
+            <li><a class="link-with-icon" href="https://t.me" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram" />Telegram</a></li>
+            <li><a href="#vender" data-page-link data-page="vendemos-oro">Atención para compradores y proveedores</a></li>
+          </ul>
+        </div>
+        <div class="footer-box">
+          <div class="footer-note">
+            TradeHud no está afiliado oficialmente con los desarrolladores de los juegos mencionados.
+            Todas las marcas pertenecen a sus respectivos propietarios.
+          </div>
+        </div>
+      </div>
+      <div class="container payment-strip">
+        <h4>Métodos de pago disponibles</h4>
+        <div class="payment-row">
+          <div class="payment-btn"><img src="https://cdn.simpleicons.org/binance/F3BA2F" alt="Binance" /><span>Binance</span></div>
+          <div class="payment-btn"><img src="https://cdn.simpleicons.org/bitcoin/F7931A" alt="Bitcoin" /><span>Bitcoin</span></div>
+          <div class="payment-btn"><img src="https://cdn.simpleicons.org/zelle/6D1ED4" alt="Zinli" /><span>Zinli</span></div>
+          <div class="payment-btn"><img src="https://cdn.simpleicons.org/paypal/00457C" alt="PayPal" /><span>PayPal</span></div>
+          <div class="payment-btn"><img src="https://cdn.simpleicons.org/coinmarketcap/16C784" alt="Cryptomonedas" /><span>Cryptomonedas</span></div>
+        </div>
       </div>
       <div class="container copyright">© 2026 TradeHud. Todos los derechos reservados.</div>
     </footer>
@@ -588,28 +1230,116 @@
       <div class="config-card">
         <div class="admin-head">
           <strong>Configuraciones</strong>
-          <button id="closeConfig" class="close-btn">✕</button>
+          <div class="admin-head-actions">
+            <button id="closeConfig" class="close-btn">✕</button>
+            <button id="cerrarSesionAdmin" class="logout-btn" type="button">Cerrar sesión</button>
+          </div>
         </div>
         <p class="lead" style="margin:0;">Panel admin para editar casillas de juegos.</p>
-        <div class="admin-panel-actions">
-          <button id="guardarCambios" class="panel-btn">Guardar cambios</button>
+        <div id="adminNotice" class="admin-notice"></div>
+        <div class="panel-tabs">
+          <button id="tabListaJuegos" class="panel-tab active" type="button">Lista de juegos</button>
+          <button id="tabListaServidores" class="panel-tab" type="button">Categorías de oro</button>
         </div>
         <div id="editorJuegos" class="editor-box">
-          <strong>Editar lista de juego</strong>
-          <select id="juegoSelect"></select>
-          <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
-          <input id="juegoImagen" type="text" placeholder="URL imagen del icono redondo" />
-          <div class="admin-panel-actions">
-            <button id="agregarJuego" class="panel-btn">Agregar</button>
-            <button id="editarJuego" class="panel-btn">Editar</button>
-            <button id="eliminarJuego" class="panel-btn">Eliminar</button>
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Editar lista de juegos</strong>
+            <button id="abrirFormularioJuego" class="panel-btn" type="button">+ Agregar juego</button>
+          </div>
+          <div id="juegoLista" class="admin-game-list"></div>
+        </div>
+        <div id="editorCategorias" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
+            <button id="abrirFormularioCategoria" class="panel-btn" type="button">+ Agregar categoría</button>
+          </div>
+          <div id="categoriaLista"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="juegoFormModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card">
+        <div class="admin-head">
+          <strong id="juegoFormTitulo">Agregar juego</strong>
+          <button id="cerrarJuegoFormModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div id="juegoForm" class="admin-game-form">
+          <div class="form-group">
+            <label for="juegoNombre">Nombre del juego</label>
+            <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
+          </div>
+          <div class="form-group">
+            <label for="juegoImagen">Imagen (URL)</label>
+            <input id="juegoImagen" type="text" placeholder="URL imagen del icono redondo" />
+          </div>
+          <div class="form-group">
+            <label for="juegoDescripcion">Descripción</label>
+            <textarea id="juegoDescripcion" placeholder="Descripción del juego"></textarea>
+          </div>
+          <div class="image-preview">
+            <small>Vista previa</small>
+            <img id="previewImagenJuego" src="" alt="Preview juego" />
+            <strong id="previewNombreJuego">Nombre del juego</strong>
+            <p id="previewDescripcionJuego" class="admin-game-desc">Descripción del juego.</p>
+          </div>
+          <div class="admin-panel-actions form-actions">
+            <button id="cancelarJuegoForm" class="panel-btn" type="button">Cancelar</button>
+            <button id="guardarJuegoForm" class="panel-btn" type="button">Guardar juego</button>
           </div>
         </div>
       </div>
     </div>
 
+    <div id="categoriaOroModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card">
+        <div class="admin-head">
+          <strong>Categoría de oro</strong>
+          <button id="cerrarCategoriaOroModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div class="admin-game-form">
+          <div class="form-group">
+            <label for="categoriaJuego">Juego</label>
+            <input id="categoriaJuego" type="text" placeholder="Ej: World of Warcraft" />
+          </div>
+          <div class="form-group">
+            <label for="categoriaNombre">Nombre de categoría</label>
+            <input id="categoriaNombre" type="text" placeholder="Ej: Oro rápido" />
+          </div>
+          <div class="form-group">
+            <label for="categoriaDescripcion">Descripción</label>
+            <textarea id="categoriaDescripcion" placeholder="Descripción de la categoría"></textarea>
+          </div>
+          <div class="admin-panel-actions form-actions">
+            <button id="cancelarCategoriaOro" class="panel-btn" type="button">Cancelar</button>
+            <button id="guardarCategoriaOro" class="panel-btn" type="button">Guardar categoría</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="categoriasVistaModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card">
+        <div class="admin-head">
+          <strong>Categorías agregadas</strong>
+          <button id="cerrarCategoriasVista" class="close-btn" type="button">✕</button>
+        </div>
+        <div id="categoriasVistaLista"></div>
+      </div>
+    </div>
+
     <script>
       const gameList = document.getElementById('gameList');
+      const oroSearch = document.getElementById('oroSearch');
+      const verCategoriasOro = document.getElementById('verCategoriasOro');
+      const pageLoader = document.getElementById('pageLoader');
+      const pageLinks = document.querySelectorAll('[data-page-link]');
+      const pageSections = document.querySelectorAll('.page-section');
+      const gameWindowModal = document.getElementById('gameWindowModal');
+      const gameWindowTitle = document.getElementById('gameWindowTitle');
+      const gameWindowDesc = document.getElementById('gameWindowDesc');
+      const gameWindowIcon = document.getElementById('gameWindowIcon');
+      const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
       const closeAdmin = document.getElementById('closeAdmin');
       const adminModal = document.getElementById('adminModal');
@@ -617,56 +1347,208 @@
       const adminMsg = document.getElementById('adminMsg');
       const configModal = document.getElementById('configModal');
       const closeConfig = document.getElementById('closeConfig');
-      const juegoSelect = document.getElementById('juegoSelect');
+      const cerrarSesionAdmin = document.getElementById('cerrarSesionAdmin');
+      const adminNotice = document.getElementById('adminNotice');
+      const juegoLista = document.getElementById('juegoLista');
+      const abrirFormularioJuego = document.getElementById('abrirFormularioJuego');
+      const juegoFormModal = document.getElementById('juegoFormModal');
+      const cerrarJuegoFormModal = document.getElementById('cerrarJuegoFormModal');
+      const juegoForm = document.getElementById('juegoForm');
+      const juegoFormTitulo = document.getElementById('juegoFormTitulo');
       const juegoNombre = document.getElementById('juegoNombre');
       const juegoImagen = document.getElementById('juegoImagen');
-      const agregarJuego = document.getElementById('agregarJuego');
-      const editarJuego = document.getElementById('editarJuego');
-      const eliminarJuego = document.getElementById('eliminarJuego');
-      const guardarCambios = document.getElementById('guardarCambios');
+      const juegoDescripcion = document.getElementById('juegoDescripcion');
+      const previewImagenJuego = document.getElementById('previewImagenJuego');
+      const previewNombreJuego = document.getElementById('previewNombreJuego');
+      const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
+      const cancelarJuegoForm = document.getElementById('cancelarJuegoForm');
+      const guardarJuegoForm = document.getElementById('guardarJuegoForm');
+      const tabListaJuegos = document.getElementById('tabListaJuegos');
+      const tabListaServidores = document.getElementById('tabListaServidores');
+      const editorJuegos = document.getElementById('editorJuegos');
+      const editorCategorias = document.getElementById('editorCategorias');
+      const categoriaLista = document.getElementById('categoriaLista');
+      const abrirFormularioCategoria = document.getElementById('abrirFormularioCategoria');
+      const categoriaOroModal = document.getElementById('categoriaOroModal');
+      const cerrarCategoriaOroModal = document.getElementById('cerrarCategoriaOroModal');
+      const cancelarCategoriaOro = document.getElementById('cancelarCategoriaOro');
+      const guardarCategoriaOro = document.getElementById('guardarCategoriaOro');
+      const categoriaJuego = document.getElementById('categoriaJuego');
+      const categoriaNombre = document.getElementById('categoriaNombre');
+      const categoriaDescripcion = document.getElementById('categoriaDescripcion');
+      const categoriasVistaModal = document.getElementById('categoriasVistaModal');
+      const categoriasVistaLista = document.getElementById('categoriasVistaLista');
+      const cerrarCategoriasVista = document.getElementById('cerrarCategoriasVista');
 
       const games = [
-        { name: 'World of Warcraft', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E" },
-        { name: 'WoW TBC', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E" },
-        { name: 'Albion Online', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E" },
-        { name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E" }
+        { name: 'World of Warcraft', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E", description: 'Clásico para comercio de oro y servicios premium.' },
+        { name: 'WoW TBC', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E", description: 'Servidor TBC con alta demanda de boosting.' },
+        { name: 'Albion Online', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E", description: 'Compra/venta de plata y servicios por encargo.' },
+        { name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E", description: 'Market activo para adena y cuentas.' }
       ];
+      const goldCategories = [
+        { game: 'World of Warcraft', name: 'Oro rápido', description: 'Entrega en minutos con confirmación por Discord.' },
+        { game: 'Albion Online', name: 'Plata segura', description: 'Categoría premium para compra/venta segura.' }
+      ];
+      let selectedAdminIndex = 0;
+      let editingAdminIndex = null;
+      let pageSwitchTimer = null;
+
+      function openGamePage(index) {
+        const game = games[index];
+        if (!game) return;
+        gameWindowTitle.textContent = game.name;
+        gameWindowDesc.textContent = game.description || '';
+        gameWindowIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
+        gameWindowModal.classList.add('show');
+        gameWindowModal.setAttribute('aria-hidden', 'false');
+      }
+
+      function setActivePage(page) {
+        pageSections.forEach((section) => {
+          section.classList.toggle('active-page', section.dataset.page === page);
+        });
+      }
+
+      function showPage(page) {
+        pageLoader.classList.add('show');
+        pageLoader.setAttribute('aria-hidden', 'false');
+        clearTimeout(pageSwitchTimer);
+        pageSwitchTimer = setTimeout(() => {
+          setActivePage(page);
+          pageLoader.classList.remove('show');
+          pageLoader.setAttribute('aria-hidden', 'true');
+        }, 220);
+      }
 
       function renderGameList() {
         gameList.innerHTML = '';
-        games.forEach((game, index) => {
+        const term = oroSearch.value.trim().toLowerCase();
+        const filteredGames = games
+          .map((game, index) => ({ game, index }))
+          .filter(({ game }) => game.name.toLowerCase().includes(term));
+        filteredGames.forEach(({ game, index }) => {
           const btn = document.createElement('button');
           btn.className = `server${index === 0 ? ' active' : ''}`;
           btn.innerHTML = `<div class=\"server-icon\"><img src=\"${game.icon}\" alt=\"${game.name}\" /></div><span class=\"server-name\">${game.name}</span>`;
           btn.addEventListener('click', () => {
             document.querySelectorAll('#gameList .server').forEach((s) => s.classList.remove('active'));
             btn.classList.add('active');
+            openGamePage(index);
           });
           gameList.appendChild(btn);
+        });
+        if (!filteredGames.length) {
+          gameList.innerHTML = '<p class="lead" style="margin:0;">No se encontraron juegos para tu búsqueda.</p>';
+        }
+      }
+
+      function renderGoldCategories() {
+        categoriaLista.innerHTML = '';
+        goldCategories.forEach((category, index) => {
+          const item = document.createElement('article');
+          item.className = 'category-item';
+          item.innerHTML = `<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p><button class="mini-btn danger" type="button" data-remove-category="${index}">Eliminar</button>`;
+          categoriaLista.appendChild(item);
+        });
+      }
+
+      function renderCategoriasVista() {
+        categoriasVistaLista.innerHTML = '';
+        goldCategories.forEach((category) => {
+          const item = document.createElement('article');
+          item.className = 'category-item';
+          item.innerHTML = `<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p>`;
+          categoriasVistaLista.appendChild(item);
         });
       }
 
       function renderAdminSelect() {
-        juegoSelect.innerHTML = '';
+        juegoLista.innerHTML = '';
         games.forEach((game, index) => {
-          const option = document.createElement('option');
-          option.value = index;
-          option.textContent = game.name;
-          juegoSelect.appendChild(option);
+          const item = document.createElement('article');
+          item.className = `admin-game-item${index === selectedAdminIndex ? ' active' : ''}`;
+          item.innerHTML = `<div class="admin-game-main"><span class="admin-game-thumb"><img src="${game.icon}" alt="${game.name}" /></span><div><strong>${game.name}</strong><p class="admin-game-desc">${game.description || ''}</p></div></div><div class="admin-game-actions"><button class="mini-btn" type="button" data-action="edit" data-index="${index}">Editar</button><button class="mini-btn danger" type="button" data-action="delete" data-index="${index}">Eliminar</button></div>`;
+          juegoLista.appendChild(item);
         });
       }
 
       function loadSelectedGame() {
-        const i = Number(juegoSelect.value || 0);
+        const i = selectedAdminIndex;
         const game = games[i];
         if (!game) return;
         juegoNombre.value = game.name;
         juegoImagen.value = game.icon;
+        juegoDescripcion.value = game.description || '';
+        updateGamePreview();
+      }
+
+      function clearGameForm() {
+        juegoNombre.value = '';
+        juegoImagen.value = '';
+        juegoDescripcion.value = '';
+        updateGamePreview();
+      }
+
+      function updateGamePreview() {
+        const desc = juegoDescripcion.value.trim();
+        previewImagenJuego.src = juegoImagen.value.trim() || games[0].icon;
+        previewNombreJuego.textContent = juegoNombre.value.trim() || 'Nombre del juego';
+        previewDescripcionJuego.textContent = desc || 'Descripción del juego.';
+        previewDescripcionJuego.style.color = '#b9c9ef';
+      }
+
+      function openGameForm(mode, index = null) {
+        juegoFormModal.classList.add('show');
+        juegoFormModal.setAttribute('aria-hidden', 'false');
+        if (mode === 'edit' && index !== null && games[index]) {
+          editingAdminIndex = index;
+          selectedAdminIndex = index;
+          juegoFormTitulo.textContent = 'Editar juego';
+          loadSelectedGame();
+        } else {
+          editingAdminIndex = null;
+          juegoFormTitulo.textContent = 'Agregar juego';
+          clearGameForm();
+        }
+      }
+
+      function showAdminNotice(message, kind = 'info') {
+        adminNotice.textContent = message;
+        adminNotice.style.color = kind === 'ok' ? '#9affcc' : kind === 'warn' ? '#ffd39a' : '#9fd6ff';
       }
 
       renderGameList();
       renderAdminSelect();
+      renderGoldCategories();
       loadSelectedGame();
+      setActivePage('inicio');
+
+      pageLinks.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          showPage(link.dataset.page);
+        });
+      });
+
+      document.querySelectorAll('a[href="#oro"]').forEach((link) => {
+        link.addEventListener('click', () => showPage('oro'));
+      });
+      document.querySelectorAll('a[href="#marketplace"]').forEach((link) => {
+        link.addEventListener('click', () => showPage('marketplace'));
+      });
+
+      closeGameWindow.addEventListener('click', () => {
+        gameWindowModal.classList.remove('show');
+        gameWindowModal.setAttribute('aria-hidden', 'true');
+      });
+
+      gameWindowModal.addEventListener('click', (e) => {
+        if (e.target === gameWindowModal) {
+          gameWindowModal.classList.remove('show');
+          gameWindowModal.setAttribute('aria-hidden', 'true');
+        }
+      });
 
       openAdmin.addEventListener('click', () => {
         adminModal.classList.add('show');
@@ -713,42 +1595,167 @@
         }
       });
 
-      juegoSelect.addEventListener('change', loadSelectedGame);
+      tabListaJuegos.addEventListener('click', () => {
+        tabListaJuegos.classList.add('active');
+        tabListaServidores.classList.remove('active');
+        editorJuegos.classList.remove('hidden');
+        editorCategorias.classList.add('hidden');
+      });
 
-      agregarJuego.addEventListener('click', () => {
-        if (!juegoNombre.value.trim()) return;
-        games.push({
-          name: juegoNombre.value.trim(),
-          icon: juegoImagen.value.trim() || games[0].icon
+      tabListaServidores.addEventListener('click', () => {
+        tabListaServidores.classList.add('active');
+        tabListaJuegos.classList.remove('active');
+        editorCategorias.classList.remove('hidden');
+        editorJuegos.classList.add('hidden');
+      });
+
+      abrirFormularioJuego.addEventListener('click', () => {
+        openGameForm('add');
+      });
+
+      juegoLista.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        const index = Number(btn.dataset.index);
+        if (btn.dataset.action === 'edit') {
+          openGameForm('edit', index);
+          renderAdminSelect();
+        }
+        if (btn.dataset.action === 'delete') {
+          if (games.length <= 1) return;
+          games.splice(index, 1);
+          selectedAdminIndex = Math.max(0, index - 1);
+          editingAdminIndex = null;
+          renderGameList();
+          renderAdminSelect();
+          clearGameForm();
+          showAdminNotice('Juego eliminado de la categoría correctamente.', 'warn');
+        }
+      });
+
+      juegoNombre.addEventListener('input', updateGamePreview);
+      juegoImagen.addEventListener('input', updateGamePreview);
+      juegoDescripcion.addEventListener('input', updateGamePreview);
+      oroSearch.addEventListener('input', renderGameList);
+
+      function openCategoriaModal() {
+        categoriaJuego.value = '';
+        categoriaNombre.value = '';
+        categoriaDescripcion.value = '';
+        categoriaOroModal.classList.add('show');
+        categoriaOroModal.setAttribute('aria-hidden', 'false');
+      }
+
+      abrirFormularioCategoria.addEventListener('click', openCategoriaModal);
+
+      verCategoriasOro.addEventListener('click', () => {
+        renderCategoriasVista();
+        categoriasVistaModal.classList.add('show');
+        categoriasVistaModal.setAttribute('aria-hidden', 'false');
+      });
+
+      function closeCategoriasVista() {
+        categoriasVistaModal.classList.remove('show');
+        categoriasVistaModal.setAttribute('aria-hidden', 'true');
+      }
+
+      cerrarCategoriasVista.addEventListener('click', closeCategoriasVista);
+      categoriasVistaModal.addEventListener('click', (e) => {
+        if (e.target === categoriasVistaModal) closeCategoriasVista();
+      });
+
+      function closeCategoriaModal() {
+        categoriaOroModal.classList.remove('show');
+        categoriaOroModal.setAttribute('aria-hidden', 'true');
+      }
+
+      cerrarCategoriaOroModal.addEventListener('click', closeCategoriaModal);
+      cancelarCategoriaOro.addEventListener('click', closeCategoriaModal);
+      categoriaOroModal.addEventListener('click', (e) => {
+        if (e.target === categoriaOroModal) closeCategoriaModal();
+      });
+
+      guardarCategoriaOro.addEventListener('click', () => {
+        if (!categoriaNombre.value.trim()) return;
+        goldCategories.push({
+          game: categoriaJuego.value.trim() || 'General',
+          name: categoriaNombre.value.trim(),
+          description: categoriaDescripcion.value.trim() || 'Sin descripción.'
         });
-        renderGameList();
-        renderAdminSelect();
-        juegoSelect.value = String(games.length - 1);
-        loadSelectedGame();
+        renderGoldCategories();
+        showAdminNotice(`Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
+        closeCategoriaModal();
       });
 
-      editarJuego.addEventListener('click', () => {
-        const i = Number(juegoSelect.value || 0);
-        if (!games[i]) return;
-        games[i].name = juegoNombre.value.trim() || games[i].name;
-        games[i].icon = juegoImagen.value.trim() || games[i].icon;
-        renderGameList();
-        renderAdminSelect();
-        juegoSelect.value = String(i);
+      categoriaLista.addEventListener('click', (e) => {
+        const removeBtn = e.target.closest('button[data-remove-category]');
+        if (!removeBtn) return;
+        const idx = Number(removeBtn.dataset.removeCategory);
+        goldCategories.splice(idx, 1);
+        renderGoldCategories();
+        showAdminNotice('Categoría eliminada.', 'warn');
       });
 
-      eliminarJuego.addEventListener('click', () => {
-        const i = Number(juegoSelect.value || 0);
-        if (games.length <= 1) return;
-        games.splice(i, 1);
-        renderGameList();
-        renderAdminSelect();
-        loadSelectedGame();
+      cancelarJuegoForm.addEventListener('click', () => {
+        editingAdminIndex = null;
+        juegoFormModal.classList.remove('show');
+        juegoFormModal.setAttribute('aria-hidden', 'true');
+        clearGameForm();
+        showAdminNotice('Operación cancelada. No se guardaron cambios.', 'info');
       });
 
-      guardarCambios.addEventListener('click', () => {
-        configModal.classList.remove('show');
-        configModal.setAttribute('aria-hidden', 'true');
+      cerrarJuegoFormModal.addEventListener('click', () => {
+        editingAdminIndex = null;
+        juegoFormModal.classList.remove('show');
+        juegoFormModal.setAttribute('aria-hidden', 'true');
+        clearGameForm();
+        showAdminNotice('Ventana de edición cerrada.', 'info');
+      });
+
+      juegoFormModal.addEventListener('click', (e) => {
+        if (e.target === juegoFormModal) {
+          editingAdminIndex = null;
+          juegoFormModal.classList.remove('show');
+          juegoFormModal.setAttribute('aria-hidden', 'true');
+          clearGameForm();
+          showAdminNotice('Ventana cerrada desde fondo del modal.', 'info');
+        }
+      });
+
+      guardarJuegoForm.addEventListener('click', () => {
+        if (!juegoNombre.value.trim()) return;
+        const payload = {
+          name: juegoNombre.value.trim(),
+          icon: juegoImagen.value.trim() || games[0].icon,
+          description: juegoDescripcion.value.trim()
+        };
+        if (editingAdminIndex === null) {
+          games.push(payload);
+          selectedAdminIndex = games.length - 1;
+          showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
+        } else {
+          games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
+          selectedAdminIndex = editingAdminIndex;
+          showAdminNotice(`Juego actualizado: ${payload.name}.`, 'ok');
+        }
+        renderGameList();
+        renderAdminSelect();
+        editingAdminIndex = null;
+        juegoFormModal.classList.remove('show');
+        juegoFormModal.setAttribute('aria-hidden', 'true');
+        clearGameForm();
+      });
+
+      cerrarSesionAdmin.addEventListener('click', () => {
+        showAdminNotice('Sección cerrada ✨ ¡Buen trabajo, admin!', 'ok');
+        setTimeout(() => {
+          configModal.classList.remove('show');
+          configModal.setAttribute('aria-hidden', 'true');
+          adminModal.classList.add('show');
+          adminModal.setAttribute('aria-hidden', 'false');
+          adminMsg.textContent = 'Sesión cerrada correctamente.';
+          adminMsg.style.color = '#8fdcff';
+        }, 450);
       });
     </script>
   </body>
