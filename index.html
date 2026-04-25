@@ -490,9 +490,6 @@
         gap: 0.8rem;
       }
 
-      .game-window-grid .game-option:last-child {
-        grid-column: span 2;
-      }
 
       .game-option {
         border: 1px solid #3a4667;
@@ -930,6 +927,34 @@
         color: #c6d7ff;
       }
 
+      .service-checklist {
+        border: 1px solid #3b5da1;
+        border-radius: 10px;
+        background: #132447;
+        padding: 0.65rem 0.75rem;
+        margin-bottom: 0.7rem;
+      }
+
+      .service-checklist strong {
+        display: block;
+        margin-bottom: 0.45rem;
+        color: #ffe2a6;
+      }
+
+      .service-checklist label {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        margin-bottom: 0.35rem;
+        color: #d9e7ff;
+        font-size: 0.88rem;
+      }
+
+      .service-checklist input[type='checkbox'] {
+        width: auto;
+        margin: 0;
+      }
+
       .admin-game-list {
         margin: 0.6rem 0 0.8rem;
         display: grid;
@@ -1057,7 +1082,6 @@
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
         .social-buttons { grid-template-columns: 1fr; }
         .game-window-grid { grid-template-columns: 1fr; }
-        .game-window-grid .game-option:last-child { grid-column: auto; }
         .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid,.steps-list { grid-template-columns: 1fr; }
         nav { justify-content: center; }
       }
@@ -1299,20 +1323,7 @@
             </div>
             <button id="closeGameWindow" class="close-btn">✕</button>
           </div>
-          <div class="game-window-grid">
-            <button class="game-option boost" type="button">
-              <strong>BOOSTING</strong>
-              <small>Servicio rápido y seguro</small>
-            </button>
-            <button class="game-option accounts" type="button">
-              <strong>ACCOUNTS</strong>
-              <small>Cuentas verificadas</small>
-            </button>
-            <button class="game-option gold" type="button">
-              <strong>GOLD</strong>
-              <small>Compra y venta de oro</small>
-            </button>
-          </div>
+          <div id="gameWindowOptions" class="game-window-grid"></div>
         </div>
       </div>
 
@@ -1514,6 +1525,12 @@
             <label for="juegoDescripcion">Descripción</label>
             <textarea id="juegoDescripcion" placeholder="Descripción del juego"></textarea>
           </div>
+          <div class="service-checklist">
+            <strong>Opciones visibles al abrir el juego</strong>
+            <label><input id="serviceBoosting" type="checkbox" checked /> Boosting</label>
+            <label><input id="serviceAccounts" type="checkbox" checked /> Cuentas</label>
+            <label><input id="serviceGold" type="checkbox" checked /> Oro</label>
+          </div>
           <div class="image-preview">
             <small>Vista previa</small>
             <img id="previewImagenJuego" src="" alt="Preview juego" />
@@ -1577,6 +1594,7 @@
       const gameWindowTitle = document.getElementById('gameWindowTitle');
       const gameWindowDesc = document.getElementById('gameWindowDesc');
       const gameWindowIcon = document.getElementById('gameWindowIcon');
+      const gameWindowOptions = document.getElementById('gameWindowOptions');
       const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
       const closeAdmin = document.getElementById('closeAdmin');
@@ -1596,6 +1614,9 @@
       const juegoNombre = document.getElementById('juegoNombre');
       const juegoImagen = document.getElementById('juegoImagen');
       const juegoDescripcion = document.getElementById('juegoDescripcion');
+      const serviceBoosting = document.getElementById('serviceBoosting');
+      const serviceAccounts = document.getElementById('serviceAccounts');
+      const serviceGold = document.getElementById('serviceGold');
       const previewImagenJuego = document.getElementById('previewImagenJuego');
       const previewNombreJuego = document.getElementById('previewNombreJuego');
       const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
@@ -1617,6 +1638,12 @@
       const categoriasVistaModal = document.getElementById('categoriasVistaModal');
       const categoriasVistaLista = document.getElementById('categoriasVistaLista');
       const cerrarCategoriasVista = document.getElementById('cerrarCategoriasVista');
+      const defaultServices = ['boosting', 'accounts', 'gold'];
+      const serviceCatalog = {
+        boosting: { className: 'boost', title: 'BOOSTING', subtitle: 'Servicio rápido y seguro' },
+        accounts: { className: 'accounts', title: 'ACCOUNTS', subtitle: 'Cuentas verificadas' },
+        gold: { className: 'gold', title: 'GOLD', subtitle: 'Compra y venta de oro' }
+      };
       const SUPABASE_URL = window.TRADEHUD_SUPABASE_URL || 'https://lveocmzvfndvzjdqknnf.supabase.co';
       const SUPABASE_ANON_KEY = window.TRADEHUD_SUPABASE_ANON_KEY || '';
       const isServiceRoleKey = (() => {
@@ -1651,9 +1678,23 @@
       function openGamePage(index) {
         const game = games[index];
         if (!game) return;
+        const gameServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
         gameWindowTitle.textContent = game.name;
         gameWindowDesc.textContent = game.description || '';
         gameWindowIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
+        gameWindowOptions.innerHTML = '';
+        gameServices.forEach((serviceKey) => {
+          const config = serviceCatalog[serviceKey];
+          if (!config) return;
+          const button = document.createElement('button');
+          button.className = `game-option ${config.className}`;
+          button.type = 'button';
+          button.innerHTML = `<strong>${config.title}</strong><small>${config.subtitle}</small>`;
+          gameWindowOptions.appendChild(button);
+        });
+        if (!gameWindowOptions.children.length) {
+          gameWindowOptions.innerHTML = '<div class="game-option"><strong>SIN SERVICIOS</strong><small>Configura opciones en el panel admin.</small></div>';
+        }
         gameWindowModal.classList.add('show');
         gameWindowModal.setAttribute('aria-hidden', 'false');
       }
@@ -1731,9 +1772,13 @@
         const i = selectedAdminIndex;
         const game = games[i];
         if (!game) return;
+        const selectedServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
         juegoNombre.value = game.name;
         juegoImagen.value = game.icon;
         juegoDescripcion.value = game.description || '';
+        serviceBoosting.checked = selectedServices.includes('boosting');
+        serviceAccounts.checked = selectedServices.includes('accounts');
+        serviceGold.checked = selectedServices.includes('gold');
         updateGamePreview();
       }
 
@@ -1741,7 +1786,18 @@
         juegoNombre.value = '';
         juegoImagen.value = '';
         juegoDescripcion.value = '';
+        serviceBoosting.checked = true;
+        serviceAccounts.checked = true;
+        serviceGold.checked = true;
         updateGamePreview();
+      }
+
+      function getSelectedServices() {
+        const services = [];
+        if (serviceBoosting.checked) services.push('boosting');
+        if (serviceAccounts.checked) services.push('accounts');
+        if (serviceGold.checked) services.push('gold');
+        return services.length ? services : [...defaultServices];
       }
 
       function updateGamePreview() {
@@ -1794,7 +1850,8 @@
             id: row.id,
             name: row.name,
             icon: row.icon,
-            description: row.description || ''
+            description: row.description || '',
+            services: [...defaultServices]
           })));
         }
         if (Array.isArray(categoriesData)) {
@@ -1944,6 +2001,9 @@
       juegoNombre.addEventListener('input', updateGamePreview);
       juegoImagen.addEventListener('input', updateGamePreview);
       juegoDescripcion.addEventListener('input', updateGamePreview);
+      serviceBoosting.addEventListener('change', updateGamePreview);
+      serviceAccounts.addEventListener('change', updateGamePreview);
+      serviceGold.addEventListener('change', updateGamePreview);
       oroSearch.addEventListener('input', renderGameList);
 
       function openCategoriaModal() {
@@ -2067,15 +2127,21 @@
         const payload = {
           name: juegoNombre.value.trim(),
           icon: juegoImagen.value.trim() || games[0].icon,
-          description: juegoDescripcion.value.trim()
+          description: juegoDescripcion.value.trim(),
+          services: getSelectedServices()
         };
         if (editingAdminIndex === null) {
-          const { data, error } = await supabaseClient.from('games').insert(payload).select('id,name,icon,description').single();
+          const supabasePayload = {
+            name: payload.name,
+            icon: payload.icon,
+            description: payload.description
+          };
+          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description').single();
           if (error) {
             showAdminNotice('No se pudo guardar el juego en Supabase.', 'warn');
             return;
           }
-          games.push(data);
+          games.push({ ...data, services: payload.services });
           selectedAdminIndex = games.length - 1;
           showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
         } else {
@@ -2083,9 +2149,14 @@
             showAdminNotice('Juego sin ID remoto. Recarga datos desde Supabase.', 'warn');
             return;
           }
+          const supabasePayload = {
+            name: payload.name,
+            icon: payload.icon,
+            description: payload.description
+          };
           const { data, error } = await supabaseClient
             .from('games')
-            .update(payload)
+            .update(supabasePayload)
             .eq('id', games[editingAdminIndex].id)
             .select('id,name,icon,description')
             .single();
@@ -2093,7 +2164,7 @@
             showAdminNotice('No se pudo actualizar el juego en Supabase.', 'warn');
             return;
           }
-          games[editingAdminIndex] = data;
+          games[editingAdminIndex] = { ...data, services: payload.services };
           selectedAdminIndex = editingAdminIndex;
           showAdminNotice(`Juego actualizado: ${payload.name}.`, 'ok');
         }
