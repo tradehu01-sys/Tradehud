@@ -485,17 +485,18 @@
       }
 
       .game-window-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
         gap: 1rem;
-        justify-items: center;
       }
 
 
       .game-option {
         width: 148px;
         height: 148px;
-        border: 2px solid #3a5e9e;
+        border: 0;
         border-radius: 999px;
         background: #0d1426;
         padding: 0;
@@ -508,8 +509,7 @@
 
       .game-option:hover {
         transform: translateY(-3px);
-        border-color: #ffb347;
-        box-shadow: 0 0 0 3px rgba(255, 179, 71, 0.2);
+        box-shadow: none;
       }
 
       .game-option img {
@@ -1084,7 +1084,6 @@
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
         .social-buttons { grid-template-columns: 1fr; }
-        .game-window-grid { grid-template-columns: 1fr; }
         .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid,.steps-list { grid-template-columns: 1fr; }
         nav { justify-content: center; }
       }
@@ -1695,6 +1694,7 @@
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
+      const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
 
       function openGamePage(index) {
         const game = games[index];
@@ -1704,7 +1704,7 @@
         gameWindowDesc.textContent = game.description || '';
         gameWindowIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
         gameWindowOptions.innerHTML = '';
-        gameServices.forEach((serviceKey) => {
+        serviceRenderOrder.filter((serviceKey) => gameServices.includes(serviceKey)).forEach((serviceKey) => {
           const config = serviceCatalog[serviceKey];
           if (!config) return;
           const button = document.createElement('button');
