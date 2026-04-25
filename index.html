@@ -721,11 +721,38 @@
 
       .admin-card {
         width: min(420px, 92vw);
-        background: linear-gradient(165deg, #171a22, #111723);
+        background: linear-gradient(165deg, #141a2d, #0b111f);
         border: 1px solid #36518f;
-        border-radius: 16px;
-        padding: 1rem;
-        box-shadow: 0 12px 50px rgba(0, 0, 0, 0.45);
+        border-radius: 18px;
+        padding: 1.05rem;
+        box-shadow: 0 16px 60px rgba(0, 0, 0, 0.55);
+      }
+
+      .admin-brand {
+        display: flex;
+        gap: .6rem;
+        align-items: center;
+      }
+
+      .admin-logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        border: 1px solid #ffb347;
+        background: #0c1222;
+        object-fit: cover;
+      }
+
+      .admin-brand strong {
+        display: block;
+        font-size: 1rem;
+        color: #ffcf75;
+        letter-spacing: 0.02em;
+      }
+
+      .admin-brand small {
+        color: #b9c9ef;
+        font-size: 0.78rem;
       }
 
       .admin-head {
@@ -733,16 +760,6 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 0.9rem;
-      }
-
-      .logo-mini {
-        width: 44px;
-        height: 44px;
-        border-radius: 999px;
-        background: radial-gradient(circle at 30% 30%, var(--accent), transparent 40%),
-          radial-gradient(circle at 70% 70%, var(--hot), transparent 45%),
-          #0d1020;
-        border: 1px solid #5f6bc0;
       }
 
       .close-btn {
@@ -762,22 +779,27 @@
       .admin-card input {
         width: 100%;
         margin: 0.35rem 0 0.75rem;
-        border-radius: 8px;
-        border: 1px solid #2e4f8f;
-        background: #0c1324;
+        border-radius: 10px;
+        border: 1px solid #324f8d;
+        background: #0a111f;
         color: #fff;
         padding: 0.65rem;
       }
 
       .admin-login {
         width: 100%;
-        border: 0;
+        border: 1px solid #466cb6;
         border-radius: 10px;
         padding: 0.68rem;
         font-weight: 700;
         cursor: pointer;
-        background: linear-gradient(120deg, #3f7cff, #2f5bb3);
-        color: #eaf2ff;
+        background: linear-gradient(120deg, #1a2848, #0f1c38);
+        color: #f9fbff;
+      }
+
+      .admin-login:hover {
+        border-color: #ffb347;
+        box-shadow: 0 0 0 2px rgba(255, 179, 71, 0.18);
       }
       .category-item {
         border: 1px solid #2e4f8f;
@@ -1419,10 +1441,15 @@
     <div id="adminModal" class="admin-modal" aria-hidden="true">
       <div class="admin-card">
         <div class="admin-head">
-          <div style="display:flex;gap:.6rem;align-items:center;">
-            <div class="logo-mini"></div>
+          <div class="admin-brand">
+            <img
+              class="admin-logo"
+              src="https://cdn.discordapp.com/attachments/1492284382977855689/1497413092953428058/ChatGPT_Image_24_abr_2026_09_44_47_p.m..png?ex=69ed6e1d&is=69ec1c9d&hm=bb3fd7d6d56af74deedc387fb38c16131ce33210758043a8edf310036413fec3&"
+              alt="TradeHud logo"
+            />
             <div>
-              <strong>Ingreso</strong>
+              <strong>Acceso administrador</strong>
+              <small>Panel seguro TradeHud</small>
             </div>
           </div>
           <button id="closeAdmin" class="close-btn">✕</button>
