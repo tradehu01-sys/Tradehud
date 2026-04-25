@@ -1655,22 +1655,50 @@
         <p class="lead" style="margin:0;">Panel admin para editar casillas de juegos.</p>
         <div id="adminNotice" class="admin-notice"></div>
         <div class="panel-tabs">
-          <button id="tabListaJuegos" class="panel-tab active" type="button">Lista de juegos</button>
-          <button id="tabListaServidores" class="panel-tab" type="button">Categorías de oro</button>
+          <button id="tabServidoresJuego" class="panel-tab active" type="button">Servidores (Juegos)</button>
+          <button id="tabOro" class="panel-tab" type="button">Oro</button>
+          <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
+          <button id="tabBosteo" class="panel-tab" type="button">Bosteo</button>
         </div>
-        <div id="editorJuegos" class="editor-box">
+        <div id="editorServidores" class="editor-box">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Servidores por juego</strong>
+          </div>
+          <div class="admin-game-form" style="padding:0;">
+            <label for="serverGameSelect">Juego</label>
+            <select id="serverGameSelect"></select>
+            <label for="serverNameInput">Servidor</label>
+            <input id="serverNameInput" type="text" placeholder="Ej: Nordanar" />
+            <button id="guardarServidorJuego" class="panel-btn" type="button">+ Guardar servidor</button>
+          </div>
+          <div id="serverListWrap" class="admin-game-list" style="max-height:220px;"></div>
+          <hr style="border-color:#2e477c;opacity:.5;" />
           <div class="admin-panel-actions" style="margin-top:0;">
             <strong style="flex:1;display:flex;align-items:center;">Editar lista de juegos</strong>
             <button id="abrirFormularioJuego" class="panel-btn" type="button">+ Agregar juego</button>
           </div>
           <div id="juegoLista" class="admin-game-list"></div>
         </div>
-        <div id="editorCategorias" class="editor-box hidden">
+        <div id="editorOro" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
             <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
-            <button id="abrirFormularioCategoria" class="panel-btn" type="button">+ Agregar categoría</button>
+            <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
           </div>
-          <div id="categoriaLista"></div>
+          <div id="categoriaListaOro"></div>
+        </div>
+        <div id="editorCuentas" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Categorías de cuentas</strong>
+            <button id="abrirFormularioCategoriaCuentas" class="panel-btn" type="button">+ Agregar categoría</button>
+          </div>
+          <div id="categoriaListaCuentas"></div>
+        </div>
+        <div id="editorBosteo" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Categorías de bosteo</strong>
+            <button id="abrirFormularioCategoriaBosteo" class="panel-btn" type="button">+ Agregar categoría</button>
+          </div>
+          <div id="categoriaListaBosteo"></div>
         </div>
       </div>
     </div>
@@ -1791,12 +1819,24 @@
       const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
       const cancelarJuegoForm = document.getElementById('cancelarJuegoForm');
       const guardarJuegoForm = document.getElementById('guardarJuegoForm');
-      const tabListaJuegos = document.getElementById('tabListaJuegos');
-      const tabListaServidores = document.getElementById('tabListaServidores');
-      const editorJuegos = document.getElementById('editorJuegos');
-      const editorCategorias = document.getElementById('editorCategorias');
-      const categoriaLista = document.getElementById('categoriaLista');
-      const abrirFormularioCategoria = document.getElementById('abrirFormularioCategoria');
+      const tabServidoresJuego = document.getElementById('tabServidoresJuego');
+      const tabOro = document.getElementById('tabOro');
+      const tabCuentas = document.getElementById('tabCuentas');
+      const tabBosteo = document.getElementById('tabBosteo');
+      const editorServidores = document.getElementById('editorServidores');
+      const editorOro = document.getElementById('editorOro');
+      const editorCuentas = document.getElementById('editorCuentas');
+      const editorBosteo = document.getElementById('editorBosteo');
+      const categoriaListaOro = document.getElementById('categoriaListaOro');
+      const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
+      const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
+      const abrirFormularioCategoriaOro = document.getElementById('abrirFormularioCategoriaOro');
+      const abrirFormularioCategoriaCuentas = document.getElementById('abrirFormularioCategoriaCuentas');
+      const abrirFormularioCategoriaBosteo = document.getElementById('abrirFormularioCategoriaBosteo');
+      const serverGameSelect = document.getElementById('serverGameSelect');
+      const serverNameInput = document.getElementById('serverNameInput');
+      const guardarServidorJuego = document.getElementById('guardarServidorJuego');
+      const serverListWrap = document.getElementById('serverListWrap');
       const categoriaOroModal = document.getElementById('categoriaOroModal');
       const cerrarCategoriaOroModal = document.getElementById('cerrarCategoriaOroModal');
       const cancelarCategoriaOro = document.getElementById('cancelarCategoriaOro');
@@ -1858,6 +1898,17 @@
         { id: null, game: 'World of Warcraft', name: 'Oro rápido', description: 'Entrega en minutos con confirmación por Discord.' },
         { id: null, game: 'Albion Online', name: 'Plata segura', description: 'Categoría premium para compra/venta segura.' }
       ];
+      const accountCategories = [
+        { id: null, game: 'World of Warcraft', name: 'Cuenta PVP', description: 'Cuentas verificadas con historial limpio.' }
+      ];
+      const boostingCategories = [
+        { id: null, game: 'Lineage 2 Reborn', name: 'Subida rápida', description: 'Boosting guiado con reporte de avance.' }
+      ];
+      const gameServers = [
+        { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
+        { game: 'Albion Online', servers: ['West', 'East'] }
+      ];
+      let activeCategoryType = 'oro';
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
@@ -1926,14 +1977,27 @@
         }
       }
 
-      function renderGoldCategories() {
-        categoriaLista.innerHTML = '';
-        goldCategories.forEach((category, index) => {
+      function getCategoryBucket(type) {
+        if (type === 'cuentas') return accountCategories;
+        if (type === 'bosteo') return boostingCategories;
+        return goldCategories;
+      }
+
+      function renderCategoryList(type, target) {
+        target.innerHTML = '';
+        const bucket = getCategoryBucket(type);
+        bucket.forEach((category, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p><button class="mini-btn danger" type="button" data-remove-category="${index}">Eliminar</button>`;
-          categoriaLista.appendChild(item);
+          item.innerHTML = `<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p><button class="mini-btn danger" type="button" data-remove-category="${index}" data-category-type="${type}">Eliminar</button>`;
+          target.appendChild(item);
         });
+      }
+
+      function renderGoldCategories() {
+        renderCategoryList('oro', categoriaListaOro);
+        renderCategoryList('cuentas', categoriaListaCuentas);
+        renderCategoryList('bosteo', categoriaListaBosteo);
       }
 
       function renderCategoriasVista() {
@@ -1953,6 +2017,23 @@
           item.className = `admin-game-item${index === selectedAdminIndex ? ' active' : ''}`;
           item.innerHTML = `<div class="admin-game-main"><span class="admin-game-thumb"><img src="${game.icon}" alt="${game.name}" /></span><div><strong>${game.name}</strong><p class="admin-game-desc">${game.description || ''}</p></div></div><div class="admin-game-actions"><button class="mini-btn" type="button" data-action="edit" data-index="${index}">Editar</button><button class="mini-btn danger" type="button" data-action="delete" data-index="${index}">Eliminar</button></div>`;
           juegoLista.appendChild(item);
+        });
+        serverGameSelect.innerHTML = '';
+        games.forEach((game) => {
+          const option = document.createElement('option');
+          option.value = game.name;
+          option.textContent = game.name;
+          serverGameSelect.appendChild(option);
+        });
+      }
+
+      function renderServerByGame() {
+        serverListWrap.innerHTML = '';
+        gameServers.forEach((entry) => {
+          const card = document.createElement('article');
+          card.className = 'category-item';
+          card.innerHTML = `<strong>${entry.game}</strong><p class="admin-game-desc">${entry.servers.length} servidores</p><p class="admin-game-desc">${entry.servers.map((server) => `<span class="badge" style="margin-right:.35rem;">${server}</span>`).join('')}</p>`;
+          serverListWrap.appendChild(card);
         });
       }
 
@@ -2065,7 +2146,9 @@
         renderGameList();
         renderAdminSelect();
         renderGoldCategories();
+        renderServerByGame();
         loadSelectedGame();
+        activateAdminTab('servidores');
         setActivePage('inicio');
       }
       initializeApp();
@@ -2141,19 +2224,28 @@
         }
       });
 
-      tabListaJuegos.addEventListener('click', () => {
-        tabListaJuegos.classList.add('active');
-        tabListaServidores.classList.remove('active');
-        editorJuegos.classList.remove('hidden');
-        editorCategorias.classList.add('hidden');
-      });
+      function activateAdminTab(tab) {
+        [tabServidoresJuego, tabOro, tabCuentas, tabBosteo].forEach((btn) => btn.classList.remove('active'));
+        [editorServidores, editorOro, editorCuentas, editorBosteo].forEach((panel) => panel.classList.add('hidden'));
+        if (tab === 'servidores') {
+          tabServidoresJuego.classList.add('active');
+          editorServidores.classList.remove('hidden');
+        } else if (tab === 'cuentas') {
+          tabCuentas.classList.add('active');
+          editorCuentas.classList.remove('hidden');
+        } else if (tab === 'bosteo') {
+          tabBosteo.classList.add('active');
+          editorBosteo.classList.remove('hidden');
+        } else {
+          tabOro.classList.add('active');
+          editorOro.classList.remove('hidden');
+        }
+      }
 
-      tabListaServidores.addEventListener('click', () => {
-        tabListaServidores.classList.add('active');
-        tabListaJuegos.classList.remove('active');
-        editorCategorias.classList.remove('hidden');
-        editorJuegos.classList.add('hidden');
-      });
+      tabServidoresJuego.addEventListener('click', () => activateAdminTab('servidores'));
+      tabOro.addEventListener('click', () => activateAdminTab('oro'));
+      tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
+      tabBosteo.addEventListener('click', () => activateAdminTab('bosteo'));
 
       abrirFormularioJuego.addEventListener('click', () => {
         openGameForm('add');
@@ -2201,7 +2293,8 @@
       serviceGold.addEventListener('change', updateGamePreview);
       oroSearch.addEventListener('input', renderGameList);
 
-      function openCategoriaModal() {
+      function openCategoriaModal(type = 'oro') {
+        activeCategoryType = type;
         categoriaJuego.value = '';
         categoriaNombre.value = '';
         categoriaDescripcion.value = '';
@@ -2209,7 +2302,24 @@
         categoriaOroModal.setAttribute('aria-hidden', 'false');
       }
 
-      abrirFormularioCategoria.addEventListener('click', openCategoriaModal);
+      abrirFormularioCategoriaOro.addEventListener('click', () => openCategoriaModal('oro'));
+      abrirFormularioCategoriaCuentas.addEventListener('click', () => openCategoriaModal('cuentas'));
+      abrirFormularioCategoriaBosteo.addEventListener('click', () => openCategoriaModal('bosteo'));
+
+      guardarServidorJuego.addEventListener('click', () => {
+        const game = serverGameSelect.value.trim();
+        const server = serverNameInput.value.trim();
+        if (!game || !server) return;
+        const found = gameServers.find((entry) => entry.game === game);
+        if (!found) {
+          gameServers.push({ game, servers: [server] });
+        } else if (!found.servers.includes(server)) {
+          found.servers.push(server);
+        }
+        serverNameInput.value = '';
+        renderServerByGame();
+        showAdminNotice(`Servidor agregado a ${game}: ${server}`, 'ok');
+      });
 
       verCategoriasOro.addEventListener('click', () => {
         renderCategoriasVista();
@@ -2240,52 +2350,53 @@
 
       guardarCategoriaOro.addEventListener('click', async () => {
         if (!categoriaNombre.value.trim()) return;
-        if (!supabaseClient) {
-          showAdminNotice('Debes conectar Supabase para guardar categorías.', 'warn');
-          return;
-        }
         const payload = {
           game: categoriaJuego.value.trim() || 'General',
           name: categoriaNombre.value.trim(),
           description: categoriaDescripcion.value.trim() || 'Sin descripción.'
         };
-        const { data, error } = await supabaseClient
-          .from('gold_categories')
-          .insert(payload)
-          .select('id,game,name,description')
-          .single();
-        if (error) {
-          showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
-          return;
+        const bucket = getCategoryBucket(activeCategoryType);
+        if (activeCategoryType === 'oro' && supabaseClient) {
+          const { data, error } = await supabaseClient
+            .from('gold_categories')
+            .insert(payload)
+            .select('id,game,name,description')
+            .single();
+          if (error) {
+            showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
+            return;
+          }
+          bucket.push(data);
+        } else {
+          bucket.push({ id: null, ...payload });
         }
-        goldCategories.push(data);
         renderGoldCategories();
         showAdminNotice(`Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
         closeCategoriaModal();
       });
 
-      categoriaLista.addEventListener('click', async (e) => {
+      async function handleRemoveCategory(e) {
         const removeBtn = e.target.closest('button[data-remove-category]');
         if (!removeBtn) return;
-        if (!supabaseClient) {
-          showAdminNotice('Debes conectar Supabase para eliminar categorías.', 'warn');
-          return;
-        }
+        const type = removeBtn.dataset.categoryType || 'oro';
+        const bucket = getCategoryBucket(type);
         const idx = Number(removeBtn.dataset.removeCategory);
-        const target = goldCategories[idx];
-        if (!target?.id) {
-          showAdminNotice('Categoría sin ID remoto. Recarga datos desde Supabase.', 'warn');
-          return;
+        const target = bucket[idx];
+        if (type === 'oro' && supabaseClient && target?.id) {
+          const { error } = await supabaseClient.from('gold_categories').delete().eq('id', target.id);
+          if (error) {
+            showAdminNotice('No se pudo eliminar la categoría en Supabase.', 'warn');
+            return;
+          }
         }
-        const { error } = await supabaseClient.from('gold_categories').delete().eq('id', target.id);
-        if (error) {
-          showAdminNotice('No se pudo eliminar la categoría en Supabase.', 'warn');
-          return;
-        }
-        goldCategories.splice(idx, 1);
+        bucket.splice(idx, 1);
         renderGoldCategories();
         showAdminNotice('Categoría eliminada.', 'warn');
-      });
+      }
+
+      categoriaListaOro.addEventListener('click', handleRemoveCategory);
+      categoriaListaCuentas.addEventListener('click', handleRemoveCategory);
+      categoriaListaBosteo.addEventListener('click', handleRemoveCategory);
 
       cancelarJuegoForm.addEventListener('click', () => {
         editingAdminIndex = null;
