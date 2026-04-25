@@ -1862,11 +1862,15 @@
           return;
         }
         const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
-          supabaseClient.from('games').select('id,name,icon,description').order('created_at', { ascending: true }),
+          supabaseClient.from('games').select('id,name,icon,description,services').order('created_at', { ascending: true }),
           supabaseClient.from('gold_categories').select('id,game,name,description').order('created_at', { ascending: true })
         ]);
         if (gamesError || categoriesError) {
-          showAdminNotice('Error cargando datos de Supabase.', 'warn');
+          if (gamesError?.message?.toLowerCase().includes('services')) {
+            showAdminNotice('Falta la columna "services" en la tabla games de Supabase.', 'warn');
+          } else {
+            showAdminNotice('Error cargando datos de Supabase.', 'warn');
+          }
           return;
         }
         if (Array.isArray(gamesData) && gamesData.length) {
@@ -1875,7 +1879,7 @@
             name: row.name,
             icon: row.icon,
             description: row.description || '',
-            services: [...defaultServices]
+            services: Array.isArray(row.services) && row.services.length ? row.services : [...defaultServices]
           })));
         }
         if (Array.isArray(categoriesData)) {
@@ -2155,13 +2159,18 @@
             const supabasePayload = {
               name: payload.name,
               icon: payload.icon,
-              description: payload.description
+              description: payload.description,
+              services: payload.services
             };
-            const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description').single();
+            const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services').single();
             if (error) {
               games.push({ id: null, ...payload });
               selectedAdminIndex = games.length - 1;
-              showAdminNotice('No se pudo guardar en Supabase. Se guardó localmente.', 'warn');
+              if (error.message?.toLowerCase().includes('services')) {
+                showAdminNotice('No existe columna "services" en Supabase. Se guardó localmente.', 'warn');
+              } else {
+                showAdminNotice('No se pudo guardar en Supabase. Se guardó localmente.', 'warn');
+              }
             } else {
               games.push({ ...data, services: payload.services });
               selectedAdminIndex = games.length - 1;
@@ -2177,18 +2186,23 @@
             const supabasePayload = {
               name: payload.name,
               icon: payload.icon,
-              description: payload.description
+              description: payload.description,
+              services: payload.services
             };
             const { data, error } = await supabaseClient
               .from('games')
               .update(supabasePayload)
               .eq('id', games[editingAdminIndex].id)
-              .select('id,name,icon,description')
+              .select('id,name,icon,description,services')
               .single();
             if (error) {
               games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
               selectedAdminIndex = editingAdminIndex;
-              showAdminNotice('No se pudo actualizar en Supabase. Se actualizó localmente.', 'warn');
+              if (error.message?.toLowerCase().includes('services')) {
+                showAdminNotice('No existe columna "services" en Supabase. Se actualizó localmente.', 'warn');
+              } else {
+                showAdminNotice('No se pudo actualizar en Supabase. Se actualizó localmente.', 'warn');
+              }
             } else {
               games[editingAdminIndex] = { ...data, services: payload.services };
               selectedAdminIndex = editingAdminIndex;
