@@ -340,30 +340,83 @@
         font-weight: 700;
       }
 
-      .home-categories {
-        background: #0e1426;
-        border: 1px solid #324d8c;
+      .home-block {
+        background: #0d1426;
+        border: 1px solid #324f8f;
         border-radius: 16px;
         padding: 1rem;
       }
 
-      .home-categories-grid {
+      .popular-grid,
+      .services-grid,
+      .benefits-grid,
+      .testimonials-grid,
+      .faq-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.65rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
       }
 
-      .home-category-item {
-        border: 1px solid #3a5ea6;
+      .home-item {
+        border: 1px solid #37589a;
+        background: #101a31;
+        border-radius: 12px;
+        padding: 0.85rem;
+      }
+
+      .home-item h3 {
+        margin: 0 0 0.45rem;
+        font-size: 1rem;
+      }
+
+      .home-item p {
+        margin: 0;
+        color: #c8d5ef;
+        line-height: 1.5;
+      }
+
+      .steps-list {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.7rem;
+      }
+
+      .step-card {
+        border: 1px solid #395ca3;
+        border-radius: 12px;
+        background: #101b33;
+        padding: 0.85rem;
+      }
+
+      .step-card strong {
+        display: inline-flex;
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        justify-content: center;
+        align-items: center;
+        background: #1a2b54;
+        border: 1px solid #4b71be;
+        margin-bottom: 0.45rem;
+      }
+
+      .faq-item {
+        border: 1px solid #385ca4;
         border-radius: 10px;
         background: #101a31;
-        padding: 0.7rem 0.8rem;
-        font-weight: 700;
-        color: #e9f0ff;
+        padding: 0.75rem 0.85rem;
       }
 
-      @media (max-width: 640px) {
-        .home-categories-grid { grid-template-columns: 1fr; }
+      .faq-item summary {
+        cursor: pointer;
+        font-weight: 700;
+        color: #f4f8ff;
+      }
+
+      .faq-item p {
+        color: #c8d5ef;
+        margin: 0.55rem 0 0;
+        line-height: 1.5;
       }
       nav a,
       .admin-open,
@@ -975,12 +1028,15 @@
 
       @media (max-width: 980px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr 1fr; }
+        .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid { grid-template-columns: 1fr 1fr; }
+        .steps-list { grid-template-columns: 1fr 1fr; }
       }
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
         .social-buttons { grid-template-columns: 1fr; }
         .game-window-grid { grid-template-columns: 1fr; }
         .game-window-grid .game-option:last-child { grid-column: auto; }
+        .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid,.steps-list { grid-template-columns: 1fr; }
         nav { justify-content: center; }
       }
     </style>
@@ -1072,19 +1128,126 @@
         </div>
       </section>
 
-      <section id="categorias-inicio" class="page-section" data-page="inicio">
+      <section id="juegos-populares" class="page-section" data-page="inicio">
         <div class="container">
-          <h2 class="section-title">Categorías destacadas del <span>inicio</span></h2>
-          <article class="home-categories">
-            <div class="home-categories-grid">
-              <div class="home-category-item">JUEGOS POPULARES</div>
-              <div class="home-category-item">QUIÉNES SOMOS</div>
-              <div class="home-category-item">SERVICIOS DETALLADOS</div>
-              <div class="home-category-item">CÓMO FUNCIONA (pasos)</div>
-              <div class="home-category-item">BENEFICIOS / POR QUÉ ELEGIRNOS</div>
-              <div class="home-category-item">TESTIMONIOS</div>
-              <div class="home-category-item">PREGUNTAS FRECUENTES</div>
+          <h2 class="section-title">Juegos <span>populares</span></h2>
+          <article class="home-block popular-grid">
+            <div class="home-item">
+              <h3>World of Warcraft</h3>
+              <p>Compra de oro, boosts PvE/PvP, game time y asistencia para progresión en retail, classic y servidores de temporada.</p>
             </div>
+            <div class="home-item">
+              <h3>Albion Online</h3>
+              <p>Servicios para silver, rutas de farmeo, equipamiento recomendado y acompañamiento para comercio seguro entre jugadores.</p>
+            </div>
+            <div class="home-item">
+              <h3>Lineage 2 Reborn</h3>
+              <p>Operaciones para adena, ítems de alto valor y soporte dedicado para reducir riesgos en cada transferencia.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="servicios-detallados" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Servicios <span>detallados</span></h2>
+          <article class="home-block services-grid">
+            <div class="home-item">
+              <h3>Oro y monedas</h3>
+              <p>Venta y compra de monedas por juego con verificación de stock, tiempos de entrega claros y soporte durante el proceso.</p>
+            </div>
+            <div class="home-item">
+              <h3>Boosting personalizado</h3>
+              <p>Subidas de nivel, dungeons, raids, ranking y objetivos específicos según la meta del jugador.</p>
+            </div>
+            <div class="home-item">
+              <h3>Cuentas y marketplace</h3>
+              <p>Publicación, validación y mediación para cuentas, servicios y productos digitales dentro de la comunidad.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="como-funciona" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Cómo funciona <span>(pasos)</span></h2>
+          <article class="home-block steps-list">
+            <div class="step-card">
+              <strong>1</strong>
+              <p>Selecciona el juego y el servicio que necesitas desde Oro o Marketplace.</p>
+            </div>
+            <div class="step-card">
+              <strong>2</strong>
+              <p>Contacta por Discord/WhatsApp y comparte servidor, facción y cantidad.</p>
+            </div>
+            <div class="step-card">
+              <strong>3</strong>
+              <p>Recibe confirmación de precio, disponibilidad y método de entrega seguro.</p>
+            </div>
+            <div class="step-card">
+              <strong>4</strong>
+              <p>Completamos la operación con seguimiento hasta que confirmes recepción.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="beneficios" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Beneficios / por qué <span>elegirnos</span></h2>
+          <article class="home-block benefits-grid">
+            <div class="home-item">
+              <h3>Atención real</h3>
+              <p>No hay bots para resolver tu compra: un agente te guía de inicio a fin con respuesta rápida.</p>
+            </div>
+            <div class="home-item">
+              <h3>Proceso transparente</h3>
+              <p>Precios, tiempos y condiciones claras antes de confirmar cualquier pago o entrega.</p>
+            </div>
+            <div class="home-item">
+              <h3>Seguridad operativa</h3>
+              <p>Validamos pedidos y usamos pasos de control para proteger comprador y vendedor.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="testimonios" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Testimonios de <span>clientes</span></h2>
+          <article class="home-block testimonials-grid">
+            <div class="home-item">
+              <h3>“Entrega puntual”</h3>
+              <p>“Compré oro para WoW y en minutos ya estaba listo. Me explicaron todo por Discord.” — Cliente Retail</p>
+            </div>
+            <div class="home-item">
+              <h3>“Soporte excelente”</h3>
+              <p>“Primera vez usando marketplace y me acompañaron hasta cerrar la venta sin problemas.” — Vendedor L2</p>
+            </div>
+            <div class="home-item">
+              <h3>“Recomiendo TradeHud”</h3>
+              <p>“El proceso fue claro, rápido y seguro. Volveré a contratar boosting.” — Jugador Albion</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="faq" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Preguntas <span>frecuentes</span></h2>
+          <article class="home-block faq-grid">
+            <details class="faq-item">
+              <summary>¿Cuánto tarda una entrega de oro?</summary>
+              <p>Depende del juego y del stock disponible; normalmente se confirma en minutos y se coordina la entrega en el mismo turno de atención.</p>
+            </details>
+            <details class="faq-item">
+              <summary>¿Qué métodos de pago aceptan?</summary>
+              <p>Trabajamos con Binance, Bitcoin, Zinli, PayPal y otros métodos digitales disponibles en la sección de pagos.</p>
+            </details>
+            <details class="faq-item">
+              <summary>¿También compran oro a jugadores?</summary>
+              <p>Sí. En “Vender tu oro” puedes abrir ticket y te guiamos en todo el proceso de validación y pago.</p>
+            </details>
           </article>
         </div>
       </section>
