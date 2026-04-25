@@ -532,6 +532,98 @@
         margin-bottom: 0.55rem;
       }
 
+      .sell-wrap {
+        background: rgba(18, 24, 42, 0.72);
+        border: 1px solid #3d5898;
+        border-radius: 18px;
+        padding: 1rem;
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(6px);
+      }
+
+      .sell-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        border: 1px solid #8c6a2d;
+        background: #2a1f0d;
+        color: #ffe1a6;
+        border-radius: 999px;
+        padding: .35rem .7rem;
+        font-size: .78rem;
+        margin-bottom: .55rem;
+      }
+
+      .sell-grid {
+        display: grid;
+        grid-template-columns: 1.1fr .9fr;
+        gap: 1rem;
+      }
+
+      .sell-panel {
+        background: rgba(13, 20, 37, 0.9);
+        border: 1px solid #35518f;
+        border-radius: 14px;
+        padding: .9rem;
+      }
+
+      .sell-panel h3 {
+        margin: 0 0 .55rem;
+        color: #ffcf75;
+        font-size: 1rem;
+      }
+
+      .sell-list {
+        margin: 0;
+        padding-left: 1.05rem;
+        color: #c8d6f3;
+        line-height: 1.6;
+      }
+
+      .sell-list li { margin-bottom: .35rem; }
+
+      .sell-steps {
+        display: grid;
+        gap: .55rem;
+      }
+
+      .sell-step {
+        border: 1px solid #3b5b9f;
+        border-radius: 10px;
+        background: #111d35;
+        padding: .65rem .7rem;
+        color: #d9e7ff;
+      }
+
+      .sell-step strong { color: #ffcf75; }
+
+      .discord-sell-btn {
+        width: 100%;
+        text-align: center;
+        margin-top: .75rem;
+        border: 1px solid #506ed8;
+        background: linear-gradient(120deg, #1d2f63, #101a37);
+        color: #fff;
+        border-radius: 10px;
+        padding: .75rem .85rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      }
+
+      .discord-sell-btn:hover {
+        transform: translateY(-2px);
+        border-color: #ffb347;
+        box-shadow: 0 0 0 3px rgba(255, 179, 71, 0.2);
+      }
+
+      .sell-note {
+        margin-top: .6rem;
+        font-size: .84rem;
+        color: #b8c9ef;
+      }
+
       ul a {
         color: #8fdcff;
         word-break: break-all;
@@ -1080,6 +1172,7 @@
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr 1fr; }
         .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid { grid-template-columns: 1fr 1fr; }
         .steps-list { grid-template-columns: 1fr 1fr; }
+        .sell-grid { grid-template-columns: 1fr; }
       }
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
@@ -1331,24 +1424,52 @@
 
       <section id="vender" class="page-section" data-page="vendemos-oro">
         <div class="container">
-          <h2 class="section-title">Vender tu <span>oro</span></h2>
-          <p class="lead" style="margin:0 0 1rem 0;">Vender tu oro con atención por Discord, confirmación rápida y proceso seguro.</p>
-          <div class="split">
-            <div>
-              <div class="step">1) Abre ticket en Discord.</div>
-              <div class="step">2) Indica servidor y cantidad disponible.</div>
-              <div class="step">3) Confirmamos comprador y seguridad.</div>
-              <div class="step">4) Recibe tu pago.</div>
-            </div>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=1200&auto=format&fit=crop" alt="Discord" />
-              <div class="card-body">
-                <strong>Venta directa por comunidad</strong>
-                <p>Canal dedicado para compra/venta con moderación.</p>
-                <p><a class="btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Ir al Discord de venta</a></p>
+          <h2 class="section-title">Vende tu oro al <span>mejor precio</span></h2>
+          <article class="sell-wrap">
+            <span class="sell-badge">🟢 Vendedores activos hoy: +150</span>
+            <p class="lead" style="margin:.1rem 0 .9rem;">
+              En TradeHud MMORPG vendes tu oro con un flujo <strong>rápido, seguro y con atención personalizada</strong> por Discord.
+              Nuestro equipo revisa cada operación y acompaña el proceso hasta que recibes tu pago.
+            </p>
+            <div class="sell-grid">
+              <div class="sell-panel">
+                <h3>Beneficios de vender con TradeHud</h3>
+                <ul class="sell-list">
+                  <li>✅ Sin comisiones ocultas.</li>
+                  <li>✅ Pago en menos de 24 horas.</li>
+                  <li>✅ Compradores verificados.</li>
+                  <li>✅ Soporte humano 24/7.</li>
+                </ul>
+                <h3 style="margin-top:.8rem;">Métodos de pago</h3>
+                <ul class="sell-list">
+                  <li>💳 Transferencia bancaria</li>
+                  <li>🟡 USDT</li>
+                  <li>🅿️ PayPal</li>
+                  <li>🟨 Binance</li>
+                </ul>
+                <h3 style="margin-top:.8rem;">Requisitos mínimos para vender</h3>
+                <ul class="sell-list">
+                  <li>🔹 Tener cuenta de Discord.</li>
+                  <li>🔹 Stock mínimo desde 100 de oro (o equivalente).</li>
+                </ul>
+                <p class="sell-note"><strong>Canal oficial:</strong> #eltrataron-nara-momma (moderación activa).</p>
+                <p class="sell-note"><strong>Testimonio:</strong> “Vendí mi oro en la tarde y cobré el mismo día, todo súper claro.” — Vendedor satisfecho</p>
               </div>
-            </article>
-          </div>
+              <div class="sell-panel">
+                <h3>Cómo vender tu oro en 4 pasos</h3>
+                <div class="sell-steps">
+                  <div class="sell-step"><strong>1)</strong> Abre ticket en Discord.</div>
+                  <div class="sell-step"><strong>2)</strong> Indica servidor y cantidad disponible.</div>
+                  <div class="sell-step"><strong>3)</strong> Confirmamos comprador y seguridad.</div>
+                  <div class="sell-step"><strong>4)</strong> Recibe tu pago (transferencia, USDT o PayPal).</div>
+                </div>
+                <a class="discord-sell-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Ir al Discord de venta</a>
+                <p class="sell-note">🛡️ <strong>Transacción moderada y protegida por TradeHud.</strong></p>
+                <p class="sell-note"><strong>FAQ breve:</strong> ¿Qué pasa si me intentan estafar? El equipo de TradeHud modera y congela la transacción hasta resolver.</p>
+                <p class="sell-note">⚠️ TradeHud no está afiliado oficialmente con los desarrolladores de los juegos.</p>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -1645,17 +1766,17 @@
         boosting: {
           className: 'boost',
           title: 'BOOSTING',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006601390428240/ChatGPT_Image_20_abr_2026_06_42_34_p.m..png?ex=69eced78&is=69eb9bf8&hm=12b48f287c226a3f587e206d764d231d163da51bdde038bb3a68fabe6c927e9a&'
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006601390428240/ChatGPT_Image_20_abr_2026_06_42_34_p.m..png'
         },
         accounts: {
           className: 'accounts',
           title: 'ACCOUNTS',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006645220905070/ChatGPT_Image_20_abr_2026_06_43_30_p.m..png?ex=69eced82&is=69eb9c02&hm=b63af9f1258b4e268581c74414e61b132d18be651c7e0ae6ee372c5fedf76d3b&'
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006645220905070/ChatGPT_Image_20_abr_2026_06_43_30_p.m..png'
         },
         gold: {
           className: 'gold',
           title: 'GOLD',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006561200472115/ChatGPT_Image_20_abr_2026_06_41_28_p.m..png?ex=69eced6e&is=69eb9bee&hm=b8f4a89489398f7044b62e5d26279860602a6a974b64908b9cb98b43d3537b5e&'
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006561200472115/ChatGPT_Image_20_abr_2026_06_41_28_p.m..png'
         }
       };
       const SUPABASE_URL =
@@ -1710,7 +1831,7 @@
           const button = document.createElement('button');
           button.className = `game-option ${config.className}`;
           button.type = 'button';
-          button.innerHTML = `<img src="${config.image}" alt="${config.title}" loading="lazy" />`;
+          button.innerHTML = `<img src="${config.image}" alt="${config.title}" loading="lazy" referrerpolicy="no-referrer" />`;
           gameWindowOptions.appendChild(button);
         });
         if (!gameWindowOptions.children.length) {
