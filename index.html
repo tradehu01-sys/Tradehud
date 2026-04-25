@@ -1644,8 +1644,14 @@
         accounts: { className: 'accounts', title: 'ACCOUNTS', subtitle: 'Cuentas verificadas' },
         gold: { className: 'gold', title: 'GOLD', subtitle: 'Compra y venta de oro' }
       };
-      const SUPABASE_URL = window.TRADEHUD_SUPABASE_URL || 'https://lveocmzvfndvzjdqknnf.supabase.co';
-      const SUPABASE_ANON_KEY = window.TRADEHUD_SUPABASE_ANON_KEY || '';
+      const SUPABASE_URL =
+        window.TRADEHUD_SUPABASE_URL ||
+        window.NEXT_PUBLIC_SUPABASE_URL ||
+        'https://lveocmzvfndvzjdqknnf.supabase.co';
+      const SUPABASE_ANON_KEY =
+        window.TRADEHUD_SUPABASE_ANON_KEY ||
+        window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+        'sb_publishable_So-MKH0I5IJ_kmSweJo1IQ_H5kxNgMG';
       const isServiceRoleKey = (() => {
         try {
           if (!SUPABASE_ANON_KEY.includes('.')) return false;
@@ -1834,7 +1840,7 @@
           return;
         }
         if (!supabaseClient) {
-          showAdminNotice('Supabase no configurado. Define window.TRADEHUD_SUPABASE_ANON_KEY (anon key pública).', 'warn');
+          showAdminNotice('Supabase no configurado. Define window.TRADEHUD_SUPABASE_ANON_KEY o window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.', 'warn');
           return;
         }
         const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
