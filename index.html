@@ -1590,10 +1590,21 @@
       const categoriasVistaModal = document.getElementById('categoriasVistaModal');
       const categoriasVistaLista = document.getElementById('categoriasVistaLista');
       const cerrarCategoriasVista = document.getElementById('cerrarCategoriasVista');
-      const SUPABASE_URL = window.TRADEHUD_SUPABASE_URL || '';
+      const SUPABASE_URL = window.TRADEHUD_SUPABASE_URL || 'https://lveocmzvfndvzjdqknnf.supabase.co';
       const SUPABASE_ANON_KEY = window.TRADEHUD_SUPABASE_ANON_KEY || '';
+      const isServiceRoleKey = (() => {
+        try {
+          if (!SUPABASE_ANON_KEY.includes('.')) return false;
+          const payloadBase64 = SUPABASE_ANON_KEY.split('.')[1];
+          const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+          const payload = JSON.parse(payloadJson);
+          return payload.role === 'service_role';
+        } catch (error) {
+          return false;
+        }
+      })();
       const supabaseClient = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
-        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+        ? (isServiceRoleKey ? null : window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY))
         : null;
 
       const games = [
@@ -1735,8 +1746,12 @@
       }
 
       async function syncFromSupabase() {
+        if (isServiceRoleKey) {
+          showAdminNotice('Clave bloqueada: detectamos service_role. Usa SOLO la anon public key en frontend.', 'warn');
+          return;
+        }
         if (!supabaseClient) {
-          showAdminNotice('Supabase no configurado. Define window.TRADEHUD_SUPABASE_URL y window.TRADEHUD_SUPABASE_ANON_KEY.', 'warn');
+          showAdminNotice('Supabase no configurado. Define window.TRADEHUD_SUPABASE_ANON_KEY (anon key pública).', 'warn');
           return;
         }
         const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
@@ -1875,13 +1890,19 @@
         }
         if (btn.dataset.action === 'delete') {
           if (games.length <= 1) return;
+          if (!supabaseClient) {
+            showAdminNotice('Debes conectar Supabase para eliminar juegos.', 'warn');
+            return;
+          }
           const target = games[index];
-          if (supabaseClient && target?.id) {
-            const { error } = await supabaseClient.from('games').delete().eq('id', target.id);
-            if (error) {
-              showAdminNotice('No se pudo eliminar el juego en Supabase.', 'warn');
-              return;
-            }
+          if (!target?.id) {
+            showAdminNotice('Juego sin ID remoto. Recarga datos desde Supabase.', 'warn');
+            return;
+          }
+          const { error } = await supabaseClient.from('games').delete().eq('id', target.id);
+          if (error) {
+            showAdminNotice('No se pudo eliminar el juego en Supabase.', 'warn');
+            return;
           }
           games.splice(index, 1);
           selectedAdminIndex = Math.max(0, index - 1);
@@ -1937,25 +1958,25 @@
 
       guardarCategoriaOro.addEventListener('click', async () => {
         if (!categoriaNombre.value.trim()) return;
+        if (!supabaseClient) {
+          showAdminNotice('Debes conectar Supabase para guardar categorías.', 'warn');
+          return;
+        }
         const payload = {
           game: categoriaJuego.value.trim() || 'General',
           name: categoriaNombre.value.trim(),
           description: categoriaDescripcion.value.trim() || 'Sin descripción.'
         };
-        if (supabaseClient) {
-          const { data, error } = await supabaseClient
-            .from('gold_categories')
-            .insert(payload)
-            .select('id,game,name,description')
-            .single();
-          if (error) {
-            showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
-            return;
-          }
-          goldCategories.push(data);
-        } else {
-          goldCategories.push({ id: null, ...payload });
+        const { data, error } = await supabaseClient
+          .from('gold_categories')
+          .insert(payload)
+          .select('id,game,name,description')
+          .single();
+        if (error) {
+          showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
+          return;
         }
+        goldCategories.push(data);
         renderGoldCategories();
         showAdminNotice(`Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
         closeCategoriaModal();
@@ -1964,14 +1985,20 @@
       categoriaLista.addEventListener('click', async (e) => {
         const removeBtn = e.target.closest('button[data-remove-category]');
         if (!removeBtn) return;
+        if (!supabaseClient) {
+          showAdminNotice('Debes conectar Supabase para eliminar categorías.', 'warn');
+          return;
+        }
         const idx = Number(removeBtn.dataset.removeCategory);
         const target = goldCategories[idx];
-        if (supabaseClient && target?.id) {
-          const { error } = await supabaseClient.from('gold_categories').delete().eq('id', target.id);
-          if (error) {
-            showAdminNotice('No se pudo eliminar la categoría en Supabase.', 'warn');
-            return;
-          }
+        if (!target?.id) {
+          showAdminNotice('Categoría sin ID remoto. Recarga datos desde Supabase.', 'warn');
+          return;
+        }
+        const { error } = await supabaseClient.from('gold_categories').delete().eq('id', target.id);
+        if (error) {
+          showAdminNotice('No se pudo eliminar la categoría en Supabase.', 'warn');
+          return;
         }
         goldCategories.splice(idx, 1);
         renderGoldCategories();
@@ -2006,40 +2033,40 @@
 
       guardarJuegoForm.addEventListener('click', async () => {
         if (!juegoNombre.value.trim()) return;
+        if (!supabaseClient) {
+          showAdminNotice('Debes conectar Supabase para guardar juegos.', 'warn');
+          return;
+        }
         const payload = {
           name: juegoNombre.value.trim(),
           icon: juegoImagen.value.trim() || games[0].icon,
           description: juegoDescripcion.value.trim()
         };
         if (editingAdminIndex === null) {
-          if (supabaseClient) {
-            const { data, error } = await supabaseClient.from('games').insert(payload).select('id,name,icon,description').single();
-            if (error) {
-              showAdminNotice('No se pudo guardar el juego en Supabase.', 'warn');
-              return;
-            }
-            games.push(data);
-          } else {
-            games.push({ id: null, ...payload });
+          const { data, error } = await supabaseClient.from('games').insert(payload).select('id,name,icon,description').single();
+          if (error) {
+            showAdminNotice('No se pudo guardar el juego en Supabase.', 'warn');
+            return;
           }
+          games.push(data);
           selectedAdminIndex = games.length - 1;
           showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
         } else {
-          if (supabaseClient && games[editingAdminIndex]?.id) {
-            const { data, error } = await supabaseClient
-              .from('games')
-              .update(payload)
-              .eq('id', games[editingAdminIndex].id)
-              .select('id,name,icon,description')
-              .single();
-            if (error) {
-              showAdminNotice('No se pudo actualizar el juego en Supabase.', 'warn');
-              return;
-            }
-            games[editingAdminIndex] = data;
-          } else {
-            games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
+          if (!games[editingAdminIndex]?.id) {
+            showAdminNotice('Juego sin ID remoto. Recarga datos desde Supabase.', 'warn');
+            return;
           }
+          const { data, error } = await supabaseClient
+            .from('games')
+            .update(payload)
+            .eq('id', games[editingAdminIndex].id)
+            .select('id,name,icon,description')
+            .single();
+          if (error) {
+            showAdminNotice('No se pudo actualizar el juego en Supabase.', 'warn');
+            return;
+          }
+          games[editingAdminIndex] = data;
           selectedAdminIndex = editingAdminIndex;
           showAdminNotice(`Juego actualizado: ${payload.name}.`, 'ok');
         }
