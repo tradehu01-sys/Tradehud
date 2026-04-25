@@ -318,11 +318,14 @@
       }
       .server.active { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(255,179,71,.25); }
       .server-icon {
-        width: 106px; height: 106px; border-radius: 999px;
+        width: 140px;
+        height: 140px;
+        border-radius: 16px;
         margin: 0 auto .45rem;
-        border: 2px solid var(--hot);
+        border: 1px solid #395b9d;
         animation: floatIcon 2.2s ease-in-out infinite;
         overflow: hidden;
+        background: #0b1221;
       }
 
       .server-icon img {
@@ -333,7 +336,34 @@
 
       .server-name {
         display: block;
-        font-size: 1.02rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .home-categories {
+        background: #0e1426;
+        border: 1px solid #324d8c;
+        border-radius: 16px;
+        padding: 1rem;
+      }
+
+      .home-categories-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
+      }
+
+      .home-category-item {
+        border: 1px solid #3a5ea6;
+        border-radius: 10px;
+        background: #101a31;
+        padding: 0.7rem 0.8rem;
+        font-weight: 700;
+        color: #e9f0ff;
+      }
+
+      @media (max-width: 640px) {
+        .home-categories-grid { grid-template-columns: 1fr; }
       }
       nav a,
       .admin-open,
@@ -1039,6 +1069,23 @@
               </div>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section id="categorias-inicio" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Categorías destacadas del <span>inicio</span></h2>
+          <article class="home-categories">
+            <div class="home-categories-grid">
+              <div class="home-category-item">JUEGOS POPULARES</div>
+              <div class="home-category-item">QUIÉNES SOMOS</div>
+              <div class="home-category-item">SERVICIOS DETALLADOS</div>
+              <div class="home-category-item">CÓMO FUNCIONA (pasos)</div>
+              <div class="home-category-item">BENEFICIOS / POR QUÉ ELEGIRNOS</div>
+              <div class="home-category-item">TESTIMONIOS</div>
+              <div class="home-category-item">PREGUNTAS FRECUENTES</div>
+            </div>
+          </article>
         </div>
       </section>
 
