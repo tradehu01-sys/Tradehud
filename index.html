@@ -1538,6 +1538,7 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
       const gameList = document.getElementById('gameList');
       const oroSearch = document.getElementById('oroSearch');
@@ -1589,16 +1590,21 @@
       const categoriasVistaModal = document.getElementById('categoriasVistaModal');
       const categoriasVistaLista = document.getElementById('categoriasVistaLista');
       const cerrarCategoriasVista = document.getElementById('cerrarCategoriasVista');
+      const SUPABASE_URL = window.TRADEHUD_SUPABASE_URL || '';
+      const SUPABASE_ANON_KEY = window.TRADEHUD_SUPABASE_ANON_KEY || '';
+      const supabaseClient = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+        : null;
 
       const games = [
-        { name: 'World of Warcraft', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E", description: 'Clásico para comercio de oro y servicios premium.' },
-        { name: 'WoW TBC', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E", description: 'Servidor TBC con alta demanda de boosting.' },
-        { name: 'Albion Online', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E", description: 'Compra/venta de plata y servicios por encargo.' },
-        { name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E", description: 'Market activo para adena y cuentas.' }
+        { id: null, name: 'World of Warcraft', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E", description: 'Clásico para comercio de oro y servicios premium.' },
+        { id: null, name: 'WoW TBC', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E", description: 'Servidor TBC con alta demanda de boosting.' },
+        { id: null, name: 'Albion Online', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E", description: 'Compra/venta de plata y servicios por encargo.' },
+        { id: null, name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E", description: 'Market activo para adena y cuentas.' }
       ];
       const goldCategories = [
-        { game: 'World of Warcraft', name: 'Oro rápido', description: 'Entrega en minutos con confirmación por Discord.' },
-        { game: 'Albion Online', name: 'Plata segura', description: 'Categoría premium para compra/venta segura.' }
+        { id: null, game: 'World of Warcraft', name: 'Oro rápido', description: 'Entrega en minutos con confirmación por Discord.' },
+        { id: null, game: 'Albion Online', name: 'Plata segura', description: 'Categoría premium para compra/venta segura.' }
       ];
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
@@ -1728,11 +1734,47 @@
         adminNotice.style.color = kind === 'ok' ? '#9affcc' : kind === 'warn' ? '#ffd39a' : '#9fd6ff';
       }
 
-      renderGameList();
-      renderAdminSelect();
-      renderGoldCategories();
-      loadSelectedGame();
-      setActivePage('inicio');
+      async function syncFromSupabase() {
+        if (!supabaseClient) {
+          showAdminNotice('Supabase no configurado. Define window.TRADEHUD_SUPABASE_URL y window.TRADEHUD_SUPABASE_ANON_KEY.', 'warn');
+          return;
+        }
+        const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
+          supabaseClient.from('games').select('id,name,icon,description').order('created_at', { ascending: true }),
+          supabaseClient.from('gold_categories').select('id,game,name,description').order('created_at', { ascending: true })
+        ]);
+        if (gamesError || categoriesError) {
+          showAdminNotice('Error cargando datos de Supabase.', 'warn');
+          return;
+        }
+        if (Array.isArray(gamesData) && gamesData.length) {
+          games.splice(0, games.length, ...gamesData.map((row) => ({
+            id: row.id,
+            name: row.name,
+            icon: row.icon,
+            description: row.description || ''
+          })));
+        }
+        if (Array.isArray(categoriesData)) {
+          goldCategories.splice(0, goldCategories.length, ...categoriesData.map((row) => ({
+            id: row.id,
+            game: row.game || 'General',
+            name: row.name,
+            description: row.description || 'Sin descripción.'
+          })));
+        }
+        showAdminNotice('Conectado a Supabase correctamente.', 'ok');
+      }
+
+      async function initializeApp() {
+        await syncFromSupabase();
+        renderGameList();
+        renderAdminSelect();
+        renderGoldCategories();
+        loadSelectedGame();
+        setActivePage('inicio');
+      }
+      initializeApp();
 
       pageLinks.forEach((link) => {
         link.addEventListener('click', (e) => {
@@ -1823,7 +1865,7 @@
         openGameForm('add');
       });
 
-      juegoLista.addEventListener('click', (e) => {
+      juegoLista.addEventListener('click', async (e) => {
         const btn = e.target.closest('button[data-action]');
         if (!btn) return;
         const index = Number(btn.dataset.index);
@@ -1833,6 +1875,14 @@
         }
         if (btn.dataset.action === 'delete') {
           if (games.length <= 1) return;
+          const target = games[index];
+          if (supabaseClient && target?.id) {
+            const { error } = await supabaseClient.from('games').delete().eq('id', target.id);
+            if (error) {
+              showAdminNotice('No se pudo eliminar el juego en Supabase.', 'warn');
+              return;
+            }
+          }
           games.splice(index, 1);
           selectedAdminIndex = Math.max(0, index - 1);
           editingAdminIndex = null;
@@ -1885,22 +1935,44 @@
         if (e.target === categoriaOroModal) closeCategoriaModal();
       });
 
-      guardarCategoriaOro.addEventListener('click', () => {
+      guardarCategoriaOro.addEventListener('click', async () => {
         if (!categoriaNombre.value.trim()) return;
-        goldCategories.push({
+        const payload = {
           game: categoriaJuego.value.trim() || 'General',
           name: categoriaNombre.value.trim(),
           description: categoriaDescripcion.value.trim() || 'Sin descripción.'
-        });
+        };
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient
+            .from('gold_categories')
+            .insert(payload)
+            .select('id,game,name,description')
+            .single();
+          if (error) {
+            showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
+            return;
+          }
+          goldCategories.push(data);
+        } else {
+          goldCategories.push({ id: null, ...payload });
+        }
         renderGoldCategories();
         showAdminNotice(`Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
         closeCategoriaModal();
       });
 
-      categoriaLista.addEventListener('click', (e) => {
+      categoriaLista.addEventListener('click', async (e) => {
         const removeBtn = e.target.closest('button[data-remove-category]');
         if (!removeBtn) return;
         const idx = Number(removeBtn.dataset.removeCategory);
+        const target = goldCategories[idx];
+        if (supabaseClient && target?.id) {
+          const { error } = await supabaseClient.from('gold_categories').delete().eq('id', target.id);
+          if (error) {
+            showAdminNotice('No se pudo eliminar la categoría en Supabase.', 'warn');
+            return;
+          }
+        }
         goldCategories.splice(idx, 1);
         renderGoldCategories();
         showAdminNotice('Categoría eliminada.', 'warn');
@@ -1932,7 +2004,7 @@
         }
       });
 
-      guardarJuegoForm.addEventListener('click', () => {
+      guardarJuegoForm.addEventListener('click', async () => {
         if (!juegoNombre.value.trim()) return;
         const payload = {
           name: juegoNombre.value.trim(),
@@ -1940,11 +2012,34 @@
           description: juegoDescripcion.value.trim()
         };
         if (editingAdminIndex === null) {
-          games.push(payload);
+          if (supabaseClient) {
+            const { data, error } = await supabaseClient.from('games').insert(payload).select('id,name,icon,description').single();
+            if (error) {
+              showAdminNotice('No se pudo guardar el juego en Supabase.', 'warn');
+              return;
+            }
+            games.push(data);
+          } else {
+            games.push({ id: null, ...payload });
+          }
           selectedAdminIndex = games.length - 1;
           showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
         } else {
-          games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
+          if (supabaseClient && games[editingAdminIndex]?.id) {
+            const { data, error } = await supabaseClient
+              .from('games')
+              .update(payload)
+              .eq('id', games[editingAdminIndex].id)
+              .select('id,name,icon,description')
+              .single();
+            if (error) {
+              showAdminNotice('No se pudo actualizar el juego en Supabase.', 'warn');
+              return;
+            }
+            games[editingAdminIndex] = data;
+          } else {
+            games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
+          }
           selectedAdminIndex = editingAdminIndex;
           showAdminNotice(`Juego actualizado: ${payload.name}.`, 'ok');
         }
