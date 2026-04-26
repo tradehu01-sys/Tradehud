@@ -318,11 +318,14 @@
       }
       .server.active { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(255,179,71,.25); }
       .server-icon {
-        width: 106px; height: 106px; border-radius: 999px;
+        width: 140px;
+        height: 140px;
+        border-radius: 16px;
         margin: 0 auto .45rem;
-        border: 2px solid var(--hot);
+        border: 1px solid #395b9d;
         animation: floatIcon 2.2s ease-in-out infinite;
         overflow: hidden;
+        background: #0b1221;
       }
 
       .server-icon img {
@@ -333,7 +336,96 @@
 
       .server-name {
         display: block;
-        font-size: 1.02rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .home-block {
+        background: #0d1426;
+        border: 1px solid #324f8f;
+        border-radius: 16px;
+        padding: 1rem;
+      }
+
+      .popular-grid,
+      .services-grid,
+      .benefits-grid,
+      .testimonials-grid,
+      .faq-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .home-item {
+        border: 1px solid #37589a;
+        background: #101a31;
+        border-radius: 12px;
+        padding: 0.85rem;
+        overflow: hidden;
+      }
+
+      .home-item img {
+        width: calc(100% + 1.7rem);
+        height: 130px;
+        margin: -0.85rem -0.85rem 0.65rem;
+        object-fit: cover;
+        border-bottom: 1px solid #2f4e8e;
+      }
+
+      .home-item h3 {
+        margin: 0 0 0.45rem;
+        font-size: 1rem;
+      }
+
+      .home-item p {
+        margin: 0;
+        color: #c8d5ef;
+        line-height: 1.5;
+      }
+
+      .steps-list {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.7rem;
+      }
+
+      .step-card {
+        border: 1px solid #395ca3;
+        border-radius: 12px;
+        background: #101b33;
+        padding: 0.85rem;
+      }
+
+      .step-card strong {
+        display: inline-flex;
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        justify-content: center;
+        align-items: center;
+        background: #1a2b54;
+        border: 1px solid #4b71be;
+        margin-bottom: 0.45rem;
+      }
+
+      .faq-item {
+        border: 1px solid #385ca4;
+        border-radius: 10px;
+        background: #101a31;
+        padding: 0.75rem 0.85rem;
+      }
+
+      .faq-item summary {
+        cursor: pointer;
+        font-weight: 700;
+        color: #f4f8ff;
+      }
+
+      .faq-item p {
+        color: #c8d5ef;
+        margin: 0.55rem 0 0;
+        line-height: 1.5;
       }
       nav a,
       .admin-open,
@@ -402,38 +494,38 @@
       }
 
       .game-window-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.8rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 1rem;
       }
 
-      .game-window-grid .game-option:last-child {
-        grid-column: span 2;
-      }
 
       .game-option {
-        border: 1px solid #3a4667;
-        border-radius: 12px;
-        background: linear-gradient(180deg, #11151f, #090d16);
-        color: #fff;
-        padding: 1.4rem 1rem;
-        text-align: center;
+        width: 148px;
+        height: 148px;
+        border: 0;
+        border-radius: 999px;
+        background: #0d1426;
+        padding: 0;
+        display: grid;
+        place-items: center;
         cursor: pointer;
+        overflow: hidden;
+        transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
       }
 
-      .game-option strong {
-        display: block;
-        font-size: 1.35rem;
-        letter-spacing: 0.04em;
+      .game-option:hover {
+        transform: translateY(-3px);
+        box-shadow: none;
       }
 
-      .game-option small {
-        color: #c7d2ee;
+      .game-option img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
-
-      .game-option.boost strong { color: #d9d9d9; }
-      .game-option.accounts strong { color: #ff4f4f; }
-      .game-option.gold strong { color: #ffcf59; }
 
       @keyframes floatIcon {
         0%,100%{transform:translateY(0)}
@@ -447,6 +539,121 @@
         border-radius: 10px;
         padding: 0.75rem;
         margin-bottom: 0.55rem;
+      }
+
+      .sell-wrap {
+        background: rgba(18, 24, 42, 0.72);
+        border: 1px solid #3d5898;
+        border-radius: 18px;
+        padding: 1rem;
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(6px);
+      }
+
+      .sell-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        border: 1px solid #8c6a2d;
+        background: #2a1f0d;
+        color: #ffe1a6;
+        border-radius: 999px;
+        padding: .35rem .7rem;
+        font-size: .78rem;
+        margin-bottom: .55rem;
+      }
+
+      .sell-grid {
+        display: grid;
+        grid-template-columns: 1.1fr .9fr;
+        gap: 1rem;
+      }
+
+      .sell-panel {
+        background: rgba(13, 20, 37, 0.9);
+        border: 1px solid #35518f;
+        border-radius: 14px;
+        padding: .9rem;
+      }
+
+      .sell-panel h3 {
+        margin: 0 0 .55rem;
+        color: #ffcf75;
+        font-size: 1rem;
+      }
+
+      .sell-list {
+        margin: 0;
+        padding-left: 1.05rem;
+        color: #c8d6f3;
+        line-height: 1.6;
+      }
+
+      .sell-list li { margin-bottom: .35rem; }
+
+      .sell-pay-item {
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+      }
+
+      .sell-pay-icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+      }
+
+      .sell-steps {
+        display: grid;
+        gap: .55rem;
+      }
+
+      .sell-step {
+        border: 1px solid #3b5b9f;
+        border-radius: 10px;
+        background: #111d35;
+        padding: .65rem .7rem;
+        color: #d9e7ff;
+      }
+
+      .sell-step strong { color: #ffcf75; }
+
+      .discord-sell-btn {
+        width: 100%;
+        text-align: center;
+        margin-top: .75rem;
+        border: 1px solid #506ed8;
+        background: linear-gradient(120deg, #1d2f63, #101a37);
+        color: #fff;
+        border-radius: 10px;
+        padding: .75rem .85rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      }
+
+      .discord-sell-btn:hover {
+        transform: translateY(-2px);
+        border-color: #ffb347;
+        box-shadow: 0 0 0 3px rgba(255, 179, 71, 0.2);
+      }
+
+      .sell-note {
+        margin-top: .6rem;
+        font-size: .84rem;
+        color: #b8c9ef;
+      }
+
+      .sell-payment-photo {
+        width: 170px;
+        height: 170px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 0;
+        margin: .75rem auto 0;
+        display: block;
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
       }
 
       ul a {
@@ -638,11 +845,38 @@
 
       .admin-card {
         width: min(420px, 92vw);
-        background: linear-gradient(165deg, #171a22, #111723);
+        background: linear-gradient(165deg, #141a2d, #0b111f);
         border: 1px solid #36518f;
-        border-radius: 16px;
-        padding: 1rem;
-        box-shadow: 0 12px 50px rgba(0, 0, 0, 0.45);
+        border-radius: 18px;
+        padding: 1.05rem;
+        box-shadow: 0 16px 60px rgba(0, 0, 0, 0.55);
+      }
+
+      .admin-brand {
+        display: flex;
+        gap: .6rem;
+        align-items: center;
+      }
+
+      .admin-logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        border: 1px solid #ffb347;
+        background: #0c1222;
+        object-fit: cover;
+      }
+
+      .admin-brand strong {
+        display: block;
+        font-size: 1rem;
+        color: #ffcf75;
+        letter-spacing: 0.02em;
+      }
+
+      .admin-brand small {
+        color: #b9c9ef;
+        font-size: 0.78rem;
       }
 
       .admin-head {
@@ -650,16 +884,6 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 0.9rem;
-      }
-
-      .logo-mini {
-        width: 44px;
-        height: 44px;
-        border-radius: 999px;
-        background: radial-gradient(circle at 30% 30%, var(--accent), transparent 40%),
-          radial-gradient(circle at 70% 70%, var(--hot), transparent 45%),
-          #0d1020;
-        border: 1px solid #5f6bc0;
       }
 
       .close-btn {
@@ -679,22 +903,27 @@
       .admin-card input {
         width: 100%;
         margin: 0.35rem 0 0.75rem;
-        border-radius: 8px;
-        border: 1px solid #2e4f8f;
-        background: #0c1324;
+        border-radius: 10px;
+        border: 1px solid #324f8d;
+        background: #0a111f;
         color: #fff;
         padding: 0.65rem;
       }
 
       .admin-login {
         width: 100%;
-        border: 0;
+        border: 1px solid #466cb6;
         border-radius: 10px;
         padding: 0.68rem;
         font-weight: 700;
         cursor: pointer;
-        background: linear-gradient(120deg, #3f7cff, #2f5bb3);
-        color: #eaf2ff;
+        background: linear-gradient(120deg, #1a2848, #0f1c38);
+        color: #f9fbff;
+      }
+
+      .admin-login:hover {
+        border-color: #ffb347;
+        box-shadow: 0 0 0 2px rgba(255, 179, 71, 0.18);
       }
       .category-item {
         border: 1px solid #2e4f8f;
@@ -799,6 +1028,37 @@
         padding: 0.75rem;
       }
 
+      .admin-split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+
+      .server-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        border: 1px solid #4568af;
+        border-radius: 999px;
+        padding: .2rem .45rem;
+        margin: .2rem .25rem 0 0;
+        background: #12213d;
+        color: #e6efff;
+        font-size: .76rem;
+      }
+
+      .server-remove {
+        border: 0;
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #7e2330;
+        color: #fff;
+        cursor: pointer;
+        font-size: .7rem;
+        line-height: 1;
+      }
+
       .editor-box input,
       .editor-box select,
       .editor-box textarea,
@@ -823,6 +1083,34 @@
       .admin-game-form input::placeholder,
       .admin-game-form textarea::placeholder {
         color: #c6d7ff;
+      }
+
+      .service-checklist {
+        border: 1px solid #3b5da1;
+        border-radius: 10px;
+        background: #132447;
+        padding: 0.65rem 0.75rem;
+        margin-bottom: 0.7rem;
+      }
+
+      .service-checklist strong {
+        display: block;
+        margin-bottom: 0.45rem;
+        color: #ffe2a6;
+      }
+
+      .service-checklist label {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        margin-bottom: 0.35rem;
+        color: #d9e7ff;
+        font-size: 0.88rem;
+      }
+
+      .service-checklist input[type='checkbox'] {
+        width: auto;
+        margin: 0;
       }
 
       .admin-game-list {
@@ -945,12 +1233,15 @@
 
       @media (max-width: 980px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr 1fr; }
+        .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid { grid-template-columns: 1fr 1fr; }
+        .steps-list { grid-template-columns: 1fr 1fr; }
+        .sell-grid { grid-template-columns: 1fr; }
+        .admin-split { grid-template-columns: 1fr; }
       }
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
         .social-buttons { grid-template-columns: 1fr; }
-        .game-window-grid { grid-template-columns: 1fr; }
-        .game-window-grid .game-option:last-child { grid-column: auto; }
+        .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid,.steps-list { grid-template-columns: 1fr; }
         nav { justify-content: center; }
       }
     </style>
@@ -1042,6 +1333,139 @@
         </div>
       </section>
 
+      <section id="juegos-populares" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Juegos <span>populares</span></h2>
+          <article class="home-block popular-grid">
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop" alt="World of Warcraft" />
+              <h3>World of Warcraft</h3>
+              <p>Oro, boosts y soporte rápido para retail, classic y temporadas.</p>
+            </div>
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?q=80&w=1200&auto=format&fit=crop" alt="Albion Online" />
+              <h3>Albion Online</h3>
+              <p>Compra y venta segura de silver con atención personalizada.</p>
+            </div>
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?q=80&w=1200&auto=format&fit=crop" alt="Lineage 2 Reborn" />
+              <h3>Lineage 2 Reborn</h3>
+              <p>Adena e ítems premium con validación y seguimiento en cada trato.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="servicios-detallados" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Servicios <span>detallados</span></h2>
+          <article class="home-block services-grid">
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" alt="Oro y monedas" />
+              <h3>Oro y monedas</h3>
+              <p>Precios claros, stock confirmado y entrega rápida.</p>
+            </div>
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop" alt="Boosting personalizado" />
+              <h3>Boosting personalizado</h3>
+              <p>Subidas, dungeons y metas PvE/PvP con jugadores expertos.</p>
+            </div>
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1611605698335-8b1569810432?q=80&w=1200&auto=format&fit=crop" alt="Cuentas y marketplace" />
+              <h3>Cuentas y marketplace</h3>
+              <p>Publica y vende con mediación segura dentro de la comunidad.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="como-funciona" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Cómo funciona <span>(pasos)</span></h2>
+          <article class="home-block steps-list">
+            <div class="step-card">
+              <strong>1</strong>
+              <p>Selecciona el juego y el servicio que necesitas desde Oro o Marketplace.</p>
+            </div>
+            <div class="step-card">
+              <strong>2</strong>
+              <p>Contacta por Discord/WhatsApp y comparte servidor, facción y cantidad.</p>
+            </div>
+            <div class="step-card">
+              <strong>3</strong>
+              <p>Recibe confirmación de precio, disponibilidad y método de entrega seguro.</p>
+            </div>
+            <div class="step-card">
+              <strong>4</strong>
+              <p>Completamos la operación con seguimiento hasta que confirmes recepción.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="beneficios" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Beneficios / por qué <span>elegirnos</span></h2>
+          <article class="home-block benefits-grid">
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1522199710521-72d69614c702?q=80&w=1200&auto=format&fit=crop" alt="Atención real" />
+              <h3>Atención real</h3>
+              <p>No hay bots para resolver tu compra: un agente te guía de inicio a fin con respuesta rápida.</p>
+            </div>
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1200&auto=format&fit=crop" alt="Proceso transparente" />
+              <h3>Proceso transparente</h3>
+              <p>Precios, tiempos y condiciones claras antes de confirmar cualquier pago o entrega.</p>
+            </div>
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=1200&auto=format&fit=crop" alt="Seguridad operativa" />
+              <h3>Seguridad operativa</h3>
+              <p>Validamos pedidos y usamos pasos de control para proteger comprador y vendedor.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="testimonios" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Testimonios de <span>clientes</span></h2>
+          <article class="home-block testimonials-grid">
+            <div class="home-item">
+              <h3>“Entrega puntual”</h3>
+              <p>“Compré oro para WoW y en minutos ya estaba listo. Me explicaron todo por Discord.” — Cliente Retail</p>
+            </div>
+            <div class="home-item">
+              <h3>“Soporte excelente”</h3>
+              <p>“Primera vez usando marketplace y me acompañaron hasta cerrar la venta sin problemas.” — Vendedor L2</p>
+            </div>
+            <div class="home-item">
+              <h3>“Recomiendo TradeHud”</h3>
+              <p>“El proceso fue claro, rápido y seguro. Volveré a contratar boosting.” — Jugador Albion</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="faq" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Preguntas <span>frecuentes</span></h2>
+          <article class="home-block faq-grid">
+            <details class="faq-item">
+              <summary>¿Cuánto tarda una entrega de oro?</summary>
+              <p>Depende del juego y del stock disponible; normalmente se confirma en minutos y se coordina la entrega en el mismo turno de atención.</p>
+            </details>
+            <details class="faq-item">
+              <summary>¿Qué métodos de pago aceptan?</summary>
+              <p>Trabajamos con Binance, Bitcoin, Zinli, PayPal y otros métodos digitales disponibles en la sección de pagos.</p>
+            </details>
+            <details class="faq-item">
+              <summary>¿También compran oro a jugadores?</summary>
+              <p>Sí. En “Vender tu oro” puedes abrir ticket y te guiamos en todo el proceso de validación y pago.</p>
+            </details>
+          </article>
+        </div>
+      </section>
+
       <section id="oro" class="page-section" data-page="oro">
         <div class="container">
           <h2 class="section-title">Sección de <span>oro de juegos</span></h2>
@@ -1067,43 +1491,63 @@
             </div>
             <button id="closeGameWindow" class="close-btn">✕</button>
           </div>
-          <div class="game-window-grid">
-            <button class="game-option boost" type="button">
-              <strong>BOOSTING</strong>
-              <small>Servicio rápido y seguro</small>
-            </button>
-            <button class="game-option accounts" type="button">
-              <strong>ACCOUNTS</strong>
-              <small>Cuentas verificadas</small>
-            </button>
-            <button class="game-option gold" type="button">
-              <strong>GOLD</strong>
-              <small>Compra y venta de oro</small>
-            </button>
-          </div>
+          <div id="gameWindowOptions" class="game-window-grid"></div>
         </div>
       </div>
 
       <section id="vender" class="page-section" data-page="vendemos-oro">
         <div class="container">
-          <h2 class="section-title">Vender tu <span>oro</span></h2>
-          <p class="lead" style="margin:0 0 1rem 0;">Vender tu oro con atención por Discord, confirmación rápida y proceso seguro.</p>
-          <div class="split">
-            <div>
-              <div class="step">1) Abre ticket en Discord.</div>
-              <div class="step">2) Indica servidor y cantidad disponible.</div>
-              <div class="step">3) Confirmamos comprador y seguridad.</div>
-              <div class="step">4) Recibe tu pago.</div>
-            </div>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=1200&auto=format&fit=crop" alt="Discord" />
-              <div class="card-body">
-                <strong>Venta directa por comunidad</strong>
-                <p>Canal dedicado para compra/venta con moderación.</p>
-                <p><a class="btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Ir al Discord de venta</a></p>
+          <h2 class="section-title">Vende tu oro al <span>mejor precio</span></h2>
+          <article class="sell-wrap">
+            <span class="sell-badge">🟢 Vendedores activos hoy: +150</span>
+            <p class="lead" style="margin:.1rem 0 .9rem;">
+              En TradeHud MMORPG vendes tu oro con un flujo <strong>rápido, seguro y con atención personalizada</strong> por Discord.
+              Nuestro equipo revisa cada operación y acompaña el proceso hasta que recibes tu pago.
+            </p>
+            <div class="sell-grid">
+              <div class="sell-panel">
+                <h3>Beneficios de vender con TradeHud</h3>
+                <ul class="sell-list">
+                  <li>✅ Sin comisiones ocultas.</li>
+                  <li>✅ Pago en menos de 24 horas.</li>
+                  <li>✅ Compradores verificados.</li>
+                  <li>✅ Soporte humano 24/7.</li>
+                </ul>
+                <h3 style="margin-top:.8rem;">Métodos de pago</h3>
+                <ul class="sell-list">
+                  <li class="sell-pay-item"><img class="sell-pay-icon" src="https://img.icons8.com/fluency/48/bank-building.png" alt="Transferencia" /> Transferencia bancaria</li>
+                  <li class="sell-pay-item"><img class="sell-pay-icon" src="https://cdn.simpleicons.org/tether/50AF95" alt="USDT" /> USDT</li>
+                  <li class="sell-pay-item"><img class="sell-pay-icon" src="https://cdn.simpleicons.org/paypal/00457C" alt="PayPal" /> PayPal</li>
+                  <li class="sell-pay-item"><img class="sell-pay-icon" src="https://cdn.simpleicons.org/binance/F3BA2F" alt="Binance" /> Binance</li>
+                </ul>
+                <h3 style="margin-top:.8rem;">Requisitos mínimos para vender</h3>
+                <ul class="sell-list">
+                  <li>🔹 Tener cuenta de Discord.</li>
+                  <li>🔹 Stock mínimo desde 100 de oro (o equivalente).</li>
+                </ul>
+                <p class="sell-note"><strong>Canal oficial:</strong> #eltrataron-nara-momma (moderación activa).</p>
+                <p class="sell-note"><strong>Testimonio:</strong> “Vendí mi oro en la tarde y cobré el mismo día, todo súper claro.” — Vendedor satisfecho</p>
               </div>
-            </article>
-          </div>
+              <div class="sell-panel">
+                <h3>Cómo vender tu oro en 4 pasos</h3>
+                <div class="sell-steps">
+                  <div class="sell-step"><strong>1)</strong> Abre ticket en Discord.</div>
+                  <div class="sell-step"><strong>2)</strong> Indica servidor y cantidad disponible.</div>
+                  <div class="sell-step"><strong>3)</strong> Confirmamos comprador y seguridad.</div>
+                  <div class="sell-step"><strong>4)</strong> Recibe tu pago (transferencia, USDT o PayPal).</div>
+                </div>
+                <img
+                  class="sell-payment-photo"
+                  src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412299370266787/photo_2026-03-26_10-15-34.jpg?ex=69ee1620&is=69ecc4a0&hm=935f1c122ef4b1e5635ea825c0eaca35b4873c77e8067a84e88fbda29400c80f&"
+                  alt="Recibe tu pago TradeHud"
+                />
+                <a class="discord-sell-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Ir al Discord de venta</a>
+                <p class="sell-note">🛡️ <strong>Transacción moderada y protegida por TradeHud.</strong></p>
+                <p class="sell-note"><strong>FAQ breve:</strong> ¿Qué pasa si me intentan estafar? El equipo de TradeHud modera y congela la transacción hasta resolver.</p>
+                <p class="sell-note">⚠️ TradeHud no está afiliado oficialmente con los desarrolladores de los juegos.</p>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -1209,10 +1653,15 @@
     <div id="adminModal" class="admin-modal" aria-hidden="true">
       <div class="admin-card">
         <div class="admin-head">
-          <div style="display:flex;gap:.6rem;align-items:center;">
-            <div class="logo-mini"></div>
+          <div class="admin-brand">
+            <img
+              class="admin-logo"
+              src="https://cdn.discordapp.com/attachments/1492284382977855689/1497413092953428058/ChatGPT_Image_24_abr_2026_09_44_47_p.m..png?ex=69ed6e1d&is=69ec1c9d&hm=bb3fd7d6d56af74deedc387fb38c16131ce33210758043a8edf310036413fec3&"
+              alt="TradeHud logo"
+            />
             <div>
-              <strong>Ingreso</strong>
+              <strong>Acceso administrador</strong>
+              <small>Panel seguro TradeHud</small>
             </div>
           </div>
           <button id="closeAdmin" class="close-btn">✕</button>
@@ -1238,22 +1687,108 @@
         <p class="lead" style="margin:0;">Panel admin para editar casillas de juegos.</p>
         <div id="adminNotice" class="admin-notice"></div>
         <div class="panel-tabs">
-          <button id="tabListaJuegos" class="panel-tab active" type="button">Lista de juegos</button>
-          <button id="tabListaServidores" class="panel-tab" type="button">Categorías de oro</button>
+          <button id="tabListaJuegosAdmin" class="panel-tab active" type="button">Lista de juegos</button>
+          <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
+          <button id="tabOro" class="panel-tab" type="button">Oro</button>
+          <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
+          <button id="tabBosteo" class="panel-tab" type="button">Bosteo</button>
         </div>
-        <div id="editorJuegos" class="editor-box">
+        <div id="editorListaJuegos" class="editor-box">
           <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Editar lista de juegos</strong>
+            <strong style="flex:1;display:flex;align-items:center;">Lista de juegos</strong>
             <button id="abrirFormularioJuego" class="panel-btn" type="button">+ Agregar juego</button>
           </div>
           <div id="juegoLista" class="admin-game-list"></div>
         </div>
-        <div id="editorCategorias" class="editor-box hidden">
+        <div id="editorServidores" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
-            <button id="abrirFormularioCategoria" class="panel-btn" type="button">+ Agregar categoría</button>
+            <strong style="flex:1;display:flex;align-items:center;">Lista de servidores (juegos)</strong>
           </div>
-          <div id="categoriaLista"></div>
+          <div class="admin-game-form" style="padding:0;">
+            <label for="serverGameSelect">Juego</label>
+            <select id="serverGameSelect"></select>
+            <label for="serverNameInput">Servidor</label>
+            <input id="serverNameInput" type="text" placeholder="Ej: Nordanar" />
+            <button id="guardarServidorJuego" class="panel-btn" type="button">+ Guardar servidor</button>
+          </div>
+          <div id="serverListWrap" class="admin-game-list" style="max-height:280px;"></div>
+        </div>
+        <div id="editorOro" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Gestión de Oro</strong>
+          </div>
+          <div class="editor-box" style="margin-top:.5rem;">
+            <strong style="display:block;margin-bottom:.55rem;color:#f0cf7b;">Precio por juego y servidor</strong>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="precioJuegoAdd">Juego</label>
+                <select id="precioJuegoAdd"></select>
+              </div>
+              <div class="form-group">
+                <label for="precioServidorAdd">Servidor</label>
+                <select id="precioServidorAdd"></select>
+              </div>
+            </div>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="precioCantidadAdd">Cantidad de oro</label>
+                <input id="precioCantidadAdd" type="number" min="100" step="100" placeholder="100" />
+              </div>
+              <div class="form-group">
+                <label for="precioValorAdd">Precio (USD)</label>
+                <input id="precioValorAdd" type="number" min="0" step="0.01" placeholder="24.99" />
+              </div>
+            </div>
+            <button id="guardarPrecioOro" class="panel-btn" type="button">Guardar precio</button>
+          </div>
+          <div class="editor-box" style="margin-top:.6rem;">
+            <strong style="display:block;margin-bottom:.55rem;color:#f0cf7b;">Editar precios existentes</strong>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="precioJuegoEdit">Juego</label>
+                <select id="precioJuegoEdit"></select>
+              </div>
+              <div class="form-group">
+                <label for="precioServidorEdit">Servidor</label>
+                <select id="precioServidorEdit"></select>
+              </div>
+            </div>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="precioPaqueteEdit">Oro / Precio</label>
+                <select id="precioPaqueteEdit"></select>
+              </div>
+              <div class="form-group">
+                <label for="precioValorEdit">Precio (USD)</label>
+                <input id="precioValorEdit" type="number" min="0" step="0.01" />
+              </div>
+            </div>
+            <div class="admin-panel-actions">
+              <button id="guardarEdicionPrecio" class="panel-btn" type="button">Guardar cambios</button>
+              <button id="eliminarPrecio" class="mini-btn danger" type="button">Eliminar</button>
+            </div>
+          </div>
+          <div class="editor-box" style="margin-top:.6rem;">
+            <div class="admin-panel-actions" style="margin-top:0;">
+              <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
+              <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
+            </div>
+            <div id="categoriaListaOro"></div>
+          </div>
+        </div>
+        <div id="editorCuentas" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Categorías de cuentas</strong>
+            <button id="abrirFormularioCategoriaCuentas" class="panel-btn" type="button">+ Agregar categoría</button>
+          </div>
+          <div id="categoriaListaCuentas"></div>
+        </div>
+        <div id="editorBosteo" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Categorías de bosteo</strong>
+            <button id="abrirFormularioCategoriaBosteo" class="panel-btn" type="button">+ Agregar categoría</button>
+          </div>
+          <div id="categoriaListaBosteo"></div>
         </div>
       </div>
     </div>
@@ -1276,6 +1811,12 @@
           <div class="form-group">
             <label for="juegoDescripcion">Descripción</label>
             <textarea id="juegoDescripcion" placeholder="Descripción del juego"></textarea>
+          </div>
+          <div class="service-checklist">
+            <strong>Opciones visibles al abrir el juego</strong>
+            <label><input id="serviceBoosting" type="checkbox" checked /> Boosting</label>
+            <label><input id="serviceAccounts" type="checkbox" checked /> Cuentas</label>
+            <label><input id="serviceGold" type="checkbox" checked /> Oro</label>
           </div>
           <div class="image-preview">
             <small>Vista previa</small>
@@ -1328,6 +1869,7 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
       const gameList = document.getElementById('gameList');
       const oroSearch = document.getElementById('oroSearch');
@@ -1339,6 +1881,7 @@
       const gameWindowTitle = document.getElementById('gameWindowTitle');
       const gameWindowDesc = document.getElementById('gameWindowDesc');
       const gameWindowIcon = document.getElementById('gameWindowIcon');
+      const gameWindowOptions = document.getElementById('gameWindowOptions');
       const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
       const closeAdmin = document.getElementById('closeAdmin');
@@ -1358,17 +1901,45 @@
       const juegoNombre = document.getElementById('juegoNombre');
       const juegoImagen = document.getElementById('juegoImagen');
       const juegoDescripcion = document.getElementById('juegoDescripcion');
+      const serviceBoosting = document.getElementById('serviceBoosting');
+      const serviceAccounts = document.getElementById('serviceAccounts');
+      const serviceGold = document.getElementById('serviceGold');
       const previewImagenJuego = document.getElementById('previewImagenJuego');
       const previewNombreJuego = document.getElementById('previewNombreJuego');
       const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
       const cancelarJuegoForm = document.getElementById('cancelarJuegoForm');
       const guardarJuegoForm = document.getElementById('guardarJuegoForm');
-      const tabListaJuegos = document.getElementById('tabListaJuegos');
-      const tabListaServidores = document.getElementById('tabListaServidores');
-      const editorJuegos = document.getElementById('editorJuegos');
-      const editorCategorias = document.getElementById('editorCategorias');
-      const categoriaLista = document.getElementById('categoriaLista');
-      const abrirFormularioCategoria = document.getElementById('abrirFormularioCategoria');
+      const tabListaJuegosAdmin = document.getElementById('tabListaJuegosAdmin');
+      const tabListaServidoresAdmin = document.getElementById('tabListaServidoresAdmin');
+      const tabOro = document.getElementById('tabOro');
+      const tabCuentas = document.getElementById('tabCuentas');
+      const tabBosteo = document.getElementById('tabBosteo');
+      const editorListaJuegos = document.getElementById('editorListaJuegos');
+      const editorServidores = document.getElementById('editorServidores');
+      const editorOro = document.getElementById('editorOro');
+      const editorCuentas = document.getElementById('editorCuentas');
+      const editorBosteo = document.getElementById('editorBosteo');
+      const categoriaListaOro = document.getElementById('categoriaListaOro');
+      const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
+      const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
+      const abrirFormularioCategoriaOro = document.getElementById('abrirFormularioCategoriaOro');
+      const abrirFormularioCategoriaCuentas = document.getElementById('abrirFormularioCategoriaCuentas');
+      const abrirFormularioCategoriaBosteo = document.getElementById('abrirFormularioCategoriaBosteo');
+      const serverGameSelect = document.getElementById('serverGameSelect');
+      const serverNameInput = document.getElementById('serverNameInput');
+      const guardarServidorJuego = document.getElementById('guardarServidorJuego');
+      const serverListWrap = document.getElementById('serverListWrap');
+      const precioJuegoAdd = document.getElementById('precioJuegoAdd');
+      const precioServidorAdd = document.getElementById('precioServidorAdd');
+      const precioCantidadAdd = document.getElementById('precioCantidadAdd');
+      const precioValorAdd = document.getElementById('precioValorAdd');
+      const guardarPrecioOro = document.getElementById('guardarPrecioOro');
+      const precioJuegoEdit = document.getElementById('precioJuegoEdit');
+      const precioServidorEdit = document.getElementById('precioServidorEdit');
+      const precioPaqueteEdit = document.getElementById('precioPaqueteEdit');
+      const precioValorEdit = document.getElementById('precioValorEdit');
+      const guardarEdicionPrecio = document.getElementById('guardarEdicionPrecio');
+      const eliminarPrecio = document.getElementById('eliminarPrecio');
       const categoriaOroModal = document.getElementById('categoriaOroModal');
       const cerrarCategoriaOroModal = document.getElementById('cerrarCategoriaOroModal');
       const cancelarCategoriaOro = document.getElementById('cancelarCategoriaOro');
@@ -1379,27 +1950,98 @@
       const categoriasVistaModal = document.getElementById('categoriasVistaModal');
       const categoriasVistaLista = document.getElementById('categoriasVistaLista');
       const cerrarCategoriasVista = document.getElementById('cerrarCategoriasVista');
+      const defaultServices = ['boosting', 'accounts', 'gold'];
+      const serviceCatalog = {
+        boosting: {
+          className: 'boost',
+          title: 'BOOSTING',
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006601390428240/ChatGPT_Image_20_abr_2026_06_42_34_p.m..png?ex=69ee3ef8&is=69eced78&hm=34489a6b7f658cfee76304d1a03280ca83019ac2e2b8e2c925d3fe446515ec9e&'
+        },
+        accounts: {
+          className: 'accounts',
+          title: 'ACCOUNTS',
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006645220905070/ChatGPT_Image_20_abr_2026_06_43_30_p.m..png?ex=69ee3f02&is=69eced82&hm=f87b74e259fd5a4082b4412a7993cb1a32fb60ddb07b24a42aba02f61d5a1c6b&'
+        },
+        gold: {
+          className: 'gold',
+          title: 'GOLD',
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006561200472115/ChatGPT_Image_20_abr_2026_06_41_28_p.m..png?ex=69ee3eee&is=69eced6e&hm=88042dec6f5c77cd69acb68c4734b5906c6db955a214fdd4e14751acd9e0294c&'
+        }
+      };
+      const SUPABASE_URL =
+        window.TRADEHUD_SUPABASE_URL ||
+        window.NEXT_PUBLIC_SUPABASE_URL ||
+        'https://lveocmzvfndvzjdqknnf.supabase.co';
+      const SUPABASE_ANON_KEY =
+        window.TRADEHUD_SUPABASE_ANON_KEY ||
+        window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+        'sb_publishable_So-MKH0I5IJ_kmSweJo1IQ_H5kxNgMG';
+      const isServiceRoleKey = (() => {
+        try {
+          if (!SUPABASE_ANON_KEY.includes('.')) return false;
+          const payloadBase64 = SUPABASE_ANON_KEY.split('.')[1];
+          const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+          const payload = JSON.parse(payloadJson);
+          return payload.role === 'service_role';
+        } catch (error) {
+          return false;
+        }
+      })();
+      const supabaseClient = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+        ? (isServiceRoleKey ? null : window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY))
+        : null;
 
       const games = [
-        { name: 'World of Warcraft', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E", description: 'Clásico para comercio de oro y servicios premium.' },
-        { name: 'WoW TBC', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E", description: 'Servidor TBC con alta demanda de boosting.' },
-        { name: 'Albion Online', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E", description: 'Compra/venta de plata y servicios por encargo.' },
-        { name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E", description: 'Market activo para adena y cuentas.' }
+        { id: null, name: 'World of Warcraft', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E", description: 'Clásico para comercio de oro y servicios premium.' },
+        { id: null, name: 'WoW TBC', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E", description: 'Servidor TBC con alta demanda de boosting.' },
+        { id: null, name: 'Albion Online', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E", description: 'Compra/venta de plata y servicios por encargo.' },
+        { id: null, name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E", description: 'Market activo para adena y cuentas.' }
       ];
       const goldCategories = [
-        { game: 'World of Warcraft', name: 'Oro rápido', description: 'Entrega en minutos con confirmación por Discord.' },
-        { game: 'Albion Online', name: 'Plata segura', description: 'Categoría premium para compra/venta segura.' }
+        { id: null, game: 'World of Warcraft', name: 'Oro rápido', description: 'Entrega en minutos con confirmación por Discord.' },
+        { id: null, game: 'Albion Online', name: 'Plata segura', description: 'Categoría premium para compra/venta segura.' }
       ];
+      const accountCategories = [
+        { id: null, game: 'World of Warcraft', name: 'Cuenta PVP', description: 'Cuentas verificadas con historial limpio.' }
+      ];
+      const boostingCategories = [
+        { id: null, game: 'Lineage 2 Reborn', name: 'Subida rápida', description: 'Boosting guiado con reporte de avance.' }
+      ];
+      const gameServers = [
+        { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
+        { game: 'Albion Online', servers: ['West', 'East'] }
+      ];
+      const goldPrices = [
+        { game: 'World of Warcraft', server: 'Ragnaros', amount: 100, price: 3.5 },
+        { game: 'World of Warcraft', server: 'Ragnaros', amount: 200, price: 6.9 },
+        { game: 'World of Warcraft', server: 'Ragnaros', amount: 300, price: 10.2 }
+      ];
+      let activeCategoryType = 'oro';
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
+      const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
 
       function openGamePage(index) {
         const game = games[index];
         if (!game) return;
+        const gameServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
         gameWindowTitle.textContent = game.name;
         gameWindowDesc.textContent = game.description || '';
         gameWindowIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
+        gameWindowOptions.innerHTML = '';
+        serviceRenderOrder.filter((serviceKey) => gameServices.includes(serviceKey)).forEach((serviceKey) => {
+          const config = serviceCatalog[serviceKey];
+          if (!config) return;
+          const button = document.createElement('button');
+          button.className = `game-option ${config.className}`;
+          button.type = 'button';
+          button.innerHTML = `<img src="${config.image}" alt="${config.title}" loading="lazy" referrerpolicy="no-referrer" />`;
+          gameWindowOptions.appendChild(button);
+        });
+        if (!gameWindowOptions.children.length) {
+          gameWindowOptions.innerHTML = '';
+        }
         gameWindowModal.classList.add('show');
         gameWindowModal.setAttribute('aria-hidden', 'false');
       }
@@ -1443,14 +2085,27 @@
         }
       }
 
-      function renderGoldCategories() {
-        categoriaLista.innerHTML = '';
-        goldCategories.forEach((category, index) => {
+      function getCategoryBucket(type) {
+        if (type === 'cuentas') return accountCategories;
+        if (type === 'bosteo') return boostingCategories;
+        return goldCategories;
+      }
+
+      function renderCategoryList(type, target) {
+        target.innerHTML = '';
+        const bucket = getCategoryBucket(type);
+        bucket.forEach((category, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p><button class="mini-btn danger" type="button" data-remove-category="${index}">Eliminar</button>`;
-          categoriaLista.appendChild(item);
+          item.innerHTML = `<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p><button class="mini-btn danger" type="button" data-remove-category="${index}" data-category-type="${type}">Eliminar</button>`;
+          target.appendChild(item);
         });
+      }
+
+      function renderGoldCategories() {
+        renderCategoryList('oro', categoriaListaOro);
+        renderCategoryList('cuentas', categoriaListaCuentas);
+        renderCategoryList('bosteo', categoriaListaBosteo);
       }
 
       function renderCategoriasVista() {
@@ -1471,15 +2126,73 @@
           item.innerHTML = `<div class="admin-game-main"><span class="admin-game-thumb"><img src="${game.icon}" alt="${game.name}" /></span><div><strong>${game.name}</strong><p class="admin-game-desc">${game.description || ''}</p></div></div><div class="admin-game-actions"><button class="mini-btn" type="button" data-action="edit" data-index="${index}">Editar</button><button class="mini-btn danger" type="button" data-action="delete" data-index="${index}">Eliminar</button></div>`;
           juegoLista.appendChild(item);
         });
+        serverGameSelect.innerHTML = '';
+        precioJuegoAdd.innerHTML = '';
+        precioJuegoEdit.innerHTML = '';
+        games.forEach((game) => {
+          const option = document.createElement('option');
+          option.value = game.name;
+          option.textContent = game.name;
+          serverGameSelect.appendChild(option);
+          const optionAdd = option.cloneNode(true);
+          const optionEdit = option.cloneNode(true);
+          precioJuegoAdd.appendChild(optionAdd);
+          precioJuegoEdit.appendChild(optionEdit);
+        });
+        refreshServerSelect(precioJuegoAdd, precioServidorAdd);
+        refreshServerSelect(precioJuegoEdit, precioServidorEdit);
+        renderPriceOptions();
+      }
+
+      function renderServerByGame() {
+        serverListWrap.innerHTML = '';
+        gameServers.forEach((entry) => {
+          const card = document.createElement('article');
+          card.className = 'category-item';
+          card.innerHTML = `<strong>${entry.game}</strong><p class="admin-game-desc">${entry.servers.length} servidores</p><p class="admin-game-desc">${entry.servers.map((server) => `<span class="server-chip">${server}<button class="server-remove" type="button" data-game="${entry.game}" data-server="${server}">✕</button></span>`).join('')}</p>`;
+          serverListWrap.appendChild(card);
+        });
+      }
+
+      function refreshServerSelect(gameSelect, serverSelect) {
+        const selectedGame = gameSelect.value;
+        const group = gameServers.find((entry) => entry.game === selectedGame);
+        serverSelect.innerHTML = '';
+        (group?.servers || []).forEach((server) => {
+          const option = document.createElement('option');
+          option.value = server;
+          option.textContent = server;
+          serverSelect.appendChild(option);
+        });
+      }
+
+      function renderPriceOptions() {
+        const game = precioJuegoEdit.value;
+        const server = precioServidorEdit.value;
+        const filtered = goldPrices
+          .filter((item) => item.game === game && item.server === server)
+          .sort((a, b) => a.amount - b.amount);
+        precioPaqueteEdit.innerHTML = '';
+        filtered.forEach((item, idx) => {
+          const option = document.createElement('option');
+          option.value = `${item.game}|${item.server}|${item.amount}|${idx}`;
+          option.textContent = `${item.amount} - ${item.price.toFixed(2)}`;
+          precioPaqueteEdit.appendChild(option);
+        });
+        if (filtered[0]) precioValorEdit.value = String(filtered[0].price);
       }
 
       function loadSelectedGame() {
         const i = selectedAdminIndex;
         const game = games[i];
         if (!game) return;
+        const selectedServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
         juegoNombre.value = game.name;
         juegoImagen.value = game.icon;
         juegoDescripcion.value = game.description || '';
+        serviceBoosting.checked = selectedServices.includes('boosting');
+        serviceAccounts.checked = selectedServices.includes('accounts');
+        serviceGold.checked = selectedServices.includes('gold');
         updateGamePreview();
       }
 
@@ -1487,14 +2200,28 @@
         juegoNombre.value = '';
         juegoImagen.value = '';
         juegoDescripcion.value = '';
+        serviceBoosting.checked = true;
+        serviceAccounts.checked = true;
+        serviceGold.checked = true;
         updateGamePreview();
+      }
+
+      function getSelectedServices() {
+        const services = [];
+        if (serviceBoosting.checked) services.push('boosting');
+        if (serviceAccounts.checked) services.push('accounts');
+        if (serviceGold.checked) services.push('gold');
+        return services.length ? services : [...defaultServices];
       }
 
       function updateGamePreview() {
         const desc = juegoDescripcion.value.trim();
+        const selectedServicesLabel = getSelectedServices()
+          .map((service) => serviceCatalog[service]?.title || service.toUpperCase())
+          .join(' • ');
         previewImagenJuego.src = juegoImagen.value.trim() || games[0].icon;
         previewNombreJuego.textContent = juegoNombre.value.trim() || 'Nombre del juego';
-        previewDescripcionJuego.textContent = desc || 'Descripción del juego.';
+        previewDescripcionJuego.textContent = `${desc || 'Descripción del juego.'} | Opciones: ${selectedServicesLabel}`;
         previewDescripcionJuego.style.color = '#b9c9ef';
       }
 
@@ -1518,11 +2245,58 @@
         adminNotice.style.color = kind === 'ok' ? '#9affcc' : kind === 'warn' ? '#ffd39a' : '#9fd6ff';
       }
 
-      renderGameList();
-      renderAdminSelect();
-      renderGoldCategories();
-      loadSelectedGame();
-      setActivePage('inicio');
+      async function syncFromSupabase() {
+        if (isServiceRoleKey) {
+          showAdminNotice('Clave bloqueada: detectamos service_role. Usa SOLO la anon public key en frontend.', 'warn');
+          return;
+        }
+        if (!supabaseClient) {
+          showAdminNotice('Supabase no configurado. Define window.TRADEHUD_SUPABASE_ANON_KEY o window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.', 'warn');
+          return;
+        }
+        const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
+          supabaseClient.from('games').select('id,name,icon,description,services').order('created_at', { ascending: true }),
+          supabaseClient.from('gold_categories').select('id,game,name,description').order('created_at', { ascending: true })
+        ]);
+        if (gamesError || categoriesError) {
+          if (gamesError?.message?.toLowerCase().includes('services')) {
+            showAdminNotice('Falta la columna "services" en la tabla games de Supabase.', 'warn');
+          } else {
+            showAdminNotice('Error cargando datos de Supabase.', 'warn');
+          }
+          return;
+        }
+        if (Array.isArray(gamesData) && gamesData.length) {
+          games.splice(0, games.length, ...gamesData.map((row) => ({
+            id: row.id,
+            name: row.name,
+            icon: row.icon,
+            description: row.description || '',
+            services: Array.isArray(row.services) && row.services.length ? row.services : [...defaultServices]
+          })));
+        }
+        if (Array.isArray(categoriesData)) {
+          goldCategories.splice(0, goldCategories.length, ...categoriesData.map((row) => ({
+            id: row.id,
+            game: row.game || 'General',
+            name: row.name,
+            description: row.description || 'Sin descripción.'
+          })));
+        }
+        showAdminNotice('Conectado a Supabase correctamente.', 'ok');
+      }
+
+      async function initializeApp() {
+        await syncFromSupabase();
+        renderGameList();
+        renderAdminSelect();
+        renderGoldCategories();
+        renderServerByGame();
+        loadSelectedGame();
+        activateAdminTab('juegos');
+        setActivePage('inicio');
+      }
+      initializeApp();
 
       pageLinks.forEach((link) => {
         link.addEventListener('click', (e) => {
@@ -1595,25 +2369,38 @@
         }
       });
 
-      tabListaJuegos.addEventListener('click', () => {
-        tabListaJuegos.classList.add('active');
-        tabListaServidores.classList.remove('active');
-        editorJuegos.classList.remove('hidden');
-        editorCategorias.classList.add('hidden');
-      });
+      function activateAdminTab(tab) {
+        [tabListaJuegosAdmin, tabListaServidoresAdmin, tabOro, tabCuentas, tabBosteo].forEach((btn) => btn.classList.remove('active'));
+        [editorListaJuegos, editorServidores, editorOro, editorCuentas, editorBosteo].forEach((panel) => panel.classList.add('hidden'));
+        if (tab === 'juegos') {
+          tabListaJuegosAdmin.classList.add('active');
+          editorListaJuegos.classList.remove('hidden');
+        } else if (tab === 'servidores') {
+          tabListaServidoresAdmin.classList.add('active');
+          editorServidores.classList.remove('hidden');
+        } else if (tab === 'cuentas') {
+          tabCuentas.classList.add('active');
+          editorCuentas.classList.remove('hidden');
+        } else if (tab === 'bosteo') {
+          tabBosteo.classList.add('active');
+          editorBosteo.classList.remove('hidden');
+        } else {
+          tabOro.classList.add('active');
+          editorOro.classList.remove('hidden');
+        }
+      }
 
-      tabListaServidores.addEventListener('click', () => {
-        tabListaServidores.classList.add('active');
-        tabListaJuegos.classList.remove('active');
-        editorCategorias.classList.remove('hidden');
-        editorJuegos.classList.add('hidden');
-      });
+      tabListaJuegosAdmin.addEventListener('click', () => activateAdminTab('juegos'));
+      tabListaServidoresAdmin.addEventListener('click', () => activateAdminTab('servidores'));
+      tabOro.addEventListener('click', () => activateAdminTab('oro'));
+      tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
+      tabBosteo.addEventListener('click', () => activateAdminTab('bosteo'));
 
       abrirFormularioJuego.addEventListener('click', () => {
         openGameForm('add');
       });
 
-      juegoLista.addEventListener('click', (e) => {
+      juegoLista.addEventListener('click', async (e) => {
         const btn = e.target.closest('button[data-action]');
         if (!btn) return;
         const index = Number(btn.dataset.index);
@@ -1623,6 +2410,20 @@
         }
         if (btn.dataset.action === 'delete') {
           if (games.length <= 1) return;
+          if (!supabaseClient) {
+            showAdminNotice('Debes conectar Supabase para eliminar juegos.', 'warn');
+            return;
+          }
+          const target = games[index];
+          if (!target?.id) {
+            showAdminNotice('Juego sin ID remoto. Recarga datos desde Supabase.', 'warn');
+            return;
+          }
+          const { error } = await supabaseClient.from('games').delete().eq('id', target.id);
+          if (error) {
+            showAdminNotice('No se pudo eliminar el juego en Supabase.', 'warn');
+            return;
+          }
           games.splice(index, 1);
           selectedAdminIndex = Math.max(0, index - 1);
           editingAdminIndex = null;
@@ -1636,9 +2437,13 @@
       juegoNombre.addEventListener('input', updateGamePreview);
       juegoImagen.addEventListener('input', updateGamePreview);
       juegoDescripcion.addEventListener('input', updateGamePreview);
+      serviceBoosting.addEventListener('change', updateGamePreview);
+      serviceAccounts.addEventListener('change', updateGamePreview);
+      serviceGold.addEventListener('change', updateGamePreview);
       oroSearch.addEventListener('input', renderGameList);
 
-      function openCategoriaModal() {
+      function openCategoriaModal(type = 'oro') {
+        activeCategoryType = type;
         categoriaJuego.value = '';
         categoriaNombre.value = '';
         categoriaDescripcion.value = '';
@@ -1646,7 +2451,98 @@
         categoriaOroModal.setAttribute('aria-hidden', 'false');
       }
 
-      abrirFormularioCategoria.addEventListener('click', openCategoriaModal);
+      abrirFormularioCategoriaOro.addEventListener('click', () => openCategoriaModal('oro'));
+      abrirFormularioCategoriaCuentas.addEventListener('click', () => openCategoriaModal('cuentas'));
+      abrirFormularioCategoriaBosteo.addEventListener('click', () => openCategoriaModal('bosteo'));
+
+      guardarServidorJuego.addEventListener('click', () => {
+        const game = serverGameSelect.value.trim();
+        const server = serverNameInput.value.trim();
+        if (!game || !server) return;
+        const found = gameServers.find((entry) => entry.game === game);
+        if (!found) {
+          gameServers.push({ game, servers: [server] });
+        } else if (!found.servers.includes(server)) {
+          found.servers.push(server);
+        }
+        serverNameInput.value = '';
+        renderServerByGame();
+        refreshServerSelect(precioJuegoAdd, precioServidorAdd);
+        refreshServerSelect(precioJuegoEdit, precioServidorEdit);
+        showAdminNotice(`Servidor agregado a ${game}: ${server}`, 'ok');
+      });
+
+      serverGameSelect.addEventListener('change', () => {
+        renderServerByGame();
+      });
+
+      serverListWrap.addEventListener('click', (e) => {
+        const removeBtn = e.target.closest('.server-remove');
+        if (!removeBtn) return;
+        const game = removeBtn.dataset.game;
+        const server = removeBtn.dataset.server;
+        const group = gameServers.find((entry) => entry.game === game);
+        if (!group) return;
+        group.servers = group.servers.filter((name) => name !== server);
+        renderServerByGame();
+        refreshServerSelect(precioJuegoAdd, precioServidorAdd);
+        refreshServerSelect(precioJuegoEdit, precioServidorEdit);
+        renderPriceOptions();
+      });
+
+      precioJuegoAdd.addEventListener('change', () => refreshServerSelect(precioJuegoAdd, precioServidorAdd));
+      precioJuegoEdit.addEventListener('change', () => {
+        refreshServerSelect(precioJuegoEdit, precioServidorEdit);
+        renderPriceOptions();
+      });
+      precioServidorEdit.addEventListener('change', renderPriceOptions);
+      precioPaqueteEdit.addEventListener('change', () => {
+        const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
+        if (!selected) return;
+        const [game, server, amount] = selected.value.split('|');
+        const found = goldPrices.find((item) => item.game === game && item.server === server && String(item.amount) === amount);
+        if (found) precioValorEdit.value = String(found.price);
+      });
+
+      guardarPrecioOro.addEventListener('click', () => {
+        const game = precioJuegoAdd.value;
+        const server = precioServidorAdd.value;
+        const amount = Number(precioCantidadAdd.value);
+        const price = Number(precioValorAdd.value);
+        if (!game || !server || !amount || !price) return;
+        const existing = goldPrices.find((item) => item.game === game && item.server === server && item.amount === amount);
+        if (existing) {
+          existing.price = price;
+        } else {
+          goldPrices.push({ game, server, amount, price });
+        }
+        goldPrices.sort((a, b) => a.amount - b.amount);
+        renderPriceOptions();
+        showAdminNotice(`Precio guardado: ${game} / ${server} / ${amount}`, 'ok');
+      });
+
+      guardarEdicionPrecio.addEventListener('click', () => {
+        const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
+        if (!selected) return;
+        const [game, server, amount] = selected.value.split('|');
+        const newPrice = Number(precioValorEdit.value);
+        const found = goldPrices.find((item) => item.game === game && item.server === server && String(item.amount) === amount);
+        if (!found || !newPrice) return;
+        found.price = newPrice;
+        renderPriceOptions();
+        showAdminNotice('Precio actualizado.', 'ok');
+      });
+
+      eliminarPrecio.addEventListener('click', () => {
+        const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
+        if (!selected) return;
+        const [game, server, amount] = selected.value.split('|');
+        const idx = goldPrices.findIndex((item) => item.game === game && item.server === server && String(item.amount) === amount);
+        if (idx < 0) return;
+        goldPrices.splice(idx, 1);
+        renderPriceOptions();
+        showAdminNotice('Precio eliminado.', 'warn');
+      });
 
       verCategoriasOro.addEventListener('click', () => {
         renderCategoriasVista();
@@ -1675,26 +2571,55 @@
         if (e.target === categoriaOroModal) closeCategoriaModal();
       });
 
-      guardarCategoriaOro.addEventListener('click', () => {
+      guardarCategoriaOro.addEventListener('click', async () => {
         if (!categoriaNombre.value.trim()) return;
-        goldCategories.push({
+        const payload = {
           game: categoriaJuego.value.trim() || 'General',
           name: categoriaNombre.value.trim(),
           description: categoriaDescripcion.value.trim() || 'Sin descripción.'
-        });
+        };
+        const bucket = getCategoryBucket(activeCategoryType);
+        if (activeCategoryType === 'oro' && supabaseClient) {
+          const { data, error } = await supabaseClient
+            .from('gold_categories')
+            .insert(payload)
+            .select('id,game,name,description')
+            .single();
+          if (error) {
+            showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
+            return;
+          }
+          bucket.push(data);
+        } else {
+          bucket.push({ id: null, ...payload });
+        }
         renderGoldCategories();
         showAdminNotice(`Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
         closeCategoriaModal();
       });
 
-      categoriaLista.addEventListener('click', (e) => {
+      async function handleRemoveCategory(e) {
         const removeBtn = e.target.closest('button[data-remove-category]');
         if (!removeBtn) return;
+        const type = removeBtn.dataset.categoryType || 'oro';
+        const bucket = getCategoryBucket(type);
         const idx = Number(removeBtn.dataset.removeCategory);
-        goldCategories.splice(idx, 1);
+        const target = bucket[idx];
+        if (type === 'oro' && supabaseClient && target?.id) {
+          const { error } = await supabaseClient.from('gold_categories').delete().eq('id', target.id);
+          if (error) {
+            showAdminNotice('No se pudo eliminar la categoría en Supabase.', 'warn');
+            return;
+          }
+        }
+        bucket.splice(idx, 1);
         renderGoldCategories();
         showAdminNotice('Categoría eliminada.', 'warn');
-      });
+      }
+
+      categoriaListaOro.addEventListener('click', handleRemoveCategory);
+      categoriaListaCuentas.addEventListener('click', handleRemoveCategory);
+      categoriaListaBosteo.addEventListener('click', handleRemoveCategory);
 
       cancelarJuegoForm.addEventListener('click', () => {
         editingAdminIndex = null;
@@ -1722,21 +2647,73 @@
         }
       });
 
-      guardarJuegoForm.addEventListener('click', () => {
+      guardarJuegoForm.addEventListener('click', async () => {
         if (!juegoNombre.value.trim()) return;
         const payload = {
           name: juegoNombre.value.trim(),
           icon: juegoImagen.value.trim() || games[0].icon,
-          description: juegoDescripcion.value.trim()
+          description: juegoDescripcion.value.trim(),
+          services: getSelectedServices()
         };
         if (editingAdminIndex === null) {
-          games.push(payload);
-          selectedAdminIndex = games.length - 1;
-          showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
+          if (supabaseClient) {
+            const supabasePayload = {
+              name: payload.name,
+              icon: payload.icon,
+              description: payload.description,
+              services: payload.services
+            };
+            const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services').single();
+            if (error) {
+              games.push({ id: null, ...payload });
+              selectedAdminIndex = games.length - 1;
+              if (error.message?.toLowerCase().includes('services')) {
+                showAdminNotice('No existe columna "services" en Supabase. Se guardó localmente.', 'warn');
+              } else {
+                showAdminNotice('No se pudo guardar en Supabase. Se guardó localmente.', 'warn');
+              }
+            } else {
+              games.push({ ...data, services: payload.services });
+              selectedAdminIndex = games.length - 1;
+              showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
+            }
+          } else {
+            games.push({ id: null, ...payload });
+            selectedAdminIndex = games.length - 1;
+            showAdminNotice(`Juego agregado localmente: ${payload.name}.`, 'info');
+          }
         } else {
-          games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
-          selectedAdminIndex = editingAdminIndex;
-          showAdminNotice(`Juego actualizado: ${payload.name}.`, 'ok');
+          if (supabaseClient && games[editingAdminIndex]?.id) {
+            const supabasePayload = {
+              name: payload.name,
+              icon: payload.icon,
+              description: payload.description,
+              services: payload.services
+            };
+            const { data, error } = await supabaseClient
+              .from('games')
+              .update(supabasePayload)
+              .eq('id', games[editingAdminIndex].id)
+              .select('id,name,icon,description,services')
+              .single();
+            if (error) {
+              games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
+              selectedAdminIndex = editingAdminIndex;
+              if (error.message?.toLowerCase().includes('services')) {
+                showAdminNotice('No existe columna "services" en Supabase. Se actualizó localmente.', 'warn');
+              } else {
+                showAdminNotice('No se pudo actualizar en Supabase. Se actualizó localmente.', 'warn');
+              }
+            } else {
+              games[editingAdminIndex] = { ...data, services: payload.services };
+              selectedAdminIndex = editingAdminIndex;
+              showAdminNotice(`Juego actualizado: ${payload.name}.`, 'ok');
+            }
+          } else {
+            games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
+            selectedAdminIndex = editingAdminIndex;
+            showAdminNotice(`Juego actualizado localmente: ${payload.name}.`, 'info');
+          }
         }
         renderGameList();
         renderAdminSelect();
