@@ -1909,6 +1909,7 @@
           <label for="authRegPassword2">Confirmar clave</label>
           <input id="authRegPassword2" type="password" placeholder="Repite la clave" />
           <button id="authRegisterBtn" class="panel-btn" type="button" style="margin-top:.65rem;">Registrar</button>
+          <button id="resendVerificationBtn" class="mini-btn" type="button" style="margin-top:.45rem;width:100%;">Reenviar correo de verificación</button>
           <p class="auth-hint">Se guardará tu perfil para usarlo en pedidos y órdenes.</p>
         </div>
         <div id="authMsg" class="admin-msg"></div>
@@ -2219,6 +2220,7 @@
       const authRegPassword = document.getElementById('authRegPassword');
       const authRegPassword2 = document.getElementById('authRegPassword2');
       const authRegisterBtn = document.getElementById('authRegisterBtn');
+      const resendVerificationBtn = document.getElementById('resendVerificationBtn');
       const authMsg = document.getElementById('authMsg');
       const authNotice = document.getElementById('authNotice');
       const profileDrawer = document.getElementById('profileDrawer');
@@ -2962,6 +2964,9 @@
         if (error) {
           authMsg.textContent = error.message;
           authMsg.style.color = '#ffb6b6';
+          if (error.message.toLowerCase().includes('already') || error.message.toLowerCase().includes('registered')) {
+            showAuthNotice('Tu cuenta ya existe. Usa "Reenviar correo de verificación" o inicia sesión.', 'warn');
+          }
           return;
         }
         if (data.user) {
@@ -2977,6 +2982,31 @@
         authMsg.textContent = 'Registro creado correctamente.';
         authMsg.style.color = '#9affcc';
         showAuthNotice('✅ Revisa tu correo para confirmar tu cuenta y luego inicia sesión.');
+      });
+
+      resendVerificationBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        const email = authRegEmail.value.trim();
+        if (!email) {
+          authMsg.textContent = 'Escribe tu correo para reenviar verificación.';
+          authMsg.style.color = '#ffd39a';
+          return;
+        }
+        const { error } = await supabaseClient.auth.resend({
+          type: 'signup',
+          email,
+          options: {
+            emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+          }
+        });
+        if (error) {
+          authMsg.textContent = error.message;
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        authMsg.textContent = 'Correo reenviado. Revisa tu bandeja y spam.';
+        authMsg.style.color = '#9affcc';
+        showAuthNotice('📩 Te reenviamos el correo de confirmación.');
       });
 
       authLoginBtn.addEventListener('click', async () => {
