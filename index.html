@@ -1411,11 +1411,34 @@
       }
       .profile-drawer.show { transform: translateX(0); }
       .profile-head { display:flex; justify-content:space-between; align-items:center; }
+      .profile-identity {
+        border: 1px solid #37528a;
+        background: #101d36;
+        border-radius: 10px;
+        padding: 0.7rem;
+        margin-top: 0.55rem;
+      }
+      .profile-identity strong {
+        display: block;
+        font-size: 1rem;
+        color: #f1f6ff;
+      }
+      .profile-identity small {
+        display: block;
+        color: #aac1ea;
+        margin-top: 0.15rem;
+        word-break: break-word;
+      }
       .profile-tabs { display:grid; grid-template-columns: 1fr 1fr; gap:.5rem; margin: .8rem 0; }
       .profile-tab { border:1px solid #36518f; background:#12203b; color:#fff; border-radius:8px; padding:.45rem; cursor:pointer; }
       .profile-tab.active { border-color: var(--gold); }
       .profile-pane.hidden { display:none; }
       .order-card { border:1px solid #334f88; border-radius:10px; padding:.65rem; margin-bottom:.55rem; background:#0e1930; }
+      #logoutBtn {
+        width: 100%;
+        margin-top: .75rem;
+        padding: .6rem .7rem;
+      }
 
       @media (max-width: 980px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr 1fr; }
@@ -1896,6 +1919,7 @@
           <label for="authLoginPassword">Clave</label>
           <input id="authLoginPassword" type="password" placeholder="Tu clave" />
           <button id="authLoginBtn" class="panel-btn" type="button" style="margin-top:.65rem;">Ingresar</button>
+          <button id="forgotPasswordBtn" class="mini-btn" type="button" style="margin-top:.45rem;width:100%;">¿Olvidó su contraseña?</button>
         </div>
         <div id="authPaneRegister" class="auth-pane hidden">
           <label for="authRegName">Nombre</label>
@@ -1919,10 +1943,13 @@
 
     <aside id="profileDrawer" class="profile-drawer" aria-hidden="true">
       <div class="profile-head">
-        <strong id="profileNameTop">Perfil</strong>
+        <strong>Mi cuenta</strong>
         <button id="closeProfileDrawer" class="close-btn" type="button">✕</button>
       </div>
-      <small id="profileEmailTop" style="color:#9ab2df;"></small>
+      <div class="profile-identity">
+        <strong id="profileNameTop">Perfil</strong>
+        <small id="profileEmailTop"></small>
+      </div>
       <div class="profile-tabs">
         <button id="tabProfileInfo" class="profile-tab active" type="button">Perfil</button>
         <button id="tabProfileOrders" class="profile-tab" type="button">Órdenes</button>
@@ -2214,6 +2241,7 @@
       const authLoginEmail = document.getElementById('authLoginEmail');
       const authLoginPassword = document.getElementById('authLoginPassword');
       const authLoginBtn = document.getElementById('authLoginBtn');
+      const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
       const authRegName = document.getElementById('authRegName');
       const authRegEmail = document.getElementById('authRegEmail');
       const authRegDiscord = document.getElementById('authRegDiscord');
@@ -3022,7 +3050,29 @@
         }
         authMsg.textContent = 'Sesión iniciada.';
         authMsg.style.color = '#9affcc';
+        showAuthNotice('✅ Inicio de sesión exitoso.');
         closeAuth();
+      });
+
+      forgotPasswordBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        const email = authLoginEmail.value.trim();
+        if (!email) {
+          authMsg.textContent = 'Escribe tu correo para recuperar contraseña.';
+          authMsg.style.color = '#ffd39a';
+          return;
+        }
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}${window.location.pathname}`
+        });
+        if (error) {
+          authMsg.textContent = error.message;
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        authMsg.textContent = 'Te enviamos un correo para recuperar tu contraseña.';
+        authMsg.style.color = '#9affcc';
+        showAuthNotice('📩 Revisa tu correo para cambiar tu contraseña.');
       });
 
       saveProfileBtn.addEventListener('click', async () => {
