@@ -1323,6 +1323,11 @@
         cursor: pointer;
       }
       .auth-modal { z-index: 160; }
+      .auth-modal .juego-form-card {
+        width: min(560px, 94vw);
+        background: linear-gradient(165deg, #112647, #0a162a);
+        border: 1px solid #c9972c;
+      }
       .auth-tabs {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -1340,6 +1345,40 @@
       .auth-tab.active { border-color: var(--gold); color: #fff; }
       .auth-pane.hidden { display:none; }
       .auth-hint { color: #9cb6e9; font-size: .8rem; margin-top: .2rem; }
+      .auth-pane label,
+      .profile-pane label {
+        display: block;
+        color: #e6efff;
+        font-weight: 600;
+        margin: 0.4rem 0 0.25rem;
+      }
+      .auth-pane input,
+      .profile-pane input,
+      .auth-pane select,
+      .profile-pane select {
+        width: 100%;
+        display: block;
+        height: 40px;
+        background: #0a1222 !important;
+        color: #ffffff !important;
+        border: 1px solid #355692 !important;
+        border-radius: 8px;
+        padding: 0 0.7rem;
+        outline: none;
+      }
+      .auth-pane input::placeholder,
+      .profile-pane input::placeholder {
+        color: #9ab2df;
+      }
+      #authRegisterBtn,
+      #authLoginBtn {
+        margin-top: .8rem;
+        width: 100%;
+      }
+      #authMsg {
+        margin-top: .55rem;
+        min-height: 1.2rem;
+      }
       .profile-drawer {
         position: fixed;
         top: 0;
