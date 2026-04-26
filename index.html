@@ -1028,6 +1028,37 @@
         padding: 0.75rem;
       }
 
+      .admin-split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+
+      .server-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        border: 1px solid #4568af;
+        border-radius: 999px;
+        padding: .2rem .45rem;
+        margin: .2rem .25rem 0 0;
+        background: #12213d;
+        color: #e6efff;
+        font-size: .76rem;
+      }
+
+      .server-remove {
+        border: 0;
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #7e2330;
+        color: #fff;
+        cursor: pointer;
+        font-size: .7rem;
+        line-height: 1;
+      }
+
       .editor-box input,
       .editor-box select,
       .editor-box textarea,
@@ -1205,6 +1236,7 @@
         .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid { grid-template-columns: 1fr 1fr; }
         .steps-list { grid-template-columns: 1fr 1fr; }
         .sell-grid { grid-template-columns: 1fr; }
+        .admin-split { grid-template-columns: 1fr; }
       }
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
@@ -1661,30 +1693,91 @@
           <button id="tabBosteo" class="panel-tab" type="button">Bosteo</button>
         </div>
         <div id="editorServidores" class="editor-box">
-          <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Servidores por juego</strong>
+          <div class="admin-split">
+            <div class="editor-box" style="margin-top:0;">
+              <div class="admin-panel-actions" style="margin-top:0;">
+                <strong style="flex:1;display:flex;align-items:center;">Lista de juegos</strong>
+                <button id="abrirFormularioJuego" class="panel-btn" type="button">+ Agregar juego</button>
+              </div>
+              <div id="juegoLista" class="admin-game-list"></div>
+            </div>
+            <div class="editor-box" style="margin-top:0;">
+              <div class="admin-panel-actions" style="margin-top:0;">
+                <strong style="flex:1;display:flex;align-items:center;">Lista de servidores (juegos)</strong>
+              </div>
+              <div class="admin-game-form" style="padding:0;">
+                <label for="serverGameSelect">Juego</label>
+                <select id="serverGameSelect"></select>
+                <label for="serverNameInput">Servidor</label>
+                <input id="serverNameInput" type="text" placeholder="Ej: Nordanar" />
+                <button id="guardarServidorJuego" class="panel-btn" type="button">+ Guardar servidor</button>
+              </div>
+              <div id="serverListWrap" class="admin-game-list" style="max-height:280px;"></div>
+            </div>
           </div>
-          <div class="admin-game-form" style="padding:0;">
-            <label for="serverGameSelect">Juego</label>
-            <select id="serverGameSelect"></select>
-            <label for="serverNameInput">Servidor</label>
-            <input id="serverNameInput" type="text" placeholder="Ej: Nordanar" />
-            <button id="guardarServidorJuego" class="panel-btn" type="button">+ Guardar servidor</button>
-          </div>
-          <div id="serverListWrap" class="admin-game-list" style="max-height:220px;"></div>
-          <hr style="border-color:#2e477c;opacity:.5;" />
-          <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Editar lista de juegos</strong>
-            <button id="abrirFormularioJuego" class="panel-btn" type="button">+ Agregar juego</button>
-          </div>
-          <div id="juegoLista" class="admin-game-list"></div>
         </div>
         <div id="editorOro" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
-            <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
+            <strong style="flex:1;display:flex;align-items:center;">Gestión de Oro</strong>
           </div>
-          <div id="categoriaListaOro"></div>
+          <div class="editor-box" style="margin-top:.5rem;">
+            <strong style="display:block;margin-bottom:.55rem;color:#f0cf7b;">Precio por juego y servidor</strong>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="precioJuegoAdd">Juego</label>
+                <select id="precioJuegoAdd"></select>
+              </div>
+              <div class="form-group">
+                <label for="precioServidorAdd">Servidor</label>
+                <select id="precioServidorAdd"></select>
+              </div>
+            </div>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="precioCantidadAdd">Cantidad de oro</label>
+                <input id="precioCantidadAdd" type="number" min="100" step="100" placeholder="100" />
+              </div>
+              <div class="form-group">
+                <label for="precioValorAdd">Precio (USD)</label>
+                <input id="precioValorAdd" type="number" min="0" step="0.01" placeholder="24.99" />
+              </div>
+            </div>
+            <button id="guardarPrecioOro" class="panel-btn" type="button">Guardar precio</button>
+          </div>
+          <div class="editor-box" style="margin-top:.6rem;">
+            <strong style="display:block;margin-bottom:.55rem;color:#f0cf7b;">Editar precios existentes</strong>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="precioJuegoEdit">Juego</label>
+                <select id="precioJuegoEdit"></select>
+              </div>
+              <div class="form-group">
+                <label for="precioServidorEdit">Servidor</label>
+                <select id="precioServidorEdit"></select>
+              </div>
+            </div>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="precioPaqueteEdit">Oro / Precio</label>
+                <select id="precioPaqueteEdit"></select>
+              </div>
+              <div class="form-group">
+                <label for="precioValorEdit">Precio (USD)</label>
+                <input id="precioValorEdit" type="number" min="0" step="0.01" />
+              </div>
+            </div>
+            <div class="admin-panel-actions">
+              <button id="guardarEdicionPrecio" class="panel-btn" type="button">Guardar cambios</button>
+              <button id="eliminarPrecio" class="mini-btn danger" type="button">Eliminar</button>
+            </div>
+          </div>
+          <div class="editor-box" style="margin-top:.6rem;">
+            <div class="admin-panel-actions" style="margin-top:0;">
+              <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
+              <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
+            </div>
+            <div id="categoriaListaOro"></div>
+          </div>
         </div>
         <div id="editorCuentas" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -1837,6 +1930,17 @@
       const serverNameInput = document.getElementById('serverNameInput');
       const guardarServidorJuego = document.getElementById('guardarServidorJuego');
       const serverListWrap = document.getElementById('serverListWrap');
+      const precioJuegoAdd = document.getElementById('precioJuegoAdd');
+      const precioServidorAdd = document.getElementById('precioServidorAdd');
+      const precioCantidadAdd = document.getElementById('precioCantidadAdd');
+      const precioValorAdd = document.getElementById('precioValorAdd');
+      const guardarPrecioOro = document.getElementById('guardarPrecioOro');
+      const precioJuegoEdit = document.getElementById('precioJuegoEdit');
+      const precioServidorEdit = document.getElementById('precioServidorEdit');
+      const precioPaqueteEdit = document.getElementById('precioPaqueteEdit');
+      const precioValorEdit = document.getElementById('precioValorEdit');
+      const guardarEdicionPrecio = document.getElementById('guardarEdicionPrecio');
+      const eliminarPrecio = document.getElementById('eliminarPrecio');
       const categoriaOroModal = document.getElementById('categoriaOroModal');
       const cerrarCategoriaOroModal = document.getElementById('cerrarCategoriaOroModal');
       const cancelarCategoriaOro = document.getElementById('cancelarCategoriaOro');
@@ -1907,6 +2011,11 @@
       const gameServers = [
         { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
         { game: 'Albion Online', servers: ['West', 'East'] }
+      ];
+      const goldPrices = [
+        { game: 'World of Warcraft', server: 'Ragnaros', amount: 100, price: 3.5 },
+        { game: 'World of Warcraft', server: 'Ragnaros', amount: 200, price: 6.9 },
+        { game: 'World of Warcraft', server: 'Ragnaros', amount: 300, price: 10.2 }
       ];
       let activeCategoryType = 'oro';
       let selectedAdminIndex = 0;
@@ -2019,12 +2128,21 @@
           juegoLista.appendChild(item);
         });
         serverGameSelect.innerHTML = '';
+        precioJuegoAdd.innerHTML = '';
+        precioJuegoEdit.innerHTML = '';
         games.forEach((game) => {
           const option = document.createElement('option');
           option.value = game.name;
           option.textContent = game.name;
           serverGameSelect.appendChild(option);
+          const optionAdd = option.cloneNode(true);
+          const optionEdit = option.cloneNode(true);
+          precioJuegoAdd.appendChild(optionAdd);
+          precioJuegoEdit.appendChild(optionEdit);
         });
+        refreshServerSelect(precioJuegoAdd, precioServidorAdd);
+        refreshServerSelect(precioJuegoEdit, precioServidorEdit);
+        renderPriceOptions();
       }
 
       function renderServerByGame() {
@@ -2032,9 +2150,37 @@
         gameServers.forEach((entry) => {
           const card = document.createElement('article');
           card.className = 'category-item';
-          card.innerHTML = `<strong>${entry.game}</strong><p class="admin-game-desc">${entry.servers.length} servidores</p><p class="admin-game-desc">${entry.servers.map((server) => `<span class="badge" style="margin-right:.35rem;">${server}</span>`).join('')}</p>`;
+          card.innerHTML = `<strong>${entry.game}</strong><p class="admin-game-desc">${entry.servers.length} servidores</p><p class="admin-game-desc">${entry.servers.map((server) => `<span class="server-chip">${server}<button class="server-remove" type="button" data-game="${entry.game}" data-server="${server}">✕</button></span>`).join('')}</p>`;
           serverListWrap.appendChild(card);
         });
+      }
+
+      function refreshServerSelect(gameSelect, serverSelect) {
+        const selectedGame = gameSelect.value;
+        const group = gameServers.find((entry) => entry.game === selectedGame);
+        serverSelect.innerHTML = '';
+        (group?.servers || []).forEach((server) => {
+          const option = document.createElement('option');
+          option.value = server;
+          option.textContent = server;
+          serverSelect.appendChild(option);
+        });
+      }
+
+      function renderPriceOptions() {
+        const game = precioJuegoEdit.value;
+        const server = precioServidorEdit.value;
+        const filtered = goldPrices
+          .filter((item) => item.game === game && item.server === server)
+          .sort((a, b) => a.amount - b.amount);
+        precioPaqueteEdit.innerHTML = '';
+        filtered.forEach((item, idx) => {
+          const option = document.createElement('option');
+          option.value = `${item.game}|${item.server}|${item.amount}|${idx}`;
+          option.textContent = `${item.amount} - ${item.price.toFixed(2)}`;
+          precioPaqueteEdit.appendChild(option);
+        });
+        if (filtered[0]) precioValorEdit.value = String(filtered[0].price);
       }
 
       function loadSelectedGame() {
@@ -2318,7 +2464,81 @@
         }
         serverNameInput.value = '';
         renderServerByGame();
+        refreshServerSelect(precioJuegoAdd, precioServidorAdd);
+        refreshServerSelect(precioJuegoEdit, precioServidorEdit);
         showAdminNotice(`Servidor agregado a ${game}: ${server}`, 'ok');
+      });
+
+      serverGameSelect.addEventListener('change', () => {
+        renderServerByGame();
+      });
+
+      serverListWrap.addEventListener('click', (e) => {
+        const removeBtn = e.target.closest('.server-remove');
+        if (!removeBtn) return;
+        const game = removeBtn.dataset.game;
+        const server = removeBtn.dataset.server;
+        const group = gameServers.find((entry) => entry.game === game);
+        if (!group) return;
+        group.servers = group.servers.filter((name) => name !== server);
+        renderServerByGame();
+        refreshServerSelect(precioJuegoAdd, precioServidorAdd);
+        refreshServerSelect(precioJuegoEdit, precioServidorEdit);
+        renderPriceOptions();
+      });
+
+      precioJuegoAdd.addEventListener('change', () => refreshServerSelect(precioJuegoAdd, precioServidorAdd));
+      precioJuegoEdit.addEventListener('change', () => {
+        refreshServerSelect(precioJuegoEdit, precioServidorEdit);
+        renderPriceOptions();
+      });
+      precioServidorEdit.addEventListener('change', renderPriceOptions);
+      precioPaqueteEdit.addEventListener('change', () => {
+        const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
+        if (!selected) return;
+        const [game, server, amount] = selected.value.split('|');
+        const found = goldPrices.find((item) => item.game === game && item.server === server && String(item.amount) === amount);
+        if (found) precioValorEdit.value = String(found.price);
+      });
+
+      guardarPrecioOro.addEventListener('click', () => {
+        const game = precioJuegoAdd.value;
+        const server = precioServidorAdd.value;
+        const amount = Number(precioCantidadAdd.value);
+        const price = Number(precioValorAdd.value);
+        if (!game || !server || !amount || !price) return;
+        const existing = goldPrices.find((item) => item.game === game && item.server === server && item.amount === amount);
+        if (existing) {
+          existing.price = price;
+        } else {
+          goldPrices.push({ game, server, amount, price });
+        }
+        goldPrices.sort((a, b) => a.amount - b.amount);
+        renderPriceOptions();
+        showAdminNotice(`Precio guardado: ${game} / ${server} / ${amount}`, 'ok');
+      });
+
+      guardarEdicionPrecio.addEventListener('click', () => {
+        const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
+        if (!selected) return;
+        const [game, server, amount] = selected.value.split('|');
+        const newPrice = Number(precioValorEdit.value);
+        const found = goldPrices.find((item) => item.game === game && item.server === server && String(item.amount) === amount);
+        if (!found || !newPrice) return;
+        found.price = newPrice;
+        renderPriceOptions();
+        showAdminNotice('Precio actualizado.', 'ok');
+      });
+
+      eliminarPrecio.addEventListener('click', () => {
+        const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
+        if (!selected) return;
+        const [game, server, amount] = selected.value.split('|');
+        const idx = goldPrices.findIndex((item) => item.game === game && item.server === server && String(item.amount) === amount);
+        if (idx < 0) return;
+        goldPrices.splice(idx, 1);
+        renderPriceOptions();
+        showAdminNotice('Precio eliminado.', 'warn');
       });
 
       verCategoriasOro.addEventListener('click', () => {
