@@ -2914,7 +2914,10 @@
         const { data, error } = await supabaseClient.auth.signUp({
           email: authRegEmail.value.trim(),
           password: authRegPassword.value,
-          options: { data: { name: authRegName.value.trim() } }
+          options: {
+            data: { name: authRegName.value.trim() },
+            emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+          }
         });
         if (error) {
           authMsg.textContent = error.message;
