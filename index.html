@@ -1314,6 +1314,54 @@
         margin-bottom: 0.45rem;
       }
 
+      .auth-btn {
+        border: 1px solid #365c9f;
+        background: #111d36;
+        color: #fff;
+        border-radius: 999px;
+        padding: 0.4rem 0.8rem;
+        cursor: pointer;
+      }
+      .auth-modal { z-index: 160; }
+      .auth-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.45rem;
+        margin-bottom: 0.8rem;
+      }
+      .auth-tab {
+        border: 1px solid #355b9f;
+        background: #0d1b35;
+        color: #dce8ff;
+        border-radius: 8px;
+        padding: 0.5rem;
+        cursor: pointer;
+      }
+      .auth-tab.active { border-color: var(--gold); color: #fff; }
+      .auth-pane.hidden { display:none; }
+      .auth-hint { color: #9cb6e9; font-size: .8rem; margin-top: .2rem; }
+      .profile-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(460px, 96vw);
+        height: 100vh;
+        background: linear-gradient(160deg, #101b32, #0b1222);
+        border-left: 1px solid #2f467e;
+        z-index: 165;
+        transform: translateX(105%);
+        transition: transform .22s ease;
+        padding: 1rem;
+        overflow-y: auto;
+      }
+      .profile-drawer.show { transform: translateX(0); }
+      .profile-head { display:flex; justify-content:space-between; align-items:center; }
+      .profile-tabs { display:grid; grid-template-columns: 1fr 1fr; gap:.5rem; margin: .8rem 0; }
+      .profile-tab { border:1px solid #36518f; background:#12203b; color:#fff; border-radius:8px; padding:.45rem; cursor:pointer; }
+      .profile-tab.active { border-color: var(--gold); }
+      .profile-pane.hidden { display:none; }
+      .order-card { border:1px solid #334f88; border-radius:10px; padding:.65rem; margin-bottom:.55rem; background:#0e1930; }
+
       @media (max-width: 980px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr 1fr; }
         .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid { grid-template-columns: 1fr 1fr; }
@@ -1346,6 +1394,9 @@
           <a href="#marketplace" data-page-link data-page="marketplace">Marketplace</a>
         </nav>
         <div class="nav-actions">
+          <button id="openRegister" class="auth-btn" type="button">Registrarse</button>
+          <button id="openLogin" class="auth-btn" type="button">Ingresar</button>
+          <button id="openProfile" class="auth-btn" type="button" style="display:none;">Perfil</button>
           <a class="discord-nav-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">
             <img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />
             Discord
@@ -1774,6 +1825,72 @@
       <div class="container copyright">© 2026 TradeHud. Todos los derechos reservados.</div>
     </footer>
 
+    <div id="authModal" class="juego-form-modal auth-modal" aria-hidden="true">
+      <div class="juego-form-card" style="max-width:520px;">
+        <div class="admin-head">
+          <strong>Cuenta TradeHud</strong>
+          <button id="closeAuthModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div class="auth-tabs">
+          <button id="tabAuthLogin" class="auth-tab active" type="button">Ingresar</button>
+          <button id="tabAuthRegister" class="auth-tab" type="button">Crear cuenta</button>
+        </div>
+        <div id="authPaneLogin" class="auth-pane">
+          <label for="authLoginEmail">Correo</label>
+          <input id="authLoginEmail" type="email" placeholder="tu@email.com" />
+          <label for="authLoginPassword">Clave</label>
+          <input id="authLoginPassword" type="password" placeholder="Tu clave" />
+          <button id="authLoginBtn" class="panel-btn" type="button" style="margin-top:.65rem;">Ingresar</button>
+        </div>
+        <div id="authPaneRegister" class="auth-pane hidden">
+          <label for="authRegName">Nombre</label>
+          <input id="authRegName" type="text" placeholder="Tu nombre" />
+          <label for="authRegEmail">Correo</label>
+          <input id="authRegEmail" type="email" placeholder="tu@email.com" />
+          <label for="authRegDiscord">Discord o número (opcional)</label>
+          <input id="authRegDiscord" type="text" placeholder="DiscordTag#0001 o +58..." />
+          <label for="authRegPassword">Clave</label>
+          <input id="authRegPassword" type="password" placeholder="Mínimo 6 caracteres" />
+          <label for="authRegPassword2">Confirmar clave</label>
+          <input id="authRegPassword2" type="password" placeholder="Repite la clave" />
+          <button id="authRegisterBtn" class="panel-btn" type="button" style="margin-top:.65rem;">Registrar</button>
+          <p class="auth-hint">Se guardará tu perfil para usarlo en pedidos y órdenes.</p>
+        </div>
+        <div id="authMsg" class="admin-msg"></div>
+      </div>
+    </div>
+
+    <aside id="profileDrawer" class="profile-drawer" aria-hidden="true">
+      <div class="profile-head">
+        <strong id="profileNameTop">Perfil</strong>
+        <button id="closeProfileDrawer" class="close-btn" type="button">✕</button>
+      </div>
+      <small id="profileEmailTop" style="color:#9ab2df;"></small>
+      <div class="profile-tabs">
+        <button id="tabProfileInfo" class="profile-tab active" type="button">Perfil</button>
+        <button id="tabProfileOrders" class="profile-tab" type="button">Órdenes</button>
+      </div>
+      <div id="profileInfoPane" class="profile-pane">
+        <label for="profileNameInput">Nombre</label>
+        <input id="profileNameInput" type="text" placeholder="Nombre para mostrar" />
+        <label for="profileDiscordInput">Discord</label>
+        <input id="profileDiscordInput" type="text" placeholder="Tu usuario de Discord" />
+        <label for="profilePhoneInput">Número</label>
+        <input id="profilePhoneInput" type="text" placeholder="Incluye código de país" />
+        <p class="auth-hint">Aquí puedes guardar tus datos para acelerar atención y entrega.</p>
+        <div class="admin-panel-actions">
+          <button id="saveProfileBtn" class="panel-btn" type="button">Guardar información</button>
+          <button id="changePasswordBtn" class="panel-btn" type="button">Cambiar contraseña</button>
+        </div>
+        <button id="logoutBtn" class="mini-btn danger" type="button">Cerrar sesión</button>
+      </div>
+      <div id="profileOrdersPane" class="profile-pane hidden">
+        <p class="auth-hint">Tus tickets aparecerán aquí.</p>
+        <div id="userOrdersList"></div>
+      </div>
+      <div id="profileMsg" class="admin-msg"></div>
+    </aside>
+
     <div id="adminModal" class="admin-modal" aria-hidden="true">
       <div class="admin-card">
         <div class="admin-head">
@@ -1815,6 +1932,7 @@
           <button id="tabCategoriasOro" class="panel-tab" type="button">Categorías de oro</button>
           <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
           <button id="tabOro" class="panel-tab" type="button">Oro</button>
+          <button id="tabTicketsAdmin" class="panel-tab" type="button">Tickets</button>
           <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
           <button id="tabBosteo" class="panel-tab" type="button">Bosteo</button>
         </div>
@@ -1900,6 +2018,12 @@
               <button id="eliminarPrecio" class="mini-btn danger" type="button">Eliminar</button>
             </div>
           </div>
+        </div>
+        <div id="editorTicketsAdmin" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Tickets de usuarios</strong>
+          </div>
+          <div id="adminTicketsList" class="admin-game-list"></div>
         </div>
         <div id="editorCuentas" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -2020,7 +2144,42 @@
       const volverOpcionesBtn = document.getElementById('volverOpcionesBtn');
       const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
+      const openRegister = document.getElementById('openRegister');
+      const openLogin = document.getElementById('openLogin');
+      const openProfile = document.getElementById('openProfile');
       const closeAdmin = document.getElementById('closeAdmin');
+      const authModal = document.getElementById('authModal');
+      const closeAuthModal = document.getElementById('closeAuthModal');
+      const tabAuthLogin = document.getElementById('tabAuthLogin');
+      const tabAuthRegister = document.getElementById('tabAuthRegister');
+      const authPaneLogin = document.getElementById('authPaneLogin');
+      const authPaneRegister = document.getElementById('authPaneRegister');
+      const authLoginEmail = document.getElementById('authLoginEmail');
+      const authLoginPassword = document.getElementById('authLoginPassword');
+      const authLoginBtn = document.getElementById('authLoginBtn');
+      const authRegName = document.getElementById('authRegName');
+      const authRegEmail = document.getElementById('authRegEmail');
+      const authRegDiscord = document.getElementById('authRegDiscord');
+      const authRegPassword = document.getElementById('authRegPassword');
+      const authRegPassword2 = document.getElementById('authRegPassword2');
+      const authRegisterBtn = document.getElementById('authRegisterBtn');
+      const authMsg = document.getElementById('authMsg');
+      const profileDrawer = document.getElementById('profileDrawer');
+      const closeProfileDrawer = document.getElementById('closeProfileDrawer');
+      const tabProfileInfo = document.getElementById('tabProfileInfo');
+      const tabProfileOrders = document.getElementById('tabProfileOrders');
+      const profileInfoPane = document.getElementById('profileInfoPane');
+      const profileOrdersPane = document.getElementById('profileOrdersPane');
+      const profileNameTop = document.getElementById('profileNameTop');
+      const profileEmailTop = document.getElementById('profileEmailTop');
+      const profileNameInput = document.getElementById('profileNameInput');
+      const profileDiscordInput = document.getElementById('profileDiscordInput');
+      const profilePhoneInput = document.getElementById('profilePhoneInput');
+      const saveProfileBtn = document.getElementById('saveProfileBtn');
+      const changePasswordBtn = document.getElementById('changePasswordBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const userOrdersList = document.getElementById('userOrdersList');
+      const profileMsg = document.getElementById('profileMsg');
       const adminModal = document.getElementById('adminModal');
       const adminLogin = document.getElementById('adminLogin');
       const adminMsg = document.getElementById('adminMsg');
@@ -2049,14 +2208,17 @@
       const tabCategoriasOro = document.getElementById('tabCategoriasOro');
       const tabListaServidoresAdmin = document.getElementById('tabListaServidoresAdmin');
       const tabOro = document.getElementById('tabOro');
+      const tabTicketsAdmin = document.getElementById('tabTicketsAdmin');
       const tabCuentas = document.getElementById('tabCuentas');
       const tabBosteo = document.getElementById('tabBosteo');
       const editorListaJuegos = document.getElementById('editorListaJuegos');
       const editorCategoriasOro = document.getElementById('editorCategoriasOro');
       const editorServidores = document.getElementById('editorServidores');
       const editorOro = document.getElementById('editorOro');
+      const editorTicketsAdmin = document.getElementById('editorTicketsAdmin');
       const editorCuentas = document.getElementById('editorCuentas');
       const editorBosteo = document.getElementById('editorBosteo');
+      const adminTicketsList = document.getElementById('adminTicketsList');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
@@ -2159,6 +2321,8 @@
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
       let activeOrderGame = null;
+      let currentUser = null;
+      let currentProfile = null;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
 
       function renderGoldOrderProducts() {
@@ -2210,6 +2374,95 @@
       function closeGoldOrderPanel() {
         goldOrderPanel.classList.add('hidden');
         gameWindow.classList.remove('gold-focus');
+      }
+
+      function setAuthView(mode = 'login') {
+        const isLogin = mode === 'login';
+        tabAuthLogin.classList.toggle('active', isLogin);
+        tabAuthRegister.classList.toggle('active', !isLogin);
+        authPaneLogin.classList.toggle('hidden', !isLogin);
+        authPaneRegister.classList.toggle('hidden', isLogin);
+      }
+
+      function openAuth(mode = 'login') {
+        setAuthView(mode);
+        authMsg.textContent = '';
+        authModal.classList.add('show');
+        authModal.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeAuth() {
+        authModal.classList.remove('show');
+        authModal.setAttribute('aria-hidden', 'true');
+      }
+
+      function toggleUserButtons() {
+        const logged = Boolean(currentUser);
+        openRegister.style.display = logged ? 'none' : 'inline-flex';
+        openLogin.style.display = logged ? 'none' : 'inline-flex';
+        openProfile.style.display = logged ? 'inline-flex' : 'none';
+      }
+
+      async function loadUserProfile() {
+        if (!currentUser || !supabaseClient) return;
+        const { data, error } = await supabaseClient
+          .from('user_profiles')
+          .select('id,name,email,discord,phone,is_admin')
+          .eq('id', currentUser.id)
+          .maybeSingle();
+        if (error) return;
+        if (!data) {
+          const payload = {
+            id: currentUser.id,
+            name: currentUser.user_metadata?.name || 'Usuario',
+            email: currentUser.email || '',
+            discord: '',
+            phone: '',
+            is_admin: false
+          };
+          const { data: inserted } = await supabaseClient.from('user_profiles').upsert(payload).select().maybeSingle();
+          currentProfile = inserted || payload;
+        } else {
+          currentProfile = data;
+        }
+        profileNameTop.textContent = currentProfile.name || 'Perfil';
+        profileEmailTop.textContent = currentProfile.email || '';
+        profileNameInput.value = currentProfile.name || '';
+        profileDiscordInput.value = currentProfile.discord || '';
+        profilePhoneInput.value = currentProfile.phone || '';
+      }
+
+      async function renderUserOrders() {
+        userOrdersList.innerHTML = '';
+        if (!currentUser || !supabaseClient) return;
+        const { data } = await supabaseClient
+          .from('tickets')
+          .select('id,game,server,product,faction,character,delivery,status,created_at')
+          .eq('user_id', currentUser.id)
+          .order('created_at', { ascending: false });
+        (data || []).forEach((item) => {
+          const card = document.createElement('article');
+          card.className = 'order-card';
+          card.innerHTML = `<strong>${item.game} · ${item.product || 'Producto'}</strong><p class="admin-game-desc">Servidor: ${item.server || '-'}</p><p class="admin-game-desc">Estado: ${item.status || 'pendiente'}</p>`;
+          userOrdersList.appendChild(card);
+        });
+        if (!userOrdersList.children.length) userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes.</p>';
+      }
+
+      async function renderAdminTickets() {
+        adminTicketsList.innerHTML = '';
+        if (!supabaseClient) return;
+        const { data } = await supabaseClient
+          .from('tickets')
+          .select('id,game,server,product,status,created_at,user_profiles(name,email)')
+          .order('created_at', { ascending: false });
+        (data || []).forEach((item) => {
+          const row = document.createElement('article');
+          row.className = 'order-card';
+          const owner = item.user_profiles?.name || item.user_profiles?.email || 'Usuario';
+          row.innerHTML = `<strong>${owner}</strong><p class="admin-game-desc">${item.game} / ${item.server || '-'}</p><p class="admin-game-desc">Producto: ${item.product || '-'} · Estado: ${item.status || 'pendiente'}</p>`;
+          adminTicketsList.appendChild(row);
+        });
       }
 
       function openGamePage(index) {
@@ -2492,6 +2745,25 @@
         renderGoldCategories();
         renderServerByGame();
         loadSelectedGame();
+        if (supabaseClient) {
+          const { data: authData } = await supabaseClient.auth.getSession();
+          currentUser = authData?.session?.user || null;
+          if (currentUser) {
+            await loadUserProfile();
+            await renderUserOrders();
+          }
+          toggleUserButtons();
+          supabaseClient.auth.onAuthStateChange(async (_event, session) => {
+            currentUser = session?.user || null;
+            if (currentUser) {
+              await loadUserProfile();
+              await renderUserOrders();
+            } else {
+              currentProfile = null;
+            }
+            toggleUserButtons();
+          });
+        }
         activateAdminTab('juegos');
         setActivePage('inicio');
       }
@@ -2525,10 +2797,49 @@
         }
       });
 
+      openRegister.addEventListener('click', () => openAuth('register'));
+      openLogin.addEventListener('click', () => openAuth('login'));
+      closeAuthModal.addEventListener('click', closeAuth);
+      authModal.addEventListener('click', (e) => {
+        if (e.target === authModal) closeAuth();
+      });
+      tabAuthLogin.addEventListener('click', () => setAuthView('login'));
+      tabAuthRegister.addEventListener('click', () => setAuthView('register'));
+      openProfile.addEventListener('click', async () => {
+        if (!currentUser) return openAuth('login');
+        await loadUserProfile();
+        await renderUserOrders();
+        profileDrawer.classList.add('show');
+        profileDrawer.setAttribute('aria-hidden', 'false');
+      });
+      closeProfileDrawer.addEventListener('click', () => {
+        profileDrawer.classList.remove('show');
+        profileDrawer.setAttribute('aria-hidden', 'true');
+      });
+      tabProfileInfo.addEventListener('click', () => {
+        tabProfileInfo.classList.add('active');
+        tabProfileOrders.classList.remove('active');
+        profileInfoPane.classList.remove('hidden');
+        profileOrdersPane.classList.add('hidden');
+      });
+      tabProfileOrders.addEventListener('click', async () => {
+        tabProfileOrders.classList.add('active');
+        tabProfileInfo.classList.remove('active');
+        profileOrdersPane.classList.remove('hidden');
+        profileInfoPane.classList.add('hidden');
+        await renderUserOrders();
+      });
+
       goldOrderServer.addEventListener('change', renderGoldOrderProducts);
       volverOpcionesBtn.addEventListener('click', closeGoldOrderPanel);
-      goldOrderTicketBtn.addEventListener('click', () => {
+      goldOrderTicketBtn.addEventListener('click', async () => {
         if (!activeOrderGame?.name) return;
+        if (!currentUser) {
+          authMsg.textContent = 'Debes iniciar sesión para crear ticket.';
+          authMsg.style.color = '#ffd39a';
+          openAuth('login');
+          return;
+        }
         const msg = [
           `Juego: ${activeOrderGame.name}`,
           `Servidor: ${goldOrderServer.value || 'No definido'}`,
@@ -2537,7 +2848,102 @@
           `Personaje: ${goldOrderCharacter.value.trim() || 'No definido'}`,
           `Preferencia de entrega: ${goldOrderDelivery.value.trim() || 'No definida'}`
         ].join('\n');
+        if (supabaseClient) {
+          await supabaseClient.from('tickets').insert({
+            user_id: currentUser.id,
+            game: activeOrderGame.name,
+            server: goldOrderServer.value || '',
+            product: goldOrderProduct.value || '',
+            faction: goldOrderFaction.value || '',
+            character: goldOrderCharacter.value.trim() || '',
+            delivery: goldOrderDelivery.value.trim() || '',
+            status: 'pendiente'
+          });
+          await renderUserOrders();
+          await renderAdminTickets();
+        }
         window.open(`https://discord.gg/DKd9HxK8?ticket=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+      });
+
+      authRegisterBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        if (authRegPassword.value !== authRegPassword2.value) {
+          authMsg.textContent = 'Las claves no coinciden.';
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        const { data, error } = await supabaseClient.auth.signUp({
+          email: authRegEmail.value.trim(),
+          password: authRegPassword.value,
+          options: { data: { name: authRegName.value.trim() } }
+        });
+        if (error) {
+          authMsg.textContent = error.message;
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        if (data.user) {
+          await supabaseClient.from('user_profiles').upsert({
+            id: data.user.id,
+            name: authRegName.value.trim() || 'Usuario',
+            email: authRegEmail.value.trim(),
+            discord: authRegDiscord.value.trim(),
+            phone: '',
+            is_admin: authRegEmail.value.trim() === 'admin@tradehud.com'
+          });
+        }
+        authMsg.textContent = 'Registro exitoso. Revisa tu correo para confirmar si Supabase lo solicita.';
+        authMsg.style.color = '#9affcc';
+      });
+
+      authLoginBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        const { error } = await supabaseClient.auth.signInWithPassword({
+          email: authLoginEmail.value.trim(),
+          password: authLoginPassword.value
+        });
+        if (error) {
+          authMsg.textContent = error.message;
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        authMsg.textContent = 'Sesión iniciada.';
+        authMsg.style.color = '#9affcc';
+        closeAuth();
+      });
+
+      saveProfileBtn.addEventListener('click', async () => {
+        if (!currentUser || !supabaseClient) return;
+        const { error } = await supabaseClient.from('user_profiles').upsert({
+          id: currentUser.id,
+          name: profileNameInput.value.trim() || 'Usuario',
+          email: currentUser.email || '',
+          discord: profileDiscordInput.value.trim(),
+          phone: profilePhoneInput.value.trim()
+        });
+        if (error) {
+          profileMsg.textContent = 'No se pudo guardar.';
+          profileMsg.style.color = '#ffb6b6';
+          return;
+        }
+        profileMsg.textContent = 'Información actualizada.';
+        profileMsg.style.color = '#9affcc';
+        await loadUserProfile();
+      });
+
+      changePasswordBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        const nueva = prompt('Escribe tu nueva contraseña (mínimo 6 caracteres):');
+        if (!nueva) return;
+        const { error } = await supabaseClient.auth.updateUser({ password: nueva });
+        profileMsg.textContent = error ? 'No se pudo cambiar contraseña.' : 'Contraseña actualizada.';
+        profileMsg.style.color = error ? '#ffb6b6' : '#9affcc';
+      });
+
+      logoutBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        await supabaseClient.auth.signOut();
+        profileDrawer.classList.remove('show');
       });
 
       openAdmin.addEventListener('click', () => {
@@ -2586,8 +2992,8 @@
       });
 
       function activateAdminTab(tab) {
-        [tabListaJuegosAdmin, tabCategoriasOro, tabListaServidoresAdmin, tabOro, tabCuentas, tabBosteo].forEach((btn) => btn.classList.remove('active'));
-        [editorListaJuegos, editorCategoriasOro, editorServidores, editorOro, editorCuentas, editorBosteo].forEach((panel) => panel.classList.add('hidden'));
+        [tabListaJuegosAdmin, tabCategoriasOro, tabListaServidoresAdmin, tabOro, tabTicketsAdmin, tabCuentas, tabBosteo].forEach((btn) => btn.classList.remove('active'));
+        [editorListaJuegos, editorCategoriasOro, editorServidores, editorOro, editorTicketsAdmin, editorCuentas, editorBosteo].forEach((panel) => panel.classList.add('hidden'));
         if (tab === 'juegos') {
           tabListaJuegosAdmin.classList.add('active');
           editorListaJuegos.classList.remove('hidden');
@@ -2597,6 +3003,10 @@
         } else if (tab === 'servidores') {
           tabListaServidoresAdmin.classList.add('active');
           editorServidores.classList.remove('hidden');
+        } else if (tab === 'tickets') {
+          tabTicketsAdmin.classList.add('active');
+          editorTicketsAdmin.classList.remove('hidden');
+          renderAdminTickets();
         } else if (tab === 'cuentas') {
           tabCuentas.classList.add('active');
           editorCuentas.classList.remove('hidden');
@@ -2613,6 +3023,7 @@
       tabCategoriasOro.addEventListener('click', () => activateAdminTab('categorias-oro'));
       tabListaServidoresAdmin.addEventListener('click', () => activateAdminTab('servidores'));
       tabOro.addEventListener('click', () => activateAdminTab('oro'));
+      tabTicketsAdmin.addEventListener('click', () => activateAdminTab('tickets'));
       tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
       tabBosteo.addEventListener('click', () => activateAdminTab('bosteo'));
 
