@@ -1379,6 +1379,22 @@
         margin-top: .55rem;
         min-height: 1.2rem;
       }
+      .auth-notice {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        max-width: min(420px, 90vw);
+        background: #101d37;
+        border: 1px solid #3f61a3;
+        color: #e8f0ff;
+        border-radius: 10px;
+        padding: 0.75rem 0.9rem;
+        z-index: 180;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+        display: none;
+      }
+      .auth-notice.show { display: block; }
+      .auth-notice.warn { border-color: #b98330; color: #ffe3b1; }
       .profile-drawer {
         position: fixed;
         top: 0;
@@ -1898,6 +1914,7 @@
         <div id="authMsg" class="admin-msg"></div>
       </div>
     </div>
+    <div id="authNotice" class="auth-notice" role="status" aria-live="polite"></div>
 
     <aside id="profileDrawer" class="profile-drawer" aria-hidden="true">
       <div class="profile-head">
@@ -2203,6 +2220,7 @@
       const authRegPassword2 = document.getElementById('authRegPassword2');
       const authRegisterBtn = document.getElementById('authRegisterBtn');
       const authMsg = document.getElementById('authMsg');
+      const authNotice = document.getElementById('authNotice');
       const profileDrawer = document.getElementById('profileDrawer');
       const closeProfileDrawer = document.getElementById('closeProfileDrawer');
       const tabProfileInfo = document.getElementById('tabProfileInfo');
@@ -2433,6 +2451,16 @@
       function closeAuth() {
         authModal.classList.remove('show');
         authModal.setAttribute('aria-hidden', 'true');
+      }
+
+      function showAuthNotice(message, kind = 'info') {
+        authNotice.textContent = message;
+        authNotice.classList.add('show');
+        authNotice.classList.toggle('warn', kind === 'warn');
+        clearTimeout(showAuthNotice._timer);
+        showAuthNotice._timer = setTimeout(() => {
+          authNotice.classList.remove('show');
+        }, 5200);
       }
 
       function toggleUserButtons() {
@@ -2778,6 +2806,18 @@
       }
 
       async function initializeApp() {
+        const rawHash = window.location.hash || '';
+        if (rawHash.includes('error=') || rawHash.includes('error_code=')) {
+          const hashParams = new URLSearchParams(rawHash.replace(/^#/, ''));
+          const errorCode = hashParams.get('error_code');
+          const errorDescription = hashParams.get('error_description');
+          if (errorCode === 'otp_expired') {
+            showAuthNotice('El enlace de confirmación expiró. Solicita un nuevo registro/inicio para recibir otro correo.', 'warn');
+          } else if (errorDescription) {
+            showAuthNotice(errorDescription, 'warn');
+          }
+          history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+        }
         await syncFromSupabase();
         renderGameList();
         renderAdminSelect();
@@ -2934,8 +2974,9 @@
             is_admin: authRegEmail.value.trim() === 'admin@tradehud.com'
           });
         }
-        authMsg.textContent = 'Registro exitoso. Revisa tu correo para confirmar si Supabase lo solicita.';
+        authMsg.textContent = 'Registro creado correctamente.';
         authMsg.style.color = '#9affcc';
+        showAuthNotice('✅ Revisa tu correo para confirmar tu cuenta y luego inicia sesión.');
       });
 
       authLoginBtn.addEventListener('click', async () => {
