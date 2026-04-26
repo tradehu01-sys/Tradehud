@@ -1920,6 +1920,13 @@
           <input id="authLoginPassword" type="password" placeholder="Tu clave" />
           <button id="authLoginBtn" class="panel-btn" type="button" style="margin-top:.65rem;">Ingresar</button>
           <button id="forgotPasswordBtn" class="mini-btn" type="button" style="margin-top:.45rem;width:100%;">¿Olvidó su contraseña?</button>
+          <div id="recoveryPasswordWrap" class="hidden" style="margin-top:.65rem;">
+            <label for="recoveryNewPassword">Nueva contraseña</label>
+            <input id="recoveryNewPassword" type="password" placeholder="Nueva contraseña" />
+            <label for="recoveryNewPassword2">Confirmar nueva contraseña</label>
+            <input id="recoveryNewPassword2" type="password" placeholder="Confirma contraseña" />
+            <button id="saveRecoveredPasswordBtn" class="panel-btn" type="button" style="margin-top:.55rem;">Guardar nueva contraseña</button>
+          </div>
         </div>
         <div id="authPaneRegister" class="auth-pane hidden">
           <label for="authRegName">Nombre</label>
@@ -2242,6 +2249,10 @@
       const authLoginPassword = document.getElementById('authLoginPassword');
       const authLoginBtn = document.getElementById('authLoginBtn');
       const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+      const recoveryPasswordWrap = document.getElementById('recoveryPasswordWrap');
+      const recoveryNewPassword = document.getElementById('recoveryNewPassword');
+      const recoveryNewPassword2 = document.getElementById('recoveryNewPassword2');
+      const saveRecoveredPasswordBtn = document.getElementById('saveRecoveredPasswordBtn');
       const authRegName = document.getElementById('authRegName');
       const authRegEmail = document.getElementById('authRegEmail');
       const authRegDiscord = document.getElementById('authRegDiscord');
@@ -2410,6 +2421,7 @@
       let activeOrderGame = null;
       let currentUser = null;
       let currentProfile = null;
+      let recoveryMode = false;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
 
       function renderGoldOrderProducts() {
@@ -2469,6 +2481,7 @@
         tabAuthRegister.classList.toggle('active', !isLogin);
         authPaneLogin.classList.toggle('hidden', !isLogin);
         authPaneRegister.classList.toggle('hidden', isLogin);
+        recoveryPasswordWrap.classList.toggle('hidden', !(isLogin && recoveryMode));
       }
 
       function openAuth(mode = 'login') {
@@ -2501,20 +2514,45 @@
       }
 
       async function loadUserProfile() {
-        if (!currentUser || !supabaseClient) return;
+        if (!currentUser) return;
+        const fallbackProfile = {
+          id: currentUser.id,
+          name: currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil',
+          email: currentUser.email || '',
+          discord: currentUser.user_metadata?.discord || '',
+          phone: currentUser.user_metadata?.phone || '',
+          is_admin: false
+        };
+        if (!supabaseClient) {
+          currentProfile = fallbackProfile;
+          profileNameTop.textContent = currentProfile.name;
+          profileEmailTop.textContent = currentProfile.email;
+          profileNameInput.value = currentProfile.name;
+          profileDiscordInput.value = currentProfile.discord;
+          profilePhoneInput.value = currentProfile.phone;
+          return;
+        }
         const { data, error } = await supabaseClient
           .from('user_profiles')
           .select('id,name,email,discord,phone,is_admin')
           .eq('id', currentUser.id)
           .maybeSingle();
-        if (error) return;
+        if (error) {
+          currentProfile = fallbackProfile;
+          profileNameTop.textContent = currentProfile.name;
+          profileEmailTop.textContent = currentProfile.email;
+          profileNameInput.value = currentProfile.name;
+          profileDiscordInput.value = currentProfile.discord;
+          profilePhoneInput.value = currentProfile.phone;
+          return;
+        }
         if (!data) {
           const payload = {
             id: currentUser.id,
-            name: currentUser.user_metadata?.name || 'Usuario',
-            email: currentUser.email || '',
-            discord: '',
-            phone: '',
+            name: fallbackProfile.name,
+            email: fallbackProfile.email,
+            discord: fallbackProfile.discord,
+            phone: fallbackProfile.phone,
             is_admin: false
           };
           const { data: inserted } = await supabaseClient.from('user_profiles').upsert(payload).select().maybeSingle();
@@ -2847,6 +2885,12 @@
             showAuthNotice(errorDescription, 'warn');
           }
           history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+        } else if (rawHash.includes('type=recovery')) {
+          recoveryMode = true;
+          setAuthView('login');
+          openAuth('login');
+          showAuthNotice('Ahora define tu nueva contraseña para recuperar la cuenta.');
+          history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
         }
         await syncFromSupabase();
         renderGameList();
@@ -3075,22 +3119,57 @@
         showAuthNotice('📩 Revisa tu correo para cambiar tu contraseña.');
       });
 
-      saveProfileBtn.addEventListener('click', async () => {
-        if (!currentUser || !supabaseClient) return;
-        const { error } = await supabaseClient.from('user_profiles').upsert({
-          id: currentUser.id,
-          name: profileNameInput.value.trim() || 'Usuario',
-          email: currentUser.email || '',
-          discord: profileDiscordInput.value.trim(),
-          phone: profilePhoneInput.value.trim()
-        });
-        if (error) {
-          profileMsg.textContent = 'No se pudo guardar.';
-          profileMsg.style.color = '#ffb6b6';
+      saveRecoveredPasswordBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        if (!recoveryMode) {
+          authMsg.textContent = 'Este formulario aparece cuando entras desde el correo de recuperación.';
+          authMsg.style.color = '#ffd39a';
           return;
         }
-        profileMsg.textContent = 'Información actualizada.';
-        profileMsg.style.color = '#9affcc';
+        if (!recoveryNewPassword.value || recoveryNewPassword.value !== recoveryNewPassword2.value) {
+          authMsg.textContent = 'Las contraseñas nuevas no coinciden.';
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        const { error } = await supabaseClient.auth.updateUser({ password: recoveryNewPassword.value });
+        if (error) {
+          authMsg.textContent = error.message;
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        recoveryMode = false;
+        recoveryPasswordWrap.classList.add('hidden');
+        recoveryNewPassword.value = '';
+        recoveryNewPassword2.value = '';
+        authMsg.textContent = 'Contraseña actualizada. Ya puedes iniciar sesión.';
+        authMsg.style.color = '#9affcc';
+        showAuthNotice('✅ Contraseña recuperada con éxito.');
+      });
+
+      saveProfileBtn.addEventListener('click', async () => {
+        if (!currentUser || !supabaseClient) return;
+        const nextName = profileNameInput.value.trim() || 'Usuario';
+        const nextDiscord = profileDiscordInput.value.trim();
+        const nextPhone = profilePhoneInput.value.trim();
+        profileNameTop.textContent = nextName;
+        profileEmailTop.textContent = currentUser.email || '';
+        const { error } = await supabaseClient.from('user_profiles').upsert({
+          id: currentUser.id,
+          name: nextName,
+          email: currentUser.email || '',
+          discord: nextDiscord,
+          phone: nextPhone
+        });
+        if (error) {
+          await supabaseClient.auth.updateUser({
+            data: { name: nextName, discord: nextDiscord, phone: nextPhone }
+          });
+          profileMsg.textContent = 'Guardado local en sesión. Revisa políticas de Supabase para persistir en tabla.';
+          profileMsg.style.color = '#ffd39a';
+        } else {
+          profileMsg.textContent = 'Información actualizada.';
+          profileMsg.style.color = '#9affcc';
+        }
         await loadUserProfile();
       });
 
