@@ -460,6 +460,7 @@
         padding: 1rem;
         box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
       }
+      .game-window.gold-focus .game-window-grid { display: none; }
 
       .game-window-head {
         display: flex;
@@ -550,7 +551,23 @@
       .gold-order-actions {
         margin-top: 0.8rem;
         display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.7rem;
+      }
+      .ticket-side-actions {
+        display: flex;
         justify-content: flex-end;
+        gap: 0.6rem;
+        width: 100%;
+      }
+      .back-to-services-btn {
+        border: 1px solid #4d67a8;
+        background: #10182f;
+        color: #e4edff;
+        border-radius: 999px;
+        padding: 0.55rem 0.9rem;
+        cursor: pointer;
       }
       .ticket-btn {
         border: 1px solid #44d163;
@@ -1547,7 +1564,7 @@
       </section>
 
       <div id="gameWindowModal" class="game-modal" aria-hidden="true">
-        <div class="game-window">
+        <div id="gameWindow" class="game-window">
           <div class="game-window-head">
             <div class="game-window-title-wrap">
               <div id="gameWindowIcon" class="game-window-icon"></div>
@@ -1592,7 +1609,10 @@
               </div>
             </div>
             <div class="gold-order-actions">
-              <button id="goldOrderTicketBtn" class="ticket-btn" type="button">Abrir ticket</button>
+              <button id="volverOpcionesBtn" class="back-to-services-btn" type="button">Volver</button>
+              <div class="ticket-side-actions">
+                <button id="goldOrderTicketBtn" class="ticket-btn" type="button">Abrir ticket</button>
+              </div>
             </div>
             <p class="gold-order-note">Al cambiar el servidor se recargan automáticamente los productos disponibles.</p>
           </div>
@@ -1983,6 +2003,7 @@
       const pageLinks = document.querySelectorAll('[data-page-link]');
       const pageSections = document.querySelectorAll('.page-section');
       const gameWindowModal = document.getElementById('gameWindowModal');
+      const gameWindow = document.getElementById('gameWindow');
       const gameWindowTitle = document.getElementById('gameWindowTitle');
       const gameWindowDesc = document.getElementById('gameWindowDesc');
       const gameWindowIcon = document.getElementById('gameWindowIcon');
@@ -1996,6 +2017,7 @@
       const goldOrderCharacter = document.getElementById('goldOrderCharacter');
       const goldOrderDelivery = document.getElementById('goldOrderDelivery');
       const goldOrderTicketBtn = document.getElementById('goldOrderTicketBtn');
+      const volverOpcionesBtn = document.getElementById('volverOpcionesBtn');
       const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
       const closeAdmin = document.getElementById('closeAdmin');
@@ -2165,6 +2187,7 @@
         if (!game) return;
         activeOrderGame = game;
         goldOrderPanel.classList.remove('hidden');
+        gameWindow.classList.add('gold-focus');
         goldOrderGameIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
         goldOrderGameName.textContent = game.name;
         const servers = gameServers.find((entry) => entry.game === game.name)?.servers || [];
@@ -2186,6 +2209,7 @@
 
       function closeGoldOrderPanel() {
         goldOrderPanel.classList.add('hidden');
+        gameWindow.classList.remove('gold-focus');
       }
 
       function openGamePage(index) {
@@ -2216,11 +2240,7 @@
         if (!gameWindowOptions.children.length) {
           gameWindowOptions.innerHTML = '';
         }
-        if (gameServices.includes('gold')) {
-          openGoldOrderPanel(game);
-        } else {
-          closeGoldOrderPanel();
-        }
+        closeGoldOrderPanel();
         gameWindowModal.classList.add('show');
         gameWindowModal.setAttribute('aria-hidden', 'false');
       }
@@ -2506,6 +2526,7 @@
       });
 
       goldOrderServer.addEventListener('change', renderGoldOrderProducts);
+      volverOpcionesBtn.addEventListener('click', closeGoldOrderPanel);
       goldOrderTicketBtn.addEventListener('click', () => {
         if (!activeOrderGame?.name) return;
         const msg = [
