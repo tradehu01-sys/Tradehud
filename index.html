@@ -1950,7 +1950,7 @@
 
     <aside id="profileDrawer" class="profile-drawer" aria-hidden="true">
       <div class="profile-head">
-        <strong>Mi cuenta</strong>
+        <strong>Perfil</strong>
         <button id="closeProfileDrawer" class="close-btn" type="button">✕</button>
       </div>
       <div class="profile-identity">
@@ -2906,13 +2906,21 @@
             await renderUserOrders();
           }
           toggleUserButtons();
-          supabaseClient.auth.onAuthStateChange(async (_event, session) => {
+          supabaseClient.auth.onAuthStateChange(async (event, session) => {
+            const hadUser = Boolean(currentUser);
             currentUser = session?.user || null;
             if (currentUser) {
+              profileNameTop.textContent = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil';
+              profileEmailTop.textContent = currentUser.email || '';
               await loadUserProfile();
               await renderUserOrders();
             } else {
               currentProfile = null;
+              if (event === 'SIGNED_OUT' || hadUser) {
+                profileNameTop.textContent = 'Perfil';
+                profileEmailTop.textContent = '';
+                showAuthNotice('👋 Sesión cerrada correctamente.');
+              }
             }
             toggleUserButtons();
           });
@@ -3186,6 +3194,9 @@
         if (!supabaseClient) return;
         await supabaseClient.auth.signOut();
         profileDrawer.classList.remove('show');
+        profileMsg.textContent = 'Sesión cerrada.';
+        profileMsg.style.color = '#9affcc';
+        showAuthNotice('👋 Te desconectaste de tu cuenta.');
       });
 
       openAdmin.addEventListener('click', () => {
