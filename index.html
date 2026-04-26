@@ -1688,6 +1688,7 @@
         <div id="adminNotice" class="admin-notice"></div>
         <div class="panel-tabs">
           <button id="tabListaJuegosAdmin" class="panel-tab active" type="button">Lista de juegos</button>
+          <button id="tabCategoriasOro" class="panel-tab" type="button">Categorías de oro</button>
           <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
           <button id="tabOro" class="panel-tab" type="button">Oro</button>
           <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
@@ -1699,6 +1700,13 @@
             <button id="abrirFormularioJuego" class="panel-btn" type="button">+ Agregar juego</button>
           </div>
           <div id="juegoLista" class="admin-game-list"></div>
+        </div>
+        <div id="editorCategoriasOro" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
+            <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
+          </div>
+          <div id="categoriaListaOro"></div>
         </div>
         <div id="editorServidores" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -1767,13 +1775,6 @@
               <button id="guardarEdicionPrecio" class="panel-btn" type="button">Guardar cambios</button>
               <button id="eliminarPrecio" class="mini-btn danger" type="button">Eliminar</button>
             </div>
-          </div>
-          <div class="editor-box" style="margin-top:.6rem;">
-            <div class="admin-panel-actions" style="margin-top:0;">
-              <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
-              <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
-            </div>
-            <div id="categoriaListaOro"></div>
           </div>
         </div>
         <div id="editorCuentas" class="editor-box hidden">
@@ -1910,11 +1911,13 @@
       const cancelarJuegoForm = document.getElementById('cancelarJuegoForm');
       const guardarJuegoForm = document.getElementById('guardarJuegoForm');
       const tabListaJuegosAdmin = document.getElementById('tabListaJuegosAdmin');
+      const tabCategoriasOro = document.getElementById('tabCategoriasOro');
       const tabListaServidoresAdmin = document.getElementById('tabListaServidoresAdmin');
       const tabOro = document.getElementById('tabOro');
       const tabCuentas = document.getElementById('tabCuentas');
       const tabBosteo = document.getElementById('tabBosteo');
       const editorListaJuegos = document.getElementById('editorListaJuegos');
+      const editorCategoriasOro = document.getElementById('editorCategoriasOro');
       const editorServidores = document.getElementById('editorServidores');
       const editorOro = document.getElementById('editorOro');
       const editorCuentas = document.getElementById('editorCuentas');
@@ -2370,11 +2373,14 @@
       });
 
       function activateAdminTab(tab) {
-        [tabListaJuegosAdmin, tabListaServidoresAdmin, tabOro, tabCuentas, tabBosteo].forEach((btn) => btn.classList.remove('active'));
-        [editorListaJuegos, editorServidores, editorOro, editorCuentas, editorBosteo].forEach((panel) => panel.classList.add('hidden'));
+        [tabListaJuegosAdmin, tabCategoriasOro, tabListaServidoresAdmin, tabOro, tabCuentas, tabBosteo].forEach((btn) => btn.classList.remove('active'));
+        [editorListaJuegos, editorCategoriasOro, editorServidores, editorOro, editorCuentas, editorBosteo].forEach((panel) => panel.classList.add('hidden'));
         if (tab === 'juegos') {
           tabListaJuegosAdmin.classList.add('active');
           editorListaJuegos.classList.remove('hidden');
+        } else if (tab === 'categorias-oro') {
+          tabCategoriasOro.classList.add('active');
+          editorCategoriasOro.classList.remove('hidden');
         } else if (tab === 'servidores') {
           tabListaServidoresAdmin.classList.add('active');
           editorServidores.classList.remove('hidden');
@@ -2391,6 +2397,7 @@
       }
 
       tabListaJuegosAdmin.addEventListener('click', () => activateAdminTab('juegos'));
+      tabCategoriasOro.addEventListener('click', () => activateAdminTab('categorias-oro'));
       tabListaServidoresAdmin.addEventListener('click', () => activateAdminTab('servidores'));
       tabOro.addEventListener('click', () => activateAdminTab('oro'));
       tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
