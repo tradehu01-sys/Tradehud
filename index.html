@@ -1223,6 +1223,11 @@
       .admin-game-main { display: flex; gap: 0.55rem; }
       .admin-game-desc { margin: 0.25rem 0 0; color: #b9c9ef; font-size: 0.82rem; }
       .admin-game-actions { display: flex; gap: 0.45rem; }
+      .admin-game-actions a.mini-btn {
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+      }
       .mini-btn {
         border: 1px solid #4868ac;
         border-radius: 8px;
@@ -2388,6 +2393,7 @@
       const supabaseClient = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
         ? (isServiceRoleKey ? null : window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY))
         : null;
+      const ADMIN_EMAILS = ['admin@tradehud.com'];
 
       const games = [
         { id: null, name: 'World of Warcraft', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E", description: 'Clásico para comercio de oro y servicios premium.' },
@@ -2423,6 +2429,11 @@
       let currentProfile = null;
       let recoveryMode = false;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
+
+      function isAdminUser(user, profile = null) {
+        const email = user?.email?.toLowerCase?.() || '';
+        return Boolean(profile?.is_admin) || ADMIN_EMAILS.includes(email);
+      }
 
       function renderGoldOrderProducts() {
         const server = goldOrderServer.value;
@@ -2560,6 +2571,7 @@
         } else {
           currentProfile = data;
         }
+        if (isAdminUser(currentUser, currentProfile)) currentProfile.is_admin = true;
         profileNameTop.textContent = currentProfile.name || 'Perfil';
         profileEmailTop.textContent = currentProfile.email || '';
         profileNameInput.value = currentProfile.name || '';
@@ -2589,13 +2601,17 @@
         if (!supabaseClient) return;
         const { data } = await supabaseClient
           .from('tickets')
-          .select('id,game,server,product,status,created_at,user_profiles(name,email)')
+          .select('id,game,server,product,status,created_at,user_profiles(name,email,discord,phone)')
           .order('created_at', { ascending: false });
         (data || []).forEach((item) => {
           const row = document.createElement('article');
           row.className = 'order-card';
           const owner = item.user_profiles?.name || item.user_profiles?.email || 'Usuario';
-          row.innerHTML = `<strong>${owner}</strong><p class="admin-game-desc">${item.game} / ${item.server || '-'}</p><p class="admin-game-desc">Producto: ${item.product || '-'} · Estado: ${item.status || 'pendiente'}</p>`;
+          const email = item.user_profiles?.email || '';
+          const discord = item.user_profiles?.discord || '';
+          const phone = item.user_profiles?.phone || '';
+          const phoneDigits = phone.replace(/\D/g, '');
+          row.innerHTML = `<strong>${owner}</strong><p class="admin-game-desc">${item.game} / ${item.server || '-'}</p><p class="admin-game-desc">Producto: ${item.product || '-'} · Estado: ${item.status || 'pendiente'}</p><p class="admin-game-desc">Correo: ${email || 'No definido'}</p><p class="admin-game-desc">Discord: ${discord || 'No definido'}</p><p class="admin-game-desc">Número: ${phone || 'No definido'}</p><div class="admin-game-actions"><a class="mini-btn" href="${email ? `mailto:${email}` : '#'}" ${email ? '' : 'aria-disabled="true"'}>Email</a><a class="mini-btn" href="${phoneDigits ? `https://wa.me/${phoneDigits}` : '#'}" target="_blank" rel="noopener noreferrer" ${phoneDigits ? '' : 'aria-disabled="true"'}>WhatsApp</a></div>`;
           adminTicketsList.appendChild(row);
         });
       }
@@ -3200,6 +3216,13 @@
       });
 
       openAdmin.addEventListener('click', () => {
+        if (currentUser && isAdminUser(currentUser, currentProfile)) {
+          adminMsg.textContent = '';
+          configModal.classList.add('show');
+          configModal.setAttribute('aria-hidden', 'false');
+          renderAdminTickets();
+          return;
+        }
         adminModal.classList.add('show');
         adminModal.setAttribute('aria-hidden', 'false');
       });
@@ -3226,6 +3249,7 @@
           adminModal.setAttribute('aria-hidden', 'true');
           configModal.classList.add('show');
           configModal.setAttribute('aria-hidden', 'false');
+          renderAdminTickets();
         } else {
           adminMsg.textContent = 'Credenciales incorrectas.';
           adminMsg.style.color = '#ff9ea7';
