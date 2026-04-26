@@ -1687,34 +1687,31 @@
         <p class="lead" style="margin:0;">Panel admin para editar casillas de juegos.</p>
         <div id="adminNotice" class="admin-notice"></div>
         <div class="panel-tabs">
-          <button id="tabServidoresJuego" class="panel-tab active" type="button">Servidores (Juegos)</button>
+          <button id="tabListaJuegosAdmin" class="panel-tab active" type="button">Lista de juegos</button>
+          <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
           <button id="tabOro" class="panel-tab" type="button">Oro</button>
           <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
           <button id="tabBosteo" class="panel-tab" type="button">Bosteo</button>
         </div>
-        <div id="editorServidores" class="editor-box">
-          <div class="admin-split">
-            <div class="editor-box" style="margin-top:0;">
-              <div class="admin-panel-actions" style="margin-top:0;">
-                <strong style="flex:1;display:flex;align-items:center;">Lista de juegos</strong>
-                <button id="abrirFormularioJuego" class="panel-btn" type="button">+ Agregar juego</button>
-              </div>
-              <div id="juegoLista" class="admin-game-list"></div>
-            </div>
-            <div class="editor-box" style="margin-top:0;">
-              <div class="admin-panel-actions" style="margin-top:0;">
-                <strong style="flex:1;display:flex;align-items:center;">Lista de servidores (juegos)</strong>
-              </div>
-              <div class="admin-game-form" style="padding:0;">
-                <label for="serverGameSelect">Juego</label>
-                <select id="serverGameSelect"></select>
-                <label for="serverNameInput">Servidor</label>
-                <input id="serverNameInput" type="text" placeholder="Ej: Nordanar" />
-                <button id="guardarServidorJuego" class="panel-btn" type="button">+ Guardar servidor</button>
-              </div>
-              <div id="serverListWrap" class="admin-game-list" style="max-height:280px;"></div>
-            </div>
+        <div id="editorListaJuegos" class="editor-box">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Lista de juegos</strong>
+            <button id="abrirFormularioJuego" class="panel-btn" type="button">+ Agregar juego</button>
           </div>
+          <div id="juegoLista" class="admin-game-list"></div>
+        </div>
+        <div id="editorServidores" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Lista de servidores (juegos)</strong>
+          </div>
+          <div class="admin-game-form" style="padding:0;">
+            <label for="serverGameSelect">Juego</label>
+            <select id="serverGameSelect"></select>
+            <label for="serverNameInput">Servidor</label>
+            <input id="serverNameInput" type="text" placeholder="Ej: Nordanar" />
+            <button id="guardarServidorJuego" class="panel-btn" type="button">+ Guardar servidor</button>
+          </div>
+          <div id="serverListWrap" class="admin-game-list" style="max-height:280px;"></div>
         </div>
         <div id="editorOro" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -1912,10 +1909,12 @@
       const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
       const cancelarJuegoForm = document.getElementById('cancelarJuegoForm');
       const guardarJuegoForm = document.getElementById('guardarJuegoForm');
-      const tabServidoresJuego = document.getElementById('tabServidoresJuego');
+      const tabListaJuegosAdmin = document.getElementById('tabListaJuegosAdmin');
+      const tabListaServidoresAdmin = document.getElementById('tabListaServidoresAdmin');
       const tabOro = document.getElementById('tabOro');
       const tabCuentas = document.getElementById('tabCuentas');
       const tabBosteo = document.getElementById('tabBosteo');
+      const editorListaJuegos = document.getElementById('editorListaJuegos');
       const editorServidores = document.getElementById('editorServidores');
       const editorOro = document.getElementById('editorOro');
       const editorCuentas = document.getElementById('editorCuentas');
@@ -2294,7 +2293,7 @@
         renderGoldCategories();
         renderServerByGame();
         loadSelectedGame();
-        activateAdminTab('servidores');
+        activateAdminTab('juegos');
         setActivePage('inicio');
       }
       initializeApp();
@@ -2371,10 +2370,13 @@
       });
 
       function activateAdminTab(tab) {
-        [tabServidoresJuego, tabOro, tabCuentas, tabBosteo].forEach((btn) => btn.classList.remove('active'));
-        [editorServidores, editorOro, editorCuentas, editorBosteo].forEach((panel) => panel.classList.add('hidden'));
-        if (tab === 'servidores') {
-          tabServidoresJuego.classList.add('active');
+        [tabListaJuegosAdmin, tabListaServidoresAdmin, tabOro, tabCuentas, tabBosteo].forEach((btn) => btn.classList.remove('active'));
+        [editorListaJuegos, editorServidores, editorOro, editorCuentas, editorBosteo].forEach((panel) => panel.classList.add('hidden'));
+        if (tab === 'juegos') {
+          tabListaJuegosAdmin.classList.add('active');
+          editorListaJuegos.classList.remove('hidden');
+        } else if (tab === 'servidores') {
+          tabListaServidoresAdmin.classList.add('active');
           editorServidores.classList.remove('hidden');
         } else if (tab === 'cuentas') {
           tabCuentas.classList.add('active');
@@ -2388,7 +2390,8 @@
         }
       }
 
-      tabServidoresJuego.addEventListener('click', () => activateAdminTab('servidores'));
+      tabListaJuegosAdmin.addEventListener('click', () => activateAdminTab('juegos'));
+      tabListaServidoresAdmin.addEventListener('click', () => activateAdminTab('servidores'));
       tabOro.addEventListener('click', () => activateAdminTab('oro'));
       tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
       tabBosteo.addEventListener('click', () => activateAdminTab('bosteo'));
