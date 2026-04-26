@@ -501,6 +501,72 @@
         gap: 1rem;
       }
 
+      .gold-order-panel {
+        margin-top: 1rem;
+        border: 1px solid #2e4c8f;
+        border-radius: 14px;
+        padding: 0.9rem;
+        background: #070d1b;
+      }
+      .gold-order-panel.hidden { display: none; }
+      .gold-order-top {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin-bottom: 0.75rem;
+      }
+      .gold-order-game-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        border: 1px solid #4d74bf;
+        overflow: hidden;
+      }
+      .gold-order-game-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .gold-order-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.7rem;
+      }
+      .gold-order-grid label {
+        display: block;
+        font-size: 0.85rem;
+        color: #cdd8f2;
+        margin-bottom: 0.35rem;
+      }
+      .gold-order-grid select,
+      .gold-order-grid input {
+        width: 100%;
+        background: #03060c;
+        border: 1px solid #33518e;
+        color: #fff;
+        border-radius: 8px;
+        padding: 0.55rem 0.65rem;
+      }
+      .gold-order-actions {
+        margin-top: 0.8rem;
+        display: flex;
+        justify-content: flex-end;
+      }
+      .ticket-btn {
+        border: 1px solid #44d163;
+        background: #0a1409;
+        color: #eaffee;
+        border-radius: 999px;
+        padding: 0.6rem 1rem;
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .gold-order-note {
+        margin-top: 0.55rem;
+        color: #9fb6e8;
+        font-size: 0.78rem;
+      }
+
 
       .game-option {
         width: 148px;
@@ -1240,6 +1306,7 @@
       }
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
+        .gold-order-grid { grid-template-columns: 1fr; }
         .social-buttons { grid-template-columns: 1fr; }
         .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid,.steps-list { grid-template-columns: 1fr; }
         nav { justify-content: center; }
@@ -1492,6 +1559,43 @@
             <button id="closeGameWindow" class="close-btn">✕</button>
           </div>
           <div id="gameWindowOptions" class="game-window-grid"></div>
+          <div id="goldOrderPanel" class="gold-order-panel hidden">
+            <div class="gold-order-top">
+              <div id="goldOrderGameIcon" class="gold-order-game-icon"></div>
+              <strong id="goldOrderGameName">Selecciona un juego</strong>
+            </div>
+            <div class="gold-order-grid">
+              <div>
+                <label for="goldOrderServer">Servidor</label>
+                <select id="goldOrderServer"></select>
+              </div>
+              <div>
+                <label for="goldOrderProduct">Elige tu producto</label>
+                <select id="goldOrderProduct"></select>
+              </div>
+              <div>
+                <label for="goldOrderFaction">Facción</label>
+                <select id="goldOrderFaction">
+                  <option value="">Selecciona facción</option>
+                  <option value="Alianza">Alianza</option>
+                  <option value="Horda">Horda</option>
+                  <option value="Neutral">Neutral</option>
+                </select>
+              </div>
+              <div>
+                <label for="goldOrderCharacter">Personaje</label>
+                <input id="goldOrderCharacter" type="text" placeholder="Nombre de personaje" />
+              </div>
+              <div style="grid-column:1 / -1;">
+                <label for="goldOrderDelivery">Preferencia de entrega</label>
+                <input id="goldOrderDelivery" type="text" placeholder="Ej: Correo dentro del juego" />
+              </div>
+            </div>
+            <div class="gold-order-actions">
+              <button id="goldOrderTicketBtn" class="ticket-btn" type="button">Abrir ticket</button>
+            </div>
+            <p class="gold-order-note">Al cambiar el servidor se recargan automáticamente los productos disponibles.</p>
+          </div>
         </div>
       </div>
 
@@ -1883,6 +1987,15 @@
       const gameWindowDesc = document.getElementById('gameWindowDesc');
       const gameWindowIcon = document.getElementById('gameWindowIcon');
       const gameWindowOptions = document.getElementById('gameWindowOptions');
+      const goldOrderPanel = document.getElementById('goldOrderPanel');
+      const goldOrderGameIcon = document.getElementById('goldOrderGameIcon');
+      const goldOrderGameName = document.getElementById('goldOrderGameName');
+      const goldOrderServer = document.getElementById('goldOrderServer');
+      const goldOrderProduct = document.getElementById('goldOrderProduct');
+      const goldOrderFaction = document.getElementById('goldOrderFaction');
+      const goldOrderCharacter = document.getElementById('goldOrderCharacter');
+      const goldOrderDelivery = document.getElementById('goldOrderDelivery');
+      const goldOrderTicketBtn = document.getElementById('goldOrderTicketBtn');
       const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
       const closeAdmin = document.getElementById('closeAdmin');
@@ -2023,7 +2136,57 @@
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
+      let activeOrderGame = null;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
+
+      function renderGoldOrderProducts() {
+        const server = goldOrderServer.value;
+        goldOrderProduct.innerHTML = '';
+        if (!activeOrderGame?.name || !server) {
+          goldOrderProduct.innerHTML = '<option value="">Selecciona servidor primero</option>';
+          return;
+        }
+        const matches = goldPrices
+          .filter((item) => item.game === activeOrderGame.name && item.server === server)
+          .sort((a, b) => a.amount - b.amount);
+        if (!matches.length) {
+          goldOrderProduct.innerHTML = '<option value="">Sin productos en este servidor</option>';
+          return;
+        }
+        matches.forEach((item) => {
+          const option = document.createElement('option');
+          option.value = `${item.amount}|${item.price.toFixed(2)}`;
+          option.textContent = `${item.amount} de oro - $${item.price.toFixed(2)}`;
+          goldOrderProduct.appendChild(option);
+        });
+      }
+
+      function openGoldOrderPanel(game) {
+        if (!game) return;
+        activeOrderGame = game;
+        goldOrderPanel.classList.remove('hidden');
+        goldOrderGameIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
+        goldOrderGameName.textContent = game.name;
+        const servers = gameServers.find((entry) => entry.game === game.name)?.servers || [];
+        goldOrderServer.innerHTML = '';
+        if (!servers.length) {
+          goldOrderServer.innerHTML = '<option value="">Sin servidores configurados</option>';
+        } else {
+          servers.forEach((server) => {
+            const option = document.createElement('option');
+            option.value = server;
+            option.textContent = server;
+            goldOrderServer.appendChild(option);
+          });
+        }
+        goldOrderCharacter.value = '';
+        goldOrderDelivery.value = '';
+        renderGoldOrderProducts();
+      }
+
+      function closeGoldOrderPanel() {
+        goldOrderPanel.classList.add('hidden');
+      }
 
       function openGamePage(index) {
         const game = games[index];
@@ -2039,11 +2202,24 @@
           const button = document.createElement('button');
           button.className = `game-option ${config.className}`;
           button.type = 'button';
+          button.dataset.service = serviceKey;
           button.innerHTML = `<img src="${config.image}" alt="${config.title}" loading="lazy" referrerpolicy="no-referrer" />`;
+          button.addEventListener('click', () => {
+            if (serviceKey === 'gold') {
+              openGoldOrderPanel(game);
+            } else {
+              closeGoldOrderPanel();
+            }
+          });
           gameWindowOptions.appendChild(button);
         });
         if (!gameWindowOptions.children.length) {
           gameWindowOptions.innerHTML = '';
+        }
+        if (gameServices.includes('gold')) {
+          openGoldOrderPanel(game);
+        } else {
+          closeGoldOrderPanel();
         }
         gameWindowModal.classList.add('show');
         gameWindowModal.setAttribute('aria-hidden', 'false');
@@ -2318,13 +2494,29 @@
       closeGameWindow.addEventListener('click', () => {
         gameWindowModal.classList.remove('show');
         gameWindowModal.setAttribute('aria-hidden', 'true');
+        closeGoldOrderPanel();
       });
 
       gameWindowModal.addEventListener('click', (e) => {
         if (e.target === gameWindowModal) {
           gameWindowModal.classList.remove('show');
           gameWindowModal.setAttribute('aria-hidden', 'true');
+          closeGoldOrderPanel();
         }
+      });
+
+      goldOrderServer.addEventListener('change', renderGoldOrderProducts);
+      goldOrderTicketBtn.addEventListener('click', () => {
+        if (!activeOrderGame?.name) return;
+        const msg = [
+          `Juego: ${activeOrderGame.name}`,
+          `Servidor: ${goldOrderServer.value || 'No definido'}`,
+          `Producto: ${goldOrderProduct.value || 'No definido'}`,
+          `Facción: ${goldOrderFaction.value || 'No definida'}`,
+          `Personaje: ${goldOrderCharacter.value.trim() || 'No definido'}`,
+          `Preferencia de entrega: ${goldOrderDelivery.value.trim() || 'No definida'}`
+        ].join('\n');
+        window.open(`https://discord.gg/DKd9HxK8?ticket=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
       });
 
       openAdmin.addEventListener('click', () => {
