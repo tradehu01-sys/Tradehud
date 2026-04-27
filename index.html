@@ -583,6 +583,32 @@
         color: #9fb6e8;
         font-size: 0.78rem;
       }
+      .accounts-panel {
+        margin-top: 1rem;
+        border: 1px solid #35528c;
+        border-radius: 12px;
+        padding: 0.8rem;
+        background: #0a1223;
+      }
+      .accounts-panel.hidden { display: none; }
+      .accounts-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem;
+      }
+      .account-card {
+        border: 1px solid #35518a;
+        border-radius: 10px;
+        background: #101c34;
+        padding: 0.65rem;
+      }
+      .account-card img {
+        width: 100%;
+        height: 130px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+      }
 
 
       .game-option {
@@ -1455,6 +1481,7 @@
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
         .gold-order-grid { grid-template-columns: 1fr; }
+        .accounts-grid { grid-template-columns: 1fr; }
         .social-buttons { grid-template-columns: 1fr; }
         .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid,.steps-list { grid-template-columns: 1fr; }
         nav { justify-content: center; }
@@ -1749,6 +1776,10 @@
               </div>
             </div>
             <p class="gold-order-note">Al cambiar el servidor se recargan automáticamente los productos disponibles.</p>
+          </div>
+          <div id="accountsPanel" class="accounts-panel hidden">
+            <strong style="display:block;margin-bottom:.55rem;">Cuentas disponibles por juego</strong>
+            <div id="accountsPanelList" class="accounts-grid"></div>
           </div>
         </div>
       </div>
@@ -2122,6 +2153,42 @@
           <div id="adminTicketsList" class="admin-game-list"></div>
         </div>
         <div id="editorCuentas" class="editor-box hidden">
+          <div class="editor-box" style="margin-bottom:.6rem;">
+            <strong style="display:block;margin-bottom:.55rem;color:#f0cf7b;">Crear cuenta por juego</strong>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="accountGameSelect">Juego</label>
+                <select id="accountGameSelect"></select>
+              </div>
+              <div class="form-group">
+                <label for="accountNameInput">Nombre de cuenta</label>
+                <input id="accountNameInput" type="text" placeholder="Ej: Cuenta Gladiador" />
+              </div>
+            </div>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="accountRaceInput">Raza</label>
+                <input id="accountRaceInput" type="text" placeholder="Ej: Elfo de sangre" />
+              </div>
+              <div class="form-group">
+                <label for="accountRoleInput">Profesión / Rol</label>
+                <input id="accountRoleInput" type="text" placeholder="Ej: Mago, Tanque, Healer" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="accountImageInput">Imagen (URL)</label>
+              <input id="accountImageInput" type="text" placeholder="URL de imagen de la cuenta" />
+            </div>
+            <div class="form-group">
+              <label for="accountDescriptionInput">Descripción</label>
+              <textarea id="accountDescriptionInput" placeholder="Describe esta cuenta"></textarea>
+            </div>
+            <button id="saveAccountBtn" class="panel-btn" type="button">Guardar cuenta</button>
+          </div>
+          <div class="editor-box" style="margin-bottom:.6rem;">
+            <strong style="display:block;margin-bottom:.55rem;color:#f0cf7b;">Cuentas creadas</strong>
+            <div id="adminAccountsList"></div>
+          </div>
           <div class="admin-panel-actions" style="margin-top:0;">
             <strong style="flex:1;display:flex;align-items:center;">Categorías de cuentas</strong>
             <button id="abrirFormularioCategoriaCuentas" class="panel-btn" type="button">+ Agregar categoría</button>
@@ -2238,6 +2305,8 @@
       const goldOrderDelivery = document.getElementById('goldOrderDelivery');
       const goldOrderTicketBtn = document.getElementById('goldOrderTicketBtn');
       const volverOpcionesBtn = document.getElementById('volverOpcionesBtn');
+      const accountsPanel = document.getElementById('accountsPanel');
+      const accountsPanelList = document.getElementById('accountsPanelList');
       const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
       const openRegister = document.getElementById('openRegister');
@@ -2322,6 +2391,14 @@
       const editorCuentas = document.getElementById('editorCuentas');
       const editorBosteo = document.getElementById('editorBosteo');
       const adminTicketsList = document.getElementById('adminTicketsList');
+      const accountGameSelect = document.getElementById('accountGameSelect');
+      const accountNameInput = document.getElementById('accountNameInput');
+      const accountRaceInput = document.getElementById('accountRaceInput');
+      const accountRoleInput = document.getElementById('accountRoleInput');
+      const accountImageInput = document.getElementById('accountImageInput');
+      const accountDescriptionInput = document.getElementById('accountDescriptionInput');
+      const saveAccountBtn = document.getElementById('saveAccountBtn');
+      const adminAccountsList = document.getElementById('adminAccountsList');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
@@ -2411,6 +2488,16 @@
       const boostingCategories = [
         { id: null, game: 'Lineage 2 Reborn', name: 'Subida rápida', description: 'Boosting guiado con reporte de avance.' }
       ];
+      const gameAccounts = [
+        {
+          game: 'World of Warcraft',
+          name: 'Cuenta PVP Gladiador',
+          race: 'Elfo de sangre',
+          role: 'Mago',
+          image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop',
+          description: 'Cuenta lista para arenas y contenido competitivo.'
+        }
+      ];
       const gameServers = [
         { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
         { game: 'Albion Online', servers: ['West', 'East'] }
@@ -2483,7 +2570,33 @@
 
       function closeGoldOrderPanel() {
         goldOrderPanel.classList.add('hidden');
-        gameWindow.classList.remove('gold-focus');
+        if (accountsPanel.classList.contains('hidden')) {
+          gameWindow.classList.remove('gold-focus');
+        }
+      }
+
+      function openAccountsPanel(game) {
+        accountsPanel.classList.remove('hidden');
+        gameWindow.classList.add('gold-focus');
+        accountsPanelList.innerHTML = '';
+        const filtered = gameAccounts.filter((account) => account.game === game.name);
+        if (!filtered.length) {
+          accountsPanelList.innerHTML = '<p class="auth-hint">No hay cuentas cargadas para este juego.</p>';
+          return;
+        }
+        filtered.forEach((account) => {
+          const card = document.createElement('article');
+          card.className = 'account-card';
+          card.innerHTML = `<img src="${account.image}" alt="${account.name}" /><strong>${account.name}</strong><p class="admin-game-desc">Raza: ${account.race || '-'}</p><p class="admin-game-desc">Profesión/Rol: ${account.role || '-'}</p><p class="admin-game-desc">${account.description || ''}</p>`;
+          accountsPanelList.appendChild(card);
+        });
+      }
+
+      function closeAccountsPanel() {
+        accountsPanel.classList.add('hidden');
+        if (goldOrderPanel.classList.contains('hidden')) {
+          gameWindow.classList.remove('gold-focus');
+        }
       }
 
       function setAuthView(mode = 'login') {
@@ -2635,8 +2748,13 @@
           button.addEventListener('click', () => {
             if (serviceKey === 'gold') {
               openGoldOrderPanel(game);
+              closeAccountsPanel();
+            } else if (serviceKey === 'accounts') {
+              closeGoldOrderPanel();
+              openAccountsPanel(game);
             } else {
               closeGoldOrderPanel();
+              closeAccountsPanel();
             }
           });
           gameWindowOptions.appendChild(button);
@@ -2645,6 +2763,7 @@
           gameWindowOptions.innerHTML = '';
         }
         closeGoldOrderPanel();
+        closeAccountsPanel();
         gameWindowModal.classList.add('show');
         gameWindowModal.setAttribute('aria-hidden', 'false');
       }
@@ -2711,6 +2830,16 @@
         renderCategoryList('bosteo', categoriaListaBosteo);
       }
 
+      function renderAdminAccounts() {
+        adminAccountsList.innerHTML = '';
+        gameAccounts.forEach((account, index) => {
+          const item = document.createElement('article');
+          item.className = 'category-item';
+          item.innerHTML = `<strong>${account.name}</strong><p class="admin-game-desc">Juego: ${account.game}</p><p class="admin-game-desc">Raza: ${account.race || '-'} · Rol: ${account.role || '-'}</p><p class="admin-game-desc">${account.description || ''}</p><button class="mini-btn danger" type="button" data-remove-account="${index}">Eliminar</button>`;
+          adminAccountsList.appendChild(item);
+        });
+      }
+
       function renderCategoriasVista() {
         categoriasVistaLista.innerHTML = '';
         goldCategories.forEach((category) => {
@@ -2732,6 +2861,7 @@
         serverGameSelect.innerHTML = '';
         precioJuegoAdd.innerHTML = '';
         precioJuegoEdit.innerHTML = '';
+        accountGameSelect.innerHTML = '';
         games.forEach((game) => {
           const option = document.createElement('option');
           option.value = game.name;
@@ -2739,12 +2869,15 @@
           serverGameSelect.appendChild(option);
           const optionAdd = option.cloneNode(true);
           const optionEdit = option.cloneNode(true);
+          const optionAccount = option.cloneNode(true);
           precioJuegoAdd.appendChild(optionAdd);
           precioJuegoEdit.appendChild(optionEdit);
+          accountGameSelect.appendChild(optionAccount);
         });
         refreshServerSelect(precioJuegoAdd, precioServidorAdd);
         refreshServerSelect(precioJuegoEdit, precioServidorEdit);
         renderPriceOptions();
+        renderAdminAccounts();
       }
 
       function renderServerByGame() {
@@ -2964,6 +3097,7 @@
         gameWindowModal.classList.remove('show');
         gameWindowModal.setAttribute('aria-hidden', 'true');
         closeGoldOrderPanel();
+        closeAccountsPanel();
       });
 
       gameWindowModal.addEventListener('click', (e) => {
@@ -2971,6 +3105,7 @@
           gameWindowModal.classList.remove('show');
           gameWindowModal.setAttribute('aria-hidden', 'true');
           closeGoldOrderPanel();
+          closeAccountsPanel();
         }
       });
 
@@ -3382,6 +3517,36 @@
 
       serverGameSelect.addEventListener('change', () => {
         renderServerByGame();
+      });
+
+      saveAccountBtn.addEventListener('click', () => {
+        const payload = {
+          game: accountGameSelect.value,
+          name: accountNameInput.value.trim(),
+          race: accountRaceInput.value.trim(),
+          role: accountRoleInput.value.trim(),
+          image: accountImageInput.value.trim() || 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop',
+          description: accountDescriptionInput.value.trim()
+        };
+        if (!payload.game || !payload.name) return;
+        gameAccounts.push(payload);
+        accountNameInput.value = '';
+        accountRaceInput.value = '';
+        accountRoleInput.value = '';
+        accountImageInput.value = '';
+        accountDescriptionInput.value = '';
+        renderAdminAccounts();
+        showAdminNotice(`Cuenta agregada para ${payload.game}.`, 'ok');
+      });
+
+      adminAccountsList.addEventListener('click', (e) => {
+        const removeBtn = e.target.closest('button[data-remove-account]');
+        if (!removeBtn) return;
+        const index = Number(removeBtn.dataset.removeAccount);
+        if (Number.isNaN(index)) return;
+        gameAccounts.splice(index, 1);
+        renderAdminAccounts();
+        showAdminNotice('Cuenta eliminada.', 'warn');
       });
 
       serverListWrap.addEventListener('click', (e) => {
