@@ -596,6 +596,31 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 0.7rem;
       }
+      .boosting-options-panel {
+        margin-top: 1rem;
+        border: 1px solid #35528c;
+        border-radius: 12px;
+        padding: 0.8rem;
+        background: #0a1223;
+      }
+      .boosting-options-panel.hidden { display: none; }
+      .boosting-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .boosting-circle-btn {
+        width: 150px;
+        height: 150px;
+        border-radius: 999px;
+        border: 1px solid #4470bf;
+        background: #101d37;
+        color: #f2f7ff;
+        cursor: pointer;
+        font-weight: 700;
+        padding: 0.75rem;
+      }
       .account-card {
         border: 1px solid #35518a;
         border-radius: 10px;
@@ -1781,6 +1806,13 @@
             <strong style="display:block;margin-bottom:.55rem;">Cuentas disponibles por juego</strong>
             <div id="accountsPanelList" class="accounts-grid"></div>
           </div>
+          <div id="boostingOptionsPanel" class="boosting-options-panel hidden">
+            <strong style="display:block;margin-bottom:.55rem;">Opciones de boosting</strong>
+            <div class="boosting-buttons">
+              <button class="boosting-circle-btn" type="button">Profesiones</button>
+              <button class="boosting-circle-btn" type="button">Leveleo de cuentas</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2259,12 +2291,26 @@
           </div>
           <div class="admin-split">
             <div class="form-group">
-              <label for="accountRaceInput">Raza</label>
-              <input id="accountRaceInput" type="text" placeholder="Ej: Elfo de sangre" />
+              <label for="accountLevelRangeInput">Level hasta level</label>
+              <input id="accountLevelRangeInput" type="text" placeholder="Ej: 1-80" />
             </div>
             <div class="form-group">
-              <label for="accountRoleInput">Profesión / Rol</label>
+              <label for="accountRoleInput">Rol o clase</label>
               <input id="accountRoleInput" type="text" placeholder="Ej: Mago, Tanque, Healer" />
+            </div>
+          </div>
+          <div class="admin-split">
+            <div class="form-group">
+              <label for="accountFactionInput">Tipo de facción</label>
+              <select id="accountFactionInput">
+                <option value="">Selecciona facción</option>
+                <option value="Horda">Horda</option>
+                <option value="Alianza">Alianza</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="accountBudgetInput">Presupuesto</label>
+              <input id="accountBudgetInput" type="text" placeholder="Ej: 120 USD" />
             </div>
           </div>
           <div class="form-group">
@@ -2319,6 +2365,7 @@
       const volverOpcionesBtn = document.getElementById('volverOpcionesBtn');
       const accountsPanel = document.getElementById('accountsPanel');
       const accountsPanelList = document.getElementById('accountsPanelList');
+      const boostingOptionsPanel = document.getElementById('boostingOptionsPanel');
       const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
       const openRegister = document.getElementById('openRegister');
@@ -2406,8 +2453,10 @@
       const openAccountFormModalBtn = document.getElementById('openAccountFormModalBtn');
       const accountGameSelect = document.getElementById('accountGameSelect');
       const accountNameInput = document.getElementById('accountNameInput');
-      const accountRaceInput = document.getElementById('accountRaceInput');
+      const accountLevelRangeInput = document.getElementById('accountLevelRangeInput');
       const accountRoleInput = document.getElementById('accountRoleInput');
+      const accountFactionInput = document.getElementById('accountFactionInput');
+      const accountBudgetInput = document.getElementById('accountBudgetInput');
       const accountImageInput = document.getElementById('accountImageInput');
       const accountDescriptionInput = document.getElementById('accountDescriptionInput');
       const saveAccountBtn = document.getElementById('saveAccountBtn');
@@ -2508,8 +2557,10 @@
         {
           game: 'World of Warcraft',
           name: 'Cuenta PVP Gladiador',
-          race: 'Elfo de sangre',
+          levelRange: '70-80',
           role: 'Mago',
+          faction: 'Horda',
+          budget: '150 USD',
           image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop',
           description: 'Cuenta lista para arenas y contenido competitivo.'
         }
@@ -2586,7 +2637,7 @@
 
       function closeGoldOrderPanel() {
         goldOrderPanel.classList.add('hidden');
-        if (accountsPanel.classList.contains('hidden')) {
+        if (accountsPanel.classList.contains('hidden') && boostingOptionsPanel.classList.contains('hidden')) {
           gameWindow.classList.remove('gold-focus');
         }
       }
@@ -2603,14 +2654,26 @@
         filtered.forEach((account) => {
           const card = document.createElement('article');
           card.className = 'account-card';
-          card.innerHTML = `<img src="${account.image}" alt="${account.name}" /><strong>${account.name}</strong><p class="admin-game-desc">Raza: ${account.race || '-'}</p><p class="admin-game-desc">Profesión/Rol: ${account.role || '-'}</p><p class="admin-game-desc">${account.description || ''}</p>`;
+          card.innerHTML = `<img src="${account.image}" alt="${account.name}" /><strong>${account.name}</strong><p class="admin-game-desc">Level: ${account.levelRange || '-'}</p><p class="admin-game-desc">Clase/Rol: ${account.role || '-'}</p><p class="admin-game-desc">Facción: ${account.faction || '-'}</p><p class="admin-game-desc">Presupuesto: ${account.budget || '-'}</p><p class="admin-game-desc">${account.description || ''}</p>`;
           accountsPanelList.appendChild(card);
         });
       }
 
       function closeAccountsPanel() {
         accountsPanel.classList.add('hidden');
-        if (goldOrderPanel.classList.contains('hidden')) {
+        if (goldOrderPanel.classList.contains('hidden') && boostingOptionsPanel.classList.contains('hidden')) {
+          gameWindow.classList.remove('gold-focus');
+        }
+      }
+
+      function openBoostingOptionsPanel() {
+        boostingOptionsPanel.classList.remove('hidden');
+        gameWindow.classList.add('gold-focus');
+      }
+
+      function closeBoostingOptionsPanel() {
+        boostingOptionsPanel.classList.add('hidden');
+        if (goldOrderPanel.classList.contains('hidden') && accountsPanel.classList.contains('hidden')) {
           gameWindow.classList.remove('gold-focus');
         }
       }
@@ -2644,6 +2707,16 @@
         showAuthNotice._timer = setTimeout(() => {
           authNotice.classList.remove('show');
         }, 5200);
+      }
+
+      function friendlyError(message = '') {
+        const raw = String(message || '').toLowerCase();
+        if (raw.includes('invalid login credentials')) return 'Credenciales inválidas. Revisa correo y contraseña.';
+        if (raw.includes('email not confirmed')) return 'Debes confirmar tu correo antes de iniciar sesión.';
+        if (raw.includes('already registered')) return 'Este correo ya está registrado.';
+        if (raw.includes('password should be at least')) return 'La contraseña debe tener al menos 6 caracteres.';
+        if (raw.includes('network')) return 'Error de red. Verifica tu conexión e intenta nuevamente.';
+        return message || 'Ocurrió un error inesperado.';
       }
 
       function toggleUserButtons() {
@@ -2765,12 +2838,19 @@
             if (serviceKey === 'gold') {
               openGoldOrderPanel(game);
               closeAccountsPanel();
+              closeBoostingOptionsPanel();
             } else if (serviceKey === 'accounts') {
               closeGoldOrderPanel();
               openAccountsPanel(game);
+              closeBoostingOptionsPanel();
+            } else if (serviceKey === 'boosting') {
+              closeGoldOrderPanel();
+              closeAccountsPanel();
+              openBoostingOptionsPanel();
             } else {
               closeGoldOrderPanel();
               closeAccountsPanel();
+              closeBoostingOptionsPanel();
             }
           });
           gameWindowOptions.appendChild(button);
@@ -2780,6 +2860,7 @@
         }
         closeGoldOrderPanel();
         closeAccountsPanel();
+        closeBoostingOptionsPanel();
         gameWindowModal.classList.add('show');
         gameWindowModal.setAttribute('aria-hidden', 'false');
       }
@@ -2851,7 +2932,7 @@
         gameAccounts.forEach((account, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<strong>${account.name}</strong><p class="admin-game-desc">Juego: ${account.game}</p><p class="admin-game-desc">Raza: ${account.race || '-'} · Rol: ${account.role || '-'}</p><p class="admin-game-desc">${account.description || ''}</p><button class="mini-btn danger" type="button" data-remove-account="${index}">Eliminar</button>`;
+          item.innerHTML = `<strong>${account.name}</strong><p class="admin-game-desc">Juego: ${account.game}</p><p class="admin-game-desc">Level: ${account.levelRange || '-'} · Rol: ${account.role || '-'}</p><p class="admin-game-desc">Facción: ${account.faction || '-'} · Presupuesto: ${account.budget || '-'}</p><p class="admin-game-desc">${account.description || ''}</p><button class="mini-btn danger" type="button" data-remove-account="${index}">Eliminar</button>`;
           adminAccountsList.appendChild(item);
         });
       }
@@ -3114,6 +3195,7 @@
         gameWindowModal.setAttribute('aria-hidden', 'true');
         closeGoldOrderPanel();
         closeAccountsPanel();
+        closeBoostingOptionsPanel();
       });
 
       gameWindowModal.addEventListener('click', (e) => {
@@ -3122,6 +3204,7 @@
           gameWindowModal.setAttribute('aria-hidden', 'true');
           closeGoldOrderPanel();
           closeAccountsPanel();
+          closeBoostingOptionsPanel();
         }
       });
 
@@ -3209,7 +3292,7 @@
           }
         });
         if (error) {
-          authMsg.textContent = error.message;
+          authMsg.textContent = friendlyError(error.message);
           authMsg.style.color = '#ffb6b6';
           if (error.message.toLowerCase().includes('already') || error.message.toLowerCase().includes('registered')) {
             showAuthNotice('Tu cuenta ya existe. Usa "Reenviar correo de verificación" o inicia sesión.', 'warn');
@@ -3247,7 +3330,7 @@
           }
         });
         if (error) {
-          authMsg.textContent = error.message;
+          authMsg.textContent = friendlyError(error.message);
           authMsg.style.color = '#ffb6b6';
           return;
         }
@@ -3263,7 +3346,7 @@
           password: authLoginPassword.value
         });
         if (error) {
-          authMsg.textContent = error.message;
+          authMsg.textContent = friendlyError(error.message);
           authMsg.style.color = '#ffb6b6';
           return;
         }
@@ -3285,7 +3368,7 @@
           redirectTo: `${window.location.origin}${window.location.pathname}`
         });
         if (error) {
-          authMsg.textContent = error.message;
+          authMsg.textContent = friendlyError(error.message);
           authMsg.style.color = '#ffb6b6';
           return;
         }
@@ -3308,7 +3391,7 @@
         }
         const { error } = await supabaseClient.auth.updateUser({ password: recoveryNewPassword.value });
         if (error) {
-          authMsg.textContent = error.message;
+          authMsg.textContent = friendlyError(error.message);
           authMsg.style.color = '#ffb6b6';
           return;
         }
@@ -3555,16 +3638,20 @@
         const payload = {
           game: accountGameSelect.value,
           name: accountNameInput.value.trim(),
-          race: accountRaceInput.value.trim(),
+          levelRange: accountLevelRangeInput.value.trim(),
           role: accountRoleInput.value.trim(),
+          faction: accountFactionInput.value.trim(),
+          budget: accountBudgetInput.value.trim(),
           image: accountImageInput.value.trim() || 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop',
           description: accountDescriptionInput.value.trim()
         };
         if (!payload.game || !payload.name) return;
         gameAccounts.push(payload);
         accountNameInput.value = '';
-        accountRaceInput.value = '';
+        accountLevelRangeInput.value = '';
         accountRoleInput.value = '';
+        accountFactionInput.value = '';
+        accountBudgetInput.value = '';
         accountImageInput.value = '';
         accountDescriptionInput.value = '';
         renderAdminAccounts();
