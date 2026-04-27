@@ -2153,47 +2153,16 @@
           <div id="adminTicketsList" class="admin-game-list"></div>
         </div>
         <div id="editorCuentas" class="editor-box hidden">
-          <div class="editor-box" style="margin-bottom:.6rem;">
-            <strong style="display:block;margin-bottom:.55rem;color:#f0cf7b;">Crear cuenta por juego</strong>
-            <div class="admin-split">
-              <div class="form-group">
-                <label for="accountGameSelect">Juego</label>
-                <select id="accountGameSelect"></select>
-              </div>
-              <div class="form-group">
-                <label for="accountNameInput">Nombre de cuenta</label>
-                <input id="accountNameInput" type="text" placeholder="Ej: Cuenta Gladiador" />
-              </div>
-            </div>
-            <div class="admin-split">
-              <div class="form-group">
-                <label for="accountRaceInput">Raza</label>
-                <input id="accountRaceInput" type="text" placeholder="Ej: Elfo de sangre" />
-              </div>
-              <div class="form-group">
-                <label for="accountRoleInput">Profesión / Rol</label>
-                <input id="accountRoleInput" type="text" placeholder="Ej: Mago, Tanque, Healer" />
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="accountImageInput">Imagen (URL)</label>
-              <input id="accountImageInput" type="text" placeholder="URL de imagen de la cuenta" />
-            </div>
-            <div class="form-group">
-              <label for="accountDescriptionInput">Descripción</label>
-              <textarea id="accountDescriptionInput" placeholder="Describe esta cuenta"></textarea>
-            </div>
-            <button id="saveAccountBtn" class="panel-btn" type="button">Guardar cuenta</button>
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Gestión de cuentas</strong>
+            <button id="openAccountFormModalBtn" class="panel-btn" type="button">+ Agregar cuenta por juego</button>
+            <button id="abrirFormularioCategoriaCuentas" class="panel-btn" type="button">+ Agregar categoría</button>
           </div>
-          <div class="editor-box" style="margin-bottom:.6rem;">
+          <div class="editor-box" style="margin-top:.6rem;">
             <strong style="display:block;margin-bottom:.55rem;color:#f0cf7b;">Cuentas creadas</strong>
             <div id="adminAccountsList"></div>
           </div>
-          <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Categorías de cuentas</strong>
-            <button id="abrirFormularioCategoriaCuentas" class="panel-btn" type="button">+ Agregar categoría</button>
-          </div>
-          <div id="categoriaListaCuentas"></div>
+          <div id="categoriaListaCuentas" style="display:none;"></div>
         </div>
         <div id="editorBosteo" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -2266,6 +2235,49 @@
           <div class="admin-panel-actions form-actions">
             <button id="cancelarCategoriaOro" class="panel-btn" type="button">Cancelar</button>
             <button id="guardarCategoriaOro" class="panel-btn" type="button">Guardar categoría</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="accountFormModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card">
+        <div class="admin-head">
+          <strong>Cuenta por juego</strong>
+          <button id="closeAccountFormModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div class="admin-game-form">
+          <div class="admin-split">
+            <div class="form-group">
+              <label for="accountGameSelect">Juego</label>
+              <select id="accountGameSelect"></select>
+            </div>
+            <div class="form-group">
+              <label for="accountNameInput">Nombre de cuenta</label>
+              <input id="accountNameInput" type="text" placeholder="Ej: Cuenta Gladiador" />
+            </div>
+          </div>
+          <div class="admin-split">
+            <div class="form-group">
+              <label for="accountRaceInput">Raza</label>
+              <input id="accountRaceInput" type="text" placeholder="Ej: Elfo de sangre" />
+            </div>
+            <div class="form-group">
+              <label for="accountRoleInput">Profesión / Rol</label>
+              <input id="accountRoleInput" type="text" placeholder="Ej: Mago, Tanque, Healer" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="accountImageInput">Imagen (URL)</label>
+            <input id="accountImageInput" type="text" placeholder="URL de imagen de la cuenta" />
+          </div>
+          <div class="form-group">
+            <label for="accountDescriptionInput">Descripción</label>
+            <textarea id="accountDescriptionInput" placeholder="Describe esta cuenta"></textarea>
+          </div>
+          <div class="form-actions" style="display:flex;gap:.5rem;">
+            <button id="saveAccountBtn" class="panel-btn" type="button">Guardar cuenta</button>
+            <button id="cancelAccountFormBtn" class="mini-btn" type="button">Cancelar</button>
           </div>
         </div>
       </div>
@@ -2391,6 +2403,7 @@
       const editorCuentas = document.getElementById('editorCuentas');
       const editorBosteo = document.getElementById('editorBosteo');
       const adminTicketsList = document.getElementById('adminTicketsList');
+      const openAccountFormModalBtn = document.getElementById('openAccountFormModalBtn');
       const accountGameSelect = document.getElementById('accountGameSelect');
       const accountNameInput = document.getElementById('accountNameInput');
       const accountRaceInput = document.getElementById('accountRaceInput');
@@ -2398,6 +2411,9 @@
       const accountImageInput = document.getElementById('accountImageInput');
       const accountDescriptionInput = document.getElementById('accountDescriptionInput');
       const saveAccountBtn = document.getElementById('saveAccountBtn');
+      const accountFormModal = document.getElementById('accountFormModal');
+      const closeAccountFormModal = document.getElementById('closeAccountFormModal');
+      const cancelAccountFormBtn = document.getElementById('cancelAccountFormBtn');
       const adminAccountsList = document.getElementById('adminAccountsList');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
@@ -3494,9 +3510,25 @@
         categoriaOroModal.setAttribute('aria-hidden', 'false');
       }
 
+      function openAccountModal() {
+        accountFormModal.classList.add('show');
+        accountFormModal.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeAccountModal() {
+        accountFormModal.classList.remove('show');
+        accountFormModal.setAttribute('aria-hidden', 'true');
+      }
+
       abrirFormularioCategoriaOro.addEventListener('click', () => openCategoriaModal('oro'));
       abrirFormularioCategoriaCuentas.addEventListener('click', () => openCategoriaModal('cuentas'));
       abrirFormularioCategoriaBosteo.addEventListener('click', () => openCategoriaModal('bosteo'));
+      openAccountFormModalBtn.addEventListener('click', openAccountModal);
+      closeAccountFormModal.addEventListener('click', closeAccountModal);
+      cancelAccountFormBtn.addEventListener('click', closeAccountModal);
+      accountFormModal.addEventListener('click', (e) => {
+        if (e.target === accountFormModal) closeAccountModal();
+      });
 
       guardarServidorJuego.addEventListener('click', () => {
         const game = serverGameSelect.value.trim();
@@ -3537,6 +3569,7 @@
         accountDescriptionInput.value = '';
         renderAdminAccounts();
         showAdminNotice(`Cuenta agregada para ${payload.game}.`, 'ok');
+        closeAccountModal();
       });
 
       adminAccountsList.addEventListener('click', (e) => {
