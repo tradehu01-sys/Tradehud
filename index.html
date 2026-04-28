@@ -779,19 +779,34 @@
         color: #b8c9ef;
       }
       .marketplace-actions {
-        display: flex;
-        gap: 0.6rem;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7rem;
         margin-bottom: 0.9rem;
       }
       .marketplace-action-btn {
         border: 1px solid #3e66b0;
-        background: #111d37;
+        background: #101a33;
         color: #f2f7ff;
-        border-radius: 999px;
-        padding: 0.5rem 0.95rem;
+        border-radius: 12px;
+        padding: 0.55rem;
         font-weight: 700;
         cursor: pointer;
+        text-align: left;
+      }
+      .marketplace-action-btn img {
+        width: 100%;
+        height: 130px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 0.45rem;
+      }
+      .marketplace-action-btn span {
+        display: block;
+        text-align: center;
+      }
+      @media (max-width: 640px) {
+        .marketplace-actions { grid-template-columns: 1fr; }
       }
 
       .sell-payment-photo {
@@ -1891,8 +1906,18 @@
         <div class="container">
           <h2 class="section-title">Marketplace de <span>Servicios</span></h2>
           <div class="marketplace-actions">
-            <button class="marketplace-action-btn" type="button">P2P</button>
-            <button class="marketplace-action-btn" type="button">Streaming</button>
+            <button class="marketplace-action-btn" type="button">
+              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&" alt="P2P" />
+              <span>P2P</span>
+            </button>
+            <button class="marketplace-action-btn" type="button">
+              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&" alt="Giftcards" />
+              <span>GiftCards</span>
+            </button>
+            <button class="marketplace-action-btn" type="button">
+              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&" alt="Streaming" />
+              <span>Streaming</span>
+            </button>
           </div>
           <div class="grid-4">
             <article class="card">
