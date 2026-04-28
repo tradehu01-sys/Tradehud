@@ -778,6 +778,21 @@
         font-size: .84rem;
         color: #b8c9ef;
       }
+      .marketplace-actions {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.9rem;
+      }
+      .marketplace-action-btn {
+        border: 1px solid #3e66b0;
+        background: #111d37;
+        color: #f2f7ff;
+        border-radius: 999px;
+        padding: 0.5rem 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
 
       .sell-payment-photo {
         width: 170px;
@@ -1875,6 +1890,10 @@
       <section id="marketplace" class="page-section" data-page="marketplace">
         <div class="container">
           <h2 class="section-title">Marketplace de <span>Servicios</span></h2>
+          <div class="marketplace-actions">
+            <button class="marketplace-action-btn" type="button">P2P</button>
+            <button class="marketplace-action-btn" type="button">Streaming</button>
+          </div>
           <div class="grid-4">
             <article class="card">
               <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop" alt="Boosteo" />
