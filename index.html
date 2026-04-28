@@ -805,6 +805,10 @@
         display: block;
         text-align: center;
       }
+      .marketplace-action-btn.active {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 2px rgba(255,179,71,.22);
+      }
       @media (max-width: 640px) {
         .marketplace-actions { grid-template-columns: 1fr; }
       }
@@ -1906,48 +1910,23 @@
         <div class="container">
           <h2 class="section-title">Marketplace de <span>Servicios</span></h2>
           <div class="marketplace-actions">
-            <button class="marketplace-action-btn" type="button">
+            <button class="marketplace-action-btn" type="button" data-market-service="p2p">
               <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&" alt="P2P" />
               <span>P2P</span>
             </button>
-            <button class="marketplace-action-btn" type="button">
+            <button class="marketplace-action-btn" type="button" data-market-service="giftcards">
               <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&" alt="Giftcards" />
               <span>GiftCards</span>
             </button>
-            <button class="marketplace-action-btn" type="button">
+            <button class="marketplace-action-btn" type="button" data-market-service="streaming">
               <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&" alt="Streaming" />
               <span>Streaming</span>
             </button>
           </div>
-          <div class="grid-4">
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop" alt="Boosteo" />
-              <div class="card-body">
-                <strong>Servicios de Boosteo</strong>
-                <p>Subida de rango, raids, logros y acompañamiento personalizado.</p>
-              </div>
-            </article>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop" alt="Tiempo de juego WoW" />
-              <div class="card-body">
-                <strong>Tiempo de Juego WoW</strong>
-                <p>Recargas, saldo y game time para mantener activa tu cuenta.</p>
-              </div>
-            </article>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?q=80&w=1200&auto=format&fit=crop" alt="Streaming" />
-              <div class="card-body">
-                <strong>Servicio de Streaming</strong>
-                <p>Gestión de canales, overlays, packs visuales y optimización en vivo.</p>
-              </div>
-            </article>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=1200&auto=format&fit=crop" alt="Apps" />
-              <div class="card-body">
-                <strong>Apps y Herramientas</strong>
-                <p>Configuración de apps gaming, utilidades y soporte de instalación.</p>
-              </div>
-            </article>
+          <div class="editor-box" style="margin-top:.4rem;">
+            <strong id="marketServiceTitle" style="display:block;margin-bottom:.55rem;color:#f0cf7b;"></strong>
+            <div id="marketCategoryGrid" class="accounts-grid"></div>
+            <div id="marketPriceList" class="admin-game-list" style="margin-top:.75rem;"></div>
           </div>
         </div>
       </section>
@@ -2135,6 +2114,7 @@
           <button id="tabCategoriasOro" class="panel-tab" type="button">Categorías de oro</button>
           <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
           <button id="tabOro" class="panel-tab" type="button">Oro</button>
+          <button id="tabMarketAdmin" class="panel-tab" type="button">P2P/Stream/Gift</button>
           <button id="tabTicketsAdmin" class="panel-tab" type="button">Tickets</button>
           <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
           <button id="tabBosteo" class="panel-tab" type="button">Bosteo</button>
@@ -2227,6 +2207,44 @@
             <strong style="flex:1;display:flex;align-items:center;">Tickets de usuarios</strong>
           </div>
           <div id="adminTicketsList" class="admin-game-list"></div>
+        </div>
+        <div id="editorMarketAdmin" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Marketplace admin</strong>
+          </div>
+          <div class="panel-tabs" style="margin-top:.4rem;">
+            <button id="marketTypeP2P" class="panel-tab active" type="button">P2P</button>
+            <button id="marketTypeStreaming" class="panel-tab" type="button">Streaming</button>
+            <button id="marketTypeGiftcards" class="panel-tab" type="button">GiftCards</button>
+          </div>
+          <div class="editor-box" style="margin-top:.6rem;">
+            <strong style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Categoría</strong>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="marketCategoryName">Nombre</label>
+                <input id="marketCategoryName" type="text" placeholder="Ej: ZINLI" />
+              </div>
+              <div class="form-group">
+                <label for="marketCategoryImage">Imagen URL</label>
+                <input id="marketCategoryImage" type="text" placeholder="URL imagen categoría" />
+              </div>
+            </div>
+            <button id="saveMarketCategoryBtn" class="panel-btn" type="button">Guardar categoría</button>
+          </div>
+          <div class="editor-box" style="margin-top:.6rem;">
+            <strong style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Precio</strong>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="marketPriceName">Título</label>
+                <input id="marketPriceName" type="text" placeholder="Ej: Zinli 10$" />
+              </div>
+              <div class="form-group">
+                <label for="marketPriceValue">Precio/Detalle</label>
+                <input id="marketPriceValue" type="text" placeholder="Ej: 12$" />
+              </div>
+            </div>
+            <button id="saveMarketPriceBtn" class="panel-btn" type="button">Guardar precio</button>
+          </div>
         </div>
         <div id="editorCuentas" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -2391,6 +2409,10 @@
       const pageLoader = document.getElementById('pageLoader');
       const pageLinks = document.querySelectorAll('[data-page-link]');
       const pageSections = document.querySelectorAll('.page-section');
+      const marketServiceTitle = document.getElementById('marketServiceTitle');
+      const marketCategoryGrid = document.getElementById('marketCategoryGrid');
+      const marketPriceList = document.getElementById('marketPriceList');
+      const marketActionButtons = document.querySelectorAll('.marketplace-action-btn[data-market-service]');
       const gameWindowModal = document.getElementById('gameWindowModal');
       const gameWindow = document.getElementById('gameWindow');
       const gameWindowTitle = document.getElementById('gameWindowTitle');
@@ -2483,6 +2505,7 @@
       const tabCategoriasOro = document.getElementById('tabCategoriasOro');
       const tabListaServidoresAdmin = document.getElementById('tabListaServidoresAdmin');
       const tabOro = document.getElementById('tabOro');
+      const tabMarketAdmin = document.getElementById('tabMarketAdmin');
       const tabTicketsAdmin = document.getElementById('tabTicketsAdmin');
       const tabCuentas = document.getElementById('tabCuentas');
       const tabBosteo = document.getElementById('tabBosteo');
@@ -2490,6 +2513,7 @@
       const editorCategoriasOro = document.getElementById('editorCategoriasOro');
       const editorServidores = document.getElementById('editorServidores');
       const editorOro = document.getElementById('editorOro');
+      const editorMarketAdmin = document.getElementById('editorMarketAdmin');
       const editorTicketsAdmin = document.getElementById('editorTicketsAdmin');
       const editorCuentas = document.getElementById('editorCuentas');
       const editorBosteo = document.getElementById('editorBosteo');
@@ -2508,6 +2532,15 @@
       const closeAccountFormModal = document.getElementById('closeAccountFormModal');
       const cancelAccountFormBtn = document.getElementById('cancelAccountFormBtn');
       const adminAccountsList = document.getElementById('adminAccountsList');
+      const marketTypeP2P = document.getElementById('marketTypeP2P');
+      const marketTypeStreaming = document.getElementById('marketTypeStreaming');
+      const marketTypeGiftcards = document.getElementById('marketTypeGiftcards');
+      const marketCategoryName = document.getElementById('marketCategoryName');
+      const marketCategoryImage = document.getElementById('marketCategoryImage');
+      const saveMarketCategoryBtn = document.getElementById('saveMarketCategoryBtn');
+      const marketPriceName = document.getElementById('marketPriceName');
+      const marketPriceValue = document.getElementById('marketPriceValue');
+      const saveMarketPriceBtn = document.getElementById('saveMarketPriceBtn');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
@@ -2609,6 +2642,26 @@
           description: 'Cuenta lista para arenas y contenido competitivo.'
         }
       ];
+      const marketCatalog = {
+        p2p: {
+          title: 'P2P',
+          categories: [
+            { name: 'ZINLI', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&' },
+            { name: 'PAYPAL', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&' }
+          ],
+          prices: ['Zinli 10$ - 12$', 'Zinli 20$ - 23$', 'Paypal 50$ - 60$', 'Paypal 100$ - 120$']
+        },
+        streaming: {
+          title: 'Streaming',
+          categories: [{ name: 'Streaming apps', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&' }],
+          prices: ['Netflix perfil 4.50$', 'Disney perfil 3$', 'Prime Video perfil 3$', 'HBO perfil 3$']
+        },
+        giftcards: {
+          title: 'GiftCards',
+          categories: [{ name: 'GiftCards gaming', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' }],
+          prices: ['10$ - 13$', '20$ - 26$', '50$ - 65$', '100$ - 130$']
+        }
+      };
       const gameServers = [
         { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
         { game: 'Albion Online', servers: ['West', 'East'] }
@@ -2626,6 +2679,7 @@
       let currentUser = null;
       let currentProfile = null;
       let recoveryMode = false;
+      let activeMarketType = 'p2p';
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
 
       function isAdminUser(user, profile = null) {
@@ -2981,6 +3035,35 @@
         });
       }
 
+      function renderMarketCatalog(type = 'p2p') {
+        const bucket = marketCatalog[type];
+        if (!bucket) return;
+        marketServiceTitle.textContent = `${bucket.title} · Categorías y precios`;
+        marketCategoryGrid.innerHTML = '';
+        bucket.categories.forEach((cat) => {
+          const card = document.createElement('article');
+          card.className = 'account-card';
+          card.innerHTML = `<img src="${cat.image}" alt="${cat.name}" /><strong>${cat.name}</strong>`;
+          marketCategoryGrid.appendChild(card);
+        });
+        marketPriceList.innerHTML = '';
+        bucket.prices.forEach((item) => {
+          const card = document.createElement('article');
+          card.className = 'category-item';
+          card.innerHTML = `<strong>${item}</strong>`;
+          marketPriceList.appendChild(card);
+        });
+      }
+
+      function setActiveMarketType(type = 'p2p') {
+        activeMarketType = type;
+        marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
+        [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].forEach((btn) => {
+          btn.classList.toggle('active', btn.id.toLowerCase().includes(type));
+        });
+        renderMarketCatalog(type);
+      }
+
       function renderCategoriasVista() {
         categoriasVistaLista.innerHTML = '';
         goldCategories.forEach((category) => {
@@ -3188,6 +3271,7 @@
         renderGoldCategories();
         renderServerByGame();
         loadSelectedGame();
+        setActiveMarketType('p2p');
         if (supabaseClient) {
           const { data: authData } = await supabaseClient.auth.getSession();
           currentUser = authData?.session?.user || null;
@@ -3547,8 +3631,8 @@
       });
 
       function activateAdminTab(tab) {
-        [tabListaJuegosAdmin, tabCategoriasOro, tabListaServidoresAdmin, tabOro, tabTicketsAdmin, tabCuentas, tabBosteo].forEach((btn) => btn.classList.remove('active'));
-        [editorListaJuegos, editorCategoriasOro, editorServidores, editorOro, editorTicketsAdmin, editorCuentas, editorBosteo].forEach((panel) => panel.classList.add('hidden'));
+        [tabListaJuegosAdmin, tabCategoriasOro, tabListaServidoresAdmin, tabOro, tabMarketAdmin, tabTicketsAdmin, tabCuentas, tabBosteo].forEach((btn) => btn.classList.remove('active'));
+        [editorListaJuegos, editorCategoriasOro, editorServidores, editorOro, editorMarketAdmin, editorTicketsAdmin, editorCuentas, editorBosteo].forEach((panel) => panel.classList.add('hidden'));
         if (tab === 'juegos') {
           tabListaJuegosAdmin.classList.add('active');
           editorListaJuegos.classList.remove('hidden');
@@ -3558,6 +3642,10 @@
         } else if (tab === 'servidores') {
           tabListaServidoresAdmin.classList.add('active');
           editorServidores.classList.remove('hidden');
+        } else if (tab === 'market') {
+          tabMarketAdmin.classList.add('active');
+          editorMarketAdmin.classList.remove('hidden');
+          setActiveMarketType(activeMarketType);
         } else if (tab === 'tickets') {
           tabTicketsAdmin.classList.add('active');
           editorTicketsAdmin.classList.remove('hidden');
@@ -3578,9 +3666,37 @@
       tabCategoriasOro.addEventListener('click', () => activateAdminTab('categorias-oro'));
       tabListaServidoresAdmin.addEventListener('click', () => activateAdminTab('servidores'));
       tabOro.addEventListener('click', () => activateAdminTab('oro'));
+      tabMarketAdmin.addEventListener('click', () => activateAdminTab('market'));
       tabTicketsAdmin.addEventListener('click', () => activateAdminTab('tickets'));
       tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
       tabBosteo.addEventListener('click', () => activateAdminTab('bosteo'));
+
+      marketActionButtons.forEach((btn) => {
+        btn.addEventListener('click', () => setActiveMarketType(btn.dataset.marketService || 'p2p'));
+      });
+      marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
+      marketTypeStreaming.addEventListener('click', () => setActiveMarketType('streaming'));
+      marketTypeGiftcards.addEventListener('click', () => setActiveMarketType('giftcards'));
+      saveMarketCategoryBtn.addEventListener('click', () => {
+        const name = marketCategoryName.value.trim();
+        const image = marketCategoryImage.value.trim();
+        if (!name || !image) return;
+        marketCatalog[activeMarketType].categories.push({ name, image });
+        marketCategoryName.value = '';
+        marketCategoryImage.value = '';
+        setActiveMarketType(activeMarketType);
+        showAdminNotice(`Categoría agregada en ${marketCatalog[activeMarketType].title}.`, 'ok');
+      });
+      saveMarketPriceBtn.addEventListener('click', () => {
+        const title = marketPriceName.value.trim();
+        const value = marketPriceValue.value.trim();
+        if (!title || !value) return;
+        marketCatalog[activeMarketType].prices.push(`${title} - ${value}`);
+        marketPriceName.value = '';
+        marketPriceValue.value = '';
+        setActiveMarketType(activeMarketType);
+        showAdminNotice(`Precio agregado en ${marketCatalog[activeMarketType].title}.`, 'ok');
+      });
 
       abrirFormularioJuego.addEventListener('click', () => {
         openGameForm('add');
