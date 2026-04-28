@@ -1927,6 +1927,39 @@
             <strong id="marketServiceTitle" style="display:block;margin-bottom:.55rem;color:#f0cf7b;"></strong>
             <div id="marketCategoryGrid" class="accounts-grid"></div>
             <div id="marketPriceList" class="admin-game-list" style="margin-top:.75rem;"></div>
+            <div id="marketOrderPanel" class="editor-box hidden" style="margin-top:.75rem;">
+              <strong style="display:block;margin-bottom:.55rem;color:#f0cf7b;">Completa tu solicitud</strong>
+              <div class="admin-split">
+                <div class="form-group">
+                  <label for="marketSelectedCategory">Categoría seleccionada</label>
+                  <input id="marketSelectedCategory" type="text" readonly />
+                </div>
+                <div class="form-group">
+                  <label for="marketSelectedService">Servicio</label>
+                  <input id="marketSelectedService" type="text" readonly />
+                </div>
+              </div>
+              <div class="admin-split">
+                <div class="form-group">
+                  <label for="marketPaymentMethod">Método de pago</label>
+                  <select id="marketPaymentMethod">
+                    <option value="Zinli">Zinli</option>
+                    <option value="PayPal">PayPal</option>
+                    <option value="Binance">Binance</option>
+                    <option value="USDT">USDT</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="marketItemType">Tipo</label>
+                  <input id="marketItemType" type="text" placeholder="Ej: Gift card Steam 50$" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="marketAmountToPay">Monto a pagar</label>
+                <input id="marketAmountToPay" type="text" placeholder="Ej: 65$" style="font-size:1.1rem;font-weight:800;" />
+              </div>
+              <button id="marketOpenTicketBtn" class="ticket-btn" type="button" style="width:100%;">Abrir ticket</button>
+            </div>
           </div>
         </div>
       </section>
@@ -2245,6 +2278,11 @@
             </div>
             <button id="saveMarketPriceBtn" class="panel-btn" type="button">Guardar precio</button>
           </div>
+          <div class="editor-box" style="margin-top:.6rem;">
+            <strong style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Categorías y precios actuales</strong>
+            <div id="marketAdminCategoryList"></div>
+            <div id="marketAdminPriceList" style="margin-top:.6rem;"></div>
+          </div>
         </div>
         <div id="editorCuentas" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -2412,6 +2450,13 @@
       const marketServiceTitle = document.getElementById('marketServiceTitle');
       const marketCategoryGrid = document.getElementById('marketCategoryGrid');
       const marketPriceList = document.getElementById('marketPriceList');
+      const marketOrderPanel = document.getElementById('marketOrderPanel');
+      const marketSelectedCategory = document.getElementById('marketSelectedCategory');
+      const marketSelectedService = document.getElementById('marketSelectedService');
+      const marketPaymentMethod = document.getElementById('marketPaymentMethod');
+      const marketItemType = document.getElementById('marketItemType');
+      const marketAmountToPay = document.getElementById('marketAmountToPay');
+      const marketOpenTicketBtn = document.getElementById('marketOpenTicketBtn');
       const marketActionButtons = document.querySelectorAll('.marketplace-action-btn[data-market-service]');
       const gameWindowModal = document.getElementById('gameWindowModal');
       const gameWindow = document.getElementById('gameWindow');
@@ -2541,6 +2586,8 @@
       const marketPriceName = document.getElementById('marketPriceName');
       const marketPriceValue = document.getElementById('marketPriceValue');
       const saveMarketPriceBtn = document.getElementById('saveMarketPriceBtn');
+      const marketAdminCategoryList = document.getElementById('marketAdminCategoryList');
+      const marketAdminPriceList = document.getElementById('marketAdminPriceList');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
@@ -2680,6 +2727,7 @@
       let currentProfile = null;
       let recoveryMode = false;
       let activeMarketType = 'p2p';
+      let selectedMarketCategory = '';
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
 
       function isAdminUser(user, profile = null) {
@@ -3041,22 +3089,64 @@
         marketServiceTitle.textContent = `${bucket.title} · Categorías y precios`;
         marketCategoryGrid.innerHTML = '';
         bucket.categories.forEach((cat) => {
-          const card = document.createElement('article');
+          const card = document.createElement('button');
+          card.type = 'button';
           card.className = 'account-card';
+          card.style.cursor = 'pointer';
           card.innerHTML = `<img src="${cat.image}" alt="${cat.name}" /><strong>${cat.name}</strong>`;
+          card.addEventListener('click', () => {
+            selectedMarketCategory = cat.name;
+            marketOrderPanel.classList.remove('hidden');
+            marketSelectedCategory.value = cat.name;
+            marketSelectedService.value = bucket.title;
+            marketItemType.value = cat.name;
+            marketAmountToPay.value = '';
+          });
           marketCategoryGrid.appendChild(card);
         });
         marketPriceList.innerHTML = '';
         bucket.prices.forEach((item) => {
-          const card = document.createElement('article');
+          const card = document.createElement('button');
+          card.type = 'button';
           card.className = 'category-item';
+          card.style.cursor = 'pointer';
           card.innerHTML = `<strong>${item}</strong>`;
+          card.addEventListener('click', () => {
+            if (marketOrderPanel.classList.contains('hidden')) {
+              marketOrderPanel.classList.remove('hidden');
+              marketSelectedService.value = bucket.title;
+              marketSelectedCategory.value = selectedMarketCategory || bucket.categories[0]?.name || '';
+            }
+            marketAmountToPay.value = item;
+          });
           marketPriceList.appendChild(card);
+        });
+        renderMarketAdminLists(type);
+      }
+
+      function renderMarketAdminLists(type = activeMarketType) {
+        const bucket = marketCatalog[type];
+        if (!bucket) return;
+        marketAdminCategoryList.innerHTML = '';
+        bucket.categories.forEach((cat, index) => {
+          const item = document.createElement('article');
+          item.className = 'category-item';
+          item.innerHTML = `<strong>${cat.name}</strong><p class="admin-game-desc">${cat.image}</p><button class="mini-btn danger" type="button" data-remove-market-category="${index}">Eliminar</button>`;
+          marketAdminCategoryList.appendChild(item);
+        });
+        marketAdminPriceList.innerHTML = '';
+        bucket.prices.forEach((price, index) => {
+          const item = document.createElement('article');
+          item.className = 'category-item';
+          item.innerHTML = `<strong>${price}</strong><button class="mini-btn danger" type="button" data-remove-market-price="${index}">Eliminar</button>`;
+          marketAdminPriceList.appendChild(item);
         });
       }
 
       function setActiveMarketType(type = 'p2p') {
         activeMarketType = type;
+        selectedMarketCategory = '';
+        marketOrderPanel.classList.add('hidden');
         marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
         [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].forEach((btn) => {
           btn.classList.toggle('active', btn.id.toLowerCase().includes(type));
@@ -3696,6 +3786,43 @@
         marketPriceValue.value = '';
         setActiveMarketType(activeMarketType);
         showAdminNotice(`Precio agregado en ${marketCatalog[activeMarketType].title}.`, 'ok');
+      });
+      marketAdminCategoryList.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-remove-market-category]');
+        if (!btn) return;
+        const index = Number(btn.dataset.removeMarketCategory);
+        if (Number.isNaN(index)) return;
+        marketCatalog[activeMarketType].categories.splice(index, 1);
+        setActiveMarketType(activeMarketType);
+      });
+      marketAdminPriceList.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-remove-market-price]');
+        if (!btn) return;
+        const index = Number(btn.dataset.removeMarketPrice);
+        if (Number.isNaN(index)) return;
+        marketCatalog[activeMarketType].prices.splice(index, 1);
+        setActiveMarketType(activeMarketType);
+      });
+      marketOpenTicketBtn.addEventListener('click', async () => {
+        if (!currentUser) {
+          openAuth('login');
+          showAuthNotice('Debes iniciar sesión para abrir ticket.');
+          return;
+        }
+        const summary = `${marketSelectedService.value} | ${marketSelectedCategory.value} | ${marketItemType.value} | ${marketPaymentMethod.value} | ${marketAmountToPay.value}`;
+        if (supabaseClient) {
+          await supabaseClient.from('tickets').insert({
+            user_id: currentUser.id,
+            game: marketSelectedService.value || 'Marketplace',
+            server: marketSelectedCategory.value || '',
+            product: marketItemType.value || '',
+            delivery: `${marketPaymentMethod.value} - ${marketAmountToPay.value}`,
+            status: 'pendiente'
+          });
+          await renderUserOrders();
+          await renderAdminTickets();
+        }
+        window.open(`https://discord.gg/DKd9HxK8?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
       });
 
       abrirFormularioJuego.addEventListener('click', () => {
