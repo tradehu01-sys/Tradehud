@@ -1911,15 +1911,15 @@
           <h2 class="section-title">Marketplace de <span>Servicios</span></h2>
           <div class="marketplace-actions">
             <button class="marketplace-action-btn" type="button" data-market-service="p2p">
-              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&" alt="P2P" />
+              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&" alt="P2P" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1200&auto=format&fit=crop';" />
               <span>P2P</span>
             </button>
             <button class="marketplace-action-btn" type="button" data-market-service="giftcards">
-              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&" alt="Giftcards" />
+              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&" alt="Giftcards" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=1200&auto=format&fit=crop';" />
               <span>GiftCards</span>
             </button>
             <button class="marketplace-action-btn" type="button" data-market-service="streaming">
-              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&" alt="Streaming" />
+              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&" alt="Streaming" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1200&auto=format&fit=crop';" />
               <span>Streaming</span>
             </button>
           </div>
@@ -2709,6 +2709,7 @@
           prices: ['10$ - 13$', '20$ - 26$', '50$ - 65$', '100$ - 130$']
         }
       };
+      const MARKET_STORAGE_KEY = 'tradehud_market_catalog_v1';
       const gameServers = [
         { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
         { game: 'Albion Online', servers: ['West', 'East'] }
@@ -2733,6 +2734,25 @@
       function isAdminUser(user, profile = null) {
         const email = user?.email?.toLowerCase?.() || '';
         return Boolean(profile?.is_admin) || ADMIN_EMAILS.includes(email);
+      }
+
+      function persistMarketCatalog() {
+        try {
+          localStorage.setItem(MARKET_STORAGE_KEY, JSON.stringify(marketCatalog));
+        } catch (error) {}
+      }
+
+      function hydrateMarketCatalog() {
+        try {
+          const raw = localStorage.getItem(MARKET_STORAGE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          ['p2p', 'streaming', 'giftcards'].forEach((key) => {
+            if (!parsed[key]) return;
+            if (Array.isArray(parsed[key].categories)) marketCatalog[key].categories = parsed[key].categories;
+            if (Array.isArray(parsed[key].prices)) marketCatalog[key].prices = parsed[key].prices;
+          });
+        } catch (error) {}
       }
 
       function renderGoldOrderProducts() {
@@ -3093,7 +3113,7 @@
           card.type = 'button';
           card.className = 'account-card';
           card.style.cursor = 'pointer';
-          card.innerHTML = `<img src="${cat.image}" alt="${cat.name}" /><strong>${cat.name}</strong>`;
+          card.innerHTML = `<img src="${cat.image}" alt="${cat.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" /><strong>${cat.name}</strong>`;
           card.addEventListener('click', () => {
             selectedMarketCategory = cat.name;
             marketOrderPanel.classList.remove('hidden');
@@ -3361,6 +3381,7 @@
         renderGoldCategories();
         renderServerByGame();
         loadSelectedGame();
+        hydrateMarketCatalog();
         setActiveMarketType('p2p');
         if (supabaseClient) {
           const { data: authData } = await supabaseClient.auth.getSession();
@@ -3772,6 +3793,7 @@
         const image = marketCategoryImage.value.trim();
         if (!name || !image) return;
         marketCatalog[activeMarketType].categories.push({ name, image });
+        persistMarketCatalog();
         marketCategoryName.value = '';
         marketCategoryImage.value = '';
         setActiveMarketType(activeMarketType);
@@ -3782,6 +3804,7 @@
         const value = marketPriceValue.value.trim();
         if (!title || !value) return;
         marketCatalog[activeMarketType].prices.push(`${title} - ${value}`);
+        persistMarketCatalog();
         marketPriceName.value = '';
         marketPriceValue.value = '';
         setActiveMarketType(activeMarketType);
@@ -3793,6 +3816,7 @@
         const index = Number(btn.dataset.removeMarketCategory);
         if (Number.isNaN(index)) return;
         marketCatalog[activeMarketType].categories.splice(index, 1);
+        persistMarketCatalog();
         setActiveMarketType(activeMarketType);
       });
       marketAdminPriceList.addEventListener('click', (e) => {
@@ -3801,6 +3825,7 @@
         const index = Number(btn.dataset.removeMarketPrice);
         if (Number.isNaN(index)) return;
         marketCatalog[activeMarketType].prices.splice(index, 1);
+        persistMarketCatalog();
         setActiveMarketType(activeMarketType);
       });
       marketOpenTicketBtn.addEventListener('click', async () => {
