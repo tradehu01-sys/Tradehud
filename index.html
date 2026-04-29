@@ -1553,7 +1553,7 @@
       <div class="container nav">
         <div class="logo">
           <a href="#inicio" data-page-link data-page="inicio" aria-label="Ir al inicio">
-            <img src="https://cdn.discordapp.com/attachments/1492284382977855689/1497413092953428058/ChatGPT_Image_24_abr_2026_09_44_47_p.m..png?ex=69ed6e1d&is=69ec1c9d&hm=bb3fd7d6d56af74deedc387fb38c16131ce33210758043a8edf310036413fec3&" alt="TradeHud" />
+            <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&" alt="TradeHud" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" />
           </a>
         </div>
         <nav>
@@ -1923,7 +1923,7 @@
               <span>Streaming</span>
             </button>
           </div>
-          <div class="editor-box" style="margin-top:.4rem;">
+          <div id="marketDetailsWrap" class="editor-box hidden" style="margin-top:.4rem;">
             <strong id="marketServiceTitle" style="display:block;margin-bottom:.55rem;color:#f0cf7b;"></strong>
             <div id="marketCategoryGrid" class="accounts-grid"></div>
             <div id="marketPriceList" class="admin-game-list" style="margin-top:.75rem;"></div>
@@ -2448,6 +2448,7 @@
       const pageLinks = document.querySelectorAll('[data-page-link]');
       const pageSections = document.querySelectorAll('.page-section');
       const marketServiceTitle = document.getElementById('marketServiceTitle');
+      const marketDetailsWrap = document.getElementById('marketDetailsWrap');
       const marketCategoryGrid = document.getElementById('marketCategoryGrid');
       const marketPriceList = document.getElementById('marketPriceList');
       const marketOrderPanel = document.getElementById('marketOrderPanel');
@@ -2669,7 +2670,13 @@
       ];
       const goldCategories = [
         { id: null, game: 'World of Warcraft', name: 'Oro rápido', description: 'Entrega en minutos con confirmación por Discord.' },
-        { id: null, game: 'Albion Online', name: 'Plata segura', description: 'Categoría premium para compra/venta segura.' }
+        { id: null, game: 'Albion Online', name: 'Plata segura', description: 'Categoría premium para compra/venta segura.' },
+        { id: null, game: 'World of Warcraft 20th Anniversary TBC', name: 'TBC Anniversary', description: 'Oro por servidores US/EU.' },
+        { id: null, game: 'World of Warcraft Retail', name: 'Retail Gold', description: 'Paquetes en K y M.' },
+        { id: null, game: 'World of Warcraft Project Epoch', name: 'Project Epoch', description: 'Oro por paquetes G.' },
+        { id: null, game: 'WARMANE', name: 'Warmane Gold', description: 'Onyxia / Lordaeron / Icecrown.' },
+        { id: null, game: 'AION', name: 'Kinah AION', description: 'Servidor EUROAION.' },
+        { id: null, game: 'Flyff Universe', name: 'Flyff Penya', description: 'Múltiples servidores.' }
       ];
       const accountCategories = [
         { id: null, game: 'World of Warcraft', name: 'Cuenta PVP', description: 'Cuentas verificadas con historial limpio.' }
@@ -2711,7 +2718,20 @@
       };
       const gameServers = [
         { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
-        { game: 'Albion Online', servers: ['West', 'East'] }
+        { game: 'Albion Online', servers: ['West', 'East'] },
+        { game: 'World of Warcraft 20th Anniversary TBC', servers: ['(US) NIGHTSLAYER', '(US) DREAMSCYTHE', '(EU) SPINESHATTER', '(EU) THUNDERSTRIKE', '(EU) SOULSEEKER'] },
+        { game: 'World of Warcraft Retail', servers: ['(US) WOW RETAIL', '(EU) WOW RETAIL'] },
+        { game: 'World of Warcraft Project Epoch', servers: ['KEZAN', 'GURUBASHI'] },
+        { game: 'World of Warcraft Ascension', servers: ['BRONZEBEARD'] },
+        { game: 'WARMANE', servers: ['Onyxia', 'Lordaeron', 'Icecrown'] },
+        { game: 'AION', servers: ['EUROAION'] },
+        { game: 'Aion 2', servers: ['(TW) Triniel', '(TW) Vaziel'] },
+        { game: 'RuneScape', servers: ['Old School RuneScape'] },
+        { game: 'Diablo 2 Resurrected Runes', servers: ['(PC) Ladder Season 13 Normal'] },
+        { game: 'Dofus', servers: ['Retro - Fallanster', 'Retro - Boune', 'Retro - Allisteria'] },
+        { game: 'Flyff Universe', servers: ['MUSHPOIE', 'TOTENMANIA', 'BURUDENG', 'FWC-2026'] },
+        { game: 'ODIN: Valhalla Rising Diamonds', servers: ['Asgard 01', 'Asgard 02', 'Asgard 03', 'Asgard 04', 'Asgard 05', 'Asgard 06', 'Asgard 07', 'Asgard 08', 'Asgard 09'] },
+        { game: 'Mir4', servers: ['(ASIA)', '(EU)', '(NA)', '(SA)'] }
       ];
       const goldPrices = [
         { game: 'World of Warcraft', server: 'Ragnaros', amount: 100, price: 3.5 },
@@ -3108,7 +3128,7 @@
       function renderMarketCatalog(type = 'p2p') {
         const bucket = marketCatalog[type];
         if (!bucket) return;
-        marketServiceTitle.textContent = `${bucket.title} · Categorías y precios`;
+        marketServiceTitle.textContent = `${bucket.title}`;
         marketCategoryGrid.innerHTML = '';
         bucket.categories.forEach((cat) => {
           const card = document.createElement('button');
@@ -3169,6 +3189,7 @@
         activeMarketType = type;
         selectedMarketCategory = '';
         marketOrderPanel.classList.add('hidden');
+        marketDetailsWrap.classList.remove('hidden');
         marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
         [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].forEach((btn) => {
           btn.classList.toggle('active', btn.id.toLowerCase().includes(type));
@@ -3384,7 +3405,7 @@
         renderServerByGame();
         loadSelectedGame();
         await loadMarketCatalogFromSupabase();
-        setActiveMarketType('p2p');
+        marketDetailsWrap.classList.add('hidden');
         if (supabaseClient) {
           const { data: authData } = await supabaseClient.auth.getSession();
           currentUser = authData?.session?.user || null;
