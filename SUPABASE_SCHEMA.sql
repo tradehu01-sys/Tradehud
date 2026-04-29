@@ -315,3 +315,29 @@ insert into public.games (name, icon, description, services) values
 ('The Quinfall','', 'Region USD/EU.', array['gold']),
 ('Warbone Above Ashes','', 'America / Europa.', array['gold'])
 on conflict do nothing;
+
+-- =========================
+-- 8) SEED COMERCIAL (VENDemos) Y TARJETAS P2P
+-- =========================
+insert into public.market_catalog_entries (service_type, entry_type, category_name, item_name, image, value, currency, sort_order)
+values
+('p2p','category','Tarjetas P2P','Zinli / PayPal / GiftCards','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','','USD',10),
+('p2p','price','Tarjetas P2P','Vendemos Zinli 10$','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','12$','USD',11),
+('p2p','price','Tarjetas P2P','Vendemos Zinli 20$','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','23$','USD',12),
+('p2p','price','Tarjetas P2P','Vendemos PayPal 50$','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','60$','USD',13),
+('p2p','price','Tarjetas P2P','Vendemos PayPal 100$','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','120$','USD',14)
+on conflict do nothing;
+
+-- Escala de paquetes para WoW TBC Anniversary (100G a 1000G)
+insert into public.gold_catalog_entries (game, server, package_name, price_usd, sort_order) values
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','100G',1.40,101),
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','200G',2.80,102),
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','300G',4.20,103),
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','400G',5.60,104),
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','500G',7.00,105),
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','600G',8.40,106),
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','700G',9.80,107),
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','800G',11.20,108),
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','900G',12.60,109),
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','1000G',14.00,110)
+on conflict do nothing;
