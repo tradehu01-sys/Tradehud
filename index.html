@@ -3365,6 +3365,20 @@
         adminNotice.style.color = kind === 'ok' ? '#9affcc' : kind === 'warn' ? '#ffd39a' : '#9fd6ff';
       }
 
+      function normalizeGameName(value = '') {
+        return value.toLowerCase().trim().replace(/\s+/g, ' ');
+      }
+
+      function dedupeGamesByName(list = []) {
+        const seen = new Set();
+        return list.filter((item) => {
+          const key = normalizeGameName(item?.name || '');
+          if (!key || seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      }
+
       async function syncFromSupabase() {
         if (isServiceRoleKey) {
           showAdminNotice('Clave bloqueada: detectamos service_role. Usa SOLO la anon public key en frontend.', 'warn');
@@ -3387,13 +3401,14 @@
           return;
         }
         if (Array.isArray(gamesData) && gamesData.length) {
-          games.splice(0, games.length, ...gamesData.map((row) => ({
+          const uniqueGames = dedupeGamesByName(gamesData.map((row) => ({
             id: row.id,
             name: row.name,
             icon: row.icon,
             description: row.description || '',
             services: Array.isArray(row.services) && row.services.length ? row.services : [...defaultServices]
           })));
+          games.splice(0, games.length, ...uniqueGames);
         }
         if (Array.isArray(categoriesData)) {
           goldCategories.splice(0, goldCategories.length, ...categoriesData.map((row) => ({
@@ -4249,32 +4264,33 @@
           services: getSelectedServices()
         };
         if (editingAdminIndex === null) {
-          if (supabaseClient) {
-            const supabasePayload = {
-              name: payload.name,
-              icon: payload.icon,
-              description: payload.description,
-              services: payload.services
-            };
-            const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services').single();
-            if (error) {
-              games.push({ id: null, ...payload });
-              selectedAdminIndex = games.length - 1;
-              if (error.message?.toLowerCase().includes('services')) {
-                showAdminNotice('No existe columna "services" en Supabase. Se guardó localmente.', 'warn');
-              } else {
-                showAdminNotice('No se pudo guardar en Supabase. Se guardó localmente.', 'warn');
-              }
-            } else {
-              games.push({ ...data, services: payload.services });
-              selectedAdminIndex = games.length - 1;
-              showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
-            }
-          } else {
-            games.push({ id: null, ...payload });
-            selectedAdminIndex = games.length - 1;
-            showAdminNotice(`Juego agregado localmente: ${payload.name}.`, 'info');
+          const normalizedName = normalizeGameName(payload.name);
+          if (games.some((game) => normalizeGameName(game.name) === normalizedName)) {
+            showAdminNotice(`Ya existe un juego llamado ${payload.name}.`, 'warn');
+            return;
           }
+          if (!supabaseClient) {
+            showAdminNotice('Supabase no está configurado. No se guardó el juego para evitar registros locales sin ID.', 'warn');
+            return;
+          }
+          const supabasePayload = {
+            name: payload.name,
+            icon: payload.icon,
+            description: payload.description,
+            services: payload.services
+          };
+          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services').single();
+          if (error) {
+            if (error.message?.toLowerCase().includes('services')) {
+              showAdminNotice('No existe columna "services" en Supabase. Ejecuta el schema actualizado.', 'warn');
+            } else {
+              showAdminNotice('No se pudo guardar en Supabase. Verifica tabla/políticas y vuelve a intentar.', 'warn');
+            }
+            return;
+          }
+          games.push({ ...data, services: payload.services });
+          selectedAdminIndex = games.length - 1;
+          showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
         } else {
           if (supabaseClient && games[editingAdminIndex]?.id) {
             const supabasePayload = {

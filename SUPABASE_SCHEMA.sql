@@ -215,3 +215,100 @@ insert into public.gold_catalog_entries (game, server, package_name, price_usd, 
 ('Lineage 2 (Reborn)','ORIGIN X1','50M',6.28,1),
 ('Warbone Above Ashes','America','2K',10.52,1)
 on conflict do nothing;
+
+-- =========================
+-- 7) TABLAS FALTANTES PARA PANEL ADMIN (games / gold_categories)
+-- =========================
+create table if not exists public.games (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  icon text not null default '',
+  description text not null default '',
+  services text[] not null default array['gold','accounts','boosting'],
+  created_at timestamptz not null default now(),
+  unique(name)
+);
+
+create table if not exists public.gold_categories (
+  id uuid primary key default gen_random_uuid(),
+  game text not null default 'General',
+  name text not null,
+  description text not null default 'Sin descripción.',
+  created_at timestamptz not null default now(),
+  unique(game, name)
+);
+
+alter table public.games enable row level security;
+alter table public.gold_categories enable row level security;
+
+drop policy if exists "games_public_read" on public.games;
+drop policy if exists "games_admin_write" on public.games;
+drop policy if exists "gold_categories_public_read" on public.gold_categories;
+drop policy if exists "gold_categories_admin_write" on public.gold_categories;
+
+create policy "games_public_read"
+on public.games
+for select
+using (true);
+
+create policy "games_admin_write"
+on public.games
+for all
+using (
+  exists (
+    select 1 from public.user_profiles p
+    where p.id = auth.uid() and p.is_admin = true
+  )
+)
+with check (
+  exists (
+    select 1 from public.user_profiles p
+    where p.id = auth.uid() and p.is_admin = true
+  )
+);
+
+create policy "gold_categories_public_read"
+on public.gold_categories
+for select
+using (true);
+
+create policy "gold_categories_admin_write"
+on public.gold_categories
+for all
+using (
+  exists (
+    select 1 from public.user_profiles p
+    where p.id = auth.uid() and p.is_admin = true
+  )
+)
+with check (
+  exists (
+    select 1 from public.user_profiles p
+    where p.id = auth.uid() and p.is_admin = true
+  )
+);
+
+insert into public.games (name, icon, description, services) values
+('World of Warcraft 20th Anniversary TBC','', 'Catálogo TBC anniversary.', array['gold','accounts','boosting']),
+('World of Warcraft Retail','', 'Catálogo Retail US/EU.', array['gold','accounts','boosting']),
+('World of Warcraft Project Epoch','', 'Project Epoch gold.', array['gold','accounts','boosting']),
+('World of Warcraft Ascension','', 'Ascension gold.', array['gold','accounts','boosting']),
+('WARMANE','', 'Onyxia/Lordaeron/Icecrown.', array['gold','accounts','boosting']),
+('AION','', 'Kinah EUROAION.', array['gold']),
+('Aion 2','', 'TW Triniel/Vaziel.', array['gold']),
+('RuneScape','', 'Old School RuneScape.', array['gold']),
+('Diablo 2 Resurrected Runes','', 'Ladder Season 13.', array['gold']),
+('LAWL','', 'Lawl Global.', array['gold']),
+('Dofus','', 'Retro servers.', array['gold']),
+('Flyff Universe','', 'MUSHPOIE / TOTENMANIA / BURUDENG / FWC-2026.', array['gold']),
+('ODIN: Valhalla Rising Diamonds','', 'Asgard 01-09.', array['gold']),
+('Mir4','', 'ASIA / EU / NA / SA.', array['gold']),
+('Rubinot','', 'Rubinicoin.', array['gold']),
+('Tibia','', 'Tibicoin.', array['gold']),
+('Path of Exile 1','', 'Mirage Season.', array['gold']),
+('Path of Exile 2','', 'Divine Orbs.', array['gold']),
+('Throne and Liberty','', 'Global Americas.', array['gold']),
+('Torchlight Infinite','', 'Season Lunaria USD/EU.', array['gold']),
+('The Quinfall','', 'Region USD/EU.', array['gold']),
+('Warbone Above Ashes','', 'America / Europa.', array['gold'])
+on conflict (name) do nothing;
