@@ -3159,14 +3159,38 @@
       function renderMarketCatalog(type = 'p2p') {
         const bucket = marketCatalog[type];
         if (!bucket) return;
-        marketServiceTitle.textContent = `${bucket.title}`;
+        marketServiceTitle.textContent = `${bucket.title} · Selecciona categoría para ver apartados y crear ticket`;
         marketCategoryGrid.innerHTML = '';
-        bucket.categories.forEach((cat) => {
+        marketPriceList.innerHTML = '';
+
+        const renderCategoryItems = (categoryName) => {
+          const term = categoryName.toLowerCase();
+          const filtered = bucket.prices.filter((price) => price.toLowerCase().includes(term));
+          const items = filtered.length ? filtered : bucket.prices;
+          marketPriceList.innerHTML = '';
+          items.forEach((item) => {
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.className = 'category-item';
+            card.style.cursor = 'pointer';
+            card.innerHTML = `<strong>${item}</strong>`;
+            card.addEventListener('click', () => {
+              marketOrderPanel.classList.remove('hidden');
+              marketSelectedService.value = bucket.title;
+              marketSelectedCategory.value = categoryName;
+              marketItemType.value = item;
+              marketAmountToPay.value = item;
+            });
+            marketPriceList.appendChild(card);
+          });
+        };
+
+        bucket.categories.forEach((cat, index) => {
           const card = document.createElement('button');
           card.type = 'button';
           card.className = 'account-card';
           card.style.cursor = 'pointer';
-          card.innerHTML = `<img src="${cat.image}" alt="${cat.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" /><strong>${cat.name}</strong>`;
+          card.innerHTML = `<img src="${cat.image}" alt="${cat.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" /><strong>${cat.name}</strong><p class="admin-game-desc">Ver apartados y abrir ticket</p>`;
           card.addEventListener('click', () => {
             selectedMarketCategory = cat.name;
             marketOrderPanel.classList.remove('hidden');
@@ -3174,25 +3198,16 @@
             marketSelectedService.value = bucket.title;
             marketItemType.value = cat.name;
             marketAmountToPay.value = '';
+            renderCategoryItems(cat.name);
           });
           marketCategoryGrid.appendChild(card);
-        });
-        marketPriceList.innerHTML = '';
-        bucket.prices.forEach((item) => {
-          const card = document.createElement('button');
-          card.type = 'button';
-          card.className = 'category-item';
-          card.style.cursor = 'pointer';
-          card.innerHTML = `<strong>${item}</strong>`;
-          card.addEventListener('click', () => {
-            if (marketOrderPanel.classList.contains('hidden')) {
-              marketOrderPanel.classList.remove('hidden');
-              marketSelectedService.value = bucket.title;
-              marketSelectedCategory.value = selectedMarketCategory || bucket.categories[0]?.name || '';
-            }
-            marketAmountToPay.value = item;
-          });
-          marketPriceList.appendChild(card);
+          if (index === 0 && !selectedMarketCategory) {
+            selectedMarketCategory = cat.name;
+            marketOrderPanel.classList.remove('hidden');
+            marketSelectedCategory.value = cat.name;
+            marketSelectedService.value = bucket.title;
+            renderCategoryItems(cat.name);
+          }
         });
         renderMarketAdminLists(type);
       }
