@@ -2662,33 +2662,38 @@
         : null;
       const ADMIN_EMAILS = ['admin@tradehud.com'];
 
+      const wowGameIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E";
+      const wowTbcGameIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E";
+      const albionGameIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E";
+      const lineage2GameIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E";
+
       const games = [
-        { id: null, name: 'World of Warcraft', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E", description: 'Clásico para comercio de oro y servicios premium.' },
-        { id: null, name: 'WoW TBC', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E", description: 'Servidor TBC con alta demanda de boosting.' },
-        { id: null, name: 'Albion Online', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E", description: 'Compra/venta de plata y servicios por encargo.' },
-        { id: null, name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E", description: 'Market activo para adena y cuentas.' },
-        { id: null, name: 'World of Warcraft 20th Anniversary TBC', icon: games?.[1]?.icon || '', description: 'Catálogo TBC anniversary.' },
-        { id: null, name: 'World of Warcraft Retail', icon: games?.[0]?.icon || '', description: 'Catálogo Retail US/EU.' },
-        { id: null, name: 'World of Warcraft Project Epoch', icon: games?.[0]?.icon || '', description: 'Project Epoch gold.' },
-        { id: null, name: 'World of Warcraft Ascension', icon: games?.[0]?.icon || '', description: 'Ascension gold.' },
-        { id: null, name: 'WARMANE', icon: games?.[0]?.icon || '', description: 'Onyxia/Lordaeron/Icecrown.' },
-        { id: null, name: 'AION', icon: games?.[2]?.icon || '', description: 'Kinah EUROAION.' },
-        { id: null, name: 'Aion 2', icon: games?.[2]?.icon || '', description: 'TW Triniel/Vaziel.' },
-        { id: null, name: 'RuneScape', icon: games?.[2]?.icon || '', description: 'Old School RuneScape.' },
-        { id: null, name: 'Diablo 2 Resurrected Runes', icon: games?.[2]?.icon || '', description: 'Ladder Season 13.' },
-        { id: null, name: 'LAWL', icon: games?.[2]?.icon || '', description: 'Lawl Global.' },
-        { id: null, name: 'Dofus', icon: games?.[2]?.icon || '', description: 'Retro servers.' },
-        { id: null, name: 'Flyff Universe', icon: games?.[2]?.icon || '', description: 'MUSHPOIE / TOTENMANIA / BURUDENG / FWC-2026.' },
-        { id: null, name: 'ODIN: Valhalla Rising Diamonds', icon: games?.[2]?.icon || '', description: 'Asgard 01-09.' },
-        { id: null, name: 'Mir4', icon: games?.[2]?.icon || '', description: 'ASIA / EU / NA / SA.' },
-        { id: null, name: 'Rubinot', icon: games?.[2]?.icon || '', description: 'Rubinicoin.' },
-        { id: null, name: 'Tibia', icon: games?.[2]?.icon || '', description: 'Tibicoin.' },
-        { id: null, name: 'Path of Exile 1', icon: games?.[2]?.icon || '', description: 'Mirage Season.' },
-        { id: null, name: 'Path of Exile 2', icon: games?.[2]?.icon || '', description: 'Divine Orbs.' },
-        { id: null, name: 'Throne and Liberty', icon: games?.[2]?.icon || '', description: 'Global Americas.' },
-        { id: null, name: 'Torchlight Infinite', icon: games?.[2]?.icon || '', description: 'Season Lunaria USD/EU.' },
-        { id: null, name: 'The Quinfall', icon: games?.[2]?.icon || '', description: 'Region USD/EU.' },
-        { id: null, name: 'Warbone Above Ashes', icon: games?.[2]?.icon || '', description: 'America / Europa.' }
+        { id: null, name: 'World of Warcraft', icon: wowGameIcon, description: 'Clásico para comercio de oro y servicios premium.' },
+        { id: null, name: 'WoW TBC', icon: wowTbcGameIcon, description: 'Servidor TBC con alta demanda de boosting.' },
+        { id: null, name: 'Albion Online', icon: albionGameIcon, description: 'Compra/venta de plata y servicios por encargo.' },
+        { id: null, name: 'Lineage 2 Reborn', icon: lineage2GameIcon, description: 'Market activo para adena y cuentas.' },
+        { id: null, name: 'World of Warcraft 20th Anniversary TBC', icon: wowTbcGameIcon, description: 'Catálogo TBC anniversary.' },
+        { id: null, name: 'World of Warcraft Retail', icon: wowGameIcon, description: 'Catálogo Retail US/EU.' },
+        { id: null, name: 'World of Warcraft Project Epoch', icon: wowGameIcon, description: 'Project Epoch gold.' },
+        { id: null, name: 'World of Warcraft Ascension', icon: wowGameIcon, description: 'Ascension gold.' },
+        { id: null, name: 'WARMANE', icon: wowGameIcon, description: 'Onyxia/Lordaeron/Icecrown.' },
+        { id: null, name: 'AION', icon: albionGameIcon, description: 'Kinah EUROAION.' },
+        { id: null, name: 'Aion 2', icon: albionGameIcon, description: 'TW Triniel/Vaziel.' },
+        { id: null, name: 'RuneScape', icon: albionGameIcon, description: 'Old School RuneScape.' },
+        { id: null, name: 'Diablo 2 Resurrected Runes', icon: albionGameIcon, description: 'Ladder Season 13.' },
+        { id: null, name: 'LAWL', icon: albionGameIcon, description: 'Lawl Global.' },
+        { id: null, name: 'Dofus', icon: albionGameIcon, description: 'Retro servers.' },
+        { id: null, name: 'Flyff Universe', icon: albionGameIcon, description: 'MUSHPOIE / TOTENMANIA / BURUDENG / FWC-2026.' },
+        { id: null, name: 'ODIN: Valhalla Rising Diamonds', icon: albionGameIcon, description: 'Asgard 01-09.' },
+        { id: null, name: 'Mir4', icon: albionGameIcon, description: 'ASIA / EU / NA / SA.' },
+        { id: null, name: 'Rubinot', icon: albionGameIcon, description: 'Rubinicoin.' },
+        { id: null, name: 'Tibia', icon: albionGameIcon, description: 'Tibicoin.' },
+        { id: null, name: 'Path of Exile 1', icon: albionGameIcon, description: 'Mirage Season.' },
+        { id: null, name: 'Path of Exile 2', icon: albionGameIcon, description: 'Divine Orbs.' },
+        { id: null, name: 'Throne and Liberty', icon: albionGameIcon, description: 'Global Americas.' },
+        { id: null, name: 'Torchlight Infinite', icon: albionGameIcon, description: 'Season Lunaria USD/EU.' },
+        { id: null, name: 'The Quinfall', icon: albionGameIcon, description: 'Region USD/EU.' },
+        { id: null, name: 'Warbone Above Ashes', icon: albionGameIcon, description: 'America / Europa.' }
       ];
       const goldCategories = [
         { id: null, game: 'World of Warcraft', name: 'Oro rápido', description: 'Entrega en minutos con confirmación por Discord.' },
