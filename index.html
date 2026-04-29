@@ -1434,6 +1434,7 @@
       }
       .auth-tab.active { border-color: var(--gold); color: #fff; }
       .auth-pane.hidden { display:none; }
+      .auth-mini-logo { width: 70px; height: 70px; object-fit: cover; border-radius: 14px; border: 1px solid #3a5b9a; display:block; margin: 0 auto .7rem; box-shadow: 0 0 16px rgba(0,0,0,.25); }
       .auth-hint { color: #9cb6e9; font-size: .8rem; margin-top: .2rem; }
       .auth-pane label,
       .profile-pane label {
@@ -1553,7 +1554,7 @@
       <div class="container nav">
         <div class="logo">
           <a href="#inicio" data-page-link data-page="inicio" aria-label="Ir al inicio">
-            <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&" alt="TradeHud" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" />
+            <img src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412256244432926/ChatGPT_Image_24_abr_2026_09_09_04_p.m..png?ex=69f2b356&is=69f161d6&hm=95429f0ee3a058074ec4f6f77e33115c821474de45db67473d0ea93b6ef1c0db&" alt="TradeHud" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" />
           </a>
         </div>
         <nav>
@@ -1893,7 +1894,7 @@
                 </div>
                 <img
                   class="sell-payment-photo"
-                  src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412299370266787/photo_2026-03-26_10-15-34.jpg?ex=69ee1620&is=69ecc4a0&hm=935f1c122ef4b1e5635ea825c0eaca35b4873c77e8067a84e88fbda29400c80f&"
+                  src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412299370266787/photo_2026-03-26_10-15-34.jpg?ex=69f2b360&is=69f161e0&hm=459d853e37824c8b16b1d51c5152db3d4488b5926f14704fd43a8bd0dfbcbb3e&"
                   alt="Recibe tu pago TradeHud"
                 />
                 <a class="discord-sell-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Ir al Discord de venta</a>
@@ -2037,6 +2038,7 @@
           <button id="tabAuthLogin" class="auth-tab active" type="button">Ingresar</button>
           <button id="tabAuthRegister" class="auth-tab" type="button">Crear cuenta</button>
         </div>
+        <img class="auth-mini-logo" src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412256244432926/ChatGPT_Image_24_abr_2026_09_09_04_p.m..png?ex=69f2b356&is=69f161d6&hm=95429f0ee3a058074ec4f6f77e33115c821474de45db67473d0ea93b6ef1c0db&" alt="TradeHud acceso" onerror="this.style.display='none'" />
         <div id="authPaneLogin" class="auth-pane">
           <label for="authLoginEmail">Correo</label>
           <input id="authLoginEmail" type="email" placeholder="tu@email.com" />
