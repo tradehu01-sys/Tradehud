@@ -1,7 +1,11 @@
--- TradeHud schema (sin localhost, todo en base de datos)
+-- TradeHud schema completo (auth + tickets + catálogos + categorías + precios)
+-- Compatible con PostgreSQL/Supabase (sin "create policy if not exists")
 
 create extension if not exists "pgcrypto";
 
+-- =========================
+-- 1) PERFILES
+-- =========================
 create table if not exists public.user_profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   name text not null default 'Usuario',
@@ -13,6 +17,9 @@ create table if not exists public.user_profiles (
   updated_at timestamptz not null default now()
 );
 
+-- =========================
+-- 2) TICKETS
+-- =========================
 create table if not exists public.tickets (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
@@ -26,57 +33,104 @@ create table if not exists public.tickets (
   created_at timestamptz not null default now()
 );
 
+-- =========================
+-- 3) CATÁLOGO MARKETPLACE
+-- =========================
 create table if not exists public.market_catalog_entries (
   id uuid primary key default gen_random_uuid(),
-  service_type text not null check (service_type in ('p2p','streaming','giftcards')),
+  service_type text not null check (service_type in ('p2p','streaming','giftcards','gold')),
   entry_type text not null check (entry_type in ('category','price')),
-  name text not null default '',
+  category_name text not null default '',
+  item_name text not null default '',
   image text not null default '',
   value text not null default '',
+  currency text not null default 'USD',
   sort_order int not null default 0,
   created_at timestamptz not null default now()
 );
 
+-- =========================
+-- 4) ORO POR JUEGO/SERVIDOR
+-- =========================
+create table if not exists public.gold_catalog_entries (
+  id uuid primary key default gen_random_uuid(),
+  game text not null,
+  server text not null,
+  package_name text not null,
+  price_usd numeric(12,2) not null default 0,
+  sort_order int not null default 0,
+  created_at timestamptz not null default now()
+);
+
+-- =========================
 -- RLS
+-- =========================
 alter table public.user_profiles enable row level security;
 alter table public.tickets enable row level security;
 alter table public.market_catalog_entries enable row level security;
+alter table public.gold_catalog_entries enable row level security;
+
+-- Limpiar políticas previas si existen
+drop policy if exists "user_profiles_select_own" on public.user_profiles;
+drop policy if exists "user_profiles_upsert_own" on public.user_profiles;
+drop policy if exists "tickets_select_own" on public.tickets;
+drop policy if exists "tickets_insert_own" on public.tickets;
+drop policy if exists "tickets_select_admin" on public.tickets;
+drop policy if exists "market_catalog_public_read" on public.market_catalog_entries;
+drop policy if exists "market_catalog_admin_write" on public.market_catalog_entries;
+drop policy if exists "gold_catalog_public_read" on public.gold_catalog_entries;
+drop policy if exists "gold_catalog_admin_write" on public.gold_catalog_entries;
 
 -- perfiles
-create policy if not exists "user_profiles_select_own"
-on public.user_profiles for select
+create policy "user_profiles_select_own"
+on public.user_profiles
+for select
 using (auth.uid() = id);
 
-create policy if not exists "user_profiles_upsert_own"
-on public.user_profiles for all
+create policy "user_profiles_upsert_own"
+on public.user_profiles
+for all
 using (auth.uid() = id)
 with check (auth.uid() = id);
 
--- tickets (usuario dueño)
-create policy if not exists "tickets_select_own"
-on public.tickets for select
+-- tickets usuario dueño
+create policy "tickets_select_own"
+on public.tickets
+for select
 using (auth.uid() = user_id);
 
-create policy if not exists "tickets_insert_own"
-on public.tickets for insert
+create policy "tickets_insert_own"
+on public.tickets
+for insert
 with check (auth.uid() = user_id);
 
--- admin básico por profile
-create policy if not exists "tickets_select_admin"
-on public.tickets for select
+-- tickets admin
+create policy "tickets_select_admin"
+on public.tickets
+for select
 using (
   exists (
-    select 1 from public.user_profiles p
+    select 1
+    from public.user_profiles p
     where p.id = auth.uid() and p.is_admin = true
   )
 );
 
-create policy if not exists "market_catalog_public_read"
-on public.market_catalog_entries for select
+-- catálogo lectura pública
+create policy "market_catalog_public_read"
+on public.market_catalog_entries
+for select
 using (true);
 
-create policy if not exists "market_catalog_admin_write"
-on public.market_catalog_entries for all
+create policy "gold_catalog_public_read"
+on public.gold_catalog_entries
+for select
+using (true);
+
+-- catálogo escritura admin
+create policy "market_catalog_admin_write"
+on public.market_catalog_entries
+for all
 using (
   exists (
     select 1 from public.user_profiles p
@@ -89,3 +143,75 @@ with check (
     where p.id = auth.uid() and p.is_admin = true
   )
 );
+
+create policy "gold_catalog_admin_write"
+on public.gold_catalog_entries
+for all
+using (
+  exists (
+    select 1 from public.user_profiles p
+    where p.id = auth.uid() and p.is_admin = true
+  )
+)
+with check (
+  exists (
+    select 1 from public.user_profiles p
+    where p.id = auth.uid() and p.is_admin = true
+  )
+);
+
+-- =========================
+-- 5) SEED CATÁLOGO MARKETPLACE (P2P, STREAMING, GIFTCARDS)
+-- =========================
+insert into public.market_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
+values
+('p2p','category','ZINLI','ZINLI','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','',1),
+('p2p','category','PAYPAL','PAYPAL','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','',2),
+('streaming','category','Streaming Apps','Streaming Apps','https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png','',1),
+('giftcards','category','GiftCards Gaming','GiftCards Gaming','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',1)
+on conflict do nothing;
+
+insert into public.market_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
+values
+('p2p','price','ZINLI','Zinli 10$','','12$',1),
+('p2p','price','ZINLI','Zinli 20$','','23$',2),
+('p2p','price','PAYPAL','Paypal 50$','','60$',3),
+('p2p','price','PAYPAL','Paypal 100$','','120$',4),
+('streaming','price','Netflix','1 perfil (mes)','','4.50$',1),
+('streaming','price','Disney','1 perfil (mes)','','3$',2),
+('streaming','price','Prime Video','1 perfil (mes)','','3$',3),
+('streaming','price','HBO','1 perfil (mes)','','3$',4),
+('giftcards','price','GiftCards','10$','','13$',1),
+('giftcards','price','GiftCards','20$','','26$',2),
+('giftcards','price','GiftCards','50$','','65$',3),
+('giftcards','price','GiftCards','100$','','130$',4)
+on conflict do nothing;
+
+-- =========================
+-- 6) SEED ORO (JUEGOS/CATEGORÍAS/PRECIOS PRINCIPALES)
+-- =========================
+insert into public.gold_catalog_entries (game, server, package_name, price_usd, sort_order) values
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','300G',4.20,1),
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','500G',7,2),
+('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','1000G',14,3),
+('World of Warcraft Retail','(US) WOW RETAIL','100K',4.50,1),
+('World of Warcraft Retail','(US) WOW RETAIL','200K',9,2),
+('World of Warcraft Project Epoch','KEZAN','100G',7,1),
+('World of Warcraft Ascension','BRONZEBEARD','100G',0.90,1),
+('WARMANE','Onyxia','1K',14,1),
+('Albion Online','SILVER','100M',24,1),
+('AION','EUROAION','100M',2.20,1),
+('RuneScape','Old School RuneScape','100M',24,1),
+('Diablo 2 Resurrected Runes','(PC) Ladder Season 13 Normal','100M',7.10,1),
+('Dofus','Retro - Fallanster','100M',5,1),
+('Flyff Universe','MUSHPOIE','100M',1.90,1),
+('ODIN: Valhalla Rising Diamonds','(EU+USD) Asgard 01','1K',4.50,1),
+('Mir4','(ASIA)','1000G',4,1),
+('Path of Exile 1','MIRAGE SEASON NUEVA','300DV',4.50,1),
+('Path of Exile 2','Divine Orbs','100,000U',3,1),
+('Throne and Liberty','Region Global Americas','2K',9.60,1),
+('Torchlight Infinite','(USD) Season Lunaria','1000U',1.10,1),
+('The Quinfall','Region (USD)','500M',10.20,1),
+('Lineage 2 (Reborn)','ORIGIN X1','50M',6.28,1),
+('Warbone Above Ashes','America','2K',10.52,1)
+on conflict do nothing;
