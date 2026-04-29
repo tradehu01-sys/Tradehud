@@ -2709,7 +2709,6 @@
           prices: ['10$ - 13$', '20$ - 26$', '50$ - 65$', '100$ - 130$']
         }
       };
-      const MARKET_STORAGE_KEY = 'tradehud_market_catalog_v1';
       const gameServers = [
         { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
         { game: 'Albion Online', servers: ['West', 'East'] }
@@ -2736,23 +2735,26 @@
         return Boolean(profile?.is_admin) || ADMIN_EMAILS.includes(email);
       }
 
-      function persistMarketCatalog() {
-        try {
-          localStorage.setItem(MARKET_STORAGE_KEY, JSON.stringify(marketCatalog));
-        } catch (error) {}
-      }
-
-      function hydrateMarketCatalog() {
-        try {
-          const raw = localStorage.getItem(MARKET_STORAGE_KEY);
-          if (!raw) return;
-          const parsed = JSON.parse(raw);
-          ['p2p', 'streaming', 'giftcards'].forEach((key) => {
-            if (!parsed[key]) return;
-            if (Array.isArray(parsed[key].categories)) marketCatalog[key].categories = parsed[key].categories;
-            if (Array.isArray(parsed[key].prices)) marketCatalog[key].prices = parsed[key].prices;
-          });
-        } catch (error) {}
+      async function loadMarketCatalogFromSupabase() {
+        if (!supabaseClient) return;
+        const { data, error } = await supabaseClient
+          .from('market_catalog_entries')
+          .select('service_type,entry_type,name,image,value,sort_order')
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: true });
+        if (error || !Array.isArray(data)) return;
+        ['p2p', 'streaming', 'giftcards'].forEach((key) => {
+          marketCatalog[key].categories = [];
+          marketCatalog[key].prices = [];
+        });
+        data.forEach((row) => {
+          if (!marketCatalog[row.service_type]) return;
+          if (row.entry_type === 'category') {
+            marketCatalog[row.service_type].categories.push({ name: row.name || '', image: row.image || '' });
+          } else if (row.entry_type === 'price') {
+            marketCatalog[row.service_type].prices.push(row.value || row.name || '');
+          }
+        });
       }
 
       function renderGoldOrderProducts() {
@@ -3381,7 +3383,7 @@
         renderGoldCategories();
         renderServerByGame();
         loadSelectedGame();
-        hydrateMarketCatalog();
+        await loadMarketCatalogFromSupabase();
         setActiveMarketType('p2p');
         if (supabaseClient) {
           const { data: authData } = await supabaseClient.auth.getSession();
@@ -3788,44 +3790,82 @@
       marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
       marketTypeStreaming.addEventListener('click', () => setActiveMarketType('streaming'));
       marketTypeGiftcards.addEventListener('click', () => setActiveMarketType('giftcards'));
-      saveMarketCategoryBtn.addEventListener('click', () => {
+      saveMarketCategoryBtn.addEventListener('click', async () => {
         const name = marketCategoryName.value.trim();
         const image = marketCategoryImage.value.trim();
         if (!name || !image) return;
         marketCatalog[activeMarketType].categories.push({ name, image });
-        persistMarketCatalog();
+        if (supabaseClient) {
+          await supabaseClient.from('market_catalog_entries').insert({
+            service_type: activeMarketType,
+            entry_type: 'category',
+            name,
+            image,
+            value: '',
+            sort_order: marketCatalog[activeMarketType].categories.length
+          });
+        }
         marketCategoryName.value = '';
         marketCategoryImage.value = '';
         setActiveMarketType(activeMarketType);
         showAdminNotice(`Categoría agregada en ${marketCatalog[activeMarketType].title}.`, 'ok');
       });
-      saveMarketPriceBtn.addEventListener('click', () => {
+      saveMarketPriceBtn.addEventListener('click', async () => {
         const title = marketPriceName.value.trim();
         const value = marketPriceValue.value.trim();
         if (!title || !value) return;
-        marketCatalog[activeMarketType].prices.push(`${title} - ${value}`);
-        persistMarketCatalog();
+        const fullValue = `${title} - ${value}`;
+        marketCatalog[activeMarketType].prices.push(fullValue);
+        if (supabaseClient) {
+          await supabaseClient.from('market_catalog_entries').insert({
+            service_type: activeMarketType,
+            entry_type: 'price',
+            name: title,
+            image: '',
+            value: fullValue,
+            sort_order: marketCatalog[activeMarketType].prices.length
+          });
+        }
         marketPriceName.value = '';
         marketPriceValue.value = '';
         setActiveMarketType(activeMarketType);
         showAdminNotice(`Precio agregado en ${marketCatalog[activeMarketType].title}.`, 'ok');
       });
-      marketAdminCategoryList.addEventListener('click', (e) => {
+      marketAdminCategoryList.addEventListener('click', async (e) => {
         const btn = e.target.closest('button[data-remove-market-category]');
         if (!btn) return;
         const index = Number(btn.dataset.removeMarketCategory);
         if (Number.isNaN(index)) return;
+        const target = marketCatalog[activeMarketType].categories[index];
         marketCatalog[activeMarketType].categories.splice(index, 1);
-        persistMarketCatalog();
+        if (supabaseClient && target) {
+          await supabaseClient
+            .from('market_catalog_entries')
+            .delete()
+            .eq('service_type', activeMarketType)
+            .eq('entry_type', 'category')
+            .eq('name', target.name)
+            .eq('image', target.image || '')
+            .limit(1);
+        }
         setActiveMarketType(activeMarketType);
       });
-      marketAdminPriceList.addEventListener('click', (e) => {
+      marketAdminPriceList.addEventListener('click', async (e) => {
         const btn = e.target.closest('button[data-remove-market-price]');
         if (!btn) return;
         const index = Number(btn.dataset.removeMarketPrice);
         if (Number.isNaN(index)) return;
+        const target = marketCatalog[activeMarketType].prices[index];
         marketCatalog[activeMarketType].prices.splice(index, 1);
-        persistMarketCatalog();
+        if (supabaseClient && target) {
+          await supabaseClient
+            .from('market_catalog_entries')
+            .delete()
+            .eq('service_type', activeMarketType)
+            .eq('entry_type', 'price')
+            .eq('value', target)
+            .limit(1);
+        }
         setActiveMarketType(activeMarketType);
       });
       marketOpenTicketBtn.addEventListener('click', async () => {
