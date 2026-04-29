@@ -238,6 +238,9 @@ create table if not exists public.gold_categories (
   unique(game, name)
 );
 
+create unique index if not exists games_name_key on public.games (name);
+create unique index if not exists gold_categories_game_name_key on public.gold_categories (game, name);
+
 alter table public.games enable row level security;
 alter table public.gold_categories enable row level security;
 
@@ -311,4 +314,4 @@ insert into public.games (name, icon, description, services) values
 ('Torchlight Infinite','', 'Season Lunaria USD/EU.', array['gold']),
 ('The Quinfall','', 'Region USD/EU.', array['gold']),
 ('Warbone Above Ashes','', 'America / Europa.', array['gold'])
-on conflict (name) do nothing;
+on conflict do nothing;
