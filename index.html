@@ -2334,6 +2334,8 @@
             <label><input id="serviceBoosting" type="checkbox" checked /> Boosting</label>
             <label><input id="serviceAccounts" type="checkbox" checked /> Cuentas</label>
             <label><input id="serviceGold" type="checkbox" checked /> Oro</label>
+            <label for="customServiceInput">Sección personalizada</label>
+            <input id="customServiceInput" type="text" placeholder="Ej: Albion" />
           </div>
           <div class="image-preview">
             <small>Vista previa</small>
@@ -2546,6 +2548,7 @@
       const serviceBoosting = document.getElementById('serviceBoosting');
       const serviceAccounts = document.getElementById('serviceAccounts');
       const serviceGold = document.getElementById('serviceGold');
+      const customServiceInput = document.getElementById('customServiceInput');
       const previewImagenJuego = document.getElementById('previewImagenJuego');
       const previewNombreJuego = document.getElementById('previewNombreJuego');
       const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
@@ -3235,12 +3238,12 @@
         activeMarketType = type;
         selectedMarketCategory = '';
         marketOrderPanel.classList.add('hidden');
-        marketDetailsWrap.classList.remove('hidden');
+        marketDetailsWrap.classList.add('hidden');
         marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
         [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].forEach((btn) => {
           btn.classList.toggle('active', btn.id.toLowerCase().includes(type));
         });
-        renderMarketCatalog(type);
+        renderMarketAdminLists(type);
       }
 
       function renderCategoriasVista() {
@@ -3332,6 +3335,7 @@
         serviceBoosting.checked = selectedServices.includes('boosting');
         serviceAccounts.checked = selectedServices.includes('accounts');
         serviceGold.checked = selectedServices.includes('gold');
+        customServiceInput.value = selectedServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service)) || '';
         updateGamePreview();
       }
 
@@ -3342,6 +3346,7 @@
         serviceBoosting.checked = true;
         serviceAccounts.checked = true;
         serviceGold.checked = true;
+        customServiceInput.value = '';
         updateGamePreview();
       }
 
@@ -3350,6 +3355,7 @@
         if (serviceBoosting.checked) services.push('boosting');
         if (serviceAccounts.checked) services.push('accounts');
         if (serviceGold.checked) services.push('gold');
+        if (customServiceInput.value.trim()) services.push(customServiceInput.value.trim().toLowerCase());
         return services.length ? services : [...defaultServices];
       }
 
@@ -3420,10 +3426,11 @@
           return;
         }
         if (Array.isArray(gamesData) && gamesData.length) {
+          const existingIconByName = new Map(games.map((game) => [normalizeGameName(game.name), game.icon]));
           const uniqueGames = dedupeGamesByName(gamesData.map((row) => ({
             id: row.id,
             name: row.name,
-            icon: row.icon,
+            icon: row.icon || existingIconByName.get(normalizeGameName(row.name)) || albionGameIcon,
             description: row.description || '',
             services: Array.isArray(row.services) && row.services.length ? row.services : [...defaultServices]
           })));
@@ -4016,6 +4023,7 @@
       serviceBoosting.addEventListener('change', updateGamePreview);
       serviceAccounts.addEventListener('change', updateGamePreview);
       serviceGold.addEventListener('change', updateGamePreview);
+      customServiceInput.addEventListener("input", updateGamePreview);
       oroSearch.addEventListener('input', renderGameList);
 
       function openCategoriaModal(type = 'oro') {
