@@ -379,7 +379,7 @@ with check (
 
 insert into public.app_assets (key, image_url) values
 ('logo_main','https://cdn.discordapp.com/attachments/1434981534833704970/1497412256244432926/ChatGPT_Image_24_abr_2026_09_09_04_p.m..png?ex=69f2b356&is=69f161d6&hm=95429f0ee3a058074ec4f6f77e33115c821474de45db67473d0ea93b6ef1c0db&'),
-('service_gold','https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=1200&auto=format&fit=crop'),
-('service_boosting','https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1200&auto=format&fit=crop'),
-('service_accounts','https://images.unsplash.com/photo-1518773553398-650c184e0bb3?q=80&w=1200&auto=format&fit=crop')
+('service_gold','https://cdn.discordapp.com/attachments/1495867730752966788/1496006561200472115/ChatGPT_Image_20_abr_2026_06_41_28_p.m..png?ex=69f384ee&is=69f2336e&hm=7936fade266d5772c87fb455c134c898022aacc484e8b04be98260e0e9da3790&'),
+('service_boosting','https://cdn.discordapp.com/attachments/1495867730752966788/1496006601390428240/ChatGPT_Image_20_abr_2026_06_42_34_p.m..png?ex=69f384f8&is=69f23378&hm=1cc06e24f43ce71b54bf4549f0027bea82423cabfa8c1eee4949eb779f5ba76a&'),
+('service_accounts','https://cdn.discordapp.com/attachments/1495867730752966788/1496006645220905070/ChatGPT_Image_20_abr_2026_06_43_30_p.m..png?ex=69f38502&is=69f23382&hm=6a9e1ab5f0fb0aa0b1c2659e9e502136b09924a473bbd565bc850736c4c152fa&')
 on conflict (key) do update set image_url = excluded.image_url;
