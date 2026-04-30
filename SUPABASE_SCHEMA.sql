@@ -341,3 +341,45 @@ insert into public.gold_catalog_entries (game, server, package_name, price_usd, 
 ('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','900G',12.60,109),
 ('World of Warcraft 20th Anniversary TBC','(US) NIGHTSLAYER','1000G',14.00,110)
 on conflict do nothing;
+
+-- =========================
+-- 9) ASSETS (LOGO + ICONOS DE SECCIONES)
+-- =========================
+create table if not exists public.app_assets (
+  key text primary key,
+  image_url text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table public.app_assets enable row level security;
+
+drop policy if exists "app_assets_public_read" on public.app_assets;
+drop policy if exists "app_assets_admin_write" on public.app_assets;
+
+create policy "app_assets_public_read"
+on public.app_assets
+for select
+using (true);
+
+create policy "app_assets_admin_write"
+on public.app_assets
+for all
+using (
+  exists (
+    select 1 from public.user_profiles p
+    where p.id = auth.uid() and p.is_admin = true
+  )
+)
+with check (
+  exists (
+    select 1 from public.user_profiles p
+    where p.id = auth.uid() and p.is_admin = true
+  )
+);
+
+insert into public.app_assets (key, image_url) values
+('logo_main','https://cdn.discordapp.com/attachments/1434981534833704970/1497412256244432926/ChatGPT_Image_24_abr_2026_09_09_04_p.m..png?ex=69f2b356&is=69f161d6&hm=95429f0ee3a058074ec4f6f77e33115c821474de45db67473d0ea93b6ef1c0db&'),
+('service_gold','https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=1200&auto=format&fit=crop'),
+('service_boosting','https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1200&auto=format&fit=crop'),
+('service_accounts','https://images.unsplash.com/photo-1518773553398-650c184e0bb3?q=80&w=1200&auto=format&fit=crop')
+on conflict (key) do update set image_url = excluded.image_url;
