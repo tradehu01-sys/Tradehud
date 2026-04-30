@@ -224,7 +224,7 @@ create table if not exists public.games (
   name text not null,
   icon text not null default '',
   description text not null default '',
-  services text[] not null default array['gold','accounts','boosting'],
+  services text[] not null default array['gold','boosting','accounts'],
   created_at timestamptz not null default now(),
   unique(name)
 );
@@ -292,11 +292,11 @@ with check (
 );
 
 insert into public.games (name, icon, description, services) values
-('World of Warcraft 20th Anniversary TBC','', 'Catálogo TBC anniversary.', array['gold','accounts','boosting']),
-('World of Warcraft Retail','', 'Catálogo Retail US/EU.', array['gold','accounts','boosting']),
-('World of Warcraft Project Epoch','', 'Project Epoch gold.', array['gold','accounts','boosting']),
-('World of Warcraft Ascension','', 'Ascension gold.', array['gold','accounts','boosting']),
-('WARMANE','', 'Onyxia/Lordaeron/Icecrown.', array['gold','accounts','boosting']),
+('World of Warcraft 20th Anniversary TBC','', 'Catálogo TBC anniversary.', array['gold','boosting','accounts']),
+('World of Warcraft Retail','', 'Catálogo Retail US/EU.', array['gold','boosting','accounts']),
+('World of Warcraft Project Epoch','', 'Project Epoch gold.', array['gold','boosting','accounts']),
+('World of Warcraft Ascension','', 'Ascension gold.', array['gold','boosting','accounts']),
+('WARMANE','', 'Onyxia/Lordaeron/Icecrown.', array['gold','boosting','accounts']),
 ('AION','', 'Kinah EUROAION.', array['gold']),
 ('Aion 2','', 'TW Triniel/Vaziel.', array['gold']),
 ('RuneScape','', 'Old School RuneScape.', array['gold']),
