@@ -3163,7 +3163,7 @@
         const bucket = marketCatalog[type];
         if (!bucket) return;
         marketServiceTitle.textContent = type === 'giftcards'
-          ? 'GiftCards disponibles'
+          ? 'GiftCards · Selecciona una categoría'
           : `${bucket.title} · Selecciona categoría para ver apartados y crear ticket`;
         marketCategoryGrid.innerHTML = '';
         marketPriceList.innerHTML = '';
@@ -3206,7 +3206,7 @@
             renderCategoryItems(cat.name);
           });
           marketCategoryGrid.appendChild(card);
-          if (index === 0 && !selectedMarketCategory) {
+          if (index === 0 && !selectedMarketCategory && type !== 'giftcards') {
             selectedMarketCategory = cat.name;
             marketOrderPanel.classList.remove('hidden');
             marketSelectedCategory.value = cat.name;
@@ -3214,13 +3214,9 @@
             renderCategoryItems(cat.name);
           }
         });
-        if (type === 'giftcards' && bucket.prices.length) {
-          bucket.prices.forEach((item) => {
-            const giftCard = document.createElement('article');
-            giftCard.className = 'category-item';
-            giftCard.innerHTML = `<strong>${item}</strong><p class="admin-game-desc">Tarjeta disponible para compra</p>`;
-            marketPriceList.appendChild(giftCard);
-          });
+        if (type === 'giftcards') {
+          marketOrderPanel.classList.add('hidden');
+          marketPriceList.innerHTML = '<p class="auth-hint">Elige una categoría de giftcard para ver especificaciones.</p>';
         }
         renderMarketAdminLists(type);
       }
