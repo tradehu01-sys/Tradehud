@@ -3162,7 +3162,9 @@
       function renderMarketCatalog(type = 'p2p') {
         const bucket = marketCatalog[type];
         if (!bucket) return;
-        marketServiceTitle.textContent = `${bucket.title} · Selecciona categoría para ver apartados y crear ticket`;
+        marketServiceTitle.textContent = type === 'giftcards'
+          ? 'GiftCards disponibles'
+          : `${bucket.title} · Selecciona categoría para ver apartados y crear ticket`;
         marketCategoryGrid.innerHTML = '';
         marketPriceList.innerHTML = '';
 
@@ -3212,6 +3214,14 @@
             renderCategoryItems(cat.name);
           }
         });
+        if (type === 'giftcards' && bucket.prices.length) {
+          bucket.prices.forEach((item) => {
+            const giftCard = document.createElement('article');
+            giftCard.className = 'category-item';
+            giftCard.innerHTML = `<strong>${item}</strong><p class="admin-game-desc">Tarjeta disponible para compra</p>`;
+            marketPriceList.appendChild(giftCard);
+          });
+        }
         renderMarketAdminLists(type);
       }
 
@@ -3238,12 +3248,16 @@
         activeMarketType = type;
         selectedMarketCategory = '';
         marketOrderPanel.classList.add('hidden');
-        marketDetailsWrap.classList.add('hidden');
+        marketDetailsWrap.classList.toggle('hidden', type !== 'giftcards');
         marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
         [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].forEach((btn) => {
           btn.classList.toggle('active', btn.id.toLowerCase().includes(type));
         });
-        renderMarketAdminLists(type);
+        if (type === 'giftcards') {
+          renderMarketCatalog(type);
+        } else {
+          renderMarketAdminLists(type);
+        }
       }
 
       function renderCategoriasVista() {
