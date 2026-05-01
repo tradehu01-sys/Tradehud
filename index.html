@@ -4079,7 +4079,10 @@
       guardarServidorJuego.addEventListener('click', () => {
         const game = serverGameSelect.value.trim();
         const server = serverNameInput.value.trim();
-        if (!game || !server) return;
+        if (!game || !server) {
+          showAdminNotice('Selecciona juego y escribe servidor antes de guardar.', 'warn');
+          return;
+        }
         const found = gameServers.find((entry) => entry.game === game);
         if (!found) {
           gameServers.push({ game, servers: [server] });
@@ -4108,7 +4111,10 @@
           image: accountImageInput.value.trim() || 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop',
           description: accountDescriptionInput.value.trim()
         };
-        if (!payload.game || !payload.name) return;
+        if (!payload.game || !payload.name) {
+          showAdminNotice('Para guardar cuenta completa juego y nombre.', 'warn');
+          return;
+        }
         gameAccounts.push(payload);
         accountNameInput.value = '';
         accountLevelRangeInput.value = '';
@@ -4235,7 +4241,10 @@
       });
 
       guardarCategoriaOro.addEventListener('click', async () => {
-        if (!categoriaNombre.value.trim()) return;
+        if (!categoriaNombre.value.trim()) {
+          showAdminNotice('Escribe un nombre para la categoría.', 'warn');
+          return;
+        }
         const payload = {
           game: categoriaJuego.value.trim() || 'General',
           name: categoriaNombre.value.trim(),
@@ -4311,7 +4320,10 @@
       });
 
       guardarJuegoForm.addEventListener('click', async () => {
-        if (!juegoNombre.value.trim()) return;
+        if (!juegoNombre.value.trim()) {
+          showAdminNotice('El juego necesita nombre para poder guardarse.', 'warn');
+          return;
+        }
         const payload = {
           name: juegoNombre.value.trim(),
           icon: juegoImagen.value.trim() || games[0].icon,
