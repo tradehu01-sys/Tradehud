@@ -1,4 +1,5 @@
 -- TradeHud schema completo (auth + tickets + catálogos + categorías + precios)
+-- Actualizado: 2026-05-01 (incluye storage bucket tradehud-assets + políticas)
 -- Compatible con PostgreSQL/Supabase (sin "create policy if not exists")
 
 create extension if not exists "pgcrypto";

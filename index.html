@@ -3434,7 +3434,8 @@
           if (gamesError?.message?.toLowerCase().includes('services')) {
             showAdminNotice('Falta la columna "services" en la tabla games de Supabase.', 'warn');
           } else {
-            showAdminNotice('Error cargando datos de Supabase.', 'warn');
+            const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
+            showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
           }
           return;
         }
@@ -3457,7 +3458,7 @@
             description: row.description || 'Sin descripción.'
           })));
         }
-        showAdminNotice('Conectado a Supabase correctamente.', 'ok');
+        showAdminNotice(`Conectado a Supabase correctamente. Juegos: ${gamesData?.length || 0}, categorías: ${categoriesData?.length || 0}.`, 'ok');
       }
 
       async function initializeApp() {
