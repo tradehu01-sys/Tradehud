@@ -3135,6 +3135,7 @@
       }
 
       function renderMarketCatalog(type = 'p2p') {
+        if (!marketServiceTitle || !marketCategoryGrid || !marketPriceList || !marketOrderPanel) return;
         const bucket = marketCatalog[type];
         if (!bucket) return;
         marketServiceTitle.textContent = type === 'giftcards'
@@ -3197,6 +3198,7 @@
       }
 
       function renderMarketAdminLists(type = activeMarketType) {
+        if (!marketAdminCategoryList || !marketAdminPriceList) return;
         const bucket = marketCatalog[type];
         if (!bucket) return;
         marketAdminCategoryList.innerHTML = '';
@@ -3216,12 +3218,13 @@
       }
 
       function setActiveMarketType(type = 'p2p') {
+        if (!marketDetailsWrap || !marketOrderPanel) return;
         activeMarketType = type;
         selectedMarketCategory = '';
         marketOrderPanel.classList.add('hidden');
         marketDetailsWrap.classList.toggle('hidden', type !== 'giftcards');
         marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
-        [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].forEach((btn) => {
+        [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].filter(Boolean).forEach((btn) => {
           btn.classList.toggle('active', btn.id.toLowerCase().includes(type));
         });
         if (type === 'giftcards') {
@@ -3890,10 +3893,10 @@
       marketActionButtons.forEach((btn) => {
         btn.addEventListener('click', () => setActiveMarketType(btn.dataset.marketService || 'p2p'));
       });
-      marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
-      marketTypeStreaming.addEventListener('click', () => setActiveMarketType('streaming'));
-      marketTypeGiftcards.addEventListener('click', () => setActiveMarketType('giftcards'));
-      saveMarketCategoryBtn.addEventListener('click', async () => {
+      if (marketTypeP2P) marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
+      if (marketTypeStreaming) marketTypeStreaming.addEventListener('click', () => setActiveMarketType('streaming'));
+      if (marketTypeGiftcards) marketTypeGiftcards.addEventListener('click', () => setActiveMarketType('giftcards'));
+      if (saveMarketCategoryBtn) saveMarketCategoryBtn.addEventListener('click', async () => {
         const name = marketCategoryName.value.trim();
         const image = marketCategoryImage.value.trim();
         if (!name || !image) return;
@@ -3913,7 +3916,7 @@
         setActiveMarketType(activeMarketType);
         showAdminNotice(`Categoría agregada en ${marketCatalog[activeMarketType].title}.`, 'ok');
       });
-      saveMarketPriceBtn.addEventListener('click', async () => {
+      if (saveMarketPriceBtn) saveMarketPriceBtn.addEventListener('click', async () => {
         const title = marketPriceName.value.trim();
         const value = marketPriceValue.value.trim();
         if (!title || !value) return;
@@ -3934,7 +3937,7 @@
         setActiveMarketType(activeMarketType);
         showAdminNotice(`Precio agregado en ${marketCatalog[activeMarketType].title}.`, 'ok');
       });
-      marketAdminCategoryList.addEventListener('click', async (e) => {
+      if (marketAdminCategoryList) marketAdminCategoryList.addEventListener('click', async (e) => {
         const btn = e.target.closest('button[data-remove-market-category]');
         if (!btn) return;
         const index = Number(btn.dataset.removeMarketCategory);
@@ -3953,7 +3956,7 @@
         }
         setActiveMarketType(activeMarketType);
       });
-      marketAdminPriceList.addEventListener('click', async (e) => {
+      if (marketAdminPriceList) marketAdminPriceList.addEventListener('click', async (e) => {
         const btn = e.target.closest('button[data-remove-market-price]');
         if (!btn) return;
         const index = Number(btn.dataset.removeMarketPrice);
@@ -3971,7 +3974,7 @@
         }
         setActiveMarketType(activeMarketType);
       });
-      marketOpenTicketBtn.addEventListener('click', async () => {
+      if (marketOpenTicketBtn) marketOpenTicketBtn.addEventListener('click', async () => {
         if (!currentUser) {
           openAuth('login');
           showAuthNotice('Debes iniciar sesión para abrir ticket.');
