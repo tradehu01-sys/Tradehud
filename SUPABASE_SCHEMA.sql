@@ -383,3 +383,45 @@ insert into public.app_assets (key, image_url) values
 ('service_accounts','https://cdn.discordapp.com/attachments/1495867730752966788/1496006645220905070/ChatGPT_Image_20_abr_2026_06_43_30_p.m..png?ex=69f38502&is=69f23382&hm=6a9e1ab5f0fb0aa0b1c2659e9e502136b09924a473bbd565bc850736c4c152fa&'),
 ('logo_main','https://cdn.discordapp.com/attachments/1434981534833704970/1497412256244432926/ChatGPT_Image_24_abr_2026_09_09_04_p.m..png?ex=69f2b356&is=69f161d6&hm=95429f0ee3a058074ec4f6f77e33115c821474de45db67473d0ea93b6ef1c0db&')
 on conflict (key) do update set image_url = excluded.image_url;
+
+-- =========================
+-- 10) STORAGE PARA IMÁGENES DESDE PC
+-- =========================
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'tradehud-assets',
+  'tradehud-assets',
+  true,
+  5242880,
+  array['image/png','image/jpeg','image/webp','image/gif']
+)
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "tradehud_assets_public_read" on storage.objects;
+drop policy if exists "tradehud_assets_admin_write" on storage.objects;
+
+create policy "tradehud_assets_public_read"
+on storage.objects
+for select
+using (bucket_id = 'tradehud-assets');
+
+create policy "tradehud_assets_admin_write"
+on storage.objects
+for all
+using (
+  bucket_id = 'tradehud-assets'
+  and exists (
+    select 1 from public.user_profiles p
+    where p.id = auth.uid() and p.is_admin = true
+  )
+)
+with check (
+  bucket_id = 'tradehud-assets'
+  and exists (
+    select 1 from public.user_profiles p
+    where p.id = auth.uid() and p.is_admin = true
+  )
+);

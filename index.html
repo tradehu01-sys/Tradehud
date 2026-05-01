@@ -2286,6 +2286,10 @@
           <div class="form-group">
             <label for="juegoImagen">Imagen (URL)</label>
             <input id="juegoImagen" type="text" placeholder="URL imagen del icono redondo" />
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
+              <input id="juegoImagenFile" type="file" accept="image/*" />
+              <button id="subirJuegoImagenBtn" class="mini-btn" type="button">Subir imagen desde PC</button>
+            </div>
           </div>
           <div class="form-group">
             <label for="juegoDescripcion">Descripción</label>
@@ -2384,6 +2388,10 @@
           <div class="form-group">
             <label for="accountImageInput">Imagen (URL)</label>
             <input id="accountImageInput" type="text" placeholder="URL de imagen de la cuenta" />
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
+              <input id="accountImageFile" type="file" accept="image/*" />
+              <button id="subirAccountImagenBtn" class="mini-btn" type="button">Subir imagen desde PC</button>
+            </div>
           </div>
           <div class="form-group">
             <label for="accountDescriptionInput">Descripción</label>
@@ -2506,6 +2514,8 @@
       const juegoFormTitulo = document.getElementById('juegoFormTitulo');
       const juegoNombre = document.getElementById('juegoNombre');
       const juegoImagen = document.getElementById('juegoImagen');
+      const juegoImagenFile = document.getElementById('juegoImagenFile');
+      const subirJuegoImagenBtn = document.getElementById('subirJuegoImagenBtn');
       const juegoDescripcion = document.getElementById('juegoDescripcion');
       const serviceBoosting = document.getElementById('serviceBoosting');
       const serviceAccounts = document.getElementById('serviceAccounts');
@@ -2541,6 +2551,8 @@
       const accountFactionInput = document.getElementById('accountFactionInput');
       const accountBudgetInput = document.getElementById('accountBudgetInput');
       const accountImageInput = document.getElementById('accountImageInput');
+      const accountImageFile = document.getElementById('accountImageFile');
+      const subirAccountImagenBtn = document.getElementById('subirAccountImagenBtn');
       const accountDescriptionInput = document.getElementById('accountDescriptionInput');
       const saveAccountBtn = document.getElementById('saveAccountBtn');
       const accountFormModal = document.getElementById('accountFormModal');
@@ -2630,6 +2642,7 @@
         ? (isServiceRoleKey ? null : window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY))
         : null;
       const ADMIN_EMAILS = ['admin@tradehud.com'];
+      const ASSET_BUCKET = 'tradehud-assets';
 
       const wowGameIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E";
       const wowTbcGameIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E";
@@ -3362,6 +3375,34 @@
         adminNotice.style.color = kind === 'ok' ? '#9affcc' : kind === 'warn' ? '#ffd39a' : '#9fd6ff';
       }
 
+      async function uploadImageFromPc(file, folder = 'general') {
+        if (!supabaseClient) {
+          showAdminNotice('Conecta Supabase para subir imágenes.', 'warn');
+          return null;
+        }
+        if (!file) {
+          showAdminNotice('Selecciona una imagen primero.', 'warn');
+          return null;
+        }
+        const cleanFolder = String(folder || 'general').replace(/[^a-z0-9-_]/gi, '').toLowerCase() || 'general';
+        const ext = (file.name.split('.').pop() || 'png').toLowerCase();
+        const path = `${cleanFolder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const { error: uploadError } = await supabaseClient.storage.from(ASSET_BUCKET).upload(path, file, {
+          upsert: false,
+          contentType: file.type || 'image/png'
+        });
+        if (uploadError) {
+          showAdminNotice(`Error subiendo imagen: ${uploadError.message}`, 'warn');
+          return null;
+        }
+        const { data } = supabaseClient.storage.from(ASSET_BUCKET).getPublicUrl(path);
+        if (!data?.publicUrl) {
+          showAdminNotice('No se pudo obtener URL pública de la imagen.', 'warn');
+          return null;
+        }
+        return data.publicUrl;
+      }
+
       function normalizeGameName(value = '') {
         return value.toLowerCase().trim().replace(/\s+/g, ' ');
       }
@@ -3992,6 +4033,14 @@
       juegoNombre.addEventListener('input', updateGamePreview);
       juegoImagen.addEventListener('input', updateGamePreview);
       juegoDescripcion.addEventListener('input', updateGamePreview);
+      subirJuegoImagenBtn.addEventListener('click', async () => {
+        const file = juegoImagenFile.files?.[0];
+        const url = await uploadImageFromPc(file, 'games');
+        if (!url) return;
+        juegoImagen.value = url;
+        updateGamePreview();
+        showAdminNotice('Imagen del juego subida y guardada en Supabase Storage.', 'ok');
+      });
       serviceBoosting.addEventListener('change', updateGamePreview);
       serviceAccounts.addEventListener('change', updateGamePreview);
       serviceGold.addEventListener('change', updateGamePreview);
@@ -4071,6 +4120,13 @@
         renderAdminAccounts();
         showAdminNotice(`Cuenta agregada para ${payload.game}.`, 'ok');
         closeAccountModal();
+      });
+      subirAccountImagenBtn.addEventListener('click', async () => {
+        const file = accountImageFile.files?.[0];
+        const url = await uploadImageFromPc(file, 'accounts');
+        if (!url) return;
+        accountImageInput.value = url;
+        showAdminNotice('Imagen de cuenta subida y guardada en Supabase Storage.', 'ok');
       });
 
       adminAccountsList.addEventListener('click', (e) => {
