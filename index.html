@@ -3426,13 +3426,25 @@
       }
 
       async function uploadImageFromPc(file, folder = 'general') {
-        if (!supabaseClient) {
-          showAdminNotice('Conecta Supabase para subir imágenes.', 'warn');
-          return null;
-        }
         if (!file) {
           showAdminNotice('Selecciona una imagen primero.', 'warn');
           return null;
+        }
+        const toDataUrl = () => new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result || ''));
+          reader.onerror = () => reject(new Error('No se pudo leer el archivo.'));
+          reader.readAsDataURL(file);
+        });
+        if (!supabaseClient) {
+          try {
+            const dataUrl = await toDataUrl();
+            showAdminNotice('Supabase no disponible: imagen guardada localmente en el juego.', 'warn');
+            return dataUrl;
+          } catch (error) {
+            showAdminNotice('No se pudo procesar la imagen local.', 'warn');
+            return null;
+          }
         }
         const cleanFolder = String(folder || 'general').replace(/[^a-z0-9-_]/gi, '').toLowerCase() || 'general';
         const ext = (file.name.split('.').pop() || 'png').toLowerCase();
@@ -3442,8 +3454,14 @@
           contentType: file.type || 'image/png'
         });
         if (uploadError) {
-          showAdminNotice(`Error subiendo imagen: ${uploadError.message}`, 'warn');
-          return null;
+          try {
+            const dataUrl = await toDataUrl();
+            showAdminNotice(`Error subiendo imagen (${uploadError.message}). Se usará imagen local.`, 'warn');
+            return dataUrl;
+          } catch (error) {
+            showAdminNotice(`Error subiendo imagen: ${uploadError.message}`, 'warn');
+            return null;
+          }
         }
         const { data } = supabaseClient.storage.from(ASSET_BUCKET).getPublicUrl(path);
         if (!data?.publicUrl) {
