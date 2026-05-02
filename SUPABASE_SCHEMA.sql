@@ -226,6 +226,9 @@ create table if not exists public.games (
   icon text not null default '',
   description text not null default '',
   services text[] not null default array['gold','boosting','accounts'],
+  custom_service_name text not null default '',
+  custom_service_image text not null default '',
+  custom_service_hide_name boolean not null default false,
   created_at timestamptz not null default now(),
   unique(name)
 );

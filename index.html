@@ -3463,7 +3463,7 @@
           return;
         }
         const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
-          supabaseClient.from('games').select('id,name,icon,description,services').order('created_at', { ascending: true }),
+          supabaseClient.from('games').select('id,name,icon,description,services,custom_service_name,custom_service_image,custom_service_hide_name').order('created_at', { ascending: true }),
           supabaseClient.from('gold_categories').select('id,game,name,description').order('created_at', { ascending: true })
         ]);
         if (gamesError || categoriesError) {
@@ -3485,6 +3485,13 @@
             services: Array.isArray(row.services) && row.services.length ? row.services : [...defaultServices]
           })));
           games.splice(0, games.length, ...uniqueGames);
+          (gamesData || []).forEach((row) => {
+            if (!row?.name) return;
+            customServiceMetaByGame[row.name] = {
+              image: row.custom_service_image || '',
+              hideName: Boolean(row.custom_service_hide_name)
+            };
+          });
         }
         if (Array.isArray(categoriesData)) {
           goldCategories.splice(0, goldCategories.length, ...categoriesData.map((row) => ({
@@ -4392,9 +4399,12 @@
             name: payload.name,
             icon: payload.icon,
             description: payload.description,
-            services: payload.services
+            services: payload.services,
+            custom_service_name: customServiceInput.value.trim().toLowerCase(),
+            custom_service_image: customServiceImage.value.trim(),
+            custom_service_hide_name: customServiceHideName.checked
           };
-          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services').single();
+          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services,custom_service_name,custom_service_image,custom_service_hide_name').single();
           if (error) {
             if (error.message?.toLowerCase().includes('services')) {
               showAdminNotice('No existe columna "services" en Supabase. Ejecuta el schema actualizado.', 'warn');
@@ -4412,13 +4422,16 @@
               name: payload.name,
               icon: payload.icon,
               description: payload.description,
-              services: payload.services
+              services: payload.services,
+              custom_service_name: customServiceInput.value.trim().toLowerCase(),
+              custom_service_image: customServiceImage.value.trim(),
+              custom_service_hide_name: customServiceHideName.checked
             };
             const { data, error } = await supabaseClient
               .from('games')
               .update(supabasePayload)
               .eq('id', games[editingAdminIndex].id)
-              .select('id,name,icon,description,services')
+              .select('id,name,icon,description,services,custom_service_name,custom_service_image,custom_service_hide_name')
               .single();
             if (error) {
               games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
