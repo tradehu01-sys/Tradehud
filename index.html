@@ -2301,6 +2301,7 @@
             <label><input id="serviceAccounts" type="checkbox" checked /> Cuentas</label>
             <label><input id="serviceGold" type="checkbox" checked /> Oro</label>
             <label for="customServiceInput">Sección personalizada</label>
+            <label><input id="customServiceEnabled" type="checkbox" /> Activar sección personalizada</label>
             <input id="customServiceInput" type="text" placeholder="Ej: Albion" />
             <label><input id="customServiceHideName" type="checkbox" /> Mostrar solo imagen (sin nombre)</label>
             <input id="customServiceImage" type="hidden" />
@@ -2527,6 +2528,7 @@
       const serviceAccounts = document.getElementById('serviceAccounts');
       const serviceGold = document.getElementById('serviceGold');
       const customServiceInput = document.getElementById('customServiceInput');
+      const customServiceEnabled = document.getElementById('customServiceEnabled');
       const customServiceHideName = document.getElementById('customServiceHideName');
       const customServiceImage = document.getElementById('customServiceImage');
       const customServiceImageFile = document.getElementById('customServiceImageFile');
@@ -2716,6 +2718,14 @@
         }
       ];
       const customServiceMetaByGame = {};
+
+      function toggleCustomServiceFields() {
+        const enabled = customServiceEnabled.checked;
+        [customServiceInput, customServiceHideName, customServiceImageFile, subirCustomServiceImagenBtn].forEach((el) => {
+          if (!el) return;
+          el.disabled = !enabled;
+        });
+      }
       const marketCatalog = {
         p2p: {
           title: 'P2P',
@@ -3353,8 +3363,10 @@
         serviceGold.checked = selectedServices.includes('gold');
         customServiceInput.value = selectedServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service)) || '';
         const meta = customServiceMetaByGame[game.name] || {};
+        customServiceEnabled.checked = Boolean(meta.enabled || customServiceInput.value);
         customServiceHideName.checked = Boolean(meta.hideName);
         customServiceImage.value = meta.image || '';
+        toggleCustomServiceFields();
         updateGamePreview();
       }
 
@@ -3365,9 +3377,11 @@
         serviceBoosting.checked = true;
         serviceAccounts.checked = true;
         serviceGold.checked = true;
+        customServiceEnabled.checked = false;
         customServiceInput.value = '';
         customServiceHideName.checked = false;
         customServiceImage.value = '';
+        toggleCustomServiceFields();
         updateGamePreview();
       }
 
@@ -3376,7 +3390,7 @@
         if (serviceBoosting.checked) services.push('boosting');
         if (serviceAccounts.checked) services.push('accounts');
         if (serviceGold.checked) services.push('gold');
-        if (customServiceInput.value.trim()) services.push(customServiceInput.value.trim().toLowerCase());
+        if (customServiceEnabled.checked && customServiceInput.value.trim()) services.push(customServiceInput.value.trim().toLowerCase());
         return services.length ? services : [...defaultServices];
       }
 
@@ -3463,7 +3477,7 @@
           return;
         }
         const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
-          supabaseClient.from('games').select('id,name,icon,description,services,custom_service_name,custom_service_image,custom_service_hide_name').order('created_at', { ascending: true }),
+          supabaseClient.from('games').select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name').order('created_at', { ascending: true }),
           supabaseClient.from('gold_categories').select('id,game,name,description').order('created_at', { ascending: true })
         ]);
         if (gamesError || categoriesError) {
@@ -3488,6 +3502,7 @@
           (gamesData || []).forEach((row) => {
             if (!row?.name) return;
             customServiceMetaByGame[row.name] = {
+              enabled: Boolean(row.custom_service_enabled),
               image: row.custom_service_image || '',
               hideName: Boolean(row.custom_service_hide_name)
             };
@@ -3505,6 +3520,7 @@
       }
 
       async function initializeApp() {
+        toggleCustomServiceFields();
         const rawHash = window.location.hash || '';
         if (rawHash.includes('error=') || rawHash.includes('error_code=')) {
           const hashParams = new URLSearchParams(rawHash.replace(/^#/, ''));
@@ -4085,12 +4101,28 @@
         updateGamePreview();
         showAdminNotice('Imagen del juego subida y guardada en Supabase Storage.', 'ok');
       });
+      juegoImagenFile.addEventListener('change', async () => {
+        const file = juegoImagenFile.files?.[0];
+        if (!file) return;
+        const url = await uploadImageFromPc(file, 'games');
+        if (!url) return;
+        juegoImagen.value = url;
+        updateGamePreview();
+        showAdminNotice('Logo/icono del juego actualizado al seleccionar imagen.', 'ok');
+      });
       subirCustomServiceImagenBtn.addEventListener('click', async () => {
         const file = customServiceImageFile.files?.[0];
         const url = await uploadImageFromPc(file, 'services');
         if (!url) return;
         customServiceImage.value = url;
         showAdminNotice('Imagen de sección personalizada subida.', 'ok');
+      });
+      customServiceEnabled.addEventListener('change', () => {
+        if (!customServiceEnabled.checked) {
+          customServiceInput.value = '';
+        }
+        toggleCustomServiceFields();
+        updateGamePreview();
       });
       serviceBoosting.addEventListener('change', updateGamePreview);
       serviceAccounts.addEventListener('change', updateGamePreview);
@@ -4382,6 +4414,7 @@
           services: getSelectedServices()
         };
         customServiceMetaByGame[payload.name] = {
+          enabled: customServiceEnabled.checked,
           image: customServiceImage.value.trim(),
           hideName: customServiceHideName.checked
         };
@@ -4401,10 +4434,11 @@
             description: payload.description,
             services: payload.services,
             custom_service_name: customServiceInput.value.trim().toLowerCase(),
+            custom_service_enabled: customServiceEnabled.checked,
             custom_service_image: customServiceImage.value.trim(),
             custom_service_hide_name: customServiceHideName.checked
           };
-          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services,custom_service_name,custom_service_image,custom_service_hide_name').single();
+          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name').single();
           if (error) {
             if (error.message?.toLowerCase().includes('services')) {
               showAdminNotice('No existe columna "services" en Supabase. Ejecuta el schema actualizado.', 'warn');
@@ -4424,6 +4458,7 @@
               description: payload.description,
               services: payload.services,
               custom_service_name: customServiceInput.value.trim().toLowerCase(),
+              custom_service_enabled: customServiceEnabled.checked,
               custom_service_image: customServiceImage.value.trim(),
               custom_service_hide_name: customServiceHideName.checked
             };
@@ -4431,7 +4466,7 @@
               .from('games')
               .update(supabasePayload)
               .eq('id', games[editingAdminIndex].id)
-              .select('id,name,icon,description,services,custom_service_name,custom_service_image,custom_service_hide_name')
+              .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name')
               .single();
             if (error) {
               games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
