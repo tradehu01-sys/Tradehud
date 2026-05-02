@@ -2302,6 +2302,12 @@
             <label><input id="serviceGold" type="checkbox" checked /> Oro</label>
             <label for="customServiceInput">Sección personalizada</label>
             <input id="customServiceInput" type="text" placeholder="Ej: Albion" />
+            <label><input id="customServiceHideName" type="checkbox" /> Mostrar solo imagen (sin nombre)</label>
+            <input id="customServiceImage" type="hidden" />
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
+              <input id="customServiceImageFile" type="file" accept="image/*" />
+              <button id="subirCustomServiceImagenBtn" class="mini-btn" type="button">Subir imagen sección</button>
+            </div>
           </div>
           <div class="image-preview">
             <small>Vista previa</small>
@@ -2521,6 +2527,10 @@
       const serviceAccounts = document.getElementById('serviceAccounts');
       const serviceGold = document.getElementById('serviceGold');
       const customServiceInput = document.getElementById('customServiceInput');
+      const customServiceHideName = document.getElementById('customServiceHideName');
+      const customServiceImage = document.getElementById('customServiceImage');
+      const customServiceImageFile = document.getElementById('customServiceImageFile');
+      const subirCustomServiceImagenBtn = document.getElementById('subirCustomServiceImagenBtn');
       const previewImagenJuego = document.getElementById('previewImagenJuego');
       const previewNombreJuego = document.getElementById('previewNombreJuego');
       const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
@@ -2705,6 +2715,7 @@
           description: 'Cuenta lista para arenas y contenido competitivo.'
         }
       ];
+      const customServiceMetaByGame = {};
       const marketCatalog = {
         p2p: {
           title: 'P2P',
@@ -3019,6 +3030,7 @@
         const game = games[index];
         if (!game) return;
         const gameServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
+        const customMeta = customServiceMetaByGame[game.name] || null;
         gameWindowTitle.textContent = game.name;
         gameWindowDesc.textContent = game.description || '';
         gameWindowIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
@@ -3052,6 +3064,22 @@
           });
           gameWindowOptions.appendChild(button);
         });
+        gameServices
+          .filter((serviceKey) => !serviceRenderOrder.includes(serviceKey))
+          .forEach((serviceKey) => {
+            const button = document.createElement('button');
+            button.className = 'game-option boost';
+            button.type = 'button';
+            button.dataset.service = serviceKey;
+            const onlyImage = Boolean(customMeta?.hideName);
+            button.innerHTML = `<img src="${customMeta?.image || 'https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1200&auto=format&fit=crop'}" alt="${serviceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${serviceKey}</span>`}`;
+            button.addEventListener('click', () => {
+              closeGoldOrderPanel();
+              closeAccountsPanel();
+              closeBoostingOptionsPanel();
+            });
+            gameWindowOptions.appendChild(button);
+          });
         if (!gameWindowOptions.children.length) {
           gameWindowOptions.innerHTML = '';
         }
@@ -3324,6 +3352,9 @@
         serviceAccounts.checked = selectedServices.includes('accounts');
         serviceGold.checked = selectedServices.includes('gold');
         customServiceInput.value = selectedServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service)) || '';
+        const meta = customServiceMetaByGame[game.name] || {};
+        customServiceHideName.checked = Boolean(meta.hideName);
+        customServiceImage.value = meta.image || '';
         updateGamePreview();
       }
 
@@ -3335,6 +3366,8 @@
         serviceAccounts.checked = true;
         serviceGold.checked = true;
         customServiceInput.value = '';
+        customServiceHideName.checked = false;
+        customServiceImage.value = '';
         updateGamePreview();
       }
 
@@ -4045,6 +4078,13 @@
         updateGamePreview();
         showAdminNotice('Imagen del juego subida y guardada en Supabase Storage.', 'ok');
       });
+      subirCustomServiceImagenBtn.addEventListener('click', async () => {
+        const file = customServiceImageFile.files?.[0];
+        const url = await uploadImageFromPc(file, 'services');
+        if (!url) return;
+        customServiceImage.value = url;
+        showAdminNotice('Imagen de sección personalizada subida.', 'ok');
+      });
       serviceBoosting.addEventListener('change', updateGamePreview);
       serviceAccounts.addEventListener('change', updateGamePreview);
       serviceGold.addEventListener('change', updateGamePreview);
@@ -4333,6 +4373,10 @@
           icon: juegoImagen.value.trim() || games[0].icon,
           description: juegoDescripcion.value.trim(),
           services: getSelectedServices()
+        };
+        customServiceMetaByGame[payload.name] = {
+          image: customServiceImage.value.trim(),
+          hideName: customServiceHideName.checked
         };
         if (editingAdminIndex === null) {
           const normalizedName = normalizeGameName(payload.name);
