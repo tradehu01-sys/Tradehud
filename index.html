@@ -1556,7 +1556,7 @@
       <div class="container nav">
         <div class="logo">
           <a href="#inicio" data-page-link data-page="inicio" aria-label="Ir al inicio">
-            <img src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412256244432926/ChatGPT_Image_24_abr_2026_09_09_04_p.m..png?ex=69f2b356&is=69f161d6&hm=95429f0ee3a058074ec4f6f77e33115c821474de45db67473d0ea93b6ef1c0db&" alt="TradeHud" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" />
+            <img id="mainLogoImg" src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412256244432926/ChatGPT_Image_24_abr_2026_09_09_04_p.m..png?ex=69f2b356&is=69f161d6&hm=95429f0ee3a058074ec4f6f77e33115c821474de45db67473d0ea93b6ef1c0db&" alt="TradeHud" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" />
           </a>
         </div>
         <nav>
@@ -1895,6 +1895,7 @@
                   <div class="sell-step"><strong>4)</strong> Recibe tu pago (transferencia, USDT o PayPal).</div>
                 </div>
                 <img
+                  id="sellGoldImg"
                   class="sell-payment-photo"
                   src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412299370266787/photo_2026-03-26_10-15-34.jpg?ex=69f2b360&is=69f161e0&hm=459d853e37824c8b16b1d51c5152db3d4488b5926f14704fd43a8bd0dfbcbb3e&"
                   alt="Recibe tu pago TradeHud"
@@ -2466,6 +2467,8 @@
       const openRegister = document.getElementById('openRegister');
       const openLogin = document.getElementById('openLogin');
       const openProfile = document.getElementById('openProfile');
+      const mainLogoImg = document.getElementById('mainLogoImg');
+      const sellGoldImg = document.getElementById('sellGoldImg');
       const closeAdmin = document.getElementById('closeAdmin');
       const authModal = document.getElementById('authModal');
       const closeAuthModal = document.getElementById('closeAuthModal');
@@ -3537,6 +3540,20 @@
         showAdminNotice(`Conectado a Supabase correctamente. Juegos: ${gamesData?.length || 0}, categorías: ${categoriesData?.length || 0}.`, 'ok');
       }
 
+      async function loadAppAssetsFromSupabase() {
+        if (!supabaseClient) return;
+        const { data, error } = await supabaseClient
+          .from('app_assets')
+          .select('key,image_url');
+        if (error || !Array.isArray(data)) return;
+        const byKey = Object.fromEntries(data.map((row) => [row.key, row.image_url]).filter((row) => row[1]));
+        if (byKey.logo_main && mainLogoImg) mainLogoImg.src = byKey.logo_main;
+        if (byKey.service_sell_gold && sellGoldImg) sellGoldImg.src = byKey.service_sell_gold;
+        if (byKey.service_gold) serviceCatalog.gold.image = byKey.service_gold;
+        if (byKey.service_boosting) serviceCatalog.boosting.image = byKey.service_boosting;
+        if (byKey.service_accounts) serviceCatalog.accounts.image = byKey.service_accounts;
+      }
+
       async function initializeApp() {
         toggleCustomServiceFields();
         const rawHash = window.location.hash || '';
@@ -3558,6 +3575,7 @@
           history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
         }
         await syncFromSupabase();
+        await loadAppAssetsFromSupabase();
         renderGameList();
         renderAdminSelect();
         renderGoldCategories();
