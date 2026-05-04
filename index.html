@@ -2792,7 +2792,7 @@
         if (!supabaseClient) return;
         const { data, error } = await supabaseClient
           .from('market_catalog_entries')
-          .select('service_type,entry_type,name,image,value,sort_order')
+          .select('id,service_type,entry_type,category_name,item_name,image,value,sort_order,created_at')
           .order('sort_order', { ascending: true })
           .order('created_at', { ascending: true });
         if (error || !Array.isArray(data)) return;
@@ -2803,9 +2803,9 @@
         data.forEach((row) => {
           if (!marketCatalog[row.service_type]) return;
           if (row.entry_type === 'category') {
-            marketCatalog[row.service_type].categories.push({ name: row.name || '', image: row.image || '' });
+            marketCatalog[row.service_type].categories.push({ name: row.category_name || row.item_name || '', image: row.image || '' });
           } else if (row.entry_type === 'price') {
-            marketCatalog[row.service_type].prices.push(row.value || row.name || '');
+            marketCatalog[row.service_type].prices.push(row.value || row.item_name || row.category_name || '');
           }
         });
       }
@@ -3977,7 +3977,8 @@
           await supabaseClient.from('market_catalog_entries').insert({
             service_type: activeMarketType,
             entry_type: 'category',
-            name,
+            category_name: name,
+            item_name: name,
             image,
             value: '',
             sort_order: marketCatalog[activeMarketType].categories.length
@@ -3998,7 +3999,8 @@
           await supabaseClient.from('market_catalog_entries').insert({
             service_type: activeMarketType,
             entry_type: 'price',
-            name: title,
+            category_name: title,
+            item_name: title,
             image: '',
             value: fullValue,
             sort_order: marketCatalog[activeMarketType].prices.length
@@ -4022,7 +4024,7 @@
             .delete()
             .eq('service_type', activeMarketType)
             .eq('entry_type', 'category')
-            .eq('name', target.name)
+            .eq('category_name', target.name)
             .eq('image', target.image || '')
             .limit(1);
         }
@@ -4115,7 +4117,7 @@
         if (!url) return;
         juegoImagen.value = url;
         updateGamePreview();
-        showAdminNotice('Imagen del juego subida y guardada en Supabase Storage.', 'ok');
+        showAdminNotice('Imagen del juego subida y guardada en formato data:image/...;base64.', 'ok');
       });
       juegoImagenFile.addEventListener('change', async () => {
         const file = juegoImagenFile.files?.[0];
