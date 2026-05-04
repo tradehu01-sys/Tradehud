@@ -2670,12 +2670,12 @@
       const SUPABASE_URL =
         window.TRADEHUD_SUPABASE_URL ||
         window.NEXT_PUBLIC_SUPABASE_URL ||
-        'https://lveocmzvfndvzjdqknnf.supabase.co';
+        '';
       const SUPABASE_ANON_KEY =
         window.TRADEHUD_SUPABASE_ANON_KEY ||
         window.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
         window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-        'sb_publishable_So-MKH0I5IJ_kmSweJo1IQ_H5kxNgMG';
+        '';
       const isServiceRoleKey = (() => {
         try {
           if (!SUPABASE_ANON_KEY.includes('.')) return false;
@@ -3527,9 +3527,10 @@
           return;
         }
         if (!supabaseClient) {
-          showAdminNotice('Supabase no configurado. Define window.TRADEHUD_SUPABASE_ANON_KEY o window.NEXT_PUBLIC_SUPABASE_ANON_KEY.', 'warn');
+          showAdminNotice('Supabase no configurado. Define URL+ANON key válidas en window.TRADEHUD_SUPABASE_URL y window.TRADEHUD_SUPABASE_ANON_KEY.', 'warn');
           showDbStatus('Base de datos NO conectada (falta configuración).', 'warn');
-          setDbStatus('sin configurar', 'warn');
+          setDbStatus('sin configurar (falta URL o ANON KEY)', 'warn');
+          showDbStatus('Falta configurar Supabase URL y ANON KEY.', 'warn');
           return;
         }
         const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
@@ -3543,7 +3544,7 @@
             const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
             showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
             showDbStatus('Base de datos no conectada. Verifica URL, ANON KEY y políticas RLS.', 'warn');
-            setDbStatus('no conectada (verifica URL, ANON KEY y RLS)', 'warn');
+            setDbStatus(`no conectada: ${detail}`.slice(0, 120), 'warn');
           }
           return;
         }
