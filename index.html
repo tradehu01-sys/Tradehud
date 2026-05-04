@@ -3543,7 +3543,7 @@
             const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
             showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
             showDbStatus('Base de datos no conectada. Revisa credenciales/permisos.', 'warn');
-            setDbStatus('falló conexión o permisos', 'warn');
+            setDbStatus('error de conexión/permisos (revisa URL, anon key y RLS)', 'warn');
           }
           return;
         }
