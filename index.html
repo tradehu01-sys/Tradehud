@@ -150,6 +150,10 @@
       }
 
       .page-loader.show { display: grid; }
+       .db-status { position: fixed; right: 14px; bottom: 14px; z-index: 180; border: 1px solid #3b4f7d; background:#0f1a31; color:#cfe1ff; border-radius:999px; padding:.4rem .75rem; font-size:.78rem; }
+      .db-status.ok { border-color:#2f7c54; color:#b8ffd8; background:#0f241a; }
+      .db-status.warn { border-color:#8a5a2a; color:#ffe0b8; background:#2b1b10; }
+
       .page-loader span {
         border: 1px solid #4e67a1;
         background: #101a31;
@@ -1548,10 +1552,29 @@
         .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid,.steps-list { grid-template-columns: 1fr; }
         nav { justify-content: center; }
       }
-    </style>
+    
+      .db-status-toast {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        z-index: 220;
+        background: #0f1b33;
+        border: 1px solid #335192;
+        color: #d7e5ff;
+        border-radius: 10px;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.82rem;
+        box-shadow: 0 10px 24px rgba(0,0,0,.35);
+        display: none;
+      }
+      .db-status-toast.show { display: block; }
+      .db-status-toast.ok { border-color: #2f8f62; color: #9affcc; }
+      .db-status-toast.warn { border-color: #b07a3f; color: #ffd39a; }
+</style>
   </head>
   <body>
     <div id="pageLoader" class="page-loader" aria-hidden="true"><span>Cargando sección...</span></div>
+    <div id="dbStatus" class="db-status">Base de datos: verificando...</div>
     <header>
       <div class="container nav">
         <div class="logo">
@@ -2424,6 +2447,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <div id="dbStatusToast" class="db-status-toast" aria-live="polite"></div>
+
     <script>
       const gameList = document.getElementById('gameList');
       const oroSearch = document.getElementById('oroSearch');
@@ -2522,6 +2547,8 @@
       const closeConfig = document.getElementById('closeConfig');
       const cerrarSesionAdmin = document.getElementById('cerrarSesionAdmin');
       const adminNotice = document.getElementById('adminNotice');
+      const dbStatusToast = document.getElementById('dbStatusToast');
+      const dbStatus = document.getElementById('dbStatus');
       const juegoLista = document.getElementById('juegoLista');
       const abrirFormularioJuego = document.getElementById('abrirFormularioJuego');
       const juegoFormModal = document.getElementById('juegoFormModal');
@@ -3435,6 +3462,23 @@
         adminNotice.style.color = kind === 'ok' ? '#9affcc' : kind === 'warn' ? '#ffd39a' : '#9fd6ff';
       }
 
+      function showDbStatus(message, kind = 'ok') {
+        if (!dbStatusToast) return;
+        dbStatusToast.textContent = message;
+        dbStatusToast.className = `db-status-toast show ${kind === 'ok' ? 'ok' : 'warn'}`;
+        clearTimeout(showDbStatus._timer);
+        showDbStatus._timer = setTimeout(() => {
+          dbStatusToast.classList.remove('show');
+        }, 4800);
+      }
+
+      function setDbStatus(message, kind = 'info') {
+        if (!dbStatus) return;
+        dbStatus.textContent = `Base de datos: ${message}`;
+        dbStatus.classList.remove('ok', 'warn');
+        if (kind === 'ok' || kind === 'warn') dbStatus.classList.add(kind);
+      }
+
       async function uploadImageFromPc(file, folder = 'general') {
         if (!file) {
           showAdminNotice('Selecciona una imagen primero.', 'warn');
@@ -3478,10 +3522,14 @@
       async function syncFromSupabase() {
         if (isServiceRoleKey) {
           showAdminNotice('Clave bloqueada: detectamos service_role. Usa SOLO la anon public key en frontend.', 'warn');
+          showDbStatus('Base de datos NO conectada (clave inválida).', 'warn');
+          setDbStatus('error de configuración (service_role detectada)', 'warn');
           return;
         }
         if (!supabaseClient) {
           showAdminNotice('Supabase no configurado. Define window.TRADEHUD_SUPABASE_ANON_KEY o window.NEXT_PUBLIC_SUPABASE_ANON_KEY.', 'warn');
+          showDbStatus('Base de datos NO conectada (falta configuración).', 'warn');
+          setDbStatus('sin configurar', 'warn');
           return;
         }
         const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
@@ -3494,6 +3542,8 @@
           } else {
             const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
             showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
+            showDbStatus('Base de datos NO conectada correctamente.', 'warn');
+            setDbStatus('falló conexión o permisos', 'warn');
           }
           return;
         }
@@ -3525,6 +3575,8 @@
           })));
         }
         showAdminNotice(`Conectado a Supabase correctamente. Juegos: ${gamesData?.length || 0}, categorías: ${categoriesData?.length || 0}.`, 'ok');
+        showDbStatus('✅ Base conectada correctamente.', 'ok');
+        setDbStatus('conectada correctamente', 'ok');
       }
 
       async function loadAppAssetsFromSupabase() {
@@ -3545,6 +3597,7 @@
       }
 
       async function initializeApp() {
+        setDbStatus('verificando conexión...', 'info');
         toggleCustomServiceFields();
         const rawHash = window.location.hash || '';
         if (rawHash.includes('error=') || rawHash.includes('error_code=')) {
