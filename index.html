@@ -63,11 +63,13 @@
       }
 
       .logo img {
-        width: 156px;
-        height: 48px;
+        width: 180px;
+        height: 56px;
         border-radius: 8px;
         border: 0;
-        object-fit: cover;
+        object-fit: contain;
+        object-position: center;
+        background: transparent;
       }
       nav { display: flex; gap: 0.55rem; flex-wrap: wrap; }
       nav a {
@@ -460,6 +462,7 @@
         padding: 1rem;
         box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
       }
+      .game-window.gold-focus .game-window-grid { display: none; }
 
       .game-window-head {
         display: flex;
@@ -499,6 +502,139 @@
         align-items: center;
         flex-wrap: nowrap;
         gap: 1rem;
+      }
+
+      .gold-order-panel {
+        margin-top: 1rem;
+        border: 1px solid #2e4c8f;
+        border-radius: 14px;
+        padding: 0.9rem;
+        background: #070d1b;
+      }
+      .gold-order-panel.hidden { display: none; }
+      .gold-order-top {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin-bottom: 0.75rem;
+      }
+      .gold-order-game-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        border: 1px solid #4d74bf;
+        overflow: hidden;
+      }
+      .gold-order-game-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .gold-order-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.7rem;
+      }
+      .gold-order-grid label {
+        display: block;
+        font-size: 0.85rem;
+        color: #cdd8f2;
+        margin-bottom: 0.35rem;
+      }
+      .gold-order-grid select,
+      .gold-order-grid input {
+        width: 100%;
+        background: #03060c;
+        border: 1px solid #33518e;
+        color: #fff;
+        border-radius: 8px;
+        padding: 0.55rem 0.65rem;
+      }
+      .gold-order-actions {
+        margin-top: 0.8rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.7rem;
+      }
+      .ticket-side-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.6rem;
+        width: 100%;
+      }
+      .back-to-services-btn {
+        border: 1px solid #4d67a8;
+        background: #10182f;
+        color: #e4edff;
+        border-radius: 999px;
+        padding: 0.55rem 0.9rem;
+        cursor: pointer;
+      }
+      .ticket-btn {
+        border: 1px solid #44d163;
+        background: #0a1409;
+        color: #eaffee;
+        border-radius: 999px;
+        padding: 0.6rem 1rem;
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .gold-order-note {
+        margin-top: 0.55rem;
+        color: #9fb6e8;
+        font-size: 0.78rem;
+      }
+      .accounts-panel {
+        margin-top: 1rem;
+        border: 1px solid #35528c;
+        border-radius: 12px;
+        padding: 0.8rem;
+        background: #0a1223;
+      }
+      .accounts-panel.hidden { display: none; }
+      .accounts-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem;
+      }
+      .boosting-options-panel {
+        margin-top: 1rem;
+        border: 1px solid #35528c;
+        border-radius: 12px;
+        padding: 0.8rem;
+        background: #0a1223;
+      }
+      .boosting-options-panel.hidden { display: none; }
+      .boosting-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .boosting-circle-btn {
+        width: 150px;
+        height: 150px;
+        border-radius: 999px;
+        border: 1px solid #4470bf;
+        background: #101d37;
+        color: #f2f7ff;
+        cursor: pointer;
+        font-weight: 700;
+        padding: 0.75rem;
+      }
+      .account-card {
+        border: 1px solid #35518a;
+        border-radius: 10px;
+        background: #101c34;
+        padding: 0.65rem;
+      }
+      .account-card img {
+        width: 100%;
+        height: 130px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
       }
 
 
@@ -643,6 +779,40 @@
         margin-top: .6rem;
         font-size: .84rem;
         color: #b8c9ef;
+      }
+      .marketplace-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7rem;
+        margin-bottom: 0.9rem;
+      }
+      .marketplace-action-btn {
+        border: 1px solid #3e66b0;
+        background: #101a33;
+        color: #f2f7ff;
+        border-radius: 12px;
+        padding: 0.55rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-align: left;
+      }
+      .marketplace-action-btn img {
+        width: 100%;
+        height: 130px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 0.45rem;
+      }
+      .marketplace-action-btn span {
+        display: block;
+        text-align: center;
+      }
+      .marketplace-action-btn.active {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 2px rgba(255,179,71,.22);
+      }
+      @media (max-width: 640px) {
+        .marketplace-actions { grid-template-columns: 1fr; }
       }
 
       .sell-payment-photo {
@@ -1140,6 +1310,11 @@
       .admin-game-main { display: flex; gap: 0.55rem; }
       .admin-game-desc { margin: 0.25rem 0 0; color: #b9c9ef; font-size: 0.82rem; }
       .admin-game-actions { display: flex; gap: 0.45rem; }
+      .admin-game-actions a.mini-btn {
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+      }
       .mini-btn {
         border: 1px solid #4868ac;
         border-radius: 8px;
@@ -1180,7 +1355,7 @@
         background: rgba(4, 8, 16, 0.76);
         display: none;
         place-items: center;
-        z-index: 140;
+        z-index: 190;
       }
 
       .juego-form-modal.show { display: grid; }
@@ -1231,6 +1406,133 @@
         margin-bottom: 0.45rem;
       }
 
+      .auth-btn {
+        border: 1px solid #365c9f;
+        background: #111d36;
+        color: #fff;
+        border-radius: 999px;
+        padding: 0.4rem 0.8rem;
+        cursor: pointer;
+      }
+      .auth-modal { z-index: 160; }
+      .auth-modal .juego-form-card {
+        width: min(560px, 94vw);
+        background: linear-gradient(165deg, #112647, #0a162a);
+        border: 1px solid #c9972c;
+      }
+      .auth-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.45rem;
+        margin-bottom: 0.8rem;
+      }
+      .auth-tab {
+        border: 1px solid #355b9f;
+        background: #0d1b35;
+        color: #dce8ff;
+        border-radius: 8px;
+        padding: 0.5rem;
+        cursor: pointer;
+      }
+      .auth-tab.active { border-color: var(--gold); color: #fff; }
+      .auth-pane.hidden { display:none; }
+      .auth-mini-logo { width: 70px; height: 70px; object-fit: cover; border-radius: 14px; border: 1px solid #3a5b9a; display:block; margin: 0 auto .7rem; box-shadow: 0 0 16px rgba(0,0,0,.25); }
+      .auth-hint { color: #9cb6e9; font-size: .8rem; margin-top: .2rem; }
+      .auth-pane label,
+      .profile-pane label {
+        display: block;
+        color: #e6efff;
+        font-weight: 600;
+        margin: 0.4rem 0 0.25rem;
+      }
+      .auth-pane input,
+      .profile-pane input,
+      .auth-pane select,
+      .profile-pane select {
+        width: 100%;
+        display: block;
+        height: 40px;
+        background: #0a1222 !important;
+        color: #ffffff !important;
+        border: 1px solid #355692 !important;
+        border-radius: 8px;
+        padding: 0 0.7rem;
+        outline: none;
+      }
+      .auth-pane input::placeholder,
+      .profile-pane input::placeholder {
+        color: #9ab2df;
+      }
+      #authRegisterBtn,
+      #authLoginBtn {
+        margin-top: .8rem;
+        width: 100%;
+      }
+      #authMsg {
+        margin-top: .55rem;
+        min-height: 1.2rem;
+      }
+      .auth-notice {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        max-width: min(420px, 90vw);
+        background: #101d37;
+        border: 1px solid #3f61a3;
+        color: #e8f0ff;
+        border-radius: 10px;
+        padding: 0.75rem 0.9rem;
+        z-index: 180;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+        display: none;
+      }
+      .auth-notice.show { display: block; }
+      .auth-notice.warn { border-color: #b98330; color: #ffe3b1; }
+      .profile-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(460px, 96vw);
+        height: 100vh;
+        background: linear-gradient(160deg, #101b32, #0b1222);
+        border-left: 1px solid #2f467e;
+        z-index: 165;
+        transform: translateX(105%);
+        transition: transform .22s ease;
+        padding: 1rem;
+        overflow-y: auto;
+      }
+      .profile-drawer.show { transform: translateX(0); }
+      .profile-head { display:flex; justify-content:space-between; align-items:center; }
+      .profile-identity {
+        border: 1px solid #37528a;
+        background: #101d36;
+        border-radius: 10px;
+        padding: 0.7rem;
+        margin-top: 0.55rem;
+      }
+      .profile-identity strong {
+        display: block;
+        font-size: 1rem;
+        color: #f1f6ff;
+      }
+      .profile-identity small {
+        display: block;
+        color: #aac1ea;
+        margin-top: 0.15rem;
+        word-break: break-word;
+      }
+      .profile-tabs { display:grid; grid-template-columns: 1fr 1fr; gap:.5rem; margin: .8rem 0; }
+      .profile-tab { border:1px solid #36518f; background:#12203b; color:#fff; border-radius:8px; padding:.45rem; cursor:pointer; }
+      .profile-tab.active { border-color: var(--gold); }
+      .profile-pane.hidden { display:none; }
+      .order-card { border:1px solid #334f88; border-radius:10px; padding:.65rem; margin-bottom:.55rem; background:#0e1930; }
+      #logoutBtn {
+        width: 100%;
+        margin-top: .75rem;
+        padding: .6rem .7rem;
+      }
+
       @media (max-width: 980px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr 1fr; }
         .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid { grid-template-columns: 1fr 1fr; }
@@ -1240,6 +1542,8 @@
       }
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
+        .gold-order-grid { grid-template-columns: 1fr; }
+        .accounts-grid { grid-template-columns: 1fr; }
         .social-buttons { grid-template-columns: 1fr; }
         .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid,.steps-list { grid-template-columns: 1fr; }
         nav { justify-content: center; }
@@ -1252,7 +1556,7 @@
       <div class="container nav">
         <div class="logo">
           <a href="#inicio" data-page-link data-page="inicio" aria-label="Ir al inicio">
-            <img src="https://cdn.discordapp.com/attachments/1492284382977855689/1497413092953428058/ChatGPT_Image_24_abr_2026_09_44_47_p.m..png?ex=69ed6e1d&is=69ec1c9d&hm=bb3fd7d6d56af74deedc387fb38c16131ce33210758043a8edf310036413fec3&" alt="TradeHud" />
+            <img id="mainLogoImg" src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412256244432926/ChatGPT_Image_24_abr_2026_09_09_04_p.m..png?ex=69f2b356&is=69f161d6&hm=95429f0ee3a058074ec4f6f77e33115c821474de45db67473d0ea93b6ef1c0db&" alt="TradeHud" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" />
           </a>
         </div>
         <nav>
@@ -1262,6 +1566,9 @@
           <a href="#marketplace" data-page-link data-page="marketplace">Marketplace</a>
         </nav>
         <div class="nav-actions">
+          <button id="openRegister" class="auth-btn" type="button">Registrarse</button>
+          <button id="openLogin" class="auth-btn" type="button">Ingresar</button>
+          <button id="openProfile" class="auth-btn" type="button" style="display:none;">Perfil</button>
           <a class="discord-nav-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">
             <img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />
             Discord
@@ -1480,7 +1787,7 @@
       </section>
 
       <div id="gameWindowModal" class="game-modal" aria-hidden="true">
-        <div class="game-window">
+        <div id="gameWindow" class="game-window">
           <div class="game-window-head">
             <div class="game-window-title-wrap">
               <div id="gameWindowIcon" class="game-window-icon"></div>
@@ -1492,6 +1799,57 @@
             <button id="closeGameWindow" class="close-btn">✕</button>
           </div>
           <div id="gameWindowOptions" class="game-window-grid"></div>
+          <div id="goldOrderPanel" class="gold-order-panel hidden">
+            <div class="gold-order-top">
+              <div id="goldOrderGameIcon" class="gold-order-game-icon"></div>
+              <strong id="goldOrderGameName">Selecciona un juego</strong>
+            </div>
+            <div class="gold-order-grid">
+              <div>
+                <label for="goldOrderServer">Servidor</label>
+                <select id="goldOrderServer"></select>
+              </div>
+              <div>
+                <label for="goldOrderProduct">Elige tu producto</label>
+                <select id="goldOrderProduct"></select>
+              </div>
+              <div>
+                <label for="goldOrderFaction">Facción</label>
+                <select id="goldOrderFaction">
+                  <option value="">Selecciona facción</option>
+                  <option value="Alianza">Alianza</option>
+                  <option value="Horda">Horda</option>
+                  <option value="Neutral">Neutral</option>
+                </select>
+              </div>
+              <div>
+                <label for="goldOrderCharacter">Personaje</label>
+                <input id="goldOrderCharacter" type="text" placeholder="Nombre de personaje" />
+              </div>
+              <div style="grid-column:1 / -1;">
+                <label for="goldOrderDelivery">Preferencia de entrega</label>
+                <input id="goldOrderDelivery" type="text" placeholder="Ej: Correo dentro del juego" />
+              </div>
+            </div>
+            <div class="gold-order-actions">
+              <button id="volverOpcionesBtn" class="back-to-services-btn" type="button">Volver</button>
+              <div class="ticket-side-actions">
+                <button id="goldOrderTicketBtn" class="ticket-btn" type="button">Abrir ticket</button>
+              </div>
+            </div>
+            <p class="gold-order-note">Al cambiar el servidor se recargan automáticamente los productos disponibles.</p>
+          </div>
+          <div id="accountsPanel" class="accounts-panel hidden">
+            <strong style="display:block;margin-bottom:.55rem;">Cuentas disponibles por juego</strong>
+            <div id="accountsPanelList" class="accounts-grid"></div>
+          </div>
+          <div id="boostingOptionsPanel" class="boosting-options-panel hidden">
+            <strong style="display:block;margin-bottom:.55rem;">Opciones de boosting</strong>
+            <div class="boosting-buttons">
+              <button class="boosting-circle-btn" type="button">Profesiones</button>
+              <button class="boosting-circle-btn" type="button">Leveleo de cuentas</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1537,8 +1895,9 @@
                   <div class="sell-step"><strong>4)</strong> Recibe tu pago (transferencia, USDT o PayPal).</div>
                 </div>
                 <img
+                  id="sellGoldImg"
                   class="sell-payment-photo"
-                  src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412299370266787/photo_2026-03-26_10-15-34.jpg?ex=69ee1620&is=69ecc4a0&hm=935f1c122ef4b1e5635ea825c0eaca35b4873c77e8067a84e88fbda29400c80f&"
+                  src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412299370266787/photo_2026-03-26_10-15-34.jpg?ex=69f2b360&is=69f161e0&hm=459d853e37824c8b16b1d51c5152db3d4488b5926f14704fd43a8bd0dfbcbb3e&"
                   alt="Recibe tu pago TradeHud"
                 />
                 <a class="discord-sell-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Ir al Discord de venta</a>
@@ -1554,36 +1913,21 @@
       <section id="marketplace" class="page-section" data-page="marketplace">
         <div class="container">
           <h2 class="section-title">Marketplace de <span>Servicios</span></h2>
-          <div class="grid-4">
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop" alt="Boosteo" />
-              <div class="card-body">
-                <strong>Servicios de Boosteo</strong>
-                <p>Subida de rango, raids, logros y acompañamiento personalizado.</p>
-              </div>
-            </article>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop" alt="Tiempo de juego WoW" />
-              <div class="card-body">
-                <strong>Tiempo de Juego WoW</strong>
-                <p>Recargas, saldo y game time para mantener activa tu cuenta.</p>
-              </div>
-            </article>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?q=80&w=1200&auto=format&fit=crop" alt="Streaming" />
-              <div class="card-body">
-                <strong>Servicio de Streaming</strong>
-                <p>Gestión de canales, overlays, packs visuales y optimización en vivo.</p>
-              </div>
-            </article>
-            <article class="card">
-              <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=1200&auto=format&fit=crop" alt="Apps" />
-              <div class="card-body">
-                <strong>Apps y Herramientas</strong>
-                <p>Configuración de apps gaming, utilidades y soporte de instalación.</p>
-              </div>
-            </article>
+          <div class="marketplace-actions">
+            <button class="marketplace-action-btn" type="button" >
+              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&" alt="P2P" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1200&auto=format&fit=crop';" />
+              <span>P2P</span>
+            </button>
+            <button class="marketplace-action-btn" type="button" >
+              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&" alt="Giftcards" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=1200&auto=format&fit=crop';" />
+              <span>GiftCards</span>
+            </button>
+            <button class="marketplace-action-btn" type="button" >
+              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&" alt="Streaming" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1200&auto=format&fit=crop';" />
+              <span>Streaming</span>
+            </button>
           </div>
+          <div id="marketDetailsWrap" class="editor-box hidden" style="display:none !important;"></div>
         </div>
       </section>
 
@@ -1650,6 +1994,86 @@
       <div class="container copyright">© 2026 TradeHud. Todos los derechos reservados.</div>
     </footer>
 
+    <div id="authModal" class="juego-form-modal auth-modal" aria-hidden="true">
+      <div class="juego-form-card" style="max-width:520px;">
+        <div class="admin-head">
+          <strong>Cuenta TradeHud</strong>
+          <button id="closeAuthModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div class="auth-tabs">
+          <button id="tabAuthLogin" class="auth-tab active" type="button">Ingresar</button>
+          <button id="tabAuthRegister" class="auth-tab" type="button">Crear cuenta</button>
+        </div>
+        <img class="auth-mini-logo" src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412256244432926/ChatGPT_Image_24_abr_2026_09_09_04_p.m..png?ex=69f2b356&is=69f161d6&hm=95429f0ee3a058074ec4f6f77e33115c821474de45db67473d0ea93b6ef1c0db&" alt="TradeHud acceso" onerror="this.style.display='none'" />
+        <div id="authPaneLogin" class="auth-pane">
+          <label for="authLoginEmail">Correo</label>
+          <input id="authLoginEmail" type="email" placeholder="tu@email.com" />
+          <label for="authLoginPassword">Clave</label>
+          <input id="authLoginPassword" type="password" placeholder="Tu clave" />
+          <button id="authLoginBtn" class="panel-btn" type="button" style="margin-top:.65rem;">Ingresar</button>
+          <button id="forgotPasswordBtn" class="mini-btn" type="button" style="margin-top:.45rem;width:100%;">¿Olvidó su contraseña?</button>
+          <div id="recoveryPasswordWrap" class="hidden" style="margin-top:.65rem;">
+            <label for="recoveryNewPassword">Nueva contraseña</label>
+            <input id="recoveryNewPassword" type="password" placeholder="Nueva contraseña" />
+            <label for="recoveryNewPassword2">Confirmar nueva contraseña</label>
+            <input id="recoveryNewPassword2" type="password" placeholder="Confirma contraseña" />
+            <button id="saveRecoveredPasswordBtn" class="panel-btn" type="button" style="margin-top:.55rem;">Guardar nueva contraseña</button>
+          </div>
+        </div>
+        <div id="authPaneRegister" class="auth-pane hidden">
+          <label for="authRegName">Nombre</label>
+          <input id="authRegName" type="text" placeholder="Tu nombre" />
+          <label for="authRegEmail">Correo</label>
+          <input id="authRegEmail" type="email" placeholder="tu@email.com" />
+          <label for="authRegDiscord">Discord o número (opcional)</label>
+          <input id="authRegDiscord" type="text" placeholder="DiscordTag#0001 o +58..." />
+          <label for="authRegPassword">Clave</label>
+          <input id="authRegPassword" type="password" placeholder="Mínimo 6 caracteres" />
+          <label for="authRegPassword2">Confirmar clave</label>
+          <input id="authRegPassword2" type="password" placeholder="Repite la clave" />
+          <button id="authRegisterBtn" class="panel-btn" type="button" style="margin-top:.65rem;">Registrar</button>
+          <button id="resendVerificationBtn" class="mini-btn" type="button" style="margin-top:.45rem;width:100%;">Reenviar correo de verificación</button>
+          <p class="auth-hint">Se guardará tu perfil para usarlo en pedidos y órdenes.</p>
+        </div>
+        <div id="authMsg" class="admin-msg"></div>
+      </div>
+    </div>
+    <div id="authNotice" class="auth-notice" role="status" aria-live="polite"></div>
+
+    <aside id="profileDrawer" class="profile-drawer" aria-hidden="true">
+      <div class="profile-head">
+        <strong>Perfil</strong>
+        <button id="closeProfileDrawer" class="close-btn" type="button">✕</button>
+      </div>
+      <div class="profile-identity">
+        <strong id="profileNameTop">Perfil</strong>
+        <small id="profileEmailTop"></small>
+      </div>
+      <div class="profile-tabs">
+        <button id="tabProfileInfo" class="profile-tab active" type="button">Perfil</button>
+        <button id="tabProfileOrders" class="profile-tab" type="button">Órdenes</button>
+      </div>
+      <div id="profileInfoPane" class="profile-pane">
+        <label for="profileNameInput">Nombre</label>
+        <input id="profileNameInput" type="text" placeholder="Nombre para mostrar" />
+        <label for="profileDiscordInput">Discord</label>
+        <input id="profileDiscordInput" type="text" placeholder="Tu usuario de Discord" />
+        <label for="profilePhoneInput">Número</label>
+        <input id="profilePhoneInput" type="text" placeholder="Incluye código de país" />
+        <p class="auth-hint">Aquí puedes guardar tus datos para acelerar atención y entrega.</p>
+        <div class="admin-panel-actions">
+          <button id="saveProfileBtn" class="panel-btn" type="button">Guardar información</button>
+          <button id="changePasswordBtn" class="panel-btn" type="button">Cambiar contraseña</button>
+        </div>
+        <button id="logoutBtn" class="mini-btn danger" type="button">Cerrar sesión</button>
+      </div>
+      <div id="profileOrdersPane" class="profile-pane hidden">
+        <p class="auth-hint">Tus tickets aparecerán aquí.</p>
+        <div id="userOrdersList"></div>
+      </div>
+      <div id="profileMsg" class="admin-msg"></div>
+    </aside>
+
     <div id="adminModal" class="admin-modal" aria-hidden="true">
       <div class="admin-card">
         <div class="admin-head">
@@ -1688,8 +2112,10 @@
         <div id="adminNotice" class="admin-notice"></div>
         <div class="panel-tabs">
           <button id="tabListaJuegosAdmin" class="panel-tab active" type="button">Lista de juegos</button>
+          <button id="tabCategoriasOro" class="panel-tab" type="button">Categorías de oro</button>
           <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
           <button id="tabOro" class="panel-tab" type="button">Oro</button>
+                    <button id="tabTicketsAdmin" class="panel-tab" type="button">Tickets</button>
           <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
           <button id="tabBosteo" class="panel-tab" type="button">Bosteo</button>
         </div>
@@ -1699,6 +2125,13 @@
             <button id="abrirFormularioJuego" class="panel-btn" type="button">+ Agregar juego</button>
           </div>
           <div id="juegoLista" class="admin-game-list"></div>
+        </div>
+        <div id="editorCategoriasOro" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
+            <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
+          </div>
+          <div id="categoriaListaOro"></div>
         </div>
         <div id="editorServidores" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -1768,20 +2201,67 @@
               <button id="eliminarPrecio" class="mini-btn danger" type="button">Eliminar</button>
             </div>
           </div>
+        </div>
+        <div id="editorTicketsAdmin" class="editor-box hidden">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Tickets de usuarios</strong>
+          </div>
+          <div id="adminTicketsList" class="admin-game-list"></div>
+        </div>
+        <div id="editorMarketAdmin" class="editor-box hidden" style="display:none !important;">
+          <div class="admin-panel-actions" style="margin-top:0;">
+            <strong style="flex:1;display:flex;align-items:center;">Marketplace admin</strong>
+          </div>
+          <div class="panel-tabs" style="margin-top:.4rem;">
+            <button id="marketTypeP2P" class="panel-tab active" type="button">P2P</button>
+            <button id="marketTypeStreaming" class="panel-tab" type="button">Streaming</button>
+            <button id="marketTypeGiftcards" class="panel-tab" type="button">GiftCards</button>
+          </div>
           <div class="editor-box" style="margin-top:.6rem;">
-            <div class="admin-panel-actions" style="margin-top:0;">
-              <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
-              <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
+            <strong style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Categoría</strong>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="marketCategoryName">Nombre</label>
+                <input id="marketCategoryName" type="text" placeholder="Ej: ZINLI" />
+              </div>
+              <div class="form-group">
+                <label for="marketCategoryImage">Imagen URL</label>
+                <input id="marketCategoryImage" type="text" placeholder="URL imagen categoría" />
+              </div>
             </div>
-            <div id="categoriaListaOro"></div>
+            <button id="saveMarketCategoryBtn" class="panel-btn" type="button">Guardar categoría</button>
+          </div>
+          <div class="editor-box" style="margin-top:.6rem;">
+            <strong style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Precio</strong>
+            <div class="admin-split">
+              <div class="form-group">
+                <label for="marketPriceName">Título</label>
+                <input id="marketPriceName" type="text" placeholder="Ej: Zinli 10$" />
+              </div>
+              <div class="form-group">
+                <label for="marketPriceValue">Precio/Detalle</label>
+                <input id="marketPriceValue" type="text" placeholder="Ej: 12$" />
+              </div>
+            </div>
+            <button id="saveMarketPriceBtn" class="panel-btn" type="button">Guardar precio</button>
+          </div>
+          <div class="editor-box" style="margin-top:.6rem;">
+            <strong style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Categorías y precios actuales</strong>
+            <div id="marketAdminCategoryList"></div>
+            <div id="marketAdminPriceList" style="margin-top:.6rem;"></div>
           </div>
         </div>
         <div id="editorCuentas" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Categorías de cuentas</strong>
+            <strong style="flex:1;display:flex;align-items:center;">Gestión de cuentas</strong>
+            <button id="openAccountFormModalBtn" class="panel-btn" type="button">+ Agregar cuenta por juego</button>
             <button id="abrirFormularioCategoriaCuentas" class="panel-btn" type="button">+ Agregar categoría</button>
           </div>
-          <div id="categoriaListaCuentas"></div>
+          <div class="editor-box" style="margin-top:.6rem;">
+            <strong style="display:block;margin-bottom:.55rem;color:#f0cf7b;">Cuentas creadas</strong>
+            <div id="adminAccountsList"></div>
+          </div>
+          <div id="categoriaListaCuentas" style="display:none;"></div>
         </div>
         <div id="editorBosteo" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -1805,8 +2285,12 @@
             <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
           </div>
           <div class="form-group">
-            <label for="juegoImagen">Imagen (URL)</label>
-            <input id="juegoImagen" type="text" placeholder="URL imagen del icono redondo" />
+            <label for="juegoImagenFile">Imagen del juego</label>
+            <input id="juegoImagen" type="hidden" />
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
+              <input id="juegoImagenFile" type="file" accept="image/*" />
+              <button id="subirJuegoImagenBtn" class="mini-btn" type="button">Subir imagen desde PC</button>
+            </div>
           </div>
           <div class="form-group">
             <label for="juegoDescripcion">Descripción</label>
@@ -1817,6 +2301,15 @@
             <label><input id="serviceBoosting" type="checkbox" checked /> Boosting</label>
             <label><input id="serviceAccounts" type="checkbox" checked /> Cuentas</label>
             <label><input id="serviceGold" type="checkbox" checked /> Oro</label>
+            <label for="customServiceInput">Sección personalizada</label>
+            <label><input id="customServiceEnabled" type="checkbox" /> Activar sección personalizada</label>
+            <input id="customServiceInput" type="text" placeholder="Ej: Albion" />
+            <label><input id="customServiceHideName" type="checkbox" /> Mostrar solo imagen (sin nombre)</label>
+            <input id="customServiceImage" type="hidden" />
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
+              <input id="customServiceImageFile" type="file" accept="image/*" />
+              <button id="subirCustomServiceImagenBtn" class="mini-btn" type="button">Subir imagen sección</button>
+            </div>
           </div>
           <div class="image-preview">
             <small>Vista previa</small>
@@ -1859,6 +2352,67 @@
       </div>
     </div>
 
+    <div id="accountFormModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card">
+        <div class="admin-head">
+          <strong>Cuenta por juego</strong>
+          <button id="closeAccountFormModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div class="admin-game-form">
+          <div class="admin-split">
+            <div class="form-group">
+              <label for="accountGameSelect">Juego</label>
+              <select id="accountGameSelect"></select>
+            </div>
+            <div class="form-group">
+              <label for="accountNameInput">Nombre de cuenta</label>
+              <input id="accountNameInput" type="text" placeholder="Ej: Cuenta Gladiador" />
+            </div>
+          </div>
+          <div class="admin-split">
+            <div class="form-group">
+              <label for="accountLevelRangeInput">Level hasta level</label>
+              <input id="accountLevelRangeInput" type="text" placeholder="Ej: 1-80" />
+            </div>
+            <div class="form-group">
+              <label for="accountRoleInput">Rol o clase</label>
+              <input id="accountRoleInput" type="text" placeholder="Ej: Mago, Tanque, Healer" />
+            </div>
+          </div>
+          <div class="admin-split">
+            <div class="form-group">
+              <label for="accountFactionInput">Tipo de facción</label>
+              <select id="accountFactionInput">
+                <option value="">Selecciona facción</option>
+                <option value="Horda">Horda</option>
+                <option value="Alianza">Alianza</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="accountBudgetInput">Presupuesto</label>
+              <input id="accountBudgetInput" type="text" placeholder="Ej: 120 USD" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="accountImageInput">Imagen (URL)</label>
+            <input id="accountImageInput" type="text" placeholder="URL de imagen de la cuenta" />
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
+              <input id="accountImageFile" type="file" accept="image/*" />
+              <button id="subirAccountImagenBtn" class="mini-btn" type="button">Subir imagen desde PC</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="accountDescriptionInput">Descripción</label>
+            <textarea id="accountDescriptionInput" placeholder="Describe esta cuenta"></textarea>
+          </div>
+          <div class="form-actions" style="display:flex;gap:.5rem;">
+            <button id="saveAccountBtn" class="panel-btn" type="button">Guardar cuenta</button>
+            <button id="cancelAccountFormBtn" class="mini-btn" type="button">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="categoriasVistaModal" class="juego-form-modal" aria-hidden="true">
       <div class="juego-form-card">
         <div class="admin-head">
@@ -1877,14 +2431,84 @@
       const pageLoader = document.getElementById('pageLoader');
       const pageLinks = document.querySelectorAll('[data-page-link]');
       const pageSections = document.querySelectorAll('.page-section');
+      const marketServiceTitle = document.getElementById('marketServiceTitle');
+      const marketDetailsWrap = document.getElementById('marketDetailsWrap');
+      const marketCategoryGrid = document.getElementById('marketCategoryGrid');
+      const marketPriceList = document.getElementById('marketPriceList');
+      const marketOrderPanel = document.getElementById('marketOrderPanel');
+      const marketSelectedCategory = document.getElementById('marketSelectedCategory');
+      const marketSelectedService = document.getElementById('marketSelectedService');
+      const marketPaymentMethod = document.getElementById('marketPaymentMethod');
+      const marketItemType = document.getElementById('marketItemType');
+      const marketAmountToPay = document.getElementById('marketAmountToPay');
+      const marketOpenTicketBtn = document.getElementById('marketOpenTicketBtn');
+      const marketActionButtons = document.querySelectorAll('.marketplace-action-btn[data-market-service]');
       const gameWindowModal = document.getElementById('gameWindowModal');
+      const gameWindow = document.getElementById('gameWindow');
       const gameWindowTitle = document.getElementById('gameWindowTitle');
       const gameWindowDesc = document.getElementById('gameWindowDesc');
       const gameWindowIcon = document.getElementById('gameWindowIcon');
       const gameWindowOptions = document.getElementById('gameWindowOptions');
+      const goldOrderPanel = document.getElementById('goldOrderPanel');
+      const goldOrderGameIcon = document.getElementById('goldOrderGameIcon');
+      const goldOrderGameName = document.getElementById('goldOrderGameName');
+      const goldOrderServer = document.getElementById('goldOrderServer');
+      const goldOrderProduct = document.getElementById('goldOrderProduct');
+      const goldOrderFaction = document.getElementById('goldOrderFaction');
+      const goldOrderCharacter = document.getElementById('goldOrderCharacter');
+      const goldOrderDelivery = document.getElementById('goldOrderDelivery');
+      const goldOrderTicketBtn = document.getElementById('goldOrderTicketBtn');
+      const volverOpcionesBtn = document.getElementById('volverOpcionesBtn');
+      const accountsPanel = document.getElementById('accountsPanel');
+      const accountsPanelList = document.getElementById('accountsPanelList');
+      const boostingOptionsPanel = document.getElementById('boostingOptionsPanel');
       const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
+      const openRegister = document.getElementById('openRegister');
+      const openLogin = document.getElementById('openLogin');
+      const openProfile = document.getElementById('openProfile');
+      const mainLogoImg = document.getElementById('mainLogoImg');
+      const sellGoldImg = document.getElementById('sellGoldImg');
       const closeAdmin = document.getElementById('closeAdmin');
+      const authModal = document.getElementById('authModal');
+      const closeAuthModal = document.getElementById('closeAuthModal');
+      const tabAuthLogin = document.getElementById('tabAuthLogin');
+      const tabAuthRegister = document.getElementById('tabAuthRegister');
+      const authPaneLogin = document.getElementById('authPaneLogin');
+      const authPaneRegister = document.getElementById('authPaneRegister');
+      const authLoginEmail = document.getElementById('authLoginEmail');
+      const authLoginPassword = document.getElementById('authLoginPassword');
+      const authLoginBtn = document.getElementById('authLoginBtn');
+      const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+      const recoveryPasswordWrap = document.getElementById('recoveryPasswordWrap');
+      const recoveryNewPassword = document.getElementById('recoveryNewPassword');
+      const recoveryNewPassword2 = document.getElementById('recoveryNewPassword2');
+      const saveRecoveredPasswordBtn = document.getElementById('saveRecoveredPasswordBtn');
+      const authRegName = document.getElementById('authRegName');
+      const authRegEmail = document.getElementById('authRegEmail');
+      const authRegDiscord = document.getElementById('authRegDiscord');
+      const authRegPassword = document.getElementById('authRegPassword');
+      const authRegPassword2 = document.getElementById('authRegPassword2');
+      const authRegisterBtn = document.getElementById('authRegisterBtn');
+      const resendVerificationBtn = document.getElementById('resendVerificationBtn');
+      const authMsg = document.getElementById('authMsg');
+      const authNotice = document.getElementById('authNotice');
+      const profileDrawer = document.getElementById('profileDrawer');
+      const closeProfileDrawer = document.getElementById('closeProfileDrawer');
+      const tabProfileInfo = document.getElementById('tabProfileInfo');
+      const tabProfileOrders = document.getElementById('tabProfileOrders');
+      const profileInfoPane = document.getElementById('profileInfoPane');
+      const profileOrdersPane = document.getElementById('profileOrdersPane');
+      const profileNameTop = document.getElementById('profileNameTop');
+      const profileEmailTop = document.getElementById('profileEmailTop');
+      const profileNameInput = document.getElementById('profileNameInput');
+      const profileDiscordInput = document.getElementById('profileDiscordInput');
+      const profilePhoneInput = document.getElementById('profilePhoneInput');
+      const saveProfileBtn = document.getElementById('saveProfileBtn');
+      const changePasswordBtn = document.getElementById('changePasswordBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const userOrdersList = document.getElementById('userOrdersList');
+      const profileMsg = document.getElementById('profileMsg');
       const adminModal = document.getElementById('adminModal');
       const adminLogin = document.getElementById('adminLogin');
       const adminMsg = document.getElementById('adminMsg');
@@ -1900,25 +2524,67 @@
       const juegoFormTitulo = document.getElementById('juegoFormTitulo');
       const juegoNombre = document.getElementById('juegoNombre');
       const juegoImagen = document.getElementById('juegoImagen');
+      const juegoImagenFile = document.getElementById('juegoImagenFile');
+      const subirJuegoImagenBtn = document.getElementById('subirJuegoImagenBtn');
       const juegoDescripcion = document.getElementById('juegoDescripcion');
       const serviceBoosting = document.getElementById('serviceBoosting');
       const serviceAccounts = document.getElementById('serviceAccounts');
       const serviceGold = document.getElementById('serviceGold');
+      const customServiceInput = document.getElementById('customServiceInput');
+      const customServiceEnabled = document.getElementById('customServiceEnabled');
+      const customServiceHideName = document.getElementById('customServiceHideName');
+      const customServiceImage = document.getElementById('customServiceImage');
+      const customServiceImageFile = document.getElementById('customServiceImageFile');
+      const subirCustomServiceImagenBtn = document.getElementById('subirCustomServiceImagenBtn');
       const previewImagenJuego = document.getElementById('previewImagenJuego');
       const previewNombreJuego = document.getElementById('previewNombreJuego');
       const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
       const cancelarJuegoForm = document.getElementById('cancelarJuegoForm');
       const guardarJuegoForm = document.getElementById('guardarJuegoForm');
       const tabListaJuegosAdmin = document.getElementById('tabListaJuegosAdmin');
+      const tabCategoriasOro = document.getElementById('tabCategoriasOro');
       const tabListaServidoresAdmin = document.getElementById('tabListaServidoresAdmin');
       const tabOro = document.getElementById('tabOro');
+      const tabMarketAdmin = document.getElementById('tabMarketAdmin');
+      const tabTicketsAdmin = document.getElementById('tabTicketsAdmin');
       const tabCuentas = document.getElementById('tabCuentas');
       const tabBosteo = document.getElementById('tabBosteo');
       const editorListaJuegos = document.getElementById('editorListaJuegos');
+      const editorCategoriasOro = document.getElementById('editorCategoriasOro');
       const editorServidores = document.getElementById('editorServidores');
       const editorOro = document.getElementById('editorOro');
+      const editorMarketAdmin = document.getElementById('editorMarketAdmin');
+      const editorTicketsAdmin = document.getElementById('editorTicketsAdmin');
       const editorCuentas = document.getElementById('editorCuentas');
       const editorBosteo = document.getElementById('editorBosteo');
+      const adminTicketsList = document.getElementById('adminTicketsList');
+      const openAccountFormModalBtn = document.getElementById('openAccountFormModalBtn');
+      const accountGameSelect = document.getElementById('accountGameSelect');
+      const accountNameInput = document.getElementById('accountNameInput');
+      const accountLevelRangeInput = document.getElementById('accountLevelRangeInput');
+      const accountRoleInput = document.getElementById('accountRoleInput');
+      const accountFactionInput = document.getElementById('accountFactionInput');
+      const accountBudgetInput = document.getElementById('accountBudgetInput');
+      const accountImageInput = document.getElementById('accountImageInput');
+      const accountImageFile = document.getElementById('accountImageFile');
+      const subirAccountImagenBtn = document.getElementById('subirAccountImagenBtn');
+      const accountDescriptionInput = document.getElementById('accountDescriptionInput');
+      const saveAccountBtn = document.getElementById('saveAccountBtn');
+      const accountFormModal = document.getElementById('accountFormModal');
+      const closeAccountFormModal = document.getElementById('closeAccountFormModal');
+      const cancelAccountFormBtn = document.getElementById('cancelAccountFormBtn');
+      const adminAccountsList = document.getElementById('adminAccountsList');
+      const marketTypeP2P = document.getElementById('marketTypeP2P');
+      const marketTypeStreaming = document.getElementById('marketTypeStreaming');
+      const marketTypeGiftcards = document.getElementById('marketTypeGiftcards');
+      const marketCategoryName = document.getElementById('marketCategoryName');
+      const marketCategoryImage = document.getElementById('marketCategoryImage');
+      const saveMarketCategoryBtn = document.getElementById('saveMarketCategoryBtn');
+      const marketPriceName = document.getElementById('marketPriceName');
+      const marketPriceValue = document.getElementById('marketPriceValue');
+      const saveMarketPriceBtn = document.getElementById('saveMarketPriceBtn');
+      const marketAdminCategoryList = document.getElementById('marketAdminCategoryList');
+      const marketAdminPriceList = document.getElementById('marketAdminPriceList');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
@@ -1950,22 +2616,22 @@
       const categoriasVistaModal = document.getElementById('categoriasVistaModal');
       const categoriasVistaLista = document.getElementById('categoriasVistaLista');
       const cerrarCategoriasVista = document.getElementById('cerrarCategoriasVista');
-      const defaultServices = ['boosting', 'accounts', 'gold'];
+      const defaultServices = ['gold', 'boosting', 'accounts'];
       const serviceCatalog = {
         boosting: {
           className: 'boost',
           title: 'BOOSTING',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006601390428240/ChatGPT_Image_20_abr_2026_06_42_34_p.m..png?ex=69ee3ef8&is=69eced78&hm=34489a6b7f658cfee76304d1a03280ca83019ac2e2b8e2c925d3fe446515ec9e&'
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006561200472115/ChatGPT_Image_20_abr_2026_06_41_28_p.m..png?ex=69f384ee&is=69f2336e&hm=7936fade266d5772c87fb455c134c898022aacc484e8b04be98260e0e9da3790&'
         },
         accounts: {
           className: 'accounts',
           title: 'ACCOUNTS',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006645220905070/ChatGPT_Image_20_abr_2026_06_43_30_p.m..png?ex=69ee3f02&is=69eced82&hm=f87b74e259fd5a4082b4412a7993cb1a32fb60ddb07b24a42aba02f61d5a1c6b&'
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006645220905070/ChatGPT_Image_20_abr_2026_06_43_30_p.m..png?ex=69f38502&is=69f23382&hm=6a9e1ab5f0fb0aa0b1c2659e9e502136b09924a473bbd565bc850736c4c152fa&'
         },
         gold: {
           className: 'gold',
           title: 'GOLD',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006561200472115/ChatGPT_Image_20_abr_2026_06_41_28_p.m..png?ex=69ee3eee&is=69eced6e&hm=88042dec6f5c77cd69acb68c4734b5906c6db955a214fdd4e14751acd9e0294c&'
+          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006601390428240/ChatGPT_Image_20_abr_2026_06_42_34_p.m..png?ex=69f384f8&is=69f23378&hm=1cc06e24f43ce71b54bf4549f0027bea82423cabfa8c1eee4949eb779f5ba76a&'
         }
       };
       const SUPABASE_URL =
@@ -1990,16 +2656,51 @@
       const supabaseClient = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
         ? (isServiceRoleKey ? null : window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY))
         : null;
+      const ADMIN_EMAILS = ['admin@tradehud.com'];
+      const ASSET_BUCKET = 'tradehud-assets';
+
+      const wowGameIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E";
+      const wowTbcGameIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E";
+      const albionGameIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E";
+      const lineage2GameIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E";
 
       const games = [
-        { id: null, name: 'World of Warcraft', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E", description: 'Clásico para comercio de oro y servicios premium.' },
-        { id: null, name: 'WoW TBC', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ffb347'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%23200f05' font-size='24' font-family='Arial' font-weight='700'%3ETB%3C/text%3E%3C/svg%3E", description: 'Servidor TBC con alta demanda de boosting.' },
-        { id: null, name: 'Albion Online', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23ff3d2e'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EAO%3C/text%3E%3C/svg%3E", description: 'Compra/venta de plata y servicios por encargo.' },
-        { id: null, name: 'Lineage 2 Reborn', icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%232e7bff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='white' font-size='24' font-family='Arial' font-weight='700'%3EL2%3C/text%3E%3C/svg%3E", description: 'Market activo para adena y cuentas.' }
+        { id: null, name: 'World of Warcraft', icon: wowGameIcon, description: 'Clásico para comercio de oro y servicios premium.' },
+        { id: null, name: 'WoW TBC', icon: wowTbcGameIcon, description: 'Servidor TBC con alta demanda de boosting.' },
+        { id: null, name: 'Albion Online', icon: albionGameIcon, description: 'Compra/venta de plata y servicios por encargo.' },
+        { id: null, name: 'Lineage 2 Reborn', icon: lineage2GameIcon, description: 'Market activo para adena y cuentas.' },
+        { id: null, name: 'World of Warcraft 20th Anniversary TBC', icon: wowTbcGameIcon, description: 'Catálogo TBC anniversary.' },
+        { id: null, name: 'World of Warcraft Retail', icon: wowGameIcon, description: 'Catálogo Retail US/EU.' },
+        { id: null, name: 'World of Warcraft Project Epoch', icon: wowGameIcon, description: 'Project Epoch gold.' },
+        { id: null, name: 'World of Warcraft Ascension', icon: wowGameIcon, description: 'Ascension gold.' },
+        { id: null, name: 'WARMANE', icon: wowGameIcon, description: 'Onyxia/Lordaeron/Icecrown.' },
+        { id: null, name: 'AION', icon: albionGameIcon, description: 'Kinah EUROAION.' },
+        { id: null, name: 'Aion 2', icon: albionGameIcon, description: 'TW Triniel/Vaziel.' },
+        { id: null, name: 'RuneScape', icon: albionGameIcon, description: 'Old School RuneScape.' },
+        { id: null, name: 'Diablo 2 Resurrected Runes', icon: albionGameIcon, description: 'Ladder Season 13.' },
+        { id: null, name: 'LAWL', icon: albionGameIcon, description: 'Lawl Global.' },
+        { id: null, name: 'Dofus', icon: albionGameIcon, description: 'Retro servers.' },
+        { id: null, name: 'Flyff Universe', icon: albionGameIcon, description: 'MUSHPOIE / TOTENMANIA / BURUDENG / FWC-2026.' },
+        { id: null, name: 'ODIN: Valhalla Rising Diamonds', icon: albionGameIcon, description: 'Asgard 01-09.' },
+        { id: null, name: 'Mir4', icon: albionGameIcon, description: 'ASIA / EU / NA / SA.' },
+        { id: null, name: 'Rubinot', icon: albionGameIcon, description: 'Rubinicoin.' },
+        { id: null, name: 'Tibia', icon: albionGameIcon, description: 'Tibicoin.' },
+        { id: null, name: 'Path of Exile 1', icon: albionGameIcon, description: 'Mirage Season.' },
+        { id: null, name: 'Path of Exile 2', icon: albionGameIcon, description: 'Divine Orbs.' },
+        { id: null, name: 'Throne and Liberty', icon: albionGameIcon, description: 'Global Americas.' },
+        { id: null, name: 'Torchlight Infinite', icon: albionGameIcon, description: 'Season Lunaria USD/EU.' },
+        { id: null, name: 'The Quinfall', icon: albionGameIcon, description: 'Region USD/EU.' },
+        { id: null, name: 'Warbone Above Ashes', icon: albionGameIcon, description: 'America / Europa.' }
       ];
       const goldCategories = [
         { id: null, game: 'World of Warcraft', name: 'Oro rápido', description: 'Entrega en minutos con confirmación por Discord.' },
-        { id: null, game: 'Albion Online', name: 'Plata segura', description: 'Categoría premium para compra/venta segura.' }
+        { id: null, game: 'Albion Online', name: 'Plata segura', description: 'Categoría premium para compra/venta segura.' },
+        { id: null, game: 'World of Warcraft 20th Anniversary TBC', name: 'TBC Anniversary', description: 'Oro por servidores US/EU.' },
+        { id: null, game: 'World of Warcraft Retail', name: 'Retail Gold', description: 'Paquetes en K y M.' },
+        { id: null, game: 'World of Warcraft Project Epoch', name: 'Project Epoch', description: 'Oro por paquetes G.' },
+        { id: null, game: 'WARMANE', name: 'Warmane Gold', description: 'Onyxia / Lordaeron / Icecrown.' },
+        { id: null, game: 'AION', name: 'Kinah AION', description: 'Servidor EUROAION.' },
+        { id: null, game: 'Flyff Universe', name: 'Flyff Penya', description: 'Múltiples servidores.' }
       ];
       const accountCategories = [
         { id: null, game: 'World of Warcraft', name: 'Cuenta PVP', description: 'Cuentas verificadas con historial limpio.' }
@@ -2007,9 +2708,63 @@
       const boostingCategories = [
         { id: null, game: 'Lineage 2 Reborn', name: 'Subida rápida', description: 'Boosting guiado con reporte de avance.' }
       ];
+      const gameAccounts = [
+        {
+          game: 'World of Warcraft',
+          name: 'Cuenta PVP Gladiador',
+          levelRange: '70-80',
+          role: 'Mago',
+          faction: 'Horda',
+          budget: '150 USD',
+          image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop',
+          description: 'Cuenta lista para arenas y contenido competitivo.'
+        }
+      ];
+      const customServiceMetaByGame = {};
+
+      function toggleCustomServiceFields() {
+        const enabled = customServiceEnabled.checked;
+        [customServiceInput, customServiceHideName, customServiceImageFile, subirCustomServiceImagenBtn].forEach((el) => {
+          if (!el) return;
+          el.disabled = !enabled;
+        });
+      }
+      const marketCatalog = {
+        p2p: {
+          title: 'P2P',
+          categories: [
+            { name: 'ZINLI', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&' },
+            { name: 'PAYPAL', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&' }
+          ],
+          prices: ['Zinli 10$ - 12$', 'Zinli 20$ - 23$', 'Paypal 50$ - 60$', 'Paypal 100$ - 120$']
+        },
+        streaming: {
+          title: 'Streaming',
+          categories: [{ name: 'Streaming apps', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&' }],
+          prices: ['Netflix perfil 4.50$', 'Disney perfil 3$', 'Prime Video perfil 3$', 'HBO perfil 3$']
+        },
+        giftcards: {
+          title: 'GiftCards',
+          categories: [{ name: 'GiftCards gaming', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' }],
+          prices: ['10$ - 13$', '20$ - 26$', '50$ - 65$', '100$ - 130$']
+        }
+      };
       const gameServers = [
         { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
-        { game: 'Albion Online', servers: ['West', 'East'] }
+        { game: 'Albion Online', servers: ['West', 'East'] },
+        { game: 'World of Warcraft 20th Anniversary TBC', servers: ['(US) NIGHTSLAYER', '(US) DREAMSCYTHE', '(EU) SPINESHATTER', '(EU) THUNDERSTRIKE', '(EU) SOULSEEKER'] },
+        { game: 'World of Warcraft Retail', servers: ['(US) WOW RETAIL', '(EU) WOW RETAIL'] },
+        { game: 'World of Warcraft Project Epoch', servers: ['KEZAN', 'GURUBASHI'] },
+        { game: 'World of Warcraft Ascension', servers: ['BRONZEBEARD'] },
+        { game: 'WARMANE', servers: ['Onyxia', 'Lordaeron', 'Icecrown'] },
+        { game: 'AION', servers: ['EUROAION'] },
+        { game: 'Aion 2', servers: ['(TW) Triniel', '(TW) Vaziel'] },
+        { game: 'RuneScape', servers: ['Old School RuneScape'] },
+        { game: 'Diablo 2 Resurrected Runes', servers: ['(PC) Ladder Season 13 Normal'] },
+        { game: 'Dofus', servers: ['Retro - Fallanster', 'Retro - Boune', 'Retro - Allisteria'] },
+        { game: 'Flyff Universe', servers: ['MUSHPOIE', 'TOTENMANIA', 'BURUDENG', 'FWC-2026'] },
+        { game: 'ODIN: Valhalla Rising Diamonds', servers: ['Asgard 01', 'Asgard 02', 'Asgard 03', 'Asgard 04', 'Asgard 05', 'Asgard 06', 'Asgard 07', 'Asgard 08', 'Asgard 09'] },
+        { game: 'Mir4', servers: ['(ASIA)', '(EU)', '(NA)', '(SA)'] }
       ];
       const goldPrices = [
         { game: 'World of Warcraft', server: 'Ragnaros', amount: 100, price: 3.5 },
@@ -2020,12 +2775,275 @@
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
+      let activeOrderGame = null;
+      let currentUser = null;
+      let currentProfile = null;
+      let recoveryMode = false;
+      let activeMarketType = 'p2p';
+      let selectedMarketCategory = '';
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
+
+      function isAdminUser(user, profile = null) {
+        const email = user?.email?.toLowerCase?.() || '';
+        return Boolean(profile?.is_admin) || ADMIN_EMAILS.includes(email);
+      }
+
+      async function loadMarketCatalogFromSupabase() {
+        if (!supabaseClient) return;
+        const { data, error } = await supabaseClient
+          .from('market_catalog_entries')
+          .select('service_type,entry_type,name,image,value,sort_order')
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: true });
+        if (error || !Array.isArray(data)) return;
+        ['p2p', 'streaming', 'giftcards'].forEach((key) => {
+          marketCatalog[key].categories = [];
+          marketCatalog[key].prices = [];
+        });
+        data.forEach((row) => {
+          if (!marketCatalog[row.service_type]) return;
+          if (row.entry_type === 'category') {
+            marketCatalog[row.service_type].categories.push({ name: row.name || '', image: row.image || '' });
+          } else if (row.entry_type === 'price') {
+            marketCatalog[row.service_type].prices.push(row.value || row.name || '');
+          }
+        });
+      }
+
+      function renderGoldOrderProducts() {
+        const server = goldOrderServer.value;
+        goldOrderProduct.innerHTML = '';
+        if (!activeOrderGame?.name || !server) {
+          goldOrderProduct.innerHTML = '<option value="">Selecciona servidor primero</option>';
+          return;
+        }
+        const matches = goldPrices
+          .filter((item) => item.game === activeOrderGame.name && item.server === server)
+          .sort((a, b) => a.amount - b.amount);
+        if (!matches.length) {
+          goldOrderProduct.innerHTML = '<option value="">Sin productos en este servidor</option>';
+          return;
+        }
+        matches.forEach((item) => {
+          const option = document.createElement('option');
+          option.value = `${item.amount}|${item.price.toFixed(2)}`;
+          option.textContent = `${item.amount} de oro - $${item.price.toFixed(2)}`;
+          goldOrderProduct.appendChild(option);
+        });
+      }
+
+      function openGoldOrderPanel(game) {
+        if (!game) return;
+        activeOrderGame = game;
+        goldOrderPanel.classList.remove('hidden');
+        gameWindow.classList.add('gold-focus');
+        goldOrderGameIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
+        goldOrderGameName.textContent = game.name;
+        const servers = gameServers.find((entry) => entry.game === game.name)?.servers || [];
+        goldOrderServer.innerHTML = '';
+        if (!servers.length) {
+          goldOrderServer.innerHTML = '<option value="">Sin servidores configurados</option>';
+        } else {
+          servers.forEach((server) => {
+            const option = document.createElement('option');
+            option.value = server;
+            option.textContent = server;
+            goldOrderServer.appendChild(option);
+          });
+        }
+        goldOrderCharacter.value = '';
+        goldOrderDelivery.value = '';
+        renderGoldOrderProducts();
+      }
+
+      function closeGoldOrderPanel() {
+        goldOrderPanel.classList.add('hidden');
+        if (accountsPanel.classList.contains('hidden') && boostingOptionsPanel.classList.contains('hidden')) {
+          gameWindow.classList.remove('gold-focus');
+        }
+      }
+
+      function openAccountsPanel(game) {
+        accountsPanel.classList.remove('hidden');
+        gameWindow.classList.add('gold-focus');
+        accountsPanelList.innerHTML = '';
+        const filtered = gameAccounts.filter((account) => account.game === game.name);
+        if (!filtered.length) {
+          accountsPanelList.innerHTML = '<p class="auth-hint">No hay cuentas cargadas para este juego.</p>';
+          return;
+        }
+        filtered.forEach((account) => {
+          const card = document.createElement('article');
+          card.className = 'account-card';
+          card.innerHTML = `<img src="${account.image}" alt="${account.name}" /><strong>${account.name}</strong><p class="admin-game-desc">Level: ${account.levelRange || '-'}</p><p class="admin-game-desc">Clase/Rol: ${account.role || '-'}</p><p class="admin-game-desc">Facción: ${account.faction || '-'}</p><p class="admin-game-desc">Presupuesto: ${account.budget || '-'}</p><p class="admin-game-desc">${account.description || ''}</p>`;
+          accountsPanelList.appendChild(card);
+        });
+      }
+
+      function closeAccountsPanel() {
+        accountsPanel.classList.add('hidden');
+        if (goldOrderPanel.classList.contains('hidden') && boostingOptionsPanel.classList.contains('hidden')) {
+          gameWindow.classList.remove('gold-focus');
+        }
+      }
+
+      function openBoostingOptionsPanel() {
+        boostingOptionsPanel.classList.remove('hidden');
+        gameWindow.classList.add('gold-focus');
+      }
+
+      function closeBoostingOptionsPanel() {
+        boostingOptionsPanel.classList.add('hidden');
+        if (goldOrderPanel.classList.contains('hidden') && accountsPanel.classList.contains('hidden')) {
+          gameWindow.classList.remove('gold-focus');
+        }
+      }
+
+      function setAuthView(mode = 'login') {
+        const isLogin = mode === 'login';
+        tabAuthLogin.classList.toggle('active', isLogin);
+        tabAuthRegister.classList.toggle('active', !isLogin);
+        authPaneLogin.classList.toggle('hidden', !isLogin);
+        authPaneRegister.classList.toggle('hidden', isLogin);
+        recoveryPasswordWrap.classList.toggle('hidden', !(isLogin && recoveryMode));
+      }
+
+      function openAuth(mode = 'login') {
+        setAuthView(mode);
+        authMsg.textContent = '';
+        authModal.classList.add('show');
+        authModal.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeAuth() {
+        authModal.classList.remove('show');
+        authModal.setAttribute('aria-hidden', 'true');
+      }
+
+      function showAuthNotice(message, kind = 'info') {
+        authNotice.textContent = message;
+        authNotice.classList.add('show');
+        authNotice.classList.toggle('warn', kind === 'warn');
+        clearTimeout(showAuthNotice._timer);
+        showAuthNotice._timer = setTimeout(() => {
+          authNotice.classList.remove('show');
+        }, 5200);
+      }
+
+      function friendlyError(message = '') {
+        const raw = String(message || '').toLowerCase();
+        if (raw.includes('invalid login credentials')) return 'Credenciales inválidas. Revisa correo y contraseña.';
+        if (raw.includes('email not confirmed')) return 'Debes confirmar tu correo antes de iniciar sesión.';
+        if (raw.includes('already registered')) return 'Este correo ya está registrado.';
+        if (raw.includes('password should be at least')) return 'La contraseña debe tener al menos 6 caracteres.';
+        if (raw.includes('network')) return 'Error de red. Verifica tu conexión e intenta nuevamente.';
+        return message || 'Ocurrió un error inesperado.';
+      }
+
+      function toggleUserButtons() {
+        const logged = Boolean(currentUser);
+        openRegister.style.display = logged ? 'none' : 'inline-flex';
+        openLogin.style.display = logged ? 'none' : 'inline-flex';
+        openProfile.style.display = logged ? 'inline-flex' : 'none';
+      }
+
+      async function loadUserProfile() {
+        if (!currentUser) return;
+        const fallbackProfile = {
+          id: currentUser.id,
+          name: currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil',
+          email: currentUser.email || '',
+          discord: currentUser.user_metadata?.discord || '',
+          phone: currentUser.user_metadata?.phone || '',
+          is_admin: false
+        };
+        if (!supabaseClient) {
+          currentProfile = fallbackProfile;
+          profileNameTop.textContent = currentProfile.name;
+          profileEmailTop.textContent = currentProfile.email;
+          profileNameInput.value = currentProfile.name;
+          profileDiscordInput.value = currentProfile.discord;
+          profilePhoneInput.value = currentProfile.phone;
+          return;
+        }
+        const { data, error } = await supabaseClient
+          .from('user_profiles')
+          .select('id,name,email,discord,phone,is_admin')
+          .eq('id', currentUser.id)
+          .maybeSingle();
+        if (error) {
+          currentProfile = fallbackProfile;
+          profileNameTop.textContent = currentProfile.name;
+          profileEmailTop.textContent = currentProfile.email;
+          profileNameInput.value = currentProfile.name;
+          profileDiscordInput.value = currentProfile.discord;
+          profilePhoneInput.value = currentProfile.phone;
+          return;
+        }
+        if (!data) {
+          const payload = {
+            id: currentUser.id,
+            name: fallbackProfile.name,
+            email: fallbackProfile.email,
+            discord: fallbackProfile.discord,
+            phone: fallbackProfile.phone,
+            is_admin: false
+          };
+          const { data: inserted } = await supabaseClient.from('user_profiles').upsert(payload).select().maybeSingle();
+          currentProfile = inserted || payload;
+        } else {
+          currentProfile = data;
+        }
+        if (isAdminUser(currentUser, currentProfile)) currentProfile.is_admin = true;
+        profileNameTop.textContent = currentProfile.name || 'Perfil';
+        profileEmailTop.textContent = currentProfile.email || '';
+        profileNameInput.value = currentProfile.name || '';
+        profileDiscordInput.value = currentProfile.discord || '';
+        profilePhoneInput.value = currentProfile.phone || '';
+      }
+
+      async function renderUserOrders() {
+        userOrdersList.innerHTML = '';
+        if (!currentUser || !supabaseClient) return;
+        const { data } = await supabaseClient
+          .from('tickets')
+          .select('id,game,server,product,faction,character,delivery,status,created_at')
+          .eq('user_id', currentUser.id)
+          .order('created_at', { ascending: false });
+        (data || []).forEach((item) => {
+          const card = document.createElement('article');
+          card.className = 'order-card';
+          card.innerHTML = `<strong>${item.game} · ${item.product || 'Producto'}</strong><p class="admin-game-desc">Servidor: ${item.server || '-'}</p><p class="admin-game-desc">Estado: ${item.status || 'pendiente'}</p>`;
+          userOrdersList.appendChild(card);
+        });
+        if (!userOrdersList.children.length) userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes.</p>';
+      }
+
+      async function renderAdminTickets() {
+        adminTicketsList.innerHTML = '';
+        if (!supabaseClient) return;
+        const { data } = await supabaseClient
+          .from('tickets')
+          .select('id,game,server,product,status,created_at,user_profiles(name,email,discord,phone)')
+          .order('created_at', { ascending: false });
+        (data || []).forEach((item) => {
+          const row = document.createElement('article');
+          row.className = 'order-card';
+          const owner = item.user_profiles?.name || item.user_profiles?.email || 'Usuario';
+          const email = item.user_profiles?.email || '';
+          const discord = item.user_profiles?.discord || '';
+          const phone = item.user_profiles?.phone || '';
+          const phoneDigits = phone.replace(/\D/g, '');
+          row.innerHTML = `<strong>${owner}</strong><p class="admin-game-desc">${item.game} / ${item.server || '-'}</p><p class="admin-game-desc">Producto: ${item.product || '-'} · Estado: ${item.status || 'pendiente'}</p><p class="admin-game-desc">Correo: ${email || 'No definido'}</p><p class="admin-game-desc">Discord: ${discord || 'No definido'}</p><p class="admin-game-desc">Número: ${phone || 'No definido'}</p><div class="admin-game-actions"><a class="mini-btn" href="${email ? `mailto:${email}` : '#'}" ${email ? '' : 'aria-disabled="true"'}>Email</a><a class="mini-btn" href="${phoneDigits ? `https://wa.me/${phoneDigits}` : '#'}" target="_blank" rel="noopener noreferrer" ${phoneDigits ? '' : 'aria-disabled="true"'}>WhatsApp</a></div>`;
+          adminTicketsList.appendChild(row);
+        });
+      }
 
       function openGamePage(index) {
         const game = games[index];
         if (!game) return;
         const gameServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
+        const customMeta = customServiceMetaByGame[game.name] || null;
         gameWindowTitle.textContent = game.name;
         gameWindowDesc.textContent = game.description || '';
         gameWindowIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
@@ -2036,12 +3054,51 @@
           const button = document.createElement('button');
           button.className = `game-option ${config.className}`;
           button.type = 'button';
+          button.dataset.service = serviceKey;
           button.innerHTML = `<img src="${config.image}" alt="${config.title}" loading="lazy" referrerpolicy="no-referrer" />`;
+          button.addEventListener('click', () => {
+            if (serviceKey === 'gold') {
+              openGoldOrderPanel(game);
+              closeAccountsPanel();
+              closeBoostingOptionsPanel();
+            } else if (serviceKey === 'accounts') {
+              closeGoldOrderPanel();
+              openAccountsPanel(game);
+              closeBoostingOptionsPanel();
+            } else if (serviceKey === 'boosting') {
+              closeGoldOrderPanel();
+              closeAccountsPanel();
+              openBoostingOptionsPanel();
+            } else {
+              closeGoldOrderPanel();
+              closeAccountsPanel();
+              closeBoostingOptionsPanel();
+            }
+          });
           gameWindowOptions.appendChild(button);
         });
+        gameServices
+          .filter((serviceKey) => !serviceRenderOrder.includes(serviceKey))
+          .forEach((serviceKey) => {
+            const button = document.createElement('button');
+            button.className = 'game-option boost';
+            button.type = 'button';
+            button.dataset.service = serviceKey;
+            const onlyImage = Boolean(customMeta?.hideName);
+            button.innerHTML = `<img src="${customMeta?.image || 'https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1200&auto=format&fit=crop'}" alt="${serviceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${serviceKey}</span>`}`;
+            button.addEventListener('click', () => {
+              closeGoldOrderPanel();
+              closeAccountsPanel();
+              closeBoostingOptionsPanel();
+            });
+            gameWindowOptions.appendChild(button);
+          });
         if (!gameWindowOptions.children.length) {
           gameWindowOptions.innerHTML = '';
         }
+        closeGoldOrderPanel();
+        closeAccountsPanel();
+        closeBoostingOptionsPanel();
         gameWindowModal.classList.add('show');
         gameWindowModal.setAttribute('aria-hidden', 'false');
       }
@@ -2108,6 +3165,116 @@
         renderCategoryList('bosteo', categoriaListaBosteo);
       }
 
+      function renderAdminAccounts() {
+        adminAccountsList.innerHTML = '';
+        gameAccounts.forEach((account, index) => {
+          const item = document.createElement('article');
+          item.className = 'category-item';
+          item.innerHTML = `<strong>${account.name}</strong><p class="admin-game-desc">Juego: ${account.game}</p><p class="admin-game-desc">Level: ${account.levelRange || '-'} · Rol: ${account.role || '-'}</p><p class="admin-game-desc">Facción: ${account.faction || '-'} · Presupuesto: ${account.budget || '-'}</p><p class="admin-game-desc">${account.description || ''}</p><button class="mini-btn danger" type="button" data-remove-account="${index}">Eliminar</button>`;
+          adminAccountsList.appendChild(item);
+        });
+      }
+
+      function renderMarketCatalog(type = 'p2p') {
+        if (!marketServiceTitle || !marketCategoryGrid || !marketPriceList || !marketOrderPanel) return;
+        const bucket = marketCatalog[type];
+        if (!bucket) return;
+        marketServiceTitle.textContent = type === 'giftcards'
+          ? 'GiftCards · Selecciona una categoría'
+          : `${bucket.title} · Selecciona categoría para ver apartados y crear ticket`;
+        marketCategoryGrid.innerHTML = '';
+        marketPriceList.innerHTML = '';
+
+        const renderCategoryItems = (categoryName) => {
+          const term = categoryName.toLowerCase();
+          const filtered = bucket.prices.filter((price) => price.toLowerCase().includes(term));
+          const items = filtered.length ? filtered : bucket.prices;
+          marketPriceList.innerHTML = '';
+          items.forEach((item) => {
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.className = 'category-item';
+            card.style.cursor = 'pointer';
+            card.innerHTML = `<strong>${item}</strong>`;
+            card.addEventListener('click', () => {
+              marketOrderPanel.classList.remove('hidden');
+              marketSelectedService.value = bucket.title;
+              marketSelectedCategory.value = categoryName;
+              marketItemType.value = item;
+              marketAmountToPay.value = item;
+            });
+            marketPriceList.appendChild(card);
+          });
+        };
+
+        bucket.categories.forEach((cat, index) => {
+          const card = document.createElement('button');
+          card.type = 'button';
+          card.className = 'account-card';
+          card.style.cursor = 'pointer';
+          card.innerHTML = `<img src="${cat.image}" alt="${cat.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" /><strong>${cat.name}</strong><p class="admin-game-desc">Ver apartados y abrir ticket</p>`;
+          card.addEventListener('click', () => {
+            selectedMarketCategory = cat.name;
+            marketOrderPanel.classList.remove('hidden');
+            marketSelectedCategory.value = cat.name;
+            marketSelectedService.value = bucket.title;
+            marketItemType.value = cat.name;
+            marketAmountToPay.value = '';
+            renderCategoryItems(cat.name);
+          });
+          marketCategoryGrid.appendChild(card);
+          if (index === 0 && !selectedMarketCategory && type !== 'giftcards') {
+            selectedMarketCategory = cat.name;
+            marketOrderPanel.classList.remove('hidden');
+            marketSelectedCategory.value = cat.name;
+            marketSelectedService.value = bucket.title;
+            renderCategoryItems(cat.name);
+          }
+        });
+        if (type === 'giftcards') {
+          marketOrderPanel.classList.add('hidden');
+          marketPriceList.innerHTML = '<p class="auth-hint">Elige una categoría de giftcard para ver especificaciones.</p>';
+        }
+        renderMarketAdminLists(type);
+      }
+
+      function renderMarketAdminLists(type = activeMarketType) {
+        if (!marketAdminCategoryList || !marketAdminPriceList) return;
+        const bucket = marketCatalog[type];
+        if (!bucket) return;
+        marketAdminCategoryList.innerHTML = '';
+        bucket.categories.forEach((cat, index) => {
+          const item = document.createElement('article');
+          item.className = 'category-item';
+          item.innerHTML = `<strong>${cat.name}</strong><p class="admin-game-desc">${cat.image}</p><button class="mini-btn danger" type="button" data-remove-market-category="${index}">Eliminar</button>`;
+          marketAdminCategoryList.appendChild(item);
+        });
+        marketAdminPriceList.innerHTML = '';
+        bucket.prices.forEach((price, index) => {
+          const item = document.createElement('article');
+          item.className = 'category-item';
+          item.innerHTML = `<strong>${price}</strong><button class="mini-btn danger" type="button" data-remove-market-price="${index}">Eliminar</button>`;
+          marketAdminPriceList.appendChild(item);
+        });
+      }
+
+      function setActiveMarketType(type = 'p2p') {
+        if (!marketDetailsWrap || !marketOrderPanel) return;
+        activeMarketType = type;
+        selectedMarketCategory = '';
+        marketOrderPanel.classList.add('hidden');
+        marketDetailsWrap.classList.toggle('hidden', type !== 'giftcards');
+        marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
+        [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].filter(Boolean).forEach((btn) => {
+          btn.classList.toggle('active', btn.id.toLowerCase().includes(type));
+        });
+        if (type === 'giftcards') {
+          renderMarketCatalog(type);
+        } else {
+          renderMarketAdminLists(type);
+        }
+      }
+
       function renderCategoriasVista() {
         categoriasVistaLista.innerHTML = '';
         goldCategories.forEach((category) => {
@@ -2129,6 +3296,7 @@
         serverGameSelect.innerHTML = '';
         precioJuegoAdd.innerHTML = '';
         precioJuegoEdit.innerHTML = '';
+        accountGameSelect.innerHTML = '';
         games.forEach((game) => {
           const option = document.createElement('option');
           option.value = game.name;
@@ -2136,12 +3304,15 @@
           serverGameSelect.appendChild(option);
           const optionAdd = option.cloneNode(true);
           const optionEdit = option.cloneNode(true);
+          const optionAccount = option.cloneNode(true);
           precioJuegoAdd.appendChild(optionAdd);
           precioJuegoEdit.appendChild(optionEdit);
+          accountGameSelect.appendChild(optionAccount);
         });
         refreshServerSelect(precioJuegoAdd, precioServidorAdd);
         refreshServerSelect(precioJuegoEdit, precioServidorEdit);
         renderPriceOptions();
+        renderAdminAccounts();
       }
 
       function renderServerByGame() {
@@ -2193,6 +3364,12 @@
         serviceBoosting.checked = selectedServices.includes('boosting');
         serviceAccounts.checked = selectedServices.includes('accounts');
         serviceGold.checked = selectedServices.includes('gold');
+        customServiceInput.value = selectedServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service)) || '';
+        const meta = customServiceMetaByGame[game.name] || {};
+        customServiceEnabled.checked = Boolean(meta.enabled || customServiceInput.value);
+        customServiceHideName.checked = Boolean(meta.hideName);
+        customServiceImage.value = meta.image || '';
+        toggleCustomServiceFields();
         updateGamePreview();
       }
 
@@ -2203,6 +3380,11 @@
         serviceBoosting.checked = true;
         serviceAccounts.checked = true;
         serviceGold.checked = true;
+        customServiceEnabled.checked = false;
+        customServiceInput.value = '';
+        customServiceHideName.checked = false;
+        customServiceImage.value = '';
+        toggleCustomServiceFields();
         updateGamePreview();
       }
 
@@ -2211,6 +3393,7 @@
         if (serviceBoosting.checked) services.push('boosting');
         if (serviceAccounts.checked) services.push('accounts');
         if (serviceGold.checked) services.push('gold');
+        if (customServiceEnabled.checked && customServiceInput.value.trim()) services.push(customServiceInput.value.trim().toLowerCase());
         return services.length ? services : [...defaultServices];
       }
 
@@ -2245,6 +3428,46 @@
         adminNotice.style.color = kind === 'ok' ? '#9affcc' : kind === 'warn' ? '#ffd39a' : '#9fd6ff';
       }
 
+      async function uploadImageFromPc(file, folder = 'general') {
+        if (!file) {
+          showAdminNotice('Selecciona una imagen primero.', 'warn');
+          return null;
+        }
+        const toDataUrl = () => new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result || ''));
+          reader.onerror = () => reject(new Error('No se pudo leer el archivo.'));
+          reader.readAsDataURL(file);
+        });
+        const dataUrl = await toDataUrl();
+        // Política actual: persistir SIEMPRE en data URL para evitar enlaces rotos/borrados.
+        // Opcional: también intenta subir a Storage para respaldo, sin bloquear el flujo principal.
+        if (!supabaseClient) return dataUrl;
+        const cleanFolder = String(folder || 'general').replace(/[^a-z0-9-_]/gi, '').toLowerCase() || 'general';
+        const ext = (file.name.split('.').pop() || 'png').toLowerCase();
+        const path = `${cleanFolder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const { error: uploadError } = await supabaseClient.storage.from(ASSET_BUCKET).upload(path, file, {
+          upsert: false,
+          contentType: file.type || 'image/png'
+        });
+        if (uploadError) showAdminNotice(`Respaldo en Storage falló (${uploadError.message}), se guardó en data URL.`, 'warn');
+        return dataUrl;
+      }
+
+      function normalizeGameName(value = '') {
+        return value.toLowerCase().trim().replace(/\s+/g, ' ');
+      }
+
+      function dedupeGamesByName(list = []) {
+        const seen = new Set();
+        return list.filter((item) => {
+          const key = normalizeGameName(item?.name || '');
+          if (!key || seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      }
+
       async function syncFromSupabase() {
         if (isServiceRoleKey) {
           showAdminNotice('Clave bloqueada: detectamos service_role. Usa SOLO la anon public key en frontend.', 'warn');
@@ -2255,25 +3478,36 @@
           return;
         }
         const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
-          supabaseClient.from('games').select('id,name,icon,description,services').order('created_at', { ascending: true }),
+          supabaseClient.from('games').select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name').order('created_at', { ascending: true }),
           supabaseClient.from('gold_categories').select('id,game,name,description').order('created_at', { ascending: true })
         ]);
         if (gamesError || categoriesError) {
           if (gamesError?.message?.toLowerCase().includes('services')) {
             showAdminNotice('Falta la columna "services" en la tabla games de Supabase.', 'warn');
           } else {
-            showAdminNotice('Error cargando datos de Supabase.', 'warn');
+            const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
+            showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
           }
           return;
         }
         if (Array.isArray(gamesData) && gamesData.length) {
-          games.splice(0, games.length, ...gamesData.map((row) => ({
+          const existingIconByName = new Map(games.map((game) => [normalizeGameName(game.name), game.icon]));
+          const uniqueGames = dedupeGamesByName(gamesData.map((row) => ({
             id: row.id,
             name: row.name,
-            icon: row.icon,
+            icon: row.icon || existingIconByName.get(normalizeGameName(row.name)) || albionGameIcon,
             description: row.description || '',
             services: Array.isArray(row.services) && row.services.length ? row.services : [...defaultServices]
           })));
+          games.splice(0, games.length, ...uniqueGames);
+          (gamesData || []).forEach((row) => {
+            if (!row?.name) return;
+            customServiceMetaByGame[row.name] = {
+              enabled: Boolean(row.custom_service_enabled),
+              image: row.custom_service_image || '',
+              hideName: Boolean(row.custom_service_hide_name)
+            };
+          });
         }
         if (Array.isArray(categoriesData)) {
           goldCategories.splice(0, goldCategories.length, ...categoriesData.map((row) => ({
@@ -2283,16 +3517,79 @@
             description: row.description || 'Sin descripción.'
           })));
         }
-        showAdminNotice('Conectado a Supabase correctamente.', 'ok');
+        showAdminNotice(`Conectado a Supabase correctamente. Juegos: ${gamesData?.length || 0}, categorías: ${categoriesData?.length || 0}.`, 'ok');
+      }
+
+      async function loadAppAssetsFromSupabase() {
+        if (!supabaseClient) return;
+        const { data, error } = await supabaseClient
+          .from('app_assets')
+          .select('key,image_url');
+        if (error || !Array.isArray(data)) return;
+        const byKey = Object.fromEntries(data.map((row) => [row.key, row.image_url]).filter((row) => row[1]));
+        if (byKey.logo_main && mainLogoImg) mainLogoImg.src = byKey.logo_main;
+        if (byKey.service_sell_gold && sellGoldImg) sellGoldImg.src = byKey.service_sell_gold;
+        if (byKey.service_gold) serviceCatalog.gold.image = byKey.service_gold;
+        if (byKey.service_boosting) serviceCatalog.boosting.image = byKey.service_boosting;
+        if (byKey.service_accounts) serviceCatalog.accounts.image = byKey.service_accounts;
       }
 
       async function initializeApp() {
+        toggleCustomServiceFields();
+        const rawHash = window.location.hash || '';
+        if (rawHash.includes('error=') || rawHash.includes('error_code=')) {
+          const hashParams = new URLSearchParams(rawHash.replace(/^#/, ''));
+          const errorCode = hashParams.get('error_code');
+          const errorDescription = hashParams.get('error_description');
+          if (errorCode === 'otp_expired') {
+            showAuthNotice('El enlace de confirmación expiró. Solicita un nuevo registro/inicio para recibir otro correo.', 'warn');
+          } else if (errorDescription) {
+            showAuthNotice(errorDescription, 'warn');
+          }
+          history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+        } else if (rawHash.includes('type=recovery')) {
+          recoveryMode = true;
+          setAuthView('login');
+          openAuth('login');
+          showAuthNotice('Ahora define tu nueva contraseña para recuperar la cuenta.');
+          history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+        }
         await syncFromSupabase();
+        await loadAppAssetsFromSupabase();
         renderGameList();
         renderAdminSelect();
         renderGoldCategories();
         renderServerByGame();
         loadSelectedGame();
+        await loadMarketCatalogFromSupabase();
+        marketDetailsWrap.classList.add('hidden');
+        if (supabaseClient) {
+          const { data: authData } = await supabaseClient.auth.getSession();
+          currentUser = authData?.session?.user || null;
+          if (currentUser) {
+            await loadUserProfile();
+            await renderUserOrders();
+          }
+          toggleUserButtons();
+          supabaseClient.auth.onAuthStateChange(async (event, session) => {
+            const hadUser = Boolean(currentUser);
+            currentUser = session?.user || null;
+            if (currentUser) {
+              profileNameTop.textContent = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil';
+              profileEmailTop.textContent = currentUser.email || '';
+              await loadUserProfile();
+              await renderUserOrders();
+            } else {
+              currentProfile = null;
+              if (event === 'SIGNED_OUT' || hadUser) {
+                profileNameTop.textContent = 'Perfil';
+                profileEmailTop.textContent = '';
+                showAuthNotice('👋 Sesión cerrada correctamente.');
+              }
+            }
+            toggleUserButtons();
+          });
+        }
         activateAdminTab('juegos');
         setActivePage('inicio');
       }
@@ -2315,16 +3612,270 @@
       closeGameWindow.addEventListener('click', () => {
         gameWindowModal.classList.remove('show');
         gameWindowModal.setAttribute('aria-hidden', 'true');
+        closeGoldOrderPanel();
+        closeAccountsPanel();
+        closeBoostingOptionsPanel();
       });
 
       gameWindowModal.addEventListener('click', (e) => {
         if (e.target === gameWindowModal) {
           gameWindowModal.classList.remove('show');
           gameWindowModal.setAttribute('aria-hidden', 'true');
+          closeGoldOrderPanel();
+          closeAccountsPanel();
+          closeBoostingOptionsPanel();
         }
       });
 
+      openRegister.addEventListener('click', () => openAuth('register'));
+      openLogin.addEventListener('click', () => openAuth('login'));
+      closeAuthModal.addEventListener('click', closeAuth);
+      authModal.addEventListener('click', (e) => {
+        if (e.target === authModal) closeAuth();
+      });
+      tabAuthLogin.addEventListener('click', () => setAuthView('login'));
+      tabAuthRegister.addEventListener('click', () => setAuthView('register'));
+      openProfile.addEventListener('click', async () => {
+        if (!currentUser) return openAuth('login');
+        await loadUserProfile();
+        await renderUserOrders();
+        profileDrawer.classList.add('show');
+        profileDrawer.setAttribute('aria-hidden', 'false');
+      });
+      closeProfileDrawer.addEventListener('click', () => {
+        profileDrawer.classList.remove('show');
+        profileDrawer.setAttribute('aria-hidden', 'true');
+      });
+      tabProfileInfo.addEventListener('click', () => {
+        tabProfileInfo.classList.add('active');
+        tabProfileOrders.classList.remove('active');
+        profileInfoPane.classList.remove('hidden');
+        profileOrdersPane.classList.add('hidden');
+      });
+      tabProfileOrders.addEventListener('click', async () => {
+        tabProfileOrders.classList.add('active');
+        tabProfileInfo.classList.remove('active');
+        profileOrdersPane.classList.remove('hidden');
+        profileInfoPane.classList.add('hidden');
+        await renderUserOrders();
+      });
+
+      goldOrderServer.addEventListener('change', renderGoldOrderProducts);
+      volverOpcionesBtn.addEventListener('click', closeGoldOrderPanel);
+      goldOrderTicketBtn.addEventListener('click', async () => {
+        if (!activeOrderGame?.name) return;
+        if (!currentUser) {
+          authMsg.textContent = 'Debes iniciar sesión para crear ticket.';
+          authMsg.style.color = '#ffd39a';
+          openAuth('login');
+          return;
+        }
+        const msg = [
+          `Juego: ${activeOrderGame.name}`,
+          `Servidor: ${goldOrderServer.value || 'No definido'}`,
+          `Producto: ${goldOrderProduct.value || 'No definido'}`,
+          `Facción: ${goldOrderFaction.value || 'No definida'}`,
+          `Personaje: ${goldOrderCharacter.value.trim() || 'No definido'}`,
+          `Preferencia de entrega: ${goldOrderDelivery.value.trim() || 'No definida'}`
+        ].join('\n');
+        if (supabaseClient) {
+          await supabaseClient.from('tickets').insert({
+            user_id: currentUser.id,
+            game: activeOrderGame.name,
+            server: goldOrderServer.value || '',
+            product: goldOrderProduct.value || '',
+            faction: goldOrderFaction.value || '',
+            character: goldOrderCharacter.value.trim() || '',
+            delivery: goldOrderDelivery.value.trim() || '',
+            status: 'pendiente'
+          });
+          await renderUserOrders();
+          await renderAdminTickets();
+        }
+        window.open(`https://discord.gg/DKd9HxK8?ticket=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+      });
+
+      authRegisterBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        if (authRegPassword.value !== authRegPassword2.value) {
+          authMsg.textContent = 'Las claves no coinciden.';
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        const { data, error } = await supabaseClient.auth.signUp({
+          email: authRegEmail.value.trim(),
+          password: authRegPassword.value,
+          options: {
+            data: { name: authRegName.value.trim() },
+            emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+          }
+        });
+        if (error) {
+          authMsg.textContent = friendlyError(error.message);
+          authMsg.style.color = '#ffb6b6';
+          if (error.message.toLowerCase().includes('already') || error.message.toLowerCase().includes('registered')) {
+            showAuthNotice('Tu cuenta ya existe. Usa "Reenviar correo de verificación" o inicia sesión.', 'warn');
+          }
+          return;
+        }
+        if (data.user) {
+          await supabaseClient.from('user_profiles').upsert({
+            id: data.user.id,
+            name: authRegName.value.trim() || 'Usuario',
+            email: authRegEmail.value.trim(),
+            discord: authRegDiscord.value.trim(),
+            phone: '',
+            is_admin: authRegEmail.value.trim() === 'admin@tradehud.com'
+          });
+        }
+        authMsg.textContent = 'Registro creado correctamente.';
+        authMsg.style.color = '#9affcc';
+        showAuthNotice('✅ Revisa tu correo para confirmar tu cuenta y luego inicia sesión.');
+      });
+
+      resendVerificationBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        const email = authRegEmail.value.trim();
+        if (!email) {
+          authMsg.textContent = 'Escribe tu correo para reenviar verificación.';
+          authMsg.style.color = '#ffd39a';
+          return;
+        }
+        const { error } = await supabaseClient.auth.resend({
+          type: 'signup',
+          email,
+          options: {
+            emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+          }
+        });
+        if (error) {
+          authMsg.textContent = friendlyError(error.message);
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        authMsg.textContent = 'Correo reenviado. Revisa tu bandeja y spam.';
+        authMsg.style.color = '#9affcc';
+        showAuthNotice('📩 Te reenviamos el correo de confirmación.');
+      });
+
+      authLoginBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        const { error } = await supabaseClient.auth.signInWithPassword({
+          email: authLoginEmail.value.trim(),
+          password: authLoginPassword.value
+        });
+        if (error) {
+          authMsg.textContent = friendlyError(error.message);
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        authMsg.textContent = 'Sesión iniciada.';
+        authMsg.style.color = '#9affcc';
+        showAuthNotice('✅ Inicio de sesión exitoso.');
+        closeAuth();
+      });
+
+      forgotPasswordBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        const email = authLoginEmail.value.trim();
+        if (!email) {
+          authMsg.textContent = 'Escribe tu correo para recuperar contraseña.';
+          authMsg.style.color = '#ffd39a';
+          return;
+        }
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}${window.location.pathname}`
+        });
+        if (error) {
+          authMsg.textContent = friendlyError(error.message);
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        authMsg.textContent = 'Te enviamos un correo para recuperar tu contraseña.';
+        authMsg.style.color = '#9affcc';
+        showAuthNotice('📩 Revisa tu correo para cambiar tu contraseña.');
+      });
+
+      saveRecoveredPasswordBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        if (!recoveryMode) {
+          authMsg.textContent = 'Este formulario aparece cuando entras desde el correo de recuperación.';
+          authMsg.style.color = '#ffd39a';
+          return;
+        }
+        if (!recoveryNewPassword.value || recoveryNewPassword.value !== recoveryNewPassword2.value) {
+          authMsg.textContent = 'Las contraseñas nuevas no coinciden.';
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        const { error } = await supabaseClient.auth.updateUser({ password: recoveryNewPassword.value });
+        if (error) {
+          authMsg.textContent = friendlyError(error.message);
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        recoveryMode = false;
+        recoveryPasswordWrap.classList.add('hidden');
+        recoveryNewPassword.value = '';
+        recoveryNewPassword2.value = '';
+        authMsg.textContent = 'Contraseña actualizada. Ya puedes iniciar sesión.';
+        authMsg.style.color = '#9affcc';
+        showAuthNotice('✅ Contraseña recuperada con éxito.');
+      });
+
+      saveProfileBtn.addEventListener('click', async () => {
+        if (!currentUser || !supabaseClient) return;
+        const nextName = profileNameInput.value.trim() || 'Usuario';
+        const nextDiscord = profileDiscordInput.value.trim();
+        const nextPhone = profilePhoneInput.value.trim();
+        profileNameTop.textContent = nextName;
+        profileEmailTop.textContent = currentUser.email || '';
+        const { error } = await supabaseClient.from('user_profiles').upsert({
+          id: currentUser.id,
+          name: nextName,
+          email: currentUser.email || '',
+          discord: nextDiscord,
+          phone: nextPhone
+        });
+        if (error) {
+          await supabaseClient.auth.updateUser({
+            data: { name: nextName, discord: nextDiscord, phone: nextPhone }
+          });
+          profileMsg.textContent = 'Guardado local en sesión. Revisa políticas de Supabase para persistir en tabla.';
+          profileMsg.style.color = '#ffd39a';
+        } else {
+          profileMsg.textContent = 'Información actualizada.';
+          profileMsg.style.color = '#9affcc';
+        }
+        await loadUserProfile();
+      });
+
+      changePasswordBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        const nueva = prompt('Escribe tu nueva contraseña (mínimo 6 caracteres):');
+        if (!nueva) return;
+        const { error } = await supabaseClient.auth.updateUser({ password: nueva });
+        profileMsg.textContent = error ? 'No se pudo cambiar contraseña.' : 'Contraseña actualizada.';
+        profileMsg.style.color = error ? '#ffb6b6' : '#9affcc';
+      });
+
+      logoutBtn.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        await supabaseClient.auth.signOut();
+        profileDrawer.classList.remove('show');
+        profileMsg.textContent = 'Sesión cerrada.';
+        profileMsg.style.color = '#9affcc';
+        showAuthNotice('👋 Te desconectaste de tu cuenta.');
+      });
+
       openAdmin.addEventListener('click', () => {
+        if (currentUser && isAdminUser(currentUser, currentProfile)) {
+          adminMsg.textContent = '';
+          configModal.classList.add('show');
+          configModal.setAttribute('aria-hidden', 'false');
+          renderAdminTickets();
+          return;
+        }
         adminModal.classList.add('show');
         adminModal.setAttribute('aria-hidden', 'false');
       });
@@ -2351,6 +3902,7 @@
           adminModal.setAttribute('aria-hidden', 'true');
           configModal.classList.add('show');
           configModal.setAttribute('aria-hidden', 'false');
+          renderAdminTickets();
         } else {
           adminMsg.textContent = 'Credenciales incorrectas.';
           adminMsg.style.color = '#ff9ea7';
@@ -2370,14 +3922,25 @@
       });
 
       function activateAdminTab(tab) {
-        [tabListaJuegosAdmin, tabListaServidoresAdmin, tabOro, tabCuentas, tabBosteo].forEach((btn) => btn.classList.remove('active'));
-        [editorListaJuegos, editorServidores, editorOro, editorCuentas, editorBosteo].forEach((panel) => panel.classList.add('hidden'));
+        [tabListaJuegosAdmin, tabCategoriasOro, tabListaServidoresAdmin, tabOro, tabMarketAdmin, tabTicketsAdmin, tabCuentas, tabBosteo].filter(Boolean).forEach((btn) => btn.classList.remove('active'));
+        [editorListaJuegos, editorCategoriasOro, editorServidores, editorOro, editorMarketAdmin, editorTicketsAdmin, editorCuentas, editorBosteo].filter(Boolean).forEach((panel) => panel.classList.add('hidden'));
         if (tab === 'juegos') {
           tabListaJuegosAdmin.classList.add('active');
           editorListaJuegos.classList.remove('hidden');
+        } else if (tab === 'categorias-oro') {
+          tabCategoriasOro.classList.add('active');
+          editorCategoriasOro.classList.remove('hidden');
         } else if (tab === 'servidores') {
           tabListaServidoresAdmin.classList.add('active');
           editorServidores.classList.remove('hidden');
+        } else if (tab === 'market') {
+          if (tabMarketAdmin) tabMarketAdmin.classList.add('active');
+          if (editorMarketAdmin) editorMarketAdmin.classList.remove('hidden');
+          setActiveMarketType(activeMarketType);
+        } else if (tab === 'tickets') {
+          tabTicketsAdmin.classList.add('active');
+          editorTicketsAdmin.classList.remove('hidden');
+          renderAdminTickets();
         } else if (tab === 'cuentas') {
           tabCuentas.classList.add('active');
           editorCuentas.classList.remove('hidden');
@@ -2391,10 +3954,119 @@
       }
 
       tabListaJuegosAdmin.addEventListener('click', () => activateAdminTab('juegos'));
+      tabCategoriasOro.addEventListener('click', () => activateAdminTab('categorias-oro'));
       tabListaServidoresAdmin.addEventListener('click', () => activateAdminTab('servidores'));
       tabOro.addEventListener('click', () => activateAdminTab('oro'));
+      if (tabMarketAdmin) tabMarketAdmin.addEventListener('click', () => activateAdminTab('market'));
+      tabTicketsAdmin.addEventListener('click', () => activateAdminTab('tickets'));
       tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
       tabBosteo.addEventListener('click', () => activateAdminTab('bosteo'));
+
+      marketActionButtons.forEach((btn) => {
+        btn.addEventListener('click', () => setActiveMarketType(btn.dataset.marketService || 'p2p'));
+      });
+      if (marketTypeP2P) marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
+      if (marketTypeStreaming) marketTypeStreaming.addEventListener('click', () => setActiveMarketType('streaming'));
+      if (marketTypeGiftcards) marketTypeGiftcards.addEventListener('click', () => setActiveMarketType('giftcards'));
+      if (saveMarketCategoryBtn) saveMarketCategoryBtn.addEventListener('click', async () => {
+        const name = marketCategoryName.value.trim();
+        const image = marketCategoryImage.value.trim();
+        if (!name || !image) return;
+        marketCatalog[activeMarketType].categories.push({ name, image });
+        if (supabaseClient) {
+          await supabaseClient.from('market_catalog_entries').insert({
+            service_type: activeMarketType,
+            entry_type: 'category',
+            name,
+            image,
+            value: '',
+            sort_order: marketCatalog[activeMarketType].categories.length
+          });
+        }
+        marketCategoryName.value = '';
+        marketCategoryImage.value = '';
+        setActiveMarketType(activeMarketType);
+        showAdminNotice(`Categoría agregada en ${marketCatalog[activeMarketType].title}.`, 'ok');
+      });
+      if (saveMarketPriceBtn) saveMarketPriceBtn.addEventListener('click', async () => {
+        const title = marketPriceName.value.trim();
+        const value = marketPriceValue.value.trim();
+        if (!title || !value) return;
+        const fullValue = `${title} - ${value}`;
+        marketCatalog[activeMarketType].prices.push(fullValue);
+        if (supabaseClient) {
+          await supabaseClient.from('market_catalog_entries').insert({
+            service_type: activeMarketType,
+            entry_type: 'price',
+            name: title,
+            image: '',
+            value: fullValue,
+            sort_order: marketCatalog[activeMarketType].prices.length
+          });
+        }
+        marketPriceName.value = '';
+        marketPriceValue.value = '';
+        setActiveMarketType(activeMarketType);
+        showAdminNotice(`Precio agregado en ${marketCatalog[activeMarketType].title}.`, 'ok');
+      });
+      if (marketAdminCategoryList) marketAdminCategoryList.addEventListener('click', async (e) => {
+        const btn = e.target.closest('button[data-remove-market-category]');
+        if (!btn) return;
+        const index = Number(btn.dataset.removeMarketCategory);
+        if (Number.isNaN(index)) return;
+        const target = marketCatalog[activeMarketType].categories[index];
+        marketCatalog[activeMarketType].categories.splice(index, 1);
+        if (supabaseClient && target) {
+          await supabaseClient
+            .from('market_catalog_entries')
+            .delete()
+            .eq('service_type', activeMarketType)
+            .eq('entry_type', 'category')
+            .eq('name', target.name)
+            .eq('image', target.image || '')
+            .limit(1);
+        }
+        setActiveMarketType(activeMarketType);
+      });
+      if (marketAdminPriceList) marketAdminPriceList.addEventListener('click', async (e) => {
+        const btn = e.target.closest('button[data-remove-market-price]');
+        if (!btn) return;
+        const index = Number(btn.dataset.removeMarketPrice);
+        if (Number.isNaN(index)) return;
+        const target = marketCatalog[activeMarketType].prices[index];
+        marketCatalog[activeMarketType].prices.splice(index, 1);
+        if (supabaseClient && target) {
+          await supabaseClient
+            .from('market_catalog_entries')
+            .delete()
+            .eq('service_type', activeMarketType)
+            .eq('entry_type', 'price')
+            .eq('value', target)
+            .limit(1);
+        }
+        setActiveMarketType(activeMarketType);
+      });
+      if (marketOpenTicketBtn) marketOpenTicketBtn.addEventListener('click', async () => {
+        if (!currentUser) {
+          openAuth('login');
+          showAuthNotice('Debes iniciar sesión para abrir ticket.');
+          return;
+        }
+        const summary = `${marketSelectedService.value} | ${marketSelectedCategory.value} | ${marketItemType.value} | ${marketPaymentMethod.value} | ${marketAmountToPay.value}`;
+        if (supabaseClient) {
+          await supabaseClient.from('tickets').insert({
+            user_id: currentUser.id,
+            game: marketSelectedService.value || 'Marketplace',
+            server: marketSelectedCategory.value || '',
+            product: marketItemType.value || '',
+            delivery: `${marketPaymentMethod.value} - ${marketAmountToPay.value}`,
+            status: 'pendiente'
+          });
+          await renderUserOrders();
+          await renderAdminTickets();
+        }
+        window.open(`https://discord.gg/DKd9HxK8?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
+      });
 
       abrirFormularioJuego.addEventListener('click', () => {
         openGameForm('add');
@@ -2437,9 +4109,41 @@
       juegoNombre.addEventListener('input', updateGamePreview);
       juegoImagen.addEventListener('input', updateGamePreview);
       juegoDescripcion.addEventListener('input', updateGamePreview);
+      subirJuegoImagenBtn.addEventListener('click', async () => {
+        const file = juegoImagenFile.files?.[0];
+        const url = await uploadImageFromPc(file, 'games');
+        if (!url) return;
+        juegoImagen.value = url;
+        updateGamePreview();
+        showAdminNotice('Imagen del juego subida y guardada en Supabase Storage.', 'ok');
+      });
+      juegoImagenFile.addEventListener('change', async () => {
+        const file = juegoImagenFile.files?.[0];
+        if (!file) return;
+        const url = await uploadImageFromPc(file, 'games');
+        if (!url) return;
+        juegoImagen.value = url;
+        updateGamePreview();
+        showAdminNotice('Logo/icono del juego actualizado al seleccionar imagen.', 'ok');
+      });
+      subirCustomServiceImagenBtn.addEventListener('click', async () => {
+        const file = customServiceImageFile.files?.[0];
+        const url = await uploadImageFromPc(file, 'services');
+        if (!url) return;
+        customServiceImage.value = url;
+        showAdminNotice('Imagen de sección personalizada subida.', 'ok');
+      });
+      customServiceEnabled.addEventListener('change', () => {
+        if (!customServiceEnabled.checked) {
+          customServiceInput.value = '';
+        }
+        toggleCustomServiceFields();
+        updateGamePreview();
+      });
       serviceBoosting.addEventListener('change', updateGamePreview);
       serviceAccounts.addEventListener('change', updateGamePreview);
       serviceGold.addEventListener('change', updateGamePreview);
+      customServiceInput.addEventListener("input", updateGamePreview);
       oroSearch.addEventListener('input', renderGameList);
 
       function openCategoriaModal(type = 'oro') {
@@ -2451,14 +4155,33 @@
         categoriaOroModal.setAttribute('aria-hidden', 'false');
       }
 
+      function openAccountModal() {
+        accountFormModal.classList.add('show');
+        accountFormModal.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeAccountModal() {
+        accountFormModal.classList.remove('show');
+        accountFormModal.setAttribute('aria-hidden', 'true');
+      }
+
       abrirFormularioCategoriaOro.addEventListener('click', () => openCategoriaModal('oro'));
       abrirFormularioCategoriaCuentas.addEventListener('click', () => openCategoriaModal('cuentas'));
       abrirFormularioCategoriaBosteo.addEventListener('click', () => openCategoriaModal('bosteo'));
+      openAccountFormModalBtn.addEventListener('click', openAccountModal);
+      closeAccountFormModal.addEventListener('click', closeAccountModal);
+      cancelAccountFormBtn.addEventListener('click', closeAccountModal);
+      accountFormModal.addEventListener('click', (e) => {
+        if (e.target === accountFormModal) closeAccountModal();
+      });
 
       guardarServidorJuego.addEventListener('click', () => {
         const game = serverGameSelect.value.trim();
         const server = serverNameInput.value.trim();
-        if (!game || !server) return;
+        if (!game || !server) {
+          showAdminNotice('Selecciona juego y escribe servidor antes de guardar.', 'warn');
+          return;
+        }
         const found = gameServers.find((entry) => entry.game === game);
         if (!found) {
           gameServers.push({ game, servers: [server] });
@@ -2474,6 +4197,51 @@
 
       serverGameSelect.addEventListener('change', () => {
         renderServerByGame();
+      });
+
+      saveAccountBtn.addEventListener('click', () => {
+        const payload = {
+          game: accountGameSelect.value,
+          name: accountNameInput.value.trim(),
+          levelRange: accountLevelRangeInput.value.trim(),
+          role: accountRoleInput.value.trim(),
+          faction: accountFactionInput.value.trim(),
+          budget: accountBudgetInput.value.trim(),
+          image: accountImageInput.value.trim() || 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop',
+          description: accountDescriptionInput.value.trim()
+        };
+        if (!payload.game || !payload.name) {
+          showAdminNotice('Para guardar cuenta completa juego y nombre.', 'warn');
+          return;
+        }
+        gameAccounts.push(payload);
+        accountNameInput.value = '';
+        accountLevelRangeInput.value = '';
+        accountRoleInput.value = '';
+        accountFactionInput.value = '';
+        accountBudgetInput.value = '';
+        accountImageInput.value = '';
+        accountDescriptionInput.value = '';
+        renderAdminAccounts();
+        showAdminNotice(`Cuenta agregada para ${payload.game}.`, 'ok');
+        closeAccountModal();
+      });
+      subirAccountImagenBtn.addEventListener('click', async () => {
+        const file = accountImageFile.files?.[0];
+        const url = await uploadImageFromPc(file, 'accounts');
+        if (!url) return;
+        accountImageInput.value = url;
+        showAdminNotice('Imagen de cuenta subida y guardada en Supabase Storage.', 'ok');
+      });
+
+      adminAccountsList.addEventListener('click', (e) => {
+        const removeBtn = e.target.closest('button[data-remove-account]');
+        if (!removeBtn) return;
+        const index = Number(removeBtn.dataset.removeAccount);
+        if (Number.isNaN(index)) return;
+        gameAccounts.splice(index, 1);
+        renderAdminAccounts();
+        showAdminNotice('Cuenta eliminada.', 'warn');
       });
 
       serverListWrap.addEventListener('click', (e) => {
@@ -2572,7 +4340,10 @@
       });
 
       guardarCategoriaOro.addEventListener('click', async () => {
-        if (!categoriaNombre.value.trim()) return;
+        if (!categoriaNombre.value.trim()) {
+          showAdminNotice('Escribe un nombre para la categoría.', 'warn');
+          return;
+        }
         const payload = {
           game: categoriaJuego.value.trim() || 'General',
           name: categoriaNombre.value.trim(),
@@ -2648,53 +4419,70 @@
       });
 
       guardarJuegoForm.addEventListener('click', async () => {
-        if (!juegoNombre.value.trim()) return;
+        if (!juegoNombre.value.trim()) {
+          showAdminNotice('El juego necesita nombre para poder guardarse.', 'warn');
+          return;
+        }
         const payload = {
           name: juegoNombre.value.trim(),
           icon: juegoImagen.value.trim() || games[0].icon,
           description: juegoDescripcion.value.trim(),
           services: getSelectedServices()
         };
+        customServiceMetaByGame[payload.name] = {
+          enabled: customServiceEnabled.checked,
+          image: customServiceImage.value.trim(),
+          hideName: customServiceHideName.checked
+        };
         if (editingAdminIndex === null) {
-          if (supabaseClient) {
-            const supabasePayload = {
-              name: payload.name,
-              icon: payload.icon,
-              description: payload.description,
-              services: payload.services
-            };
-            const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services').single();
-            if (error) {
-              games.push({ id: null, ...payload });
-              selectedAdminIndex = games.length - 1;
-              if (error.message?.toLowerCase().includes('services')) {
-                showAdminNotice('No existe columna "services" en Supabase. Se guardó localmente.', 'warn');
-              } else {
-                showAdminNotice('No se pudo guardar en Supabase. Se guardó localmente.', 'warn');
-              }
-            } else {
-              games.push({ ...data, services: payload.services });
-              selectedAdminIndex = games.length - 1;
-              showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
-            }
-          } else {
-            games.push({ id: null, ...payload });
-            selectedAdminIndex = games.length - 1;
-            showAdminNotice(`Juego agregado localmente: ${payload.name}.`, 'info');
+          const normalizedName = normalizeGameName(payload.name);
+          if (games.some((game) => normalizeGameName(game.name) === normalizedName)) {
+            showAdminNotice(`Ya existe un juego llamado ${payload.name}.`, 'warn');
+            return;
           }
+          if (!supabaseClient) {
+            showAdminNotice('Supabase no está configurado. No se guardó el juego para evitar registros locales sin ID.', 'warn');
+            return;
+          }
+          const supabasePayload = {
+            name: payload.name,
+            icon: payload.icon,
+            description: payload.description,
+            services: payload.services,
+            custom_service_name: customServiceInput.value.trim().toLowerCase(),
+            custom_service_enabled: customServiceEnabled.checked,
+            custom_service_image: customServiceImage.value.trim(),
+            custom_service_hide_name: customServiceHideName.checked
+          };
+          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name').single();
+          if (error) {
+            if (error.message?.toLowerCase().includes('services')) {
+              showAdminNotice('No existe columna "services" en Supabase. Ejecuta el schema actualizado.', 'warn');
+            } else {
+              showAdminNotice('No se pudo guardar en Supabase. Verifica tabla/políticas y vuelve a intentar.', 'warn');
+            }
+            return;
+          }
+          games.push({ ...data, services: payload.services });
+          selectedAdminIndex = games.length - 1;
+          showAdminNotice(`Juego agregado: ${payload.name}.`, 'ok');
         } else {
           if (supabaseClient && games[editingAdminIndex]?.id) {
             const supabasePayload = {
               name: payload.name,
               icon: payload.icon,
               description: payload.description,
-              services: payload.services
+              services: payload.services,
+              custom_service_name: customServiceInput.value.trim().toLowerCase(),
+              custom_service_enabled: customServiceEnabled.checked,
+              custom_service_image: customServiceImage.value.trim(),
+              custom_service_hide_name: customServiceHideName.checked
             };
             const { data, error } = await supabaseClient
               .from('games')
               .update(supabasePayload)
               .eq('id', games[editingAdminIndex].id)
-              .select('id,name,icon,description,services')
+              .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name')
               .single();
             if (error) {
               games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
