@@ -2471,6 +2471,9 @@
       const mainLogoImg = document.getElementById('mainLogoImg');
       const authMiniLogoImg = document.querySelector('.auth-mini-logo');
       const adminLogoImg = document.querySelector('.admin-logo');
+      if (mainLogoImg) mainLogoImg.src = DEFAULT_LOGO_DATA_URL;
+      if (authMiniLogoImg) authMiniLogoImg.src = DEFAULT_LOGO_DATA_URL;
+      if (adminLogoImg) adminLogoImg.src = DEFAULT_LOGO_DATA_URL;
       const sellGoldImg = document.getElementById('sellGoldImg');
       const closeAdmin = document.getElementById('closeAdmin');
       const authModal = document.getElementById('authModal');
@@ -2509,10 +2512,6 @@
       const profilePhoneInput = document.getElementById('profilePhoneInput');
       const saveProfileBtn = document.getElementById('saveProfileBtn');
       const changePasswordBtn = document.getElementById('changePasswordBtn');
-            const bootLogo = localStorage.getItem('tradehud_logo_main') || DEFAULT_LOGO_DATA_URL;
-      if (mainLogoImg) mainLogoImg.src = bootLogo;
-      if (authMiniLogoImg) authMiniLogoImg.src = bootLogo;
-      if (adminLogoImg) adminLogoImg.src = bootLogo;
       const logoutBtn = document.getElementById('logoutBtn');
       const userOrdersList = document.getElementById('userOrdersList');
       const profileMsg = document.getElementById('profileMsg');
@@ -3482,7 +3481,7 @@
           return;
         }
         if (!supabaseClient) {
-          showAdminNotice('Supabase no configurado. Define window.TRADEHUD_SUPABASE_ANON_KEY o window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.', 'warn');
+          showAdminNotice('Supabase no configurado. Define window.TRADEHUD_SUPABASE_ANON_KEY o window.NEXT_PUBLIC_SUPABASE_ANON_KEY.', 'warn');
           return;
         }
         const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
@@ -3535,11 +3534,10 @@
           .select('key,image_url');
         if (error || !Array.isArray(data)) return;
         const byKey = Object.fromEntries(data.map((row) => [row.key, row.image_url]).filter((row) => row[1]));
-        const savedLogo = byKey.logo_main || localStorage.getItem('tradehud_logo_main') || DEFAULT_LOGO_DATA_URL;
+        const savedLogo = byKey.logo_main || DEFAULT_LOGO_DATA_URL;
         if (mainLogoImg) mainLogoImg.src = savedLogo;
         if (authMiniLogoImg) authMiniLogoImg.src = savedLogo;
         if (adminLogoImg) adminLogoImg.src = savedLogo;
-        if (byKey.logo_main) localStorage.setItem('tradehud_logo_main', byKey.logo_main);
         if (byKey.service_sell_gold && sellGoldImg) sellGoldImg.src = byKey.service_sell_gold;
         if (byKey.service_gold) serviceCatalog.gold.image = byKey.service_gold;
         if (byKey.service_boosting) serviceCatalog.boosting.image = byKey.service_boosting;
@@ -3984,18 +3982,25 @@
         const name = marketCategoryName.value.trim();
         const image = marketCategoryImage.value.trim();
         if (!name || !image) return;
-        marketCatalog[activeMarketType].categories.push({ name, image });
-        if (supabaseClient) {
-          await supabaseClient.from('market_catalog_entries').insert({
+        if (!supabaseClient) {
+          showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
+          return;
+        }
+        const nextSort = marketCatalog[activeMarketType].categories.length + 1;
+        const { error } = await supabaseClient.from('market_catalog_entries').insert({
             service_type: activeMarketType,
             entry_type: 'category',
             category_name: name,
             item_name: name,
             image,
             value: '',
-            sort_order: marketCatalog[activeMarketType].categories.length
+            sort_order: nextSort
           });
+        if (error) {
+          showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
+          return;
         }
+        marketCatalog[activeMarketType].categories.push({ name, image });
         marketCategoryName.value = '';
         marketCategoryImage.value = '';
         setActiveMarketType(activeMarketType);
@@ -4006,18 +4011,25 @@
         const value = marketPriceValue.value.trim();
         if (!title || !value) return;
         const fullValue = `${title} - ${value}`;
-        marketCatalog[activeMarketType].prices.push(fullValue);
-        if (supabaseClient) {
-          await supabaseClient.from('market_catalog_entries').insert({
+        if (!supabaseClient) {
+          showAdminNotice('Supabase no está conectado. No se guardó el precio.', 'warn');
+          return;
+        }
+        const nextSort = marketCatalog[activeMarketType].prices.length + 1;
+        const { error } = await supabaseClient.from('market_catalog_entries').insert({
             service_type: activeMarketType,
             entry_type: 'price',
             category_name: title,
             item_name: title,
             image: '',
             value: fullValue,
-            sort_order: marketCatalog[activeMarketType].prices.length
+            sort_order: nextSort
           });
+        if (error) {
+          showAdminNotice(`Error guardando precio: ${error.message}`, 'warn');
+          return;
         }
+        marketCatalog[activeMarketType].prices.push(fullValue);
         marketPriceName.value = '';
         marketPriceValue.value = '';
         setActiveMarketType(activeMarketType);
