@@ -3542,8 +3542,8 @@
           } else {
             const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
             showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
-            showDbStatus('Base de datos no conectada. Revisa credenciales/permisos.', 'warn');
-            setDbStatus('error de conexión/permisos (revisa URL, anon key y RLS)', 'warn');
+            showDbStatus('Base de datos no conectada. Verifica URL, ANON KEY y políticas RLS.', 'warn');
+            setDbStatus('no conectada (verifica URL, ANON KEY y RLS)', 'warn');
           }
           return;
         }
