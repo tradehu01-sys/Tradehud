@@ -3439,16 +3439,10 @@
           reader.onerror = () => reject(new Error('No se pudo leer el archivo.'));
           reader.readAsDataURL(file);
         });
-        if (!supabaseClient) {
-          try {
-            const dataUrl = await toDataUrl();
-            showAdminNotice('Supabase no disponible: imagen guardada localmente en el juego.', 'warn');
-            return dataUrl;
-          } catch (error) {
-            showAdminNotice('No se pudo procesar la imagen local.', 'warn');
-            return null;
-          }
-        }
+        const dataUrl = await toDataUrl();
+        // Política actual: persistir SIEMPRE en data URL para evitar enlaces rotos/borrados.
+        // Opcional: también intenta subir a Storage para respaldo, sin bloquear el flujo principal.
+        if (!supabaseClient) return dataUrl;
         const cleanFolder = String(folder || 'general').replace(/[^a-z0-9-_]/gi, '').toLowerCase() || 'general';
         const ext = (file.name.split('.').pop() || 'png').toLowerCase();
         const path = `${cleanFolder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
@@ -3456,22 +3450,8 @@
           upsert: false,
           contentType: file.type || 'image/png'
         });
-        if (uploadError) {
-          try {
-            const dataUrl = await toDataUrl();
-            showAdminNotice(`Error subiendo imagen (${uploadError.message}). Se usará imagen local.`, 'warn');
-            return dataUrl;
-          } catch (error) {
-            showAdminNotice(`Error subiendo imagen: ${uploadError.message}`, 'warn');
-            return null;
-          }
-        }
-        const { data } = supabaseClient.storage.from(ASSET_BUCKET).getPublicUrl(path);
-        if (!data?.publicUrl) {
-          showAdminNotice('No se pudo obtener URL pública de la imagen.', 'warn');
-          return null;
-        }
-        return data.publicUrl;
+        if (uploadError) showAdminNotice(`Respaldo en Storage falló (${uploadError.message}), se guardó en data URL.`, 'warn');
+        return dataUrl;
       }
 
       function normalizeGameName(value = '') {
