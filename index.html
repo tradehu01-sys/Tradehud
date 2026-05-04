@@ -3542,7 +3542,7 @@
           } else {
             const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
             showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
-            showDbStatus('Base de datos NO conectada correctamente.', 'warn');
+            showDbStatus('Base de datos no conectada. Revisa credenciales/permisos.', 'warn');
             setDbStatus('falló conexión o permisos', 'warn');
           }
           return;
