@@ -150,6 +150,10 @@
       }
 
       .page-loader.show { display: grid; }
+       .db-status { position: fixed; right: 14px; bottom: 14px; z-index: 180; border: 1px solid #3b4f7d; background:#0f1a31; color:#cfe1ff; border-radius:999px; padding:.4rem .75rem; font-size:.78rem; }
+      .db-status.ok { border-color:#2f7c54; color:#b8ffd8; background:#0f241a; }
+      .db-status.warn { border-color:#8a5a2a; color:#ffe0b8; background:#2b1b10; }
+
       .page-loader span {
         border: 1px solid #4e67a1;
         background: #101a31;
@@ -1548,15 +1552,34 @@
         .popular-grid,.services-grid,.benefits-grid,.testimonials-grid,.faq-grid,.steps-list { grid-template-columns: 1fr; }
         nav { justify-content: center; }
       }
-    </style>
+    
+      .db-status-toast {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        z-index: 220;
+        background: #0f1b33;
+        border: 1px solid #335192;
+        color: #d7e5ff;
+        border-radius: 10px;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.82rem;
+        box-shadow: 0 10px 24px rgba(0,0,0,.35);
+        display: none;
+      }
+      .db-status-toast.show { display: block; }
+      .db-status-toast.ok { border-color: #2f8f62; color: #9affcc; }
+      .db-status-toast.warn { border-color: #b07a3f; color: #ffd39a; }
+</style>
   </head>
   <body>
     <div id="pageLoader" class="page-loader" aria-hidden="true"><span>Cargando sección...</span></div>
+    <div id="dbStatus" class="db-status">Base de datos: verificando...</div>
     <header>
       <div class="container nav">
         <div class="logo">
           <a href="#inicio" data-page-link data-page="inicio" aria-label="Ir al inicio">
-            <img id="mainLogoImg" src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412256244432926/ChatGPT_Image_24_abr_2026_09_09_04_p.m..png?ex=69f2b356&is=69f161d6&hm=95429f0ee3a058074ec4f6f77e33115c821474de45db67473d0ea93b6ef1c0db&" alt="TradeHud" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" />
+            <img id="mainLogoImg" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 420%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 x2=%221%22%3E%3Cstop stop-color=%22%23110f0a%22/%3E%3Cstop offset=%221%22 stop-color=%22%231f1608%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22900%22 height=%22420%22 fill=%22%23070b15%22/%3E%3Crect x=%2226%22 y=%2226%22 width=%22848%22 height=%22368%22 rx=%2244%22 fill=%22url(%23g)%22 stroke=%22%23d8a83c%22 stroke-width=%226%22/%3E%3Ctext x=%22450%22 y=%22210%22 text-anchor=%22middle%22 fill=%22%23f6ca63%22 font-size=%22104%22 font-family=%22Arial%22 font-weight=%22800%22%3ETRADEHUB%3C/text%3E%3Ctext x=%22450%22 y=%22285%22 text-anchor=%22middle%22 fill=%22%23ececec%22 font-size=%2260%22 font-family=%22Arial%22 font-weight=%22700%22%3EMMORPG%3C/text%3E%3C/svg%3E" alt="TradeHud" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" />
           </a>
         </div>
         <nav>
@@ -2004,7 +2027,7 @@
           <button id="tabAuthLogin" class="auth-tab active" type="button">Ingresar</button>
           <button id="tabAuthRegister" class="auth-tab" type="button">Crear cuenta</button>
         </div>
-        <img class="auth-mini-logo" src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412256244432926/ChatGPT_Image_24_abr_2026_09_09_04_p.m..png?ex=69f2b356&is=69f161d6&hm=95429f0ee3a058074ec4f6f77e33115c821474de45db67473d0ea93b6ef1c0db&" alt="TradeHud acceso" onerror="this.style.display='none'" />
+        <img class="auth-mini-logo" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 420%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 x2=%221%22%3E%3Cstop stop-color=%22%23110f0a%22/%3E%3Cstop offset=%221%22 stop-color=%22%231f1608%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22900%22 height=%22420%22 fill=%22%23070b15%22/%3E%3Crect x=%2226%22 y=%2226%22 width=%22848%22 height=%22368%22 rx=%2244%22 fill=%22url(%23g)%22 stroke=%22%23d8a83c%22 stroke-width=%226%22/%3E%3Ctext x=%22450%22 y=%22210%22 text-anchor=%22middle%22 fill=%22%23f6ca63%22 font-size=%22104%22 font-family=%22Arial%22 font-weight=%22800%22%3ETRADEHUB%3C/text%3E%3Ctext x=%22450%22 y=%22285%22 text-anchor=%22middle%22 fill=%22%23ececec%22 font-size=%2260%22 font-family=%22Arial%22 font-weight=%22700%22%3EMMORPG%3C/text%3E%3C/svg%3E" alt="TradeHud acceso" onerror="this.style.display='none'" />
         <div id="authPaneLogin" class="auth-pane">
           <label for="authLoginEmail">Correo</label>
           <input id="authLoginEmail" type="email" placeholder="tu@email.com" />
@@ -2080,7 +2103,7 @@
           <div class="admin-brand">
             <img
               class="admin-logo"
-              src="https://cdn.discordapp.com/attachments/1492284382977855689/1497413092953428058/ChatGPT_Image_24_abr_2026_09_44_47_p.m..png?ex=69ed6e1d&is=69ec1c9d&hm=bb3fd7d6d56af74deedc387fb38c16131ce33210758043a8edf310036413fec3&"
+              src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 420%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 x2=%221%22%3E%3Cstop stop-color=%22%23110f0a%22/%3E%3Cstop offset=%221%22 stop-color=%22%231f1608%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22900%22 height=%22420%22 fill=%22%23070b15%22/%3E%3Crect x=%2226%22 y=%2226%22 width=%22848%22 height=%22368%22 rx=%2244%22 fill=%22url(%23g)%22 stroke=%22%23d8a83c%22 stroke-width=%226%22/%3E%3Ctext x=%22450%22 y=%22210%22 text-anchor=%22middle%22 fill=%22%23f6ca63%22 font-size=%22104%22 font-family=%22Arial%22 font-weight=%22800%22%3ETRADEHUB%3C/text%3E%3Ctext x=%22450%22 y=%22285%22 text-anchor=%22middle%22 fill=%22%23ececec%22 font-size=%2260%22 font-family=%22Arial%22 font-weight=%22700%22%3EMMORPG%3C/text%3E%3C/svg%3E"
               alt="TradeHud logo"
             />
             <div>
@@ -2424,6 +2447,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <div id="dbStatusToast" class="db-status-toast" aria-live="polite"></div>
+
     <script>
       const gameList = document.getElementById('gameList');
       const oroSearch = document.getElementById('oroSearch');
@@ -2467,7 +2492,13 @@
       const openRegister = document.getElementById('openRegister');
       const openLogin = document.getElementById('openLogin');
       const openProfile = document.getElementById('openProfile');
+      const DEFAULT_LOGO_DATA_URL = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 420%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 x2=%221%22%3E%3Cstop stop-color=%22%23110f0a%22/%3E%3Cstop offset=%221%22 stop-color=%22%231f1608%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22900%22 height=%22420%22 fill=%22%23070b15%22/%3E%3Crect x=%2226%22 y=%2226%22 width=%22848%22 height=%22368%22 rx=%2244%22 fill=%22url(%23g)%22 stroke=%22%23d8a83c%22 stroke-width=%226%22/%3E%3Ctext x=%22450%22 y=%22210%22 text-anchor=%22middle%22 fill=%22%23f6ca63%22 font-size=%22104%22 font-family=%22Arial%22 font-weight=%22800%22%3ETRADEHUB%3C/text%3E%3Ctext x=%22450%22 y=%22285%22 text-anchor=%22middle%22 fill=%22%23ececec%22 font-size=%2260%22 font-family=%22Arial%22 font-weight=%22700%22%3EMMORPG%3C/text%3E%3C/svg%3E';
       const mainLogoImg = document.getElementById('mainLogoImg');
+      const authMiniLogoImg = document.querySelector('.auth-mini-logo');
+      const adminLogoImg = document.querySelector('.admin-logo');
+      if (mainLogoImg) mainLogoImg.src = DEFAULT_LOGO_DATA_URL;
+      if (authMiniLogoImg) authMiniLogoImg.src = DEFAULT_LOGO_DATA_URL;
+      if (adminLogoImg) adminLogoImg.src = DEFAULT_LOGO_DATA_URL;
       const sellGoldImg = document.getElementById('sellGoldImg');
       const closeAdmin = document.getElementById('closeAdmin');
       const authModal = document.getElementById('authModal');
@@ -2516,6 +2547,8 @@
       const closeConfig = document.getElementById('closeConfig');
       const cerrarSesionAdmin = document.getElementById('cerrarSesionAdmin');
       const adminNotice = document.getElementById('adminNotice');
+      const dbStatusToast = document.getElementById('dbStatusToast');
+      const dbStatus = document.getElementById('dbStatus');
       const juegoLista = document.getElementById('juegoLista');
       const abrirFormularioJuego = document.getElementById('abrirFormularioJuego');
       const juegoFormModal = document.getElementById('juegoFormModal');
@@ -2640,6 +2673,7 @@
         'https://lveocmzvfndvzjdqknnf.supabase.co';
       const SUPABASE_ANON_KEY =
         window.TRADEHUD_SUPABASE_ANON_KEY ||
+        window.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
         window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
         'sb_publishable_So-MKH0I5IJ_kmSweJo1IQ_H5kxNgMG';
       const isServiceRoleKey = (() => {
@@ -2792,7 +2826,7 @@
         if (!supabaseClient) return;
         const { data, error } = await supabaseClient
           .from('market_catalog_entries')
-          .select('service_type,entry_type,name,image,value,sort_order')
+          .select('id,service_type,entry_type,category_name,item_name,image,value,sort_order,created_at')
           .order('sort_order', { ascending: true })
           .order('created_at', { ascending: true });
         if (error || !Array.isArray(data)) return;
@@ -2803,9 +2837,9 @@
         data.forEach((row) => {
           if (!marketCatalog[row.service_type]) return;
           if (row.entry_type === 'category') {
-            marketCatalog[row.service_type].categories.push({ name: row.name || '', image: row.image || '' });
+            marketCatalog[row.service_type].categories.push({ name: row.category_name || row.item_name || '', image: row.image || '' });
           } else if (row.entry_type === 'price') {
-            marketCatalog[row.service_type].prices.push(row.value || row.name || '');
+            marketCatalog[row.service_type].prices.push(row.value || row.item_name || row.category_name || '');
           }
         });
       }
@@ -3428,6 +3462,23 @@
         adminNotice.style.color = kind === 'ok' ? '#9affcc' : kind === 'warn' ? '#ffd39a' : '#9fd6ff';
       }
 
+      function showDbStatus(message, kind = 'ok') {
+        if (!dbStatusToast) return;
+        dbStatusToast.textContent = message;
+        dbStatusToast.className = `db-status-toast show ${kind === 'ok' ? 'ok' : 'warn'}`;
+        clearTimeout(showDbStatus._timer);
+        showDbStatus._timer = setTimeout(() => {
+          dbStatusToast.classList.remove('show');
+        }, 4800);
+      }
+
+      function setDbStatus(message, kind = 'info') {
+        if (!dbStatus) return;
+        dbStatus.textContent = `Base de datos: ${message}`;
+        dbStatus.classList.remove('ok', 'warn');
+        if (kind === 'ok' || kind === 'warn') dbStatus.classList.add(kind);
+      }
+
       async function uploadImageFromPc(file, folder = 'general') {
         if (!file) {
           showAdminNotice('Selecciona una imagen primero.', 'warn');
@@ -3471,10 +3522,15 @@
       async function syncFromSupabase() {
         if (isServiceRoleKey) {
           showAdminNotice('Clave bloqueada: detectamos service_role. Usa SOLO la anon public key en frontend.', 'warn');
+          showDbStatus('Base de datos NO conectada (clave inválida).', 'warn');
+          setDbStatus('error de configuración (service_role detectada)', 'warn');
           return;
         }
         if (!supabaseClient) {
-          showAdminNotice('Supabase no configurado. Define window.TRADEHUD_SUPABASE_ANON_KEY o window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.', 'warn');
+          showAdminNotice('Supabase no configurado. Define URL+ANON key válidas en window.TRADEHUD_SUPABASE_URL y window.TRADEHUD_SUPABASE_ANON_KEY.', 'warn');
+          showDbStatus('Base de datos NO conectada (falta configuración).', 'warn');
+          setDbStatus('sin configurar (falta URL o ANON KEY)', 'warn');
+          showDbStatus('Falta configurar Supabase URL y ANON KEY.', 'warn');
           return;
         }
         const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
@@ -3487,6 +3543,8 @@
           } else {
             const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
             showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
+            showDbStatus('Base de datos no conectada. Verifica URL, ANON KEY y políticas RLS.', 'warn');
+            setDbStatus(`no conectada: ${detail}`.slice(0, 120), 'warn');
           }
           return;
         }
@@ -3518,6 +3576,8 @@
           })));
         }
         showAdminNotice(`Conectado a Supabase correctamente. Juegos: ${gamesData?.length || 0}, categorías: ${categoriesData?.length || 0}.`, 'ok');
+        showDbStatus('✅ Base conectada correctamente.', 'ok');
+        setDbStatus('conectada correctamente', 'ok');
       }
 
       async function loadAppAssetsFromSupabase() {
@@ -3527,7 +3587,10 @@
           .select('key,image_url');
         if (error || !Array.isArray(data)) return;
         const byKey = Object.fromEntries(data.map((row) => [row.key, row.image_url]).filter((row) => row[1]));
-        if (byKey.logo_main && mainLogoImg) mainLogoImg.src = byKey.logo_main;
+        const savedLogo = byKey.logo_main || DEFAULT_LOGO_DATA_URL;
+        if (mainLogoImg) mainLogoImg.src = savedLogo;
+        if (authMiniLogoImg) authMiniLogoImg.src = savedLogo;
+        if (adminLogoImg) adminLogoImg.src = savedLogo;
         if (byKey.service_sell_gold && sellGoldImg) sellGoldImg.src = byKey.service_sell_gold;
         if (byKey.service_gold) serviceCatalog.gold.image = byKey.service_gold;
         if (byKey.service_boosting) serviceCatalog.boosting.image = byKey.service_boosting;
@@ -3535,6 +3598,7 @@
       }
 
       async function initializeApp() {
+        setDbStatus('verificando conexión...', 'info');
         toggleCustomServiceFields();
         const rawHash = window.location.hash || '';
         if (rawHash.includes('error=') || rawHash.includes('error_code=')) {
@@ -3972,17 +4036,25 @@
         const name = marketCategoryName.value.trim();
         const image = marketCategoryImage.value.trim();
         if (!name || !image) return;
-        marketCatalog[activeMarketType].categories.push({ name, image });
-        if (supabaseClient) {
-          await supabaseClient.from('market_catalog_entries').insert({
+        if (!supabaseClient) {
+          showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
+          return;
+        }
+        const nextSort = marketCatalog[activeMarketType].categories.length + 1;
+        const { error } = await supabaseClient.from('market_catalog_entries').insert({
             service_type: activeMarketType,
             entry_type: 'category',
-            name,
+            category_name: name,
+            item_name: name,
             image,
             value: '',
-            sort_order: marketCatalog[activeMarketType].categories.length
+            sort_order: nextSort
           });
+        if (error) {
+          showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
+          return;
         }
+        marketCatalog[activeMarketType].categories.push({ name, image });
         marketCategoryName.value = '';
         marketCategoryImage.value = '';
         setActiveMarketType(activeMarketType);
@@ -3993,17 +4065,25 @@
         const value = marketPriceValue.value.trim();
         if (!title || !value) return;
         const fullValue = `${title} - ${value}`;
-        marketCatalog[activeMarketType].prices.push(fullValue);
-        if (supabaseClient) {
-          await supabaseClient.from('market_catalog_entries').insert({
+        if (!supabaseClient) {
+          showAdminNotice('Supabase no está conectado. No se guardó el precio.', 'warn');
+          return;
+        }
+        const nextSort = marketCatalog[activeMarketType].prices.length + 1;
+        const { error } = await supabaseClient.from('market_catalog_entries').insert({
             service_type: activeMarketType,
             entry_type: 'price',
-            name: title,
+            category_name: title,
+            item_name: title,
             image: '',
             value: fullValue,
-            sort_order: marketCatalog[activeMarketType].prices.length
+            sort_order: nextSort
           });
+        if (error) {
+          showAdminNotice(`Error guardando precio: ${error.message}`, 'warn');
+          return;
         }
+        marketCatalog[activeMarketType].prices.push(fullValue);
         marketPriceName.value = '';
         marketPriceValue.value = '';
         setActiveMarketType(activeMarketType);
@@ -4022,7 +4102,7 @@
             .delete()
             .eq('service_type', activeMarketType)
             .eq('entry_type', 'category')
-            .eq('name', target.name)
+            .eq('category_name', target.name)
             .eq('image', target.image || '')
             .limit(1);
         }
@@ -4115,7 +4195,7 @@
         if (!url) return;
         juegoImagen.value = url;
         updateGamePreview();
-        showAdminNotice('Imagen del juego subida y guardada en Supabase Storage.', 'ok');
+        showAdminNotice('Imagen del juego subida y guardada en formato data:image/...;base64.', 'ok');
       });
       juegoImagenFile.addEventListener('change', async () => {
         const file = juegoImagenFile.files?.[0];
