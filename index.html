@@ -4269,6 +4269,14 @@
         customServiceImage.value = url;
         showAdminNotice('Imagen de sección personalizada subida.', 'ok');
       });
+      customServiceImageFile.addEventListener('change', async () => {
+        const file = customServiceImageFile.files?.[0];
+        if (!file) return;
+        const url = await uploadImageFromPc(file, 'services');
+        if (!url) return;
+        customServiceImage.value = url;
+        showAdminNotice('Imagen del servicio personalizada convertida y guardada como data URL.', 'ok');
+      });
       customServiceEnabled.addEventListener('change', () => {
         if (!customServiceEnabled.checked) {
           customServiceInput.value = '';
@@ -4565,6 +4573,10 @@
           description: juegoDescripcion.value.trim(),
           services: getSelectedServices()
         };
+        if (customServiceEnabled.checked && !customServiceImage.value.trim()) {
+          showAdminNotice('Activa servicio personalizado: falta subir/guardar su imagen.', 'warn');
+          return;
+        }
         customServiceMetaByGame[payload.name] = {
           enabled: customServiceEnabled.checked,
           image: customServiceImage.value.trim(),
