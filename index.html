@@ -2329,7 +2329,7 @@
             <label><input id="customServiceEnabled" type="checkbox" /> Activar sección personalizada</label>
             <label><input id="customServiceReplaceGold" type="checkbox" /> Reemplazar botón ORO por sección personalizada</label>
             <input id="customServiceInput" type="text" placeholder="Ej: Albion" />
-            <button id="removeCustomServiceBtn" class="mini-btn" type="button">Eliminar sección personalizada</button>
+            <button id="removeCustomServiceBtn" class="mini-btn danger" type="button">Eliminar todas las categorías del checklist</button>
             <label><input id="customServiceHideName" type="checkbox" /> Mostrar solo imagen (sin nombre)</label>
             <input id="customServiceImage" type="hidden" />
             <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
@@ -4328,7 +4328,7 @@
         customServiceHideName.checked = false;
         toggleCustomServiceFields();
         updateGamePreview();
-        showAdminNotice('Sección personalizada eliminada del juego.', 'warn');
+        showAdminNotice('Se eliminaron todas las categorías agregadas desde este checklist (solo este juego).', 'warn');
       });
       serviceBoosting.addEventListener('change', updateGamePreview);
       serviceAccounts.addEventListener('change', updateGamePreview);
