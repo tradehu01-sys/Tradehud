@@ -2251,6 +2251,10 @@
               <div class="form-group">
                 <label for="marketCategoryImage">Imagen URL</label>
                 <input id="marketCategoryImage" type="text" placeholder="URL imagen categoría" />
+                <div style="display:flex;gap:.5rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
+                  <input id="marketCategoryImageFile" type="file" accept="image/*" />
+                  <button id="uploadMarketCategoryImageBtn" class="mini-btn" type="button">Subir imagen PC</button>
+                </div>
               </div>
             </div>
             <button id="saveMarketCategoryBtn" class="panel-btn" type="button">Guardar categoría</button>
@@ -2327,7 +2331,9 @@
             <label><input id="serviceGold" type="checkbox" checked /> Oro</label>
             <label for="customServiceInput">Sección personalizada</label>
             <label><input id="customServiceEnabled" type="checkbox" /> Activar sección personalizada</label>
+            <label><input id="customServiceReplaceGold" type="checkbox" /> Reemplazar ORO por sección personalizada</label>
             <input id="customServiceInput" type="text" placeholder="Ej: Albion" />
+            <button id="removeCustomServiceBtn" class="mini-btn danger" type="button">Eliminar checks agregados</button>
             <label><input id="customServiceHideName" type="checkbox" /> Mostrar solo imagen (sin nombre)</label>
             <input id="customServiceImage" type="hidden" />
             <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
@@ -2566,10 +2572,12 @@
       const serviceGold = document.getElementById('serviceGold');
       const customServiceInput = document.getElementById('customServiceInput');
       const customServiceEnabled = document.getElementById('customServiceEnabled');
+      const customServiceReplaceGold = document.getElementById('customServiceReplaceGold');
       const customServiceHideName = document.getElementById('customServiceHideName');
       const customServiceImage = document.getElementById('customServiceImage');
       const customServiceImageFile = document.getElementById('customServiceImageFile');
       const subirCustomServiceImagenBtn = document.getElementById('subirCustomServiceImagenBtn');
+      const removeCustomServiceBtn = document.getElementById('removeCustomServiceBtn');
       const previewImagenJuego = document.getElementById('previewImagenJuego');
       const previewNombreJuego = document.getElementById('previewNombreJuego');
       const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
@@ -2782,7 +2790,7 @@
 
       function toggleCustomServiceFields() {
         const enabled = customServiceEnabled.checked;
-        [customServiceInput, customServiceHideName, customServiceImageFile, subirCustomServiceImagenBtn].forEach((el) => {
+        [customServiceInput, customServiceReplaceGold, customServiceHideName, customServiceImageFile, subirCustomServiceImagenBtn, removeCustomServiceBtn].forEach((el) => {
           if (!el) return;
           el.disabled = !enabled;
         });
@@ -3103,7 +3111,7 @@
         if (!game) return;
         const gameServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
         const customMeta = customServiceMetaByGame[game.name] || null;
-        const replaceGoldWithCustom = false;
+        const replaceGoldWithCustom = Boolean(customMeta?.replaceGold && gameServices.some((service) => !['boosting', 'accounts', 'gold'].includes(service)));
         gameWindowTitle.textContent = game.name;
         gameWindowDesc.textContent = game.description || '';
         gameWindowIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
@@ -3445,6 +3453,7 @@
         customServiceInput.value = selectedServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service)) || '';
         const meta = customServiceMetaByGame[game.name] || {};
         customServiceEnabled.checked = Boolean(meta.enabled || customServiceInput.value);
+        customServiceReplaceGold.checked = Boolean(meta.replaceGold);
         customServiceHideName.checked = Boolean(meta.hideName);
         customServiceImage.value = meta.image || '';
         toggleCustomServiceFields();
@@ -3459,6 +3468,7 @@
         serviceAccounts.checked = true;
         serviceGold.checked = true;
         customServiceEnabled.checked = false;
+        customServiceReplaceGold.checked = false;
         customServiceInput.value = '';
         customServiceHideName.checked = false;
         customServiceImage.value = '';
@@ -4316,10 +4326,21 @@
       customServiceEnabled.addEventListener('change', () => {
         if (!customServiceEnabled.checked) {
           customServiceInput.value = '';
-            customServiceImage.value = '';
+          customServiceImage.value = '';
+          customServiceReplaceGold.checked = false;
         }
         toggleCustomServiceFields();
         updateGamePreview();
+      });
+      removeCustomServiceBtn?.addEventListener('click', () => {
+        customServiceEnabled.checked = false;
+        customServiceReplaceGold.checked = false;
+        customServiceInput.value = '';
+        customServiceImage.value = '';
+        customServiceHideName.checked = false;
+        toggleCustomServiceFields();
+        updateGamePreview();
+        showAdminNotice('Checks extra eliminados para este juego.', 'warn');
       });
       serviceBoosting.addEventListener('change', updateGamePreview);
       serviceAccounts.addEventListener('change', updateGamePreview);
@@ -4631,7 +4652,8 @@
         customServiceMetaByGame[payload.name] = {
           enabled: customServiceEnabled.checked,
           image: customServiceImage.value.trim(),
-          hideName: customServiceHideName.checked
+          hideName: customServiceHideName.checked,
+          replaceGold: customServiceReplaceGold.checked
         };
         if (editingAdminIndex === null) {
           const normalizedName = normalizeGameName(payload.name);
