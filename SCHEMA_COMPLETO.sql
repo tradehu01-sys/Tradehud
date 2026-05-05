@@ -392,7 +392,11 @@ with check (
 );
 
 insert into public.app_assets (key, image_url) values
-('logo_main','https://i.imgur.com/BzQZCIH.png')
+('logo_main','https://i.imgur.com/BzQZCIH.png'),
+('service_gold','https://i.imgur.com/c5ktaxz.png'),
+('service_boosting','https://i.imgur.com/9QHS0xN.png'),
+('service_accounts','https://i.imgur.com/MfZK9dg.png'),
+('service_sell_gold','https://i.imgur.com/ODy7Rqb.png')
 on conflict (key) do nothing;
 -- Nota: usamos DO NOTHING para no sobreescribir logos/imágenes personalizados al re-ejecutar el schema.
 

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TradeHud | Nuevo Modelo</title>
+    <title>TradeHud | Compra y Venta de Oro MMORPG</title>
     <style>
       :root {
         --bg: #050506;
@@ -232,6 +232,8 @@
       .hero-right {
         display: grid; gap: 0.8rem;
       }
+      .hero-cascade { display:grid; grid-template-columns:repeat(2,1fr); gap:.45rem; margin:.7rem 0 1rem; }
+      .hero-cascade img { width:100%; height:100px; object-fit:cover; border-radius:12px; border:1px solid #3a4f82; }
       .mini {
         background: #111425;
         border: 1px solid #2f3452;
@@ -1612,6 +1614,12 @@
               <span class="rune r2">alliance • mythic • gold</span>
             </div>
             <h1>TradeHub: compra, venta y servicios para gamers</h1>
+            <div class="hero-cascade">
+              <img src="https://i.imgur.com/c5ktaxz.png" alt="Oro TradeHud" />
+              <img src="https://i.imgur.com/9QHS0xN.png" alt="Boosting TradeHud" />
+              <img src="https://i.imgur.com/MfZK9dg.png" alt="Accounts TradeHud" />
+              <img src="https://i.imgur.com/ODy7Rqb.png" alt="Vender oro TradeHud" />
+            </div>
             <p class="lead">
               Plataforma enfocada en personas, con navegación simple, procesos claros y atención directa para cada pedido.
             </p>
@@ -1663,7 +1671,7 @@
         </div>
       </section>
 
-      <section id="juegos-populares" class="page-section" data-page="inicio">
+      <section id="juegos-populares" class="page-section" data-page="inicio" style="display:none;">
         <div class="container">
           <h2 class="section-title">Juegos <span>populares</span></h2>
           <article class="home-block popular-grid">
@@ -1920,7 +1928,7 @@
                 <img
                   id="sellGoldImg"
                   class="sell-payment-photo"
-                  src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412299370266787/photo_2026-03-26_10-15-34.jpg?ex=69f2b360&is=69f161e0&hm=459d853e37824c8b16b1d51c5152db3d4488b5926f14704fd43a8bd0dfbcbb3e&"
+                  src="https://i.imgur.com/ODy7Rqb.png"
                   alt="Recibe tu pago TradeHud"
                 />
                 <a class="discord-sell-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Ir al Discord de venta</a>
@@ -2656,17 +2664,17 @@
         boosting: {
           className: 'boost',
           title: 'BOOSTING',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006561200472115/ChatGPT_Image_20_abr_2026_06_41_28_p.m..png?ex=69f384ee&is=69f2336e&hm=7936fade266d5772c87fb455c134c898022aacc484e8b04be98260e0e9da3790&'
+          image: 'https://i.imgur.com/9QHS0xN.png'
         },
         accounts: {
           className: 'accounts',
           title: 'ACCOUNTS',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006645220905070/ChatGPT_Image_20_abr_2026_06_43_30_p.m..png?ex=69f38502&is=69f23382&hm=6a9e1ab5f0fb0aa0b1c2659e9e502136b09924a473bbd565bc850736c4c152fa&'
+          image: 'https://i.imgur.com/MfZK9dg.png'
         },
         gold: {
           className: 'gold',
           title: 'GOLD',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006601390428240/ChatGPT_Image_20_abr_2026_06_42_34_p.m..png?ex=69f384f8&is=69f23378&hm=1cc06e24f43ce71b54bf4549f0027bea82423cabfa8c1eee4949eb779f5ba76a&'
+          image: 'https://i.imgur.com/c5ktaxz.png'
         }
       };
       const sanitizeEnvValue = (value, expected = 'text') => {
@@ -3115,20 +3123,14 @@
           button.innerHTML = `<img src="${config.image}" alt="${config.title}" loading="lazy" referrerpolicy="no-referrer" />`;
           button.addEventListener('click', () => {
             if (serviceKey === 'gold') {
-              showPage('marketplace');
-              setActiveMarketType('p2p');
               openGoldOrderPanel(game);
               closeAccountsPanel();
               closeBoostingOptionsPanel();
             } else if (serviceKey === 'accounts') {
-              showPage('marketplace');
-              setActiveMarketType('giftcards');
               closeGoldOrderPanel();
               openAccountsPanel(game);
               closeBoostingOptionsPanel();
             } else if (serviceKey === 'boosting') {
-              showPage('marketplace');
-              setActiveMarketType('streaming');
               closeGoldOrderPanel();
               closeAccountsPanel();
               openBoostingOptionsPanel();
