@@ -4582,7 +4582,7 @@
       categoriaListaCuentas.addEventListener('click', handleRemoveCategory);
       categoriaListaBosteo.addEventListener('click', handleRemoveCategory);
       limpiarCategoriasBtn?.addEventListener('click', async () => {
-        const confirmed = window.confirm('¿Eliminar TODAS las categorías (oro, cuentas y bosteo)? Esta acción no se puede deshacer.');
+        const confirmed = window.confirm('¿Eliminar SOLO las categorías de ORO? Esta acción no se puede deshacer.');
         if (!confirmed) return;
         if (supabaseClient) {
           const { error } = await supabaseClient.from('gold_categories').delete().neq('id', '00000000-0000-0000-0000-000000000000');
@@ -4592,10 +4592,8 @@
           }
         }
         goldCategories.splice(0, goldCategories.length);
-        accountCategories.splice(0, accountCategories.length);
-        boostingCategories.splice(0, boostingCategories.length);
         renderGoldCategories();
-        showAdminNotice('Todas las categorías fueron eliminadas correctamente.', 'ok');
+        showAdminNotice('Categorías de ORO eliminadas correctamente.', 'ok');
       });
 
       cancelarJuegoForm.addEventListener('click', () => {
