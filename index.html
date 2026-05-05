@@ -2328,6 +2328,7 @@
             <label><input id="customServiceEnabled" type="checkbox" /> Activar sección personalizada</label>
             <label><input id="customServiceReplaceGold" type="checkbox" /> Reemplazar botón ORO por sección personalizada</label>
             <input id="customServiceInput" type="text" placeholder="Ej: Albion" />
+            <button id="removeCustomServiceBtn" class="mini-btn" type="button">Eliminar sección personalizada</button>
             <label><input id="customServiceHideName" type="checkbox" /> Mostrar solo imagen (sin nombre)</label>
             <input id="customServiceImage" type="hidden" />
             <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
@@ -2570,6 +2571,7 @@
       const customServiceHideName = document.getElementById('customServiceHideName');
       const customServiceImage = document.getElementById('customServiceImage');
       const customServiceImageFile = document.getElementById('customServiceImageFile');
+      const removeCustomServiceBtn = document.getElementById('removeCustomServiceBtn');
       const subirCustomServiceImagenBtn = document.getElementById('subirCustomServiceImagenBtn');
       const previewImagenJuego = document.getElementById('previewImagenJuego');
       const previewNombreJuego = document.getElementById('previewNombreJuego');
@@ -3114,14 +3116,20 @@
           button.innerHTML = `<img src="${config.image}" alt="${config.title}" loading="lazy" referrerpolicy="no-referrer" />`;
           button.addEventListener('click', () => {
             if (serviceKey === 'gold') {
+              showPage('marketplace');
+              setActiveMarketType('p2p');
               openGoldOrderPanel(game);
               closeAccountsPanel();
               closeBoostingOptionsPanel();
             } else if (serviceKey === 'accounts') {
+              showPage('marketplace');
+              setActiveMarketType('giftcards');
               closeGoldOrderPanel();
               openAccountsPanel(game);
               closeBoostingOptionsPanel();
             } else if (serviceKey === 'boosting') {
+              showPage('marketplace');
+              setActiveMarketType('streaming');
               closeGoldOrderPanel();
               closeAccountsPanel();
               openBoostingOptionsPanel();
@@ -4304,9 +4312,21 @@
       customServiceEnabled.addEventListener('change', () => {
         if (!customServiceEnabled.checked) {
           customServiceInput.value = '';
+          customServiceReplaceGold.checked = false;
+          customServiceImage.value = '';
         }
         toggleCustomServiceFields();
         updateGamePreview();
+      });
+      removeCustomServiceBtn.addEventListener('click', () => {
+        customServiceEnabled.checked = false;
+        customServiceReplaceGold.checked = false;
+        customServiceInput.value = '';
+        customServiceImage.value = '';
+        customServiceHideName.checked = false;
+        toggleCustomServiceFields();
+        updateGamePreview();
+        showAdminNotice('Sección personalizada eliminada del juego.', 'warn');
       });
       serviceBoosting.addEventListener('change', updateGamePreview);
       serviceAccounts.addEventListener('change', updateGamePreview);
