@@ -3111,7 +3111,8 @@
       function openGamePage(index) {
         const game = games[index];
         if (!game) return;
-        const gameServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
+        const rawServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
+        const gameServices = [...new Set(rawServices.map((item) => String(item || '').toLowerCase().trim()).filter(Boolean))];
         const customMeta = customServiceMetaByGame[game.name] || null;
         const replaceGoldWithCustom = Boolean(customMeta?.replaceGold && gameServices.some((service) => !['boosting', 'accounts', 'gold'].includes(service)));
         gameWindowTitle.textContent = game.name;
@@ -3488,7 +3489,8 @@
         if (serviceAccounts.checked) services.push('accounts');
         if (serviceGold.checked) services.push('gold');
         if (customServiceEnabled.checked && customServiceInput.value.trim()) services.push(customServiceInput.value.trim().toLowerCase());
-        return services.length ? services : [...defaultServices];
+        const unique = [...new Set(services.map((item) => String(item || '').toLowerCase().trim()).filter(Boolean))];
+        return unique.length ? unique : [...defaultServices];
       }
 
       function updateGamePreview() {
