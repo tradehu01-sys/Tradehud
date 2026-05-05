@@ -608,6 +608,7 @@
         border-radius: 12px;
         padding: 0.8rem;
         background: #0a1223;
+        position: relative;
       }
       .boosting-options-panel.hidden { display: none; }
       .boosting-buttons {
@@ -631,7 +632,14 @@
         border: 1px solid #2f4f8f;
         border-radius: 14px;
         background: linear-gradient(180deg, rgba(12,22,44,.92), rgba(8,14,30,.94));
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 175px;
+        width: min(860px, 92%);
+        z-index: 4;
       }
+      #boostLevelForm.hidden { display: none !important; }
       #boostLevelForm input {
         width: 100%;
         border: 1px solid #2e4f95;
@@ -1892,7 +1900,7 @@
               <button id="boostProfBtn" class="boosting-circle-btn" type="button">Profesiones</button>
               <button id="boostLevelBtn" class="boosting-circle-btn" type="button">Leveleo de cuentas</button>
             </div>
-            <div id="boostLevelForm" class="glass" style="margin-top:.65rem;display:none;">
+            <div id="boostLevelForm" class="glass hidden" style="margin-top:.65rem;">
               <h4 id="boostLevelGameTitle" style="margin:.1rem 0 .6rem;">Leveleo de cuentas</h4>
               <div class="admin-split">
                 <input id="boostCharacter" type="text" placeholder="Nombre del personaje" />
@@ -3014,7 +3022,7 @@
 
       function openBoostingOptionsPanel() {
         boostingOptionsPanel.classList.remove('hidden');
-        if (boostLevelForm) boostLevelForm.style.display = 'none';
+        if (boostLevelForm) boostLevelForm.classList.add('hidden');
         if (boostGame && activeOrderGame?.name) boostGame.value = activeOrderGame.name;
         if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Leveleo de cuentas · ${activeOrderGame?.name || 'Juego seleccionado'}`;
         gameWindow.classList.add('gold-focus');
@@ -3022,7 +3030,7 @@
 
       function closeBoostingOptionsPanel() {
         boostingOptionsPanel.classList.add('hidden');
-        if (boostLevelForm) boostLevelForm.style.display = 'none';
+        if (boostLevelForm) boostLevelForm.classList.add('hidden');
         if (goldOrderPanel.classList.contains('hidden') && accountsPanel.classList.contains('hidden')) {
           gameWindow.classList.remove('gold-focus');
         }
@@ -4440,10 +4448,10 @@
       serviceGold.addEventListener('change', updateGamePreview);
       customServiceInput.addEventListener("input", updateGamePreview);
       boostLevelBtn?.addEventListener('click', () => {
-        if (boostLevelForm) boostLevelForm.style.display = 'block';
+        if (boostLevelForm) boostLevelForm.classList.remove('hidden');
       });
       boostProfBtn?.addEventListener('click', () => {
-        if (boostLevelForm) boostLevelForm.style.display = 'none';
+        if (boostLevelForm) boostLevelForm.classList.add('hidden');
         showAdminNotice('Profesiones: abre ticket para cotización rápida por juego/servidor.', 'info');
       });
       boostCreateTicketBtn?.addEventListener('click', async () => {
