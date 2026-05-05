@@ -1896,12 +1896,8 @@
           </div>
           <div id="boostingOptionsPanel" class="boosting-options-panel hidden">
             <strong style="display:block;margin-bottom:.55rem;">Opciones de boosting</strong>
-            <div class="boosting-buttons">
-              <button id="boostProfBtn" class="boosting-circle-btn" type="button">Profesiones</button>
-              <button id="boostLevelBtn" class="boosting-circle-btn" type="button">Leveleo de cuentas</button>
-            </div>
-            <div id="boostLevelForm" class="glass hidden" style="margin-top:.65rem;">
-              <h4 id="boostLevelGameTitle" style="margin:.1rem 0 .6rem;">Leveleo de cuentas</h4>
+            <div id="boostLevelForm" class="glass hidden" style="margin-top:.2rem;">
+              <h4 id="boostLevelGameTitle" style="margin:.1rem 0 .6rem;">Solicitud de boosting</h4>
               <div class="admin-split">
                 <input id="boostCharacter" type="text" placeholder="Nombre del personaje" />
                 <input id="boostGame" type="text" placeholder="Juego" />
@@ -2546,8 +2542,6 @@
       const accountsPanel = document.getElementById('accountsPanel');
       const accountsPanelList = document.getElementById('accountsPanelList');
       const boostingOptionsPanel = document.getElementById('boostingOptionsPanel');
-      const boostProfBtn = document.getElementById('boostProfBtn');
-      const boostLevelBtn = document.getElementById('boostLevelBtn');
       const boostLevelForm = document.getElementById('boostLevelForm');
       const boostCreateTicketBtn = document.getElementById('boostCreateTicketBtn');
       const boostLevelGameTitle = document.getElementById('boostLevelGameTitle');
@@ -3024,7 +3018,8 @@
         boostingOptionsPanel.classList.remove('hidden');
         if (boostLevelForm) boostLevelForm.classList.add('hidden');
         if (boostGame && activeOrderGame?.name) boostGame.value = activeOrderGame.name;
-        if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Leveleo de cuentas · ${activeOrderGame?.name || 'Juego seleccionado'}`;
+        if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Boosting · ${activeOrderGame?.name || 'Juego seleccionado'}`;
+        if (boostLevelForm) boostLevelForm.classList.remove('hidden');
         gameWindow.classList.add('gold-focus');
       }
 
@@ -4447,13 +4442,6 @@
       serviceAccounts.addEventListener('change', updateGamePreview);
       serviceGold.addEventListener('change', updateGamePreview);
       customServiceInput.addEventListener("input", updateGamePreview);
-      boostLevelBtn?.addEventListener('click', () => {
-        if (boostLevelForm) boostLevelForm.classList.remove('hidden');
-      });
-      boostProfBtn?.addEventListener('click', () => {
-        if (boostLevelForm) boostLevelForm.classList.add('hidden');
-        showAdminNotice('Profesiones: abre ticket para cotización rápida por juego/servidor.', 'info');
-      });
       boostCreateTicketBtn?.addEventListener('click', async () => {
         if (!currentUser) {
           openAuth('login');
