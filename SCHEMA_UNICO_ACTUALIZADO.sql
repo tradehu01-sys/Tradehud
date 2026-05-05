@@ -234,6 +234,13 @@ create table if not exists public.games (
   unique(name)
 );
 
+-- Compatibilidad para instalaciones previas (si la tabla ya existía sin estas columnas)
+alter table public.games add column if not exists services text[] not null default array['gold','boosting','accounts'];
+alter table public.games add column if not exists custom_service_enabled boolean not null default false;
+alter table public.games add column if not exists custom_service_name text not null default '';
+alter table public.games add column if not exists custom_service_image text not null default '';
+alter table public.games add column if not exists custom_service_hide_name boolean not null default false;
+
 create table if not exists public.gold_categories (
   id uuid primary key default gen_random_uuid(),
   game text not null default 'General',
