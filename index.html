@@ -2621,6 +2621,8 @@
       const marketTypeGiftcards = document.getElementById('marketTypeGiftcards');
       const marketCategoryName = document.getElementById('marketCategoryName');
       const marketCategoryImage = document.getElementById('marketCategoryImage');
+      const marketCategoryImageFile = document.getElementById('marketCategoryImageFile');
+      const uploadMarketCategoryImageBtn = document.getElementById('uploadMarketCategoryImageBtn');
       const saveMarketCategoryBtn = document.getElementById('saveMarketCategoryBtn');
       const marketPriceName = document.getElementById('marketPriceName');
       const marketPriceValue = document.getElementById('marketPriceValue');
@@ -3317,6 +3319,14 @@
             renderCategoryItems(cat.name);
           }
         });
+        if (type === 'p2p' && !bucket.categories.length) {
+          marketOrderPanel.classList.remove('hidden');
+          marketSelectedService.value = bucket.title;
+          marketSelectedCategory.value = 'Nueva categoría P2P';
+          marketItemType.value = '';
+          marketAmountToPay.value = '';
+          marketPriceList.innerHTML = '<p class="auth-hint">Ventana P2P lista. Agrega categorías desde panel admin.</p>';
+        }
         if (type === 'giftcards') {
           marketOrderPanel.classList.add('hidden');
           marketPriceList.innerHTML = '<p class="auth-hint">Elige una categoría de giftcard para ver especificaciones.</p>';
@@ -3332,7 +3342,7 @@
         bucket.categories.forEach((cat, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<strong>${cat.name}</strong><p class="admin-game-desc">${cat.image}</p><button class="mini-btn danger" type="button" data-remove-market-category="${index}">Eliminar</button>`;
+          item.innerHTML = `<strong>${cat.name}</strong><p class="admin-game-desc">${cat.image}</p><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-market-category="${index}">Editar</button><button class="mini-btn danger" type="button" data-remove-market-category="${index}">Eliminar</button></div>`;
           marketAdminCategoryList.appendChild(item);
         });
         marketAdminPriceList.innerHTML = '';
@@ -4162,6 +4172,13 @@
         setActiveMarketType(activeMarketType);
         showAdminNotice(`Categoría agregada en ${marketCatalog[activeMarketType].title}.`, 'ok');
       });
+      uploadMarketCategoryImageBtn?.addEventListener('click', async () => {
+        const file = marketCategoryImageFile?.files?.[0];
+        const url = await uploadImageFromPc(file, 'market-categories');
+        if (!url) return;
+        marketCategoryImage.value = url;
+        showAdminNotice('Imagen de categoría P2P subida desde PC.', 'ok');
+      });
       if (saveMarketPriceBtn) saveMarketPriceBtn.addEventListener('click', async () => {
         const title = marketPriceName.value.trim();
         const value = marketPriceValue.value.trim();
@@ -4192,6 +4209,31 @@
         showAdminNotice(`Precio agregado en ${marketCatalog[activeMarketType].title}.`, 'ok');
       });
       if (marketAdminCategoryList) marketAdminCategoryList.addEventListener('click', async (e) => {
+        const editBtn = e.target.closest('button[data-edit-market-category]');
+        if (editBtn) {
+          const index = Number(editBtn.dataset.editMarketCategory);
+          if (Number.isNaN(index)) return;
+          const target = marketCatalog[activeMarketType].categories[index];
+          if (!target) return;
+          const nextName = window.prompt('Nuevo nombre de categoría', target.name) || '';
+          if (!nextName.trim()) return;
+          const nextImage = window.prompt('Nueva imagen URL (o deja igual)', target.image || '') || '';
+          const previous = { ...target };
+          target.name = nextName.trim();
+          target.image = nextImage.trim() || target.image;
+          if (supabaseClient) {
+            await supabaseClient
+              .from('market_catalog_entries')
+              .update({ category_name: target.name, item_name: target.name, image: target.image })
+              .eq('service_type', activeMarketType)
+              .eq('entry_type', 'category')
+              .eq('category_name', previous.name)
+              .eq('image', previous.image || '')
+              .limit(1);
+          }
+          setActiveMarketType(activeMarketType);
+          return;
+        }
         const btn = e.target.closest('button[data-remove-market-category]');
         if (!btn) return;
         const index = Number(btn.dataset.removeMarketCategory);
