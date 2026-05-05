@@ -3687,7 +3687,8 @@
           .select('key,image_url');
         if (error || !Array.isArray(data)) return;
         const byKey = Object.fromEntries(data.map((row) => [row.key, row.image_url]).filter((row) => row[1]));
-        const savedLogo = byKey.logo_main || DEFAULT_LOGO_DATA_URL;
+        const legacyLogoDetected = String(byKey.logo_main || '').startsWith('data:image/svg+xml');
+        const savedLogo = legacyLogoDetected ? DEFAULT_LOGO_DATA_URL : (byKey.logo_main || DEFAULT_LOGO_DATA_URL);
         if (mainLogoImg) mainLogoImg.src = savedLogo;
         if (authMiniLogoImg) authMiniLogoImg.src = savedLogo;
         if (adminLogoImg) adminLogoImg.src = savedLogo;
