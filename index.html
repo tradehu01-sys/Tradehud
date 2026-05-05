@@ -3359,16 +3359,12 @@
         activeMarketType = type;
         selectedMarketCategory = '';
         marketOrderPanel.classList.add('hidden');
-        marketDetailsWrap.classList.toggle('hidden', type !== 'giftcards');
+        marketDetailsWrap.classList.remove('hidden');
         marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
         [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].filter(Boolean).forEach((btn) => {
           btn.classList.toggle('active', btn.id.toLowerCase().includes(type));
         });
-        if (type === 'giftcards') {
-          renderMarketCatalog(type);
-        } else {
-          renderMarketAdminLists(type);
-        }
+        renderMarketCatalog(type);
       }
 
       function renderCategoriasVista() {
@@ -4143,8 +4139,11 @@
       tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
       tabBosteo.addEventListener('click', () => activateAdminTab('bosteo'));
 
-      marketActionButtons.forEach((btn) => {
-        btn.addEventListener('click', () => setActiveMarketType(btn.dataset.marketService || 'p2p'));
+      marketActionButtons.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          const fallbackType = idx === 1 ? 'giftcards' : idx === 2 ? 'streaming' : 'p2p';
+          setActiveMarketType(btn.dataset.marketService || fallbackType);
+        });
       });
       if (marketTypeP2P) marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
       if (marketTypeStreaming) marketTypeStreaming.addEventListener('click', () => setActiveMarketType('streaming'));
