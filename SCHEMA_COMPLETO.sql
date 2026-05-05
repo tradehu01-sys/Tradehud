@@ -397,7 +397,7 @@ insert into public.app_assets (key, image_url) values
 ('service_boosting','https://i.imgur.com/9QHS0xN.png'),
 ('service_accounts','https://i.imgur.com/MfZK9dg.png'),
 ('service_sell_gold','https://i.imgur.com/ODy7Rqb.png')
-on conflict (key) do nothing;
+on conflict (key) do update set image_url = excluded.image_url;
 -- Nota: usamos DO NOTHING para no sobreescribir logos/imágenes personalizados al re-ejecutar el schema.
 
 -- =========================

@@ -2652,21 +2652,25 @@
       const categoriasVistaLista = document.getElementById('categoriasVistaLista');
       const cerrarCategoriasVista = document.getElementById('cerrarCategoriasVista');
       const defaultServices = ['gold', 'boosting', 'accounts'];
+      const FIXED_GOLD_IMG = 'https://i.imgur.com/c5ktaxz.png';
+      const FIXED_BOOSTING_IMG = 'https://i.imgur.com/9QHS0xN.png';
+      const FIXED_ACCOUNTS_IMG = 'https://i.imgur.com/MfZK9dg.png';
+      const FIXED_SELL_GOLD_IMG = 'https://i.imgur.com/ODy7Rqb.png';
       const serviceCatalog = {
         boosting: {
           className: 'boost',
           title: 'BOOSTING',
-          image: 'https://i.imgur.com/9QHS0xN.png'
+          image: FIXED_BOOSTING_IMG
         },
         accounts: {
           className: 'accounts',
           title: 'ACCOUNTS',
-          image: 'https://i.imgur.com/MfZK9dg.png'
+          image: FIXED_ACCOUNTS_IMG
         },
         gold: {
           className: 'gold',
           title: 'GOLD',
-          image: 'https://i.imgur.com/c5ktaxz.png'
+          image: FIXED_GOLD_IMG
         }
       };
       const sanitizeEnvValue = (value, expected = 'text') => {
@@ -3679,10 +3683,10 @@
         if (mainLogoImg) mainLogoImg.src = savedLogo;
         if (authMiniLogoImg) authMiniLogoImg.src = savedLogo;
         if (adminLogoImg) adminLogoImg.src = savedLogo;
-        if (byKey.service_sell_gold && sellGoldImg) sellGoldImg.src = byKey.service_sell_gold;
-        if (byKey.service_gold) serviceCatalog.gold.image = byKey.service_gold;
-        if (byKey.service_boosting) serviceCatalog.boosting.image = byKey.service_boosting;
-        if (byKey.service_accounts) serviceCatalog.accounts.image = byKey.service_accounts;
+        if (sellGoldImg) sellGoldImg.src = FIXED_SELL_GOLD_IMG;
+        serviceCatalog.gold.image = FIXED_GOLD_IMG;
+        serviceCatalog.boosting.image = FIXED_BOOSTING_IMG;
+        serviceCatalog.accounts.image = FIXED_ACCOUNTS_IMG;
       }
 
       async function initializeApp() {
