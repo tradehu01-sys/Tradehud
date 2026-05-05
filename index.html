@@ -2313,8 +2313,7 @@
             <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
           </div>
           <div class="form-group">
-            <label for="juegoImagen">Imagen del juego (URL)</label>
-            <input id="juegoImagen" type="text" placeholder="https://.../imagen-del-juego.png" />
+            <input id="juegoImagen" type="hidden" />
             <label style="margin-top:.45rem;display:block;">Seleccionar imagen</label>
             <div style="display:flex;gap:.5rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
               <input id="juegoImagenFile" type="file" accept="image/*" />
@@ -2336,7 +2335,7 @@
             <input id="customServiceInput" type="text" placeholder="Ej: Albion" />
             <button id="removeCustomServiceBtn" class="mini-btn danger" type="button">Eliminar checks agregados</button>
             <label><input id="customServiceHideName" type="checkbox" /> Mostrar solo imagen (sin nombre)</label>
-            <input id="customServiceImage" type="text" placeholder="https://.../imagen-seccion.png" />
+            <input id="customServiceImage" type="hidden" />
             <label style="margin-top:.45rem;display:block;">Seleccionar imagen</label>
             <div style="display:flex;gap:.5rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
               <input id="customServiceImageFile" type="file" accept="image/*" />
