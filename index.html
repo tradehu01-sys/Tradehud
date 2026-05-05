@@ -2495,7 +2495,7 @@
       const openRegister = document.getElementById('openRegister');
       const openLogin = document.getElementById('openLogin');
       const openProfile = document.getElementById('openProfile');
-      const DEFAULT_LOGO_DATA_URL = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 420%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 x2=%221%22%3E%3Cstop stop-color=%22%23110f0a%22/%3E%3Cstop offset=%221%22 stop-color=%22%231f1608%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22900%22 height=%22420%22 fill=%22%23070b15%22/%3E%3Crect x=%2226%22 y=%2226%22 width=%22848%22 height=%22368%22 rx=%2244%22 fill=%22url(%23g)%22 stroke=%22%23d8a83c%22 stroke-width=%226%22/%3E%3Ctext x=%22450%22 y=%22210%22 text-anchor=%22middle%22 fill=%22%23f6ca63%22 font-size=%22104%22 font-family=%22Arial%22 font-weight=%22800%22%3ETRADEHUB%3C/text%3E%3Ctext x=%22450%22 y=%22285%22 text-anchor=%22middle%22 fill=%22%23ececec%22 font-size=%2260%22 font-family=%22Arial%22 font-weight=%22700%22%3EMMORPG%3C/text%3E%3C/svg%3E';
+      const DEFAULT_LOGO_DATA_URL = 'https://i.imgur.com/BzQZCIH.png';
       const mainLogoImg = document.getElementById('mainLogoImg');
       const authMiniLogoImg = document.querySelector('.auth-mini-logo');
       const adminLogoImg = document.querySelector('.admin-logo');
@@ -3526,9 +3526,14 @@
 
       function setDbStatus(message, kind = 'info') {
         if (!dbStatus) return;
+        dbStatus.style.display = 'inline-flex';
         dbStatus.textContent = `Base de datos: ${message}`;
         dbStatus.classList.remove('ok', 'warn');
         if (kind === 'ok' || kind === 'warn') dbStatus.classList.add(kind);
+        clearTimeout(setDbStatus._timer);
+        setDbStatus._timer = setTimeout(() => {
+          dbStatus.style.display = 'none';
+        }, 5000);
       }
 
       async function fileToOptimizedDataUrl(file, maxSize = 1280, quality = 0.82) {
