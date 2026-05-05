@@ -3149,8 +3149,12 @@
           });
           gameWindowOptions.appendChild(button);
         });
+        const customServiceForReplacement = replaceGoldWithCustom
+          ? gameServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service))
+          : null;
         gameServices
           .filter((serviceKey) => !serviceRenderOrder.includes(serviceKey))
+          .filter((serviceKey) => !(replaceGoldWithCustom && serviceKey === customServiceForReplacement))
           .forEach((serviceKey) => {
             const button = document.createElement('button');
             button.className = 'game-option boost';
@@ -3166,7 +3170,7 @@
             gameWindowOptions.appendChild(button);
           });
         if (replaceGoldWithCustom) {
-          const customServiceKey = gameServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service));
+          const customServiceKey = customServiceForReplacement;
           if (customServiceKey) {
             const onlyImage = Boolean(customMeta?.hideName);
             const button = document.createElement('button');
