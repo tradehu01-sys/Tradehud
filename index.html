@@ -2153,6 +2153,7 @@
           <div class="admin-panel-actions" style="margin-top:0;">
             <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
             <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
+            <button id="limpiarCategoriasBtn" class="panel-btn danger" type="button">Limpiar todas</button>
           </div>
           <div id="categoriaListaOro"></div>
         </div>
@@ -2626,6 +2627,7 @@
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
       const abrirFormularioCategoriaOro = document.getElementById('abrirFormularioCategoriaOro');
+      const limpiarCategoriasBtn = document.getElementById('limpiarCategoriasBtn');
       const abrirFormularioCategoriaCuentas = document.getElementById('abrirFormularioCategoriaCuentas');
       const abrirFormularioCategoriaBosteo = document.getElementById('abrirFormularioCategoriaBosteo');
       const serverGameSelect = document.getElementById('serverGameSelect');
@@ -4579,6 +4581,22 @@
       categoriaListaOro.addEventListener('click', handleRemoveCategory);
       categoriaListaCuentas.addEventListener('click', handleRemoveCategory);
       categoriaListaBosteo.addEventListener('click', handleRemoveCategory);
+      limpiarCategoriasBtn?.addEventListener('click', async () => {
+        const confirmed = window.confirm('¿Eliminar TODAS las categorías (oro, cuentas y bosteo)? Esta acción no se puede deshacer.');
+        if (!confirmed) return;
+        if (supabaseClient) {
+          const { error } = await supabaseClient.from('gold_categories').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+          if (error) {
+            showAdminNotice(`No se pudieron limpiar categorías remotas: ${error.message}`, 'warn');
+            return;
+          }
+        }
+        goldCategories.splice(0, goldCategories.length);
+        accountCategories.splice(0, accountCategories.length);
+        boostingCategories.splice(0, boostingCategories.length);
+        renderGoldCategories();
+        showAdminNotice('Todas las categorías fueron eliminadas correctamente.', 'ok');
+      });
 
       cancelarJuegoForm.addEventListener('click', () => {
         editingAdminIndex = null;
