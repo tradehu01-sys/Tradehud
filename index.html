@@ -2315,6 +2315,11 @@
           <div class="form-group">
             <label for="juegoImagen">Imagen del juego (URL)</label>
             <input id="juegoImagen" type="text" placeholder="https://.../imagen-del-juego.png" />
+            <label style="margin-top:.45rem;display:block;">Seleccionar imagen</label>
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
+              <input id="juegoImagenFile" type="file" accept="image/*" />
+              <button id="subirJuegoImagenBtn" class="mini-btn" type="button">Subir imagen desde PC</button>
+            </div>
           </div>
           <div class="form-group">
             <label for="juegoDescripcion">Descripción</label>
@@ -2332,6 +2337,11 @@
             <button id="removeCustomServiceBtn" class="mini-btn danger" type="button">Eliminar checks agregados</button>
             <label><input id="customServiceHideName" type="checkbox" /> Mostrar solo imagen (sin nombre)</label>
             <input id="customServiceImage" type="text" placeholder="https://.../imagen-seccion.png" />
+            <label style="margin-top:.45rem;display:block;">Seleccionar imagen</label>
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
+              <input id="customServiceImageFile" type="file" accept="image/*" />
+              <button id="subirCustomServiceImagenBtn" class="mini-btn" type="button">Subir imagen sección</button>
+            </div>
           </div>
           <div class="image-preview">
             <small>Vista previa</small>
@@ -2556,6 +2566,8 @@
       const juegoFormTitulo = document.getElementById('juegoFormTitulo');
       const juegoNombre = document.getElementById('juegoNombre');
       const juegoImagen = document.getElementById('juegoImagen');
+      const juegoImagenFile = document.getElementById('juegoImagenFile');
+      const subirJuegoImagenBtn = document.getElementById('subirJuegoImagenBtn');
       const juegoDescripcion = document.getElementById('juegoDescripcion');
       const serviceBoosting = document.getElementById('serviceBoosting');
       const serviceAccounts = document.getElementById('serviceAccounts');
@@ -2565,6 +2577,8 @@
       const customServiceReplaceGold = document.getElementById('customServiceReplaceGold');
       const customServiceHideName = document.getElementById('customServiceHideName');
       const customServiceImage = document.getElementById('customServiceImage');
+      const customServiceImageFile = document.getElementById('customServiceImageFile');
+      const subirCustomServiceImagenBtn = document.getElementById('subirCustomServiceImagenBtn');
       const removeCustomServiceBtn = document.getElementById('removeCustomServiceBtn');
       const previewImagenJuego = document.getElementById('previewImagenJuego');
       const previewNombreJuego = document.getElementById('previewNombreJuego');
@@ -2780,7 +2794,7 @@
 
       function toggleCustomServiceFields() {
         const enabled = customServiceEnabled.checked;
-        [customServiceInput, customServiceReplaceGold, customServiceHideName, customServiceImage].forEach((el) => {
+        [customServiceInput, customServiceReplaceGold, customServiceHideName, customServiceImage, customServiceImageFile, subirCustomServiceImagenBtn].forEach((el) => {
           if (!el) return;
           el.disabled = !enabled;
         });
@@ -4332,6 +4346,19 @@
       juegoNombre.addEventListener('input', updateGamePreview);
       juegoImagen.addEventListener('input', updateGamePreview);
       juegoDescripcion.addEventListener('input', updateGamePreview);
+      subirJuegoImagenBtn?.addEventListener('click', async () => {
+        const file = juegoImagenFile?.files?.[0];
+        const url = await uploadImageFromPc(file, 'games');
+        if (!url) return;
+        juegoImagen.value = url;
+        updateGamePreview();
+      });
+      subirCustomServiceImagenBtn?.addEventListener('click', async () => {
+        const file = customServiceImageFile?.files?.[0];
+        const url = await uploadImageFromPc(file, 'services');
+        if (!url) return;
+        customServiceImage.value = url;
+      });
       customServiceEnabled.addEventListener('change', () => {
         if (!customServiceEnabled.checked) {
           customServiceInput.value = '';
