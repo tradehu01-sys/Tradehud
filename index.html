@@ -1937,15 +1937,15 @@
         <div class="container">
           <h2 class="section-title">Marketplace de <span>Servicios</span></h2>
           <div class="marketplace-actions">
-            <button class="marketplace-action-btn" type="button" >
+            <button class="marketplace-action-btn" type="button" data-market-service="p2p">
               <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&" alt="P2P" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1200&auto=format&fit=crop';" />
               <span>P2P</span>
             </button>
-            <button class="marketplace-action-btn" type="button" >
+            <button class="marketplace-action-btn" type="button" data-market-service="giftcards">
               <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&" alt="Giftcards" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=1200&auto=format&fit=crop';" />
               <span>GiftCards</span>
             </button>
-            <button class="marketplace-action-btn" type="button" >
+            <button class="marketplace-action-btn" type="button" data-market-service="streaming">
               <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&" alt="Streaming" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1200&auto=format&fit=crop';" />
               <span>Streaming</span>
             </button>
@@ -3663,7 +3663,12 @@
             name: row.name,
             icon: row.icon || existingIconByName.get(normalizeGameName(row.name)) || albionGameIcon,
             description: row.description || '',
-            services: Array.isArray(row.services) && row.services.length ? row.services : [...defaultServices]
+            services: (() => {
+              const clean = Array.isArray(row.services)
+                ? row.services.filter((service) => ['gold', 'boosting', 'accounts'].includes(String(service).toLowerCase()))
+                : [];
+              return clean.length ? clean : [...defaultServices];
+            })()
           })));
           games.splice(0, games.length, ...uniqueGames);
           (gamesData || []).forEach((row) => {
