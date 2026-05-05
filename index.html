@@ -2780,10 +2780,11 @@
 
       function toggleCustomServiceFields() {
         const enabled = customServiceEnabled.checked;
-        [customServiceInput, customServiceReplaceGold, customServiceHideName, customServiceImage, removeCustomServiceBtn].forEach((el) => {
+        [customServiceInput, customServiceReplaceGold, customServiceHideName, customServiceImage].forEach((el) => {
           if (!el) return;
           el.disabled = !enabled;
         });
+        if (removeCustomServiceBtn) removeCustomServiceBtn.disabled = false;
       }
       const marketCatalog = {
         p2p: {
