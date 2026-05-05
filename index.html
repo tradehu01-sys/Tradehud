@@ -2667,15 +2667,33 @@
           image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006601390428240/ChatGPT_Image_20_abr_2026_06_42_34_p.m..png?ex=69f384f8&is=69f23378&hm=1cc06e24f43ce71b54bf4549f0027bea82423cabfa8c1eee4949eb779f5ba76a&'
         }
       };
-      const SUPABASE_URL =
-        window.TRADEHUD_SUPABASE_URL ||
-        window.NEXT_PUBLIC_SUPABASE_URL ||
-        'https://lveocmzvfndvzjdqknnf.supabase.co';
-      const SUPABASE_ANON_KEY =
+      const sanitizeEnvValue = (value, expected = 'text') => {
+        if (!value) return '';
+        const raw = String(value).replace(/\\n/g, '\n').trim();
+        if (!raw) return '';
+        if (expected === 'url') {
+          const match = raw.match(/https:\/\/[a-z0-9-]+\.supabase\.co/i);
+          return match ? match[0] : raw.split(/\s+/)[0];
+        }
+        if (expected === 'key') {
+          const jwtMatch = raw.match(/eyJ[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+/);
+          if (jwtMatch) return jwtMatch[0];
+          const publishableMatch = raw.match(/sb_publishable_[a-zA-Z0-9._-]+/);
+          if (publishableMatch) return publishableMatch[0];
+        }
+        return raw.split(/\s+/)[0];
+      };
+      const SUPABASE_URL = sanitizeEnvValue(
+        window.TRADEHUD_SUPABASE_URL || window.NEXT_PUBLIC_SUPABASE_URL || 'https://lveocmzvfndvzjdqknnf.supabase.co',
+        'url'
+      );
+      const SUPABASE_ANON_KEY = sanitizeEnvValue(
         window.TRADEHUD_SUPABASE_ANON_KEY ||
         window.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
         window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-        'sb_publishable_So-MKH0I5IJ_kmSweJo1IQ_H5kxNgMG';
+        'sb_publishable_So-MKH0I5IJ_kmSweJo1IQ_H5kxNgMG',
+        'key'
+      );
       const isServiceRoleKey = (() => {
         try {
           if (!SUPABASE_ANON_KEY.includes('.')) return false;
