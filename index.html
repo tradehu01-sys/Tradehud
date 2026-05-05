@@ -2327,9 +2327,7 @@
             <label><input id="serviceGold" type="checkbox" checked /> Oro</label>
             <label for="customServiceInput">Sección personalizada</label>
             <label><input id="customServiceEnabled" type="checkbox" /> Activar sección personalizada</label>
-            <label><input id="customServiceReplaceGold" type="checkbox" /> Reemplazar botón ORO por sección personalizada</label>
             <input id="customServiceInput" type="text" placeholder="Ej: Albion" />
-            <button id="removeCustomServiceBtn" class="mini-btn danger" type="button">Eliminar todas las categorías del checklist</button>
             <label><input id="customServiceHideName" type="checkbox" /> Mostrar solo imagen (sin nombre)</label>
             <input id="customServiceImage" type="hidden" />
             <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
@@ -2568,11 +2566,9 @@
       const serviceGold = document.getElementById('serviceGold');
       const customServiceInput = document.getElementById('customServiceInput');
       const customServiceEnabled = document.getElementById('customServiceEnabled');
-      const customServiceReplaceGold = document.getElementById('customServiceReplaceGold');
       const customServiceHideName = document.getElementById('customServiceHideName');
       const customServiceImage = document.getElementById('customServiceImage');
       const customServiceImageFile = document.getElementById('customServiceImageFile');
-      const removeCustomServiceBtn = document.getElementById('removeCustomServiceBtn');
       const subirCustomServiceImagenBtn = document.getElementById('subirCustomServiceImagenBtn');
       const previewImagenJuego = document.getElementById('previewImagenJuego');
       const previewNombreJuego = document.getElementById('previewNombreJuego');
@@ -2782,7 +2778,7 @@
 
       function toggleCustomServiceFields() {
         const enabled = customServiceEnabled.checked;
-        [customServiceInput, customServiceReplaceGold, customServiceHideName, customServiceImageFile, subirCustomServiceImagenBtn].forEach((el) => {
+        [customServiceInput, customServiceHideName, customServiceImageFile, subirCustomServiceImagenBtn].forEach((el) => {
           if (!el) return;
           el.disabled = !enabled;
         });
@@ -3103,7 +3099,7 @@
         if (!game) return;
         const gameServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
         const customMeta = customServiceMetaByGame[game.name] || null;
-        const replaceGoldWithCustom = Boolean(customMeta?.replaceGold && gameServices.some((service) => !['boosting', 'accounts', 'gold'].includes(service)));
+        const replaceGoldWithCustom = false;
         gameWindowTitle.textContent = game.name;
         gameWindowDesc.textContent = game.description || '';
         gameWindowIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
@@ -3451,7 +3447,6 @@
         customServiceInput.value = selectedServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service)) || '';
         const meta = customServiceMetaByGame[game.name] || {};
         customServiceEnabled.checked = Boolean(meta.enabled || customServiceInput.value);
-        customServiceReplaceGold.checked = Boolean(meta.replaceGold);
         customServiceHideName.checked = Boolean(meta.hideName);
         customServiceImage.value = meta.image || '';
         toggleCustomServiceFields();
@@ -3466,7 +3461,6 @@
         serviceAccounts.checked = true;
         serviceGold.checked = true;
         customServiceEnabled.checked = false;
-        customServiceReplaceGold.checked = false;
         customServiceInput.value = '';
         customServiceHideName.checked = false;
         customServiceImage.value = '';
@@ -3611,10 +3605,10 @@
         }
         let gamesResult = await supabaseClient
           .from('games')
-          .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name,replace_gold_with_custom')
+          .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name')
           .order('created_at', { ascending: true });
         const gamesColumnError = gamesResult.error?.message?.toLowerCase() || '';
-        if (gamesColumnError.includes('custom_service_enabled') || gamesColumnError.includes('custom_service_name') || gamesColumnError.includes('custom_service_image') || gamesColumnError.includes('custom_service_hide_name') || gamesColumnError.includes('replace_gold_with_custom')) {
+        if (gamesColumnError.includes('custom_service_enabled') || gamesColumnError.includes('custom_service_name') || gamesColumnError.includes('custom_service_image') || gamesColumnError.includes('custom_service_hide_name')) {
           gamesResult = await supabaseClient
             .from('games')
             .select('id,name,icon,description,services')
@@ -3626,7 +3620,6 @@
               custom_service_name: '',
               custom_service_image: '',
               custom_service_hide_name: false,
-              replace_gold_with_custom: false
             }));
             showAdminNotice('Faltan columnas custom_service_* en games. Cargado en modo compatibilidad. Ejecuta el schema actualizado.', 'warn');
           }
@@ -3661,7 +3654,7 @@
               enabled: Boolean(row.custom_service_enabled),
               image: row.custom_service_image || '',
               hideName: Boolean(row.custom_service_hide_name),
-              replaceGold: Boolean(row.replace_gold_with_custom)
+              replaceGold: false
             };
           });
         }
@@ -4325,21 +4318,10 @@
       customServiceEnabled.addEventListener('change', () => {
         if (!customServiceEnabled.checked) {
           customServiceInput.value = '';
-          customServiceReplaceGold.checked = false;
-          customServiceImage.value = '';
+            customServiceImage.value = '';
         }
         toggleCustomServiceFields();
         updateGamePreview();
-      });
-      removeCustomServiceBtn.addEventListener('click', () => {
-        customServiceEnabled.checked = false;
-        customServiceReplaceGold.checked = false;
-        customServiceInput.value = '';
-        customServiceImage.value = '';
-        customServiceHideName.checked = false;
-        toggleCustomServiceFields();
-        updateGamePreview();
-        showAdminNotice('Se eliminaron todas las categorías agregadas desde este checklist (solo este juego).', 'warn');
       });
       serviceBoosting.addEventListener('change', updateGamePreview);
       serviceAccounts.addEventListener('change', updateGamePreview);
@@ -4651,8 +4633,7 @@
         customServiceMetaByGame[payload.name] = {
           enabled: customServiceEnabled.checked,
           image: customServiceImage.value.trim(),
-          hideName: customServiceHideName.checked,
-          replaceGold: customServiceReplaceGold.checked
+          hideName: customServiceHideName.checked
         };
         if (editingAdminIndex === null) {
           const normalizedName = normalizeGameName(payload.name);
@@ -4672,10 +4653,9 @@
             custom_service_name: customServiceInput.value.trim().toLowerCase(),
             custom_service_enabled: customServiceEnabled.checked,
             custom_service_image: customServiceImage.value.trim(),
-            custom_service_hide_name: customServiceHideName.checked,
-            replace_gold_with_custom: customServiceReplaceGold.checked
+            custom_service_hide_name: customServiceHideName.checked
           };
-          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name,replace_gold_with_custom').single();
+          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name').single();
           if (error) {
             if (error.message?.toLowerCase().includes('services')) {
               showAdminNotice('No existe columna "services" en Supabase. Ejecuta el schema actualizado.', 'warn');
@@ -4697,14 +4677,13 @@
               custom_service_name: customServiceInput.value.trim().toLowerCase(),
               custom_service_enabled: customServiceEnabled.checked,
               custom_service_image: customServiceImage.value.trim(),
-              custom_service_hide_name: customServiceHideName.checked,
-              replace_gold_with_custom: customServiceReplaceGold.checked
+              custom_service_hide_name: customServiceHideName.checked
             };
             const { data, error } = await supabaseClient
               .from('games')
               .update(supabasePayload)
               .eq('id', games[editingAdminIndex].id)
-              .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name,replace_gold_with_custom')
+              .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name')
               .single();
             if (error) {
               games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
