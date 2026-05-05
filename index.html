@@ -1869,8 +1869,20 @@
           <div id="boostingOptionsPanel" class="boosting-options-panel hidden">
             <strong style="display:block;margin-bottom:.55rem;">Opciones de boosting</strong>
             <div class="boosting-buttons">
-              <button class="boosting-circle-btn" type="button">Profesiones</button>
-              <button class="boosting-circle-btn" type="button">Leveleo de cuentas</button>
+              <button id="boostProfBtn" class="boosting-circle-btn" type="button">Profesiones</button>
+              <button id="boostLevelBtn" class="boosting-circle-btn" type="button">Leveleo de cuentas</button>
+            </div>
+            <div id="boostLevelForm" class="glass" style="margin-top:.65rem;display:none;">
+              <div class="admin-split">
+                <input id="boostCharacter" type="text" placeholder="Nombre del personaje" />
+                <input id="boostGame" type="text" placeholder="Juego" />
+                <input id="boostServer" type="text" placeholder="Servidor" />
+                <input id="boostLevelFrom" type="text" placeholder="Level actual" />
+                <input id="boostLevelTo" type="text" placeholder="Level deseado" />
+                <input id="boostExtra" type="text" placeholder="Descripción adicional" />
+              </div>
+              <p class="auth-hint">Los precios son consultados según juego, servidor y tiempo estimado.</p>
+              <button id="boostCreateTicketBtn" class="panel-btn" type="button">Crear ticket</button>
             </div>
           </div>
         </div>
@@ -1954,6 +1966,18 @@
         </div>
       </section>
 
+      <section id="legal" class="page-section" data-page="legal">
+        <div class="container">
+          <h2 class="section-title">Términos, privacidad, reembolso y <span>comunidades</span></h2>
+          <article class="glass">
+            <p class="lead">TradeHud intermedia servicios digitales para MMORPG. Al usar la plataforma aceptas validación de identidad básica, revisión de disponibilidad y confirmación por ticket antes de cada operación.</p>
+            <p class="lead"><strong>Privacidad:</strong> solo se usan datos de contacto para seguimiento del pedido y soporte. No compartimos datos personales con terceros fuera del flujo operativo.</p>
+            <p class="lead"><strong>Reembolsos:</strong> aplican cuando no hay entrega confirmada o existe error de operación validado por soporte. Cada caso se audita en ticket.</p>
+            <p class="lead"><strong>Comunidades:</strong> Discord y canales oficiales son moderados; cualquier intento de estafa fuera de canales oficiales queda fuera de cobertura.</p>
+          </article>
+        </div>
+      </section>
+
     </main>
 
     <!-- Trigger update for deploy/preview pipeline -->
@@ -1973,10 +1997,10 @@
         <div class="footer-box">
           <h4>Servicios confiables</h4>
           <ul>
-            <li><a href="#inicio" data-page-link data-page="inicio">Términos y condiciones</a></li>
-            <li><a href="#inicio" data-page-link data-page="inicio">Política de privacidad</a></li>
-            <li><a href="#inicio" data-page-link data-page="inicio">Política de reembolso</a></li>
-            <li><a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Comunidades</a></li>
+            <li><a href="#legal" data-page-link data-page="legal">Términos y condiciones</a></li>
+            <li><a href="#legal" data-page-link data-page="legal">Política de privacidad</a></li>
+            <li><a href="#legal" data-page-link data-page="legal">Política de reembolso</a></li>
+            <li><a href="#legal" data-page-link data-page="legal">Comunidades</a></li>
           </ul>
         </div>
         <div class="footer-box">
@@ -1991,10 +2015,8 @@
         <div class="footer-box">
           <h4>Soporte y ayuda</h4>
           <ul>
-            <li><a class="link-with-icon" href="https://wa.me" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp" />WhatsApp</a></li>
             <li><a class="link-with-icon" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />Discord</a></li>
             <li><a class="link-with-icon" href="https://t.me" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram" />Telegram</a></li>
-            <li><a href="#vender" data-page-link data-page="vendemos-oro">Atención para compradores y proveedores</a></li>
           </ul>
         </div>
         <div class="footer-box">
@@ -2495,6 +2517,16 @@
       const accountsPanel = document.getElementById('accountsPanel');
       const accountsPanelList = document.getElementById('accountsPanelList');
       const boostingOptionsPanel = document.getElementById('boostingOptionsPanel');
+      const boostProfBtn = document.getElementById('boostProfBtn');
+      const boostLevelBtn = document.getElementById('boostLevelBtn');
+      const boostLevelForm = document.getElementById('boostLevelForm');
+      const boostCreateTicketBtn = document.getElementById('boostCreateTicketBtn');
+      const boostCharacter = document.getElementById('boostCharacter');
+      const boostGame = document.getElementById('boostGame');
+      const boostServer = document.getElementById('boostServer');
+      const boostLevelFrom = document.getElementById('boostLevelFrom');
+      const boostLevelTo = document.getElementById('boostLevelTo');
+      const boostExtra = document.getElementById('boostExtra');
       const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
       const openRegister = document.getElementById('openRegister');
@@ -2960,11 +2992,13 @@
 
       function openBoostingOptionsPanel() {
         boostingOptionsPanel.classList.remove('hidden');
+        if (boostLevelForm) boostLevelForm.style.display = 'none';
         gameWindow.classList.add('gold-focus');
       }
 
       function closeBoostingOptionsPanel() {
         boostingOptionsPanel.classList.add('hidden');
+        if (boostLevelForm) boostLevelForm.style.display = 'none';
         if (goldOrderPanel.classList.contains('hidden') && accountsPanel.classList.contains('hidden')) {
           gameWindow.classList.remove('gold-focus');
         }
@@ -4381,6 +4415,32 @@
       serviceAccounts.addEventListener('change', updateGamePreview);
       serviceGold.addEventListener('change', updateGamePreview);
       customServiceInput.addEventListener("input", updateGamePreview);
+      boostLevelBtn?.addEventListener('click', () => {
+        if (boostLevelForm) boostLevelForm.style.display = 'block';
+      });
+      boostProfBtn?.addEventListener('click', () => {
+        if (boostLevelForm) boostLevelForm.style.display = 'none';
+        showAdminNotice('Profesiones: abre ticket para cotización rápida por juego/servidor.', 'info');
+      });
+      boostCreateTicketBtn?.addEventListener('click', async () => {
+        if (!currentUser) {
+          openAuth('login');
+          return;
+        }
+        const summary = `Boosting | ${boostGame?.value || ''} | ${boostServer?.value || ''} | ${boostCharacter?.value || ''} | ${boostLevelFrom?.value || ''}->${boostLevelTo?.value || ''} | ${boostExtra?.value || ''}`;
+        if (supabaseClient) {
+          await supabaseClient.from('tickets').insert({
+            user_id: currentUser.id,
+            game: boostGame?.value || 'Boosting',
+            server: boostServer?.value || '',
+            product: `Leveo ${boostLevelFrom?.value || ''}-${boostLevelTo?.value || ''}`,
+            character: boostCharacter?.value || '',
+            delivery: boostExtra?.value || '',
+            status: 'pendiente'
+          });
+        }
+        window.open(`https://discord.gg/DKd9HxK8?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
+      });
       oroSearch.addEventListener('input', renderGameList);
 
       function openCategoriaModal(type = 'oro') {
