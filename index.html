@@ -3168,9 +3168,10 @@
             button.type = 'button';
             button.innerHTML = `<img src="${customMeta?.image || serviceCatalog.gold.image}" alt="${customServiceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${customServiceKey}</span>`}`;
             button.addEventListener('click', () => {
-              closeGoldOrderPanel();
+              openGoldOrderPanel(game);
               closeAccountsPanel();
               closeBoostingOptionsPanel();
+              showAdminNotice('Se abrió el apartado de ORO para la categoría personalizada.', 'ok');
             });
             gameWindowOptions.prepend(button);
           }
