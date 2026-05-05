@@ -9,7 +9,7 @@ En Vercel/Netlify/hosting configura **solo** estas públicas para frontend:
 No uses `service_role` en frontend.
 
 ## 2) Aplicar schema completo
-Ejecuta **SCHEMA_UNICO_ACTUALIZADO.sql** en Supabase SQL Editor. Ese archivo incluye:
+Ejecuta **SCHEMA_COMPLETO.sql** en Supabase SQL Editor. Ese archivo incluye:
 - Tablas (`user_profiles`, `tickets`, `games`, `gold_categories`, etc.)
 - RLS y policies
 - Bucket `tradehud-assets` + policies de storage
