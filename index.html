@@ -3497,18 +3497,37 @@
         if (kind === 'ok' || kind === 'warn') dbStatus.classList.add(kind);
       }
 
-      async function uploadImageFromPc(file, folder = 'general') {
-        if (!file) {
-          showAdminNotice('Selecciona una imagen primero.', 'warn');
-          return null;
-        }
-        const toDataUrl = () => new Promise((resolve, reject) => {
+      async function fileToOptimizedDataUrl(file, maxSize = 1280, quality = 0.82) {
+        const sourceDataUrl = await new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = () => resolve(String(reader.result || ''));
           reader.onerror = () => reject(new Error('No se pudo leer el archivo.'));
           reader.readAsDataURL(file);
         });
-        const dataUrl = await toDataUrl();
+        const mime = (file?.type || '').toLowerCase();
+        if (!mime.startsWith('image/')) return sourceDataUrl;
+        const bitmap = await new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error('No se pudo procesar la imagen.'));
+          img.src = sourceDataUrl;
+        });
+        const scale = Math.min(1, maxSize / Math.max(bitmap.width || 1, bitmap.height || 1));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round((bitmap.width || 1) * scale));
+        canvas.height = Math.max(1, Math.round((bitmap.height || 1) * scale));
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return sourceDataUrl;
+        ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL('image/webp', quality);
+      }
+
+      async function uploadImageFromPc(file, folder = 'general') {
+        if (!file) {
+          showAdminNotice('Selecciona una imagen primero.', 'warn');
+          return null;
+        }
+        const dataUrl = await fileToOptimizedDataUrl(file);
         // Política actual: persistir SIEMPRE en data URL para evitar enlaces rotos/borrados.
         // Opcional: también intenta subir a Storage para respaldo, sin bloquear el flujo principal.
         if (!supabaseClient) return dataUrl;
@@ -3520,6 +3539,9 @@
           contentType: file.type || 'image/png'
         });
         if (uploadError) showAdminNotice(`Respaldo en Storage falló (${uploadError.message}), se guardó en data URL.`, 'warn');
+        if (dataUrl.length > 2_000_000) {
+          showAdminNotice('Imagen muy grande. Se comprimió en data URL, pero si falla al guardar usa una imagen más liviana.', 'warn');
+        }
         return dataUrl;
       }
 
@@ -4345,7 +4367,7 @@
         const url = await uploadImageFromPc(file, 'accounts');
         if (!url) return;
         accountImageInput.value = url;
-        showAdminNotice('Imagen de cuenta subida y guardada en Supabase Storage.', 'ok');
+        showAdminNotice('Imagen de cuenta convertida y guardada como data URL.', 'ok');
       });
 
       adminAccountsList.addEventListener('click', (e) => {
