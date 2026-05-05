@@ -1893,6 +1893,7 @@
               <button id="boostLevelBtn" class="boosting-circle-btn" type="button">Leveleo de cuentas</button>
             </div>
             <div id="boostLevelForm" class="glass" style="margin-top:.65rem;display:none;">
+              <h4 id="boostLevelGameTitle" style="margin:.1rem 0 .6rem;">Leveleo de cuentas</h4>
               <div class="admin-split">
                 <input id="boostCharacter" type="text" placeholder="Nombre del personaje" />
                 <input id="boostGame" type="text" placeholder="Juego" />
@@ -2541,6 +2542,7 @@
       const boostLevelBtn = document.getElementById('boostLevelBtn');
       const boostLevelForm = document.getElementById('boostLevelForm');
       const boostCreateTicketBtn = document.getElementById('boostCreateTicketBtn');
+      const boostLevelGameTitle = document.getElementById('boostLevelGameTitle');
       const boostCharacter = document.getElementById('boostCharacter');
       const boostGame = document.getElementById('boostGame');
       const boostServer = document.getElementById('boostServer');
@@ -3013,6 +3015,8 @@
       function openBoostingOptionsPanel() {
         boostingOptionsPanel.classList.remove('hidden');
         if (boostLevelForm) boostLevelForm.style.display = 'none';
+        if (boostGame && activeOrderGame?.name) boostGame.value = activeOrderGame.name;
+        if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Leveleo de cuentas · ${activeOrderGame?.name || 'Juego seleccionado'}`;
         gameWindow.classList.add('gold-focus');
       }
 
@@ -4458,6 +4462,8 @@
             delivery: boostExtra?.value || '',
             status: 'pendiente'
           });
+          await renderUserOrders();
+          await renderAdminTickets();
         }
         window.open(`https://discord.gg/DKd9HxK8?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
       });
