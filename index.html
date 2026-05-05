@@ -3540,28 +3540,45 @@
       async function syncFromSupabase() {
         if (isServiceRoleKey) {
           showAdminNotice('Clave bloqueada: detectamos service_role. Usa SOLO la anon public key en frontend.', 'warn');
-          showDbStatus('Base de datos NO conectada (clave inválida).', 'warn');
           setDbStatus('error de configuración (service_role detectada)', 'warn');
           return;
         }
         if (!supabaseClient) {
           showAdminNotice('Supabase no configurado. Define URL+ANON key válidas en window.TRADEHUD_SUPABASE_URL y window.TRADEHUD_SUPABASE_ANON_KEY.', 'warn');
-          showDbStatus('Base de datos NO conectada (falta configuración).', 'warn');
           setDbStatus('sin configurar (falta URL o ANON KEY)', 'warn');
-          showDbStatus('Falta configurar Supabase URL y ANON KEY.', 'warn');
           return;
         }
-        const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
-          supabaseClient.from('games').select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name').order('created_at', { ascending: true }),
+        let gamesResult = await supabaseClient
+          .from('games')
+          .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name')
+          .order('created_at', { ascending: true });
+        const gamesColumnError = gamesResult.error?.message?.toLowerCase() || '';
+        if (gamesColumnError.includes('custom_service_enabled') || gamesColumnError.includes('custom_service_name') || gamesColumnError.includes('custom_service_image') || gamesColumnError.includes('custom_service_hide_name')) {
+          gamesResult = await supabaseClient
+            .from('games')
+            .select('id,name,icon,description,services')
+            .order('created_at', { ascending: true });
+          if (!gamesResult.error) {
+            gamesResult.data = (gamesResult.data || []).map((row) => ({
+              ...row,
+              custom_service_enabled: false,
+              custom_service_name: '',
+              custom_service_image: '',
+              custom_service_hide_name: false
+            }));
+            showAdminNotice('Faltan columnas custom_service_* en games. Cargado en modo compatibilidad. Ejecuta el schema actualizado.', 'warn');
+          }
+        }
+        const [{ data: categoriesData, error: categoriesError }] = await Promise.all([
           supabaseClient.from('gold_categories').select('id,game,name,description').order('created_at', { ascending: true })
         ]);
+        const { data: gamesData, error: gamesError } = gamesResult;
         if (gamesError || categoriesError) {
           if (gamesError?.message?.toLowerCase().includes('services')) {
             showAdminNotice('Falta la columna "services" en la tabla games de Supabase.', 'warn');
           } else {
             const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
             showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
-            showDbStatus('Base de datos no conectada. Verifica URL, ANON KEY y políticas RLS.', 'warn');
             setDbStatus(`no conectada: ${detail}`.slice(0, 120), 'warn');
           }
           return;
