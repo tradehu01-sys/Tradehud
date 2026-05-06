@@ -29,6 +29,7 @@
         background-attachment: fixed;
         overflow-x: hidden;
       }
+      body.preload { opacity: 0; }
 
       body::before {
         content: '';
@@ -1611,7 +1612,7 @@
       .db-status-toast.warn { border-color: #b07a3f; color: #ffd39a; }
 </style>
   </head>
-  <body>
+    <body class="preload">
     <div id="pageLoader" class="page-loader" aria-hidden="true"><span>Cargando sección...</span></div>
     <div id="dbStatus" class="db-status">Base de datos: verificando...</div>
     <header>
@@ -2011,10 +2012,19 @@
         <div class="container">
           <h2 class="section-title">Términos, privacidad, reembolso y <span>comunidades</span></h2>
           <article class="glass">
-            <p class="lead">TradeHud intermedia servicios digitales para MMORPG. Al usar la plataforma aceptas validación de identidad básica, revisión de disponibilidad y confirmación por ticket antes de cada operación.</p>
-            <p class="lead"><strong>Privacidad:</strong> solo se usan datos de contacto para seguimiento del pedido y soporte. No compartimos datos personales con terceros fuera del flujo operativo.</p>
-            <p class="lead"><strong>Reembolsos:</strong> aplican cuando no hay entrega confirmada o existe error de operación validado por soporte. Cada caso se audita en ticket.</p>
-            <p class="lead"><strong>Comunidades:</strong> Discord y canales oficiales son moderados; cualquier intento de estafa fuera de canales oficiales queda fuera de cobertura.</p>
+            <p class="lead">TradeHud es una plataforma de compraventa de oro y servicios para MMORPG donde cada operación se valida por ticket antes de ejecutarse. Al usar el sitio aceptas estas políticas y el protocolo de seguridad de la comunidad.</p>
+            <h3>Términos y condiciones</h3>
+            <p class="lead">Toda compra o venta se procesa únicamente por canales oficiales de TradeHud. Los tiempos de entrega dependen del juego, servidor, stock y confirmación del cliente. Está prohibido suplantar moderadores o gestionar pagos fuera de canales oficiales.</p>
+            <p class="lead">El cliente debe verificar juego, servidor, facción y cantidad antes de confirmar el pedido. Una vez entregado el servicio, se considera completado y se deja constancia en ticket.</p>
+            <h3>Política de privacidad</h3>
+            <p class="lead">Los datos compartidos (correo, Discord, usuario de juego y métodos de pago) se usan exclusivamente para validar, procesar y dar soporte al pedido. No vendemos información personal ni la distribuimos fuera del flujo de atención.</p>
+            <p class="lead">Los tickets pueden conservarse con fines de auditoría y prevención de fraude. Puedes solicitar actualización de tus datos de contacto desde soporte oficial.</p>
+            <h3>Política de reembolso</h3>
+            <p class="lead">Aplica reembolso cuando TradeHud no puede entregar el servicio confirmado o cuando hay un error operativo comprobado por moderación. El reembolso se procesa al mismo método de pago utilizado o a uno acordado por ticket.</p>
+            <p class="lead">No aplica reembolso por errores de datos proporcionados por el cliente (servidor/personaje incorrecto) cuando la entrega ya fue realizada según la información aprobada en ticket.</p>
+            <h3>Comunidades y seguridad</h3>
+            <p class="lead">Nuestra comunidad oficial funciona en Discord y canales vinculados de TradeHud. Cualquier trato por fuera de esos canales queda bajo responsabilidad del usuario y no está cubierto por moderación.</p>
+            <p class="lead">Recomendación: nunca compartas códigos 2FA, contraseñas ni datos sensibles. Para cada operación, solicita siempre confirmación del moderador activo y el ID de ticket.</p>
           </article>
         </div>
       </section>
@@ -4895,6 +4905,11 @@
           adminMsg.textContent = 'Sesión cerrada correctamente.';
           adminMsg.style.color = '#8fdcff';
         }, 450);
+      });
+
+      window.scrollTo(0, 0);
+      window.requestAnimationFrame(() => {
+        document.body.classList.remove('preload');
       });
     </script>
   </body>
