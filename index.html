@@ -638,7 +638,7 @@
         object-fit: cover;
         border: 1px solid #3b3b40;
       }
-      nav a, .admin-open, .discord-nav-btn, .panel-btn, .mini-btn, .game-option, .category-item, .account-card, .glass {
+      nav a, .admin-open, .discord-nav-btn, .panel-btn, .mini-btn, .game-option, .category-item, .account-card, .glass, .mini, .badge, .boosting-options-panel, .sell-panel {
         background: #0a0a0d !important;
         border-color: #2a2a2f !important;
       }
@@ -2013,16 +2013,16 @@
           <h2 class="section-title">Términos, privacidad, reembolso y <span>comunidades</span></h2>
           <article class="glass">
             <p class="lead">TradeHud es una plataforma de compraventa de oro y servicios para MMORPG donde cada operación se valida por ticket antes de ejecutarse. Al usar el sitio aceptas estas políticas y el protocolo de seguridad de la comunidad.</p>
-            <h3>Términos y condiciones</h3>
+            <h3 id="legal-terms">Términos y condiciones</h3>
             <p class="lead">Toda compra o venta se procesa únicamente por canales oficiales de TradeHud. Los tiempos de entrega dependen del juego, servidor, stock y confirmación del cliente. Está prohibido suplantar moderadores o gestionar pagos fuera de canales oficiales.</p>
             <p class="lead">El cliente debe verificar juego, servidor, facción y cantidad antes de confirmar el pedido. Una vez entregado el servicio, se considera completado y se deja constancia en ticket.</p>
-            <h3>Política de privacidad</h3>
+            <h3 id="legal-privacy">Política de privacidad</h3>
             <p class="lead">Los datos compartidos (correo, Discord, usuario de juego y métodos de pago) se usan exclusivamente para validar, procesar y dar soporte al pedido. No vendemos información personal ni la distribuimos fuera del flujo de atención.</p>
             <p class="lead">Los tickets pueden conservarse con fines de auditoría y prevención de fraude. Puedes solicitar actualización de tus datos de contacto desde soporte oficial.</p>
-            <h3>Política de reembolso</h3>
+            <h3 id="legal-refund">Política de reembolso</h3>
             <p class="lead">Aplica reembolso cuando TradeHud no puede entregar el servicio confirmado o cuando hay un error operativo comprobado por moderación. El reembolso se procesa al mismo método de pago utilizado o a uno acordado por ticket.</p>
             <p class="lead">No aplica reembolso por errores de datos proporcionados por el cliente (servidor/personaje incorrecto) cuando la entrega ya fue realizada según la información aprobada en ticket.</p>
-            <h3>Comunidades y seguridad</h3>
+            <h3 id="legal-community">Comunidades y seguridad</h3>
             <p class="lead">Nuestra comunidad oficial funciona en Discord y canales vinculados de TradeHud. Cualquier trato por fuera de esos canales queda bajo responsabilidad del usuario y no está cubierto por moderación.</p>
             <p class="lead">Recomendación: nunca compartas códigos 2FA, contraseñas ni datos sensibles. Para cada operación, solicita siempre confirmación del moderador activo y el ID de ticket.</p>
           </article>
@@ -2048,10 +2048,10 @@
         <div class="footer-box">
           <h4>Servicios confiables</h4>
           <ul>
-            <li><a href="#legal" data-page-link data-page="legal">Términos y condiciones</a></li>
-            <li><a href="#legal" data-page-link data-page="legal">Política de privacidad</a></li>
-            <li><a href="#legal" data-page-link data-page="legal">Política de reembolso</a></li>
-            <li><a href="#legal" data-page-link data-page="legal">Comunidades</a></li>
+            <li><a href="#legal-terms" data-page-link data-page="legal" data-target="legal-terms">Términos y condiciones</a></li>
+            <li><a href="#legal-privacy" data-page-link data-page="legal" data-target="legal-privacy">Política de privacidad</a></li>
+            <li><a href="#legal-refund" data-page-link data-page="legal" data-target="legal-refund">Política de reembolso</a></li>
+            <li><a href="#legal-community" data-page-link data-page="legal" data-target="legal-community">Comunidades</a></li>
           </ul>
         </div>
         <div class="footer-box">
@@ -3877,6 +3877,12 @@
         link.addEventListener('click', (e) => {
           e.preventDefault();
           showPage(link.dataset.page);
+          const targetId = link.dataset.target;
+          if (targetId) {
+            setTimeout(() => {
+              document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 40);
+          }
         });
       });
 
