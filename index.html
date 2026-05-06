@@ -1896,8 +1896,13 @@
           </div>
           <div id="boostingOptionsPanel" class="boosting-options-panel hidden">
             <strong style="display:block;margin-bottom:.55rem;">Opciones de boosting</strong>
+            <div id="boostingButtonsView" class="boosting-buttons">
+              <button id="boostProfBtn" class="boosting-circle-btn" type="button">Profesiones</button>
+              <button id="boostLevelBtn" class="boosting-circle-btn" type="button">Leveleo de cuentas</button>
+            </div>
             <div id="boostLevelForm" class="glass hidden" style="margin-top:.2rem;">
               <h4 id="boostLevelGameTitle" style="margin:.1rem 0 .6rem;">Solicitud de boosting</h4>
+              <button id="boostBackBtn" class="mini-btn" type="button" style="margin-bottom:.55rem;">← Volver</button>
               <div class="admin-split">
                 <input id="boostCharacter" type="text" placeholder="Nombre del personaje" />
                 <input id="boostGame" type="text" placeholder="Juego" />
@@ -2542,6 +2547,10 @@
       const accountsPanel = document.getElementById('accountsPanel');
       const accountsPanelList = document.getElementById('accountsPanelList');
       const boostingOptionsPanel = document.getElementById('boostingOptionsPanel');
+      const boostingButtonsView = document.getElementById('boostingButtonsView');
+      const boostProfBtn = document.getElementById('boostProfBtn');
+      const boostLevelBtn = document.getElementById('boostLevelBtn');
+      const boostBackBtn = document.getElementById('boostBackBtn');
       const boostLevelForm = document.getElementById('boostLevelForm');
       const boostCreateTicketBtn = document.getElementById('boostCreateTicketBtn');
       const boostLevelGameTitle = document.getElementById('boostLevelGameTitle');
@@ -3016,15 +3025,16 @@
 
       function openBoostingOptionsPanel() {
         boostingOptionsPanel.classList.remove('hidden');
+        if (boostingButtonsView) boostingButtonsView.style.display = 'flex';
         if (boostLevelForm) boostLevelForm.classList.add('hidden');
         if (boostGame && activeOrderGame?.name) boostGame.value = activeOrderGame.name;
         if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Boosting · ${activeOrderGame?.name || 'Juego seleccionado'}`;
-        if (boostLevelForm) boostLevelForm.classList.remove('hidden');
         gameWindow.classList.add('gold-focus');
       }
 
       function closeBoostingOptionsPanel() {
         boostingOptionsPanel.classList.add('hidden');
+        if (boostingButtonsView) boostingButtonsView.style.display = 'flex';
         if (boostLevelForm) boostLevelForm.classList.add('hidden');
         if (goldOrderPanel.classList.contains('hidden') && accountsPanel.classList.contains('hidden')) {
           gameWindow.classList.remove('gold-focus');
@@ -4442,6 +4452,20 @@
       serviceAccounts.addEventListener('change', updateGamePreview);
       serviceGold.addEventListener('change', updateGamePreview);
       customServiceInput.addEventListener("input", updateGamePreview);
+      boostLevelBtn?.addEventListener('click', () => {
+        if (boostingButtonsView) boostingButtonsView.style.display = 'none';
+        if (boostLevelForm) boostLevelForm.classList.remove('hidden');
+        if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Leveleo de cuentas · ${activeOrderGame?.name || 'Juego seleccionado'}`;
+      });
+      boostProfBtn?.addEventListener('click', () => {
+        if (boostingButtonsView) boostingButtonsView.style.display = 'none';
+        if (boostLevelForm) boostLevelForm.classList.remove('hidden');
+        if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Profesiones · ${activeOrderGame?.name || 'Juego seleccionado'}`;
+      });
+      boostBackBtn?.addEventListener('click', () => {
+        if (boostingButtonsView) boostingButtonsView.style.display = 'flex';
+        if (boostLevelForm) boostLevelForm.classList.add('hidden');
+      });
       boostCreateTicketBtn?.addEventListener('click', async () => {
         if (!currentUser) {
           openAuth('login');
