@@ -27,3 +27,6 @@ Después de correr schema:
 - `anon jwt` o `sb_publishable_*`
 
 Con eso evita errores comunes de deploy por variables mal pegadas.
+
+## Nota de continuidad de branch/PR
+Si un Pull Request falla al actualizarse en la plataforma, se puede cerrar/eliminar ese PR y crear uno nuevo desde la misma branch sin perder cambios del repositorio.
