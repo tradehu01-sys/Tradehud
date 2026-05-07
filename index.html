@@ -3200,6 +3200,7 @@
       let activeMarketType = 'streaming';
       let selectedMarketCategory = '';
       let dbConnectionNoticeShown = false;
+      let goldCategoriesSupportsImageColumn = true;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
 
       function isAdminUser(user, profile = null) {
@@ -4107,9 +4108,23 @@
             showAdminNotice('Faltan columnas custom_service_* en games. Cargado en modo compatibilidad. Ejecuta el schema actualizado.', 'warn');
           }
         }
-        const [{ data: categoriesData, error: categoriesError }] = await Promise.all([
-          supabaseClient.from('gold_categories').select('id,game,name,description,image').order('created_at', { ascending: true })
-        ]);
+        let categoriesData = null;
+        let categoriesError = null;
+        ({ data: categoriesData, error: categoriesError } = await supabaseClient
+          .from('gold_categories')
+          .select('id,game,name,description,image')
+          .order('created_at', { ascending: true }));
+        if (categoriesError?.message?.toLowerCase?.().includes('column gold_categories.image does not exist')) {
+          goldCategoriesSupportsImageColumn = false;
+          ({ data: categoriesData, error: categoriesError } = await supabaseClient
+            .from('gold_categories')
+            .select('id,game,name,description')
+            .order('created_at', { ascending: true }));
+          if (!categoriesError) {
+            categoriesData = (categoriesData || []).map((row) => ({ ...row, image: '' }));
+            showAdminNotice('La tabla gold_categories no tiene columna image. Operando en modo compatibilidad.', 'warn');
+          }
+        }
         const { data: gamesData, error: gamesError } = gamesResult;
         if (gamesError || categoriesError) {
           if (gamesError?.message?.toLowerCase().includes('services')) {
@@ -5365,15 +5380,29 @@
           description: categoriaDescripcion.value.trim() || 'Sin descripción.',
           image: (categoriaImagen?.value || '').trim()
         };
+        const payloadDb = goldCategoriesSupportsImageColumn
+          ? payload
+          : { game: payload.game, name: payload.name, description: payload.description };
         const bucket = getCategoryBucket(activeCategoryType);
         const editIndex = Number(guardarCategoriaOro.dataset.editIndex || '-1');
         const isEditing = editIndex >= 0;
         if (activeCategoryType === 'oro' && supabaseClient) {
           const currentId = isEditing ? bucket[editIndex]?.id : null;
-          const query = currentId
-            ? supabaseClient.from('gold_categories').update(payload).eq('id', currentId)
-            : supabaseClient.from('gold_categories').insert(payload);
-          const { data, error } = await query.select('id,game,name,description,image').single();
+          let { data, error } = await (currentId
+            ? supabaseClient.from('gold_categories').update(payloadDb).eq('id', currentId)
+            : supabaseClient.from('gold_categories').insert(payloadDb))
+            .select('id,game,name,description,image')
+            .single();
+          if (error?.message?.toLowerCase?.().includes('column gold_categories.image does not exist')) {
+            goldCategoriesSupportsImageColumn = false;
+            const fallbackPayload = { game: payload.game, name: payload.name, description: payload.description };
+            ({ data, error } = await (currentId
+              ? supabaseClient.from('gold_categories').update(fallbackPayload).eq('id', currentId)
+              : supabaseClient.from('gold_categories').insert(fallbackPayload))
+              .select('id,game,name,description')
+              .single());
+            if (data) data.image = payload.image || bucket[editIndex]?.image || '';
+          }
           if (error) {
             showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
             return;
