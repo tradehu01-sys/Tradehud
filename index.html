@@ -5361,6 +5361,10 @@
           showAdminNotice('El juego necesita nombre para poder guardarse.', 'warn');
           return;
         }
+        if (customServiceEnabled.checked && !customServiceImage.value.trim() && customServiceImageFile?.files?.[0]) {
+          const autoUploadedImage = await uploadImageFromPc(customServiceImageFile.files[0], 'services');
+          if (autoUploadedImage) customServiceImage.value = autoUploadedImage;
+        }
         const payload = {
           name: juegoNombre.value.trim(),
           icon: juegoImagen.value.trim() || games[0].icon,
