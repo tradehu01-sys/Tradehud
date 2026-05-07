@@ -2524,6 +2524,13 @@
           <div class="form-group">
             <label for="categoriaDescripcion">Descripción</label>
             <textarea id="categoriaDescripcion" placeholder="Descripción de la categoría"></textarea>
+            <label>Imagen (URL o subir)</label>
+            <div class="admin-image-upload-row">
+              <input id="categoriaImagen" type="hidden" />
+              <input id="categoriaImagenFile" type="file" accept="image/*" />
+              <button id="subirCategoriaImagenBtn" class="panel-btn" type="button">Subir desde PC</button>
+            </div>
+            <div class="image-preview"><img id="previewCategoriaImagen" src="" alt="Preview categoría" /></div>
           </div>
           <div class="admin-panel-actions form-actions">
             <button id="cancelarCategoriaOro" class="panel-btn" type="button">Cancelar</button>
@@ -2962,6 +2969,10 @@
       const categoriaJuego = document.getElementById('categoriaJuego');
       const categoriaNombre = document.getElementById('categoriaNombre');
       const categoriaDescripcion = document.getElementById('categoriaDescripcion');
+      const categoriaImagen = document.getElementById('categoriaImagen');
+      const categoriaImagenFile = document.getElementById('categoriaImagenFile');
+      const subirCategoriaImagenBtn = document.getElementById('subirCategoriaImagenBtn');
+      const previewCategoriaImagen = document.getElementById('previewCategoriaImagen');
       const categoriasVistaModal = document.getElementById('categoriasVistaModal');
       const categoriasVistaLista = document.getElementById('categoriasVistaLista');
       const cerrarCategoriasVista = document.getElementById('cerrarCategoriasVista');
@@ -3618,7 +3629,7 @@
         bucket.forEach((category, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-category="${index}" data-category-type="${type}">Editar</button><button class="mini-btn danger" type="button" data-remove-category="${index}" data-category-type="${type}">Eliminar</button></div>`;
+          item.innerHTML = `${category.image ? `<img src="${category.image}" alt="${category.name}" style="width:48px;height:48px;border-radius:10px;object-fit:cover;margin-bottom:.45rem;" />` : ''}<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-category="${index}" data-category-type="${type}">Editar</button><button class="mini-btn danger" type="button" data-remove-category="${index}" data-category-type="${type}">Eliminar</button></div>`;
           target.appendChild(item);
         });
       }
@@ -4097,7 +4108,7 @@
           }
         }
         const [{ data: categoriesData, error: categoriesError }] = await Promise.all([
-          supabaseClient.from('gold_categories').select('id,game,name,description').order('created_at', { ascending: true })
+          supabaseClient.from('gold_categories').select('id,game,name,description,image').order('created_at', { ascending: true })
         ]);
         const { data: gamesData, error: gamesError } = gamesResult;
         if (gamesError || categoriesError) {
@@ -4146,7 +4157,8 @@
             id: row.id,
             game: row.game || 'General',
             name: row.name,
-            description: row.description || 'Sin descripción.'
+            description: row.description || 'Sin descripción.',
+            image: row.image || ''
           })));
         }
         if (!dbConnectionNoticeShown) {
@@ -4642,6 +4654,9 @@
       openStreamingCategoryFormBtn?.addEventListener('click', () => {
         editingStreamingCategoryIndex = null;
         if (saveStreamingCategoryModalBtn) saveStreamingCategoryModalBtn.textContent = 'Guardar streaming';
+        if (streamingCategoryNameModal) streamingCategoryNameModal.value = '';
+        if (streamingCategoryImageModal) streamingCategoryImageModal.value = '';
+        if (streamingCategoryPreviewImg) streamingCategoryPreviewImg.src = marketDefaultImages[activeMarketType] || '';
         streamingCategoryModal?.classList.add('show');
         streamingCategoryModal?.setAttribute('aria-hidden', 'false');
       });
@@ -5124,6 +5139,8 @@
         categoriaJuego.value = '';
         categoriaNombre.value = '';
         categoriaDescripcion.value = '';
+        if (categoriaImagen) categoriaImagen.value = '';
+        if (previewCategoriaImagen) previewCategoriaImagen.src = '';
         categoriaOroModal.classList.add('show');
         categoriaOroModal.setAttribute('aria-hidden', 'false');
       }
@@ -5312,6 +5329,17 @@
         if (e.target === categoriaOroModal) closeCategoriaModal();
       });
 
+      subirCategoriaImagenBtn?.addEventListener('click', async () => {
+        const file = categoriaImagenFile?.files?.[0];
+        const url = await uploadImageFromPc(file, 'gold-categories');
+        if (!url) return;
+        if (categoriaImagen) categoriaImagen.value = url;
+        if (previewCategoriaImagen) previewCategoriaImagen.src = url;
+      });
+      categoriaImagen?.addEventListener('input', () => {
+        if (previewCategoriaImagen) previewCategoriaImagen.src = categoriaImagen.value.trim();
+      });
+
       guardarCategoriaOro.addEventListener('click', async () => {
         if (!categoriaNombre.value.trim()) {
           showAdminNotice('Escribe un nombre para la categoría.', 'warn');
@@ -5320,7 +5348,8 @@
         const payload = {
           game: categoriaJuego.value.trim() || 'General',
           name: categoriaNombre.value.trim(),
-          description: categoriaDescripcion.value.trim() || 'Sin descripción.'
+          description: categoriaDescripcion.value.trim() || 'Sin descripción.',
+          image: (categoriaImagen?.value || '').trim()
         };
         const bucket = getCategoryBucket(activeCategoryType);
         const editIndex = Number(guardarCategoriaOro.dataset.editIndex || '-1');
@@ -5330,7 +5359,7 @@
           const query = currentId
             ? supabaseClient.from('gold_categories').update(payload).eq('id', currentId)
             : supabaseClient.from('gold_categories').insert(payload);
-          const { data, error } = await query.select('id,game,name,description').single();
+          const { data, error } = await query.select('id,game,name,description,image').single();
           if (error) {
             showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
             return;
@@ -5359,6 +5388,8 @@
           categoriaJuego.value = target.game || '';
           categoriaNombre.value = target.name || '';
           categoriaDescripcion.value = target.description || '';
+          if (categoriaImagen) categoriaImagen.value = target.image || '';
+          if (previewCategoriaImagen) previewCategoriaImagen.src = target.image || '';
           guardarCategoriaOro.dataset.editIndex = String(idx);
           categoriaOroModal.classList.add('show');
           categoriaOroModal.setAttribute('aria-hidden', 'false');
