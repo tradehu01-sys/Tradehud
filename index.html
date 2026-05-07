@@ -2071,7 +2071,12 @@
       <section id="giftcards" class="page-section" data-page="giftcards">
         <div class="container">
           <h2 class="section-title">Sección de <span>GiftCards</span></h2>
-          <article class="glass"><p class="lead">Aquí se muestran categorías y precios de giftcards por monto y plataforma. Disponible para tickets directos.</p></article>
+          <article class="glass">
+            <div class="server-head" style="margin-top:.6rem;">
+              <input id="giftcardsSearch" class="oro-search streaming-search" type="text" placeholder="Buscar giftcard..." />
+            </div>
+            <div id="giftcardsCategoryGrid" class="server-row" style="margin-top:.75rem;"></div>
+          </article>
         </div>
       </section>
 
@@ -2930,6 +2935,8 @@
       const marketAdminPriceTitle = document.getElementById('marketAdminPriceTitle');
       const streamingCategoryGrid = document.getElementById('streamingCategoryGrid');
       const streamingSearch = document.getElementById('streamingSearch');
+      const giftcardsSearch = document.getElementById('giftcardsSearch');
+      const giftcardsCategoryGrid = document.getElementById('giftcardsCategoryGrid');
       const streamingModal = document.getElementById('streamingModal');
       const streamingModalTitle = document.getElementById('streamingModalTitle');
       const streamingModalIcon = document.getElementById('streamingModalIcon');
@@ -3276,6 +3283,7 @@
           marketCatalog[key].prices = [...new Set(marketCatalog[key].prices.map((p) => p.trim()).filter(Boolean))];
         });
         renderStreamingSection();
+        renderGiftcardsSection();
       }
 
       function renderGoldOrderProducts() {
@@ -3819,6 +3827,7 @@
           streamingDuration.onchange = updatePrice;
           updatePrice();
           streamingModalTicketBtn.dataset.category = name;
+          streamingModalTicketBtn.dataset.serviceType = 'streaming';
           streamingModal.classList.add('show');
           streamingModal.setAttribute('aria-hidden', 'false');
         };
@@ -3834,6 +3843,40 @@
         });
       }
 
+
+      function renderGiftcardsSection() {
+        if (!giftcardsCategoryGrid) return;
+        const bucket = marketCatalog.giftcards;
+        giftcardsCategoryGrid.innerHTML = '';
+        const term = giftcardsSearch?.value?.trim().toLowerCase?.() || '';
+        const categories = bucket.categories.filter((cat) => (cat.name || '').toLowerCase().includes(term));
+        categories.forEach((cat) => {
+          const btn = document.createElement('button');
+          btn.className = 'server';
+          btn.type = 'button';
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span>`;
+          btn.addEventListener('click', () => {
+            const currentType = activeMarketType;
+            activeMarketType = 'giftcards';
+            const prices = marketCatalog.giftcards.prices.filter((price) => price.toLowerCase().includes(cat.name.toLowerCase()));
+            const parsed = prices.map((entry) => ({ raw: entry, type: 'GiftCard', duration: 'Disponible', amount: entry.match(/(\d+(?:[.,]\d+)?)\$/)?.[0] || entry }));
+            streamingModalTitle.textContent = cat.name;
+            streamingModalServiceName.textContent = cat.name;
+            streamingModalIcon.innerHTML = `<img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" />`;
+            streamingAccountType.innerHTML = '<option value="GiftCard">GiftCard</option>';
+            streamingDuration.innerHTML = '<option value="Disponible">Disponible</option>';
+            streamingPriceResult.value = parsed[0]?.amount || 'Sin precio disponible';
+            streamingModalTicketBtn.dataset.priceRaw = parsed[0]?.raw || '';
+            streamingModalTicketBtn.dataset.category = cat.name;
+            streamingModalTicketBtn.dataset.serviceType = 'giftcards';
+            streamingModal.classList.add('show');
+            streamingModal.setAttribute('aria-hidden', 'false');
+            activeMarketType = currentType;
+          });
+          giftcardsCategoryGrid.appendChild(btn);
+        });
+        if (!categories.length) giftcardsCategoryGrid.innerHTML = '<p class="auth-hint">No se encontraron giftcards.</p>';
+      }
       function setActiveMarketType(type = 'streaming') {
         if (!marketDetailsWrap || !marketOrderPanel) return;
         activeMarketType = type;
@@ -4254,6 +4297,7 @@
           try { loadSelectedGame(); } catch (e) { console.warn('loadSelectedGame failed', e); }
           try { await loadMarketCatalogFromSupabase(); } catch (e) { console.warn('loadMarketCatalogFromSupabase failed', e); }
           try { renderStreamingSection(); } catch (e) { console.warn('renderStreamingSection failed', e); }
+          try { renderGiftcardsSection(); } catch (e) { console.warn('renderGiftcardsSection failed', e); }
           if (marketDetailsWrap) marketDetailsWrap.classList.add('hidden');
           if (supabaseClient) {
             const { data: authData } = await supabaseClient.auth.getSession();
@@ -5150,6 +5194,7 @@
       });
       oroSearch.addEventListener('input', renderGameList);
       streamingSearch?.addEventListener('input', renderStreamingSection);
+      giftcardsSearch?.addEventListener('input', renderGiftcardsSection);
       closeStreamingModal?.addEventListener('click', () => {
         streamingModal?.classList.remove('show');
         streamingModal?.setAttribute('aria-hidden', 'true');
@@ -5165,11 +5210,12 @@
           showAuthNotice('Debes iniciar sesión para abrir ticket.');
           return;
         }
-        const summary = `Streaming | ${category} | ${customer} | ${accType} | ${duration} | ${streamingModalTicketBtn.dataset.priceRaw || price}`;
+        const serviceType = streamingModalTicketBtn.dataset.serviceType === 'giftcards' ? 'GiftCards' : 'Streaming';
+        const summary = `${serviceType} | ${category} | ${customer} | ${accType} | ${duration} | ${streamingModalTicketBtn.dataset.priceRaw || price}`;
         if (supabaseClient) {
           await supabaseClient.from('tickets').insert({
             user_id: currentUser.id,
-            game: 'Streaming',
+            game: serviceType,
             server: category,
             product: `${accType} - ${duration}`,
             character: customer,
