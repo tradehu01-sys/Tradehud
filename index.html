@@ -5383,7 +5383,15 @@
             return;
           }
           if (!supabaseClient) {
-            showAdminNotice('Supabase no está configurado. No se guardó el juego para evitar registros locales sin ID.', 'warn');
+            games.push({ id: null, ...payload });
+            selectedAdminIndex = games.length - 1;
+            showAdminNotice(`Juego agregado localmente: ${payload.name}.`, 'info');
+            renderGameList();
+            renderAdminSelect();
+            editingAdminIndex = null;
+            juegoFormModal.classList.remove('show');
+            juegoFormModal.setAttribute('aria-hidden', 'true');
+            clearGameForm();
             return;
           }
           const supabasePayload = {
