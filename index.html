@@ -2420,18 +2420,10 @@
             <div id="marketAdminCategoryList" style="margin-top:.65rem;max-height:280px;overflow-y:auto;padding-right:.2rem;"></div>
           </div>
           <div id="marketPricesSection" class="editor-box hidden" style="margin-top:.6rem;">
-            <strong id="marketPriceTitle" style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Precios streaming</strong>
-            <div class="admin-split">
-              <div class="form-group">
-                <label for="marketPriceName">Título</label>
-                <input id="marketPriceName" type="text" placeholder="Ej: Zinli 10$" />
-              </div>
-              <div class="form-group">
-                <label for="marketPriceValue">Precio/Detalle</label>
-                <input id="marketPriceValue" type="text" placeholder="Ej: 12$" />
-              </div>
+            <div class="admin-panel-actions" style="margin-top:0;">
+              <strong id="marketPriceTitle" style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Precios streaming</strong>
+              <button id="openAddPriceModalBtn" class="panel-btn" type="button">+ Agregar precio</button>
             </div>
-            <button id="saveMarketPriceBtn" class="panel-btn" type="button">Guardar precio</button>
           </div>
           <div id="marketPriceListSection" class="editor-box hidden" style="margin-top:.6rem;">
             <strong id="marketAdminPriceTitle" style="display:block;margin:.6rem 0 .35rem;color:#f0cf7b;">Precios de P2P</strong>
@@ -2587,6 +2579,37 @@
           <div class="admin-panel-actions form-actions">
             <button id="cancelStreamingPriceModal" class="panel-btn" type="button">Cancelar</button>
             <button id="saveStreamingPriceModalBtn" class="panel-btn" type="button">Guardar cambios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="addPriceModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card" style="max-width:460px;">
+        <div class="admin-head">
+          <strong>Agregar precio</strong>
+          <button id="closeAddPriceModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div class="admin-game-form">
+          <div class="form-group">
+            <label for="addPriceCatalogSelect">Catálogo</label>
+            <select id="addPriceCatalogSelect"></select>
+          </div>
+          <div class="form-group">
+            <label for="addPriceTypeSelect">Tipo de cuenta</label>
+            <select id="addPriceTypeSelect"><option value="1 PERFIL">1 PERFIL</option><option value="CUENTA COMPLETA">CUENTA COMPLETA</option></select>
+          </div>
+          <div class="form-group">
+            <label for="addPriceTimeSelect">Tiempo</label>
+            <select id="addPriceTimeSelect"><option value="MES">MES</option><option value="AÑO">AÑO</option></select>
+          </div>
+          <div class="form-group">
+            <label for="addPriceAmountInput">Precio ($)</label>
+            <input id="addPriceAmountInput" type="text" placeholder="Ej: 4.50" />
+          </div>
+          <div class="admin-panel-actions form-actions">
+            <button id="cancelAddPriceModal" class="panel-btn" type="button">Cancelar</button>
+            <button id="saveAddPriceModalBtn" class="panel-btn" type="button">Guardar precio</button>
           </div>
         </div>
       </div>
@@ -2866,9 +2889,15 @@
       const marketCategoryImageFile = document.getElementById('marketCategoryImageFile');
       const uploadMarketCategoryImageBtn = document.getElementById('uploadMarketCategoryImageBtn');
       const saveMarketCategoryBtn = document.getElementById('saveMarketCategoryBtn');
-      const marketPriceName = document.getElementById('marketPriceName');
-      const marketPriceValue = document.getElementById('marketPriceValue');
-      const saveMarketPriceBtn = document.getElementById('saveMarketPriceBtn');
+      const openAddPriceModalBtn = document.getElementById('openAddPriceModalBtn');
+      const addPriceModal = document.getElementById('addPriceModal');
+      const closeAddPriceModal = document.getElementById('closeAddPriceModal');
+      const cancelAddPriceModal = document.getElementById('cancelAddPriceModal');
+      const saveAddPriceModalBtn = document.getElementById('saveAddPriceModalBtn');
+      const addPriceCatalogSelect = document.getElementById('addPriceCatalogSelect');
+      const addPriceTypeSelect = document.getElementById('addPriceTypeSelect');
+      const addPriceTimeSelect = document.getElementById('addPriceTimeSelect');
+      const addPriceAmountInput = document.getElementById('addPriceAmountInput');
       const marketPriceTitle = document.getElementById('marketPriceTitle');
       const marketAdminCategoryList = document.getElementById('marketAdminCategoryList');
       const marketAdminPriceList = document.getElementById('marketAdminPriceList');
@@ -4722,37 +4751,41 @@
         marketCategoryImage.value = url;
         showAdminNotice('Imagen de categoría P2P subida desde PC.', 'ok');
       });
-      if (saveMarketPriceBtn) saveMarketPriceBtn.addEventListener('click', async () => {
-        const title = marketPriceName.value.trim();
-        const value = marketPriceValue.value.trim();
-        if (!title || !value) {
-          showAdminNotice('Completa título y precio/detalle antes de guardar.', 'warn');
-          return;
-        }
-        const fullValue = `${title} - ${value}`;
-        if (!supabaseClient) {
-          showAdminNotice('Supabase no está conectado. No se guardó el precio.', 'warn');
-          return;
-        }
+      const closeAddPriceModalFn = () => {
+        addPriceModal?.classList.remove('show');
+        addPriceModal?.setAttribute('aria-hidden', 'true');
+      };
+      openAddPriceModalBtn?.addEventListener('click', () => {
+        addPriceCatalogSelect.innerHTML = marketCatalog[activeMarketType].categories.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
+        addPriceAmountInput.value = '';
+        addPriceModal?.classList.add('show');
+        addPriceModal?.setAttribute('aria-hidden', 'false');
+      });
+      closeAddPriceModal?.addEventListener('click', closeAddPriceModalFn);
+      cancelAddPriceModal?.addEventListener('click', closeAddPriceModalFn);
+      saveAddPriceModalBtn?.addEventListener('click', async () => {
+        const catalog = addPriceCatalogSelect.value.trim();
+        const type = addPriceTypeSelect.value.trim();
+        const time = addPriceTimeSelect.value.trim();
+        const amount = addPriceAmountInput.value.trim();
+        if (!catalog || !amount) return showAdminNotice('Completa catálogo y precio.', 'warn');
+        if (!supabaseClient) return showAdminNotice('Supabase no está conectado. No se guardó el precio.', 'warn');
+        const fullValue = `${catalog} - ${type} ${amount}$ (${time})`;
         const nextSort = marketCatalog[activeMarketType].prices.length + 1;
         const { error } = await supabaseClient.from('service_catalog_entries').insert({
-            service_type: activeMarketType,
-            entry_type: 'price',
-            category_name: title,
-            item_name: title,
-            image: '',
-            value: fullValue,
-            sort_order: nextSort
-          });
-        if (error) {
-          showAdminNotice(`Error guardando precio: ${error.message}`, 'warn');
-          return;
-        }
+          service_type: activeMarketType,
+          entry_type: 'price',
+          category_name: catalog,
+          item_name: `${type} ${amount}$ (${time})`,
+          image: '',
+          value: fullValue,
+          sort_order: nextSort
+        });
+        if (error) return showAdminNotice(`Error guardando precio: ${error.message}`, 'warn');
         marketCatalog[activeMarketType].prices.push(fullValue);
-        marketPriceName.value = '';
-        marketPriceValue.value = '';
         setActiveMarketType(activeMarketType);
-        showAdminNotice(`Precio agregado en ${marketCatalog[activeMarketType].title}.`, 'ok');
+        closeAddPriceModalFn();
+        showAdminNotice('Precio agregado correctamente.', 'ok');
       });
       if (marketAdminCategoryList) marketAdminCategoryList.addEventListener('click', async (e) => {
         const editBtn = e.target.closest('button[data-edit-market-category]');
