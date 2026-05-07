@@ -97,6 +97,7 @@ drop policy if exists "tickets_select_admin" on public.tickets;
 drop policy if exists "service_catalog_public_read" on public.service_catalog_entries;
 drop policy if exists "service_catalog_admin_write" on public.service_catalog_entries;
 drop policy if exists "service_catalog_authenticated_write" on public.service_catalog_entries;
+drop policy if exists "service_catalog_anon_write" on public.service_catalog_entries;
 drop policy if exists "gold_catalog_public_read" on public.gold_catalog_entries;
 drop policy if exists "gold_catalog_admin_write" on public.gold_catalog_entries;
 
@@ -169,6 +170,13 @@ for all
 to authenticated
 using (auth.uid() is not null)
 with check (auth.uid() is not null);
+
+create policy "service_catalog_anon_write"
+on public.service_catalog_entries
+for all
+to anon
+using (true)
+with check (true);
 
 create policy "gold_catalog_admin_write"
 on public.gold_catalog_entries

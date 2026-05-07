@@ -4178,62 +4178,69 @@
         setDbStatus('verificando conexión...', 'info');
         toggleCustomServiceFields();
         const rawHash = window.location.hash || '';
-        if (rawHash.includes('error=') || rawHash.includes('error_code=')) {
-          const hashParams = new URLSearchParams(rawHash.replace(/^#/, ''));
-          const errorCode = hashParams.get('error_code');
-          const errorDescription = hashParams.get('error_description');
-          if (errorCode === 'otp_expired') {
-            showAuthNotice('El enlace de confirmación expiró. Solicita un nuevo registro/inicio para recibir otro correo.', 'warn');
-          } else if (errorDescription) {
-            showAuthNotice(errorDescription, 'warn');
+        try {
+          if (rawHash.includes('error=') || rawHash.includes('error_code=')) {
+            const hashParams = new URLSearchParams(rawHash.replace(/^#/, ''));
+            const errorCode = hashParams.get('error_code');
+            const errorDescription = hashParams.get('error_description');
+            if (errorCode === 'otp_expired') {
+              showAuthNotice('El enlace de confirmación expiró. Solicita un nuevo registro/inicio para recibir otro correo.', 'warn');
+            } else if (errorDescription) {
+              showAuthNotice(errorDescription, 'warn');
+            }
+            history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+          } else if (rawHash.includes('type=recovery')) {
+            recoveryMode = true;
+            setAuthView('login');
+            openAuth('login');
+            showAuthNotice('Ahora define tu nueva contraseña para recuperar la cuenta.');
+            history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
           }
-          history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
-        } else if (rawHash.includes('type=recovery')) {
-          recoveryMode = true;
-          setAuthView('login');
-          openAuth('login');
-          showAuthNotice('Ahora define tu nueva contraseña para recuperar la cuenta.');
-          history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
-        }
-        try { await syncFromSupabase(); } catch (e) { console.warn('syncFromSupabase failed', e); }
-        try { await loadAppAssetsFromSupabase(); } catch (e) { console.warn('loadAppAssetsFromSupabase failed', e); }
-        try { renderGameList(); } catch (e) { console.warn('renderGameList failed', e); }
-        try { renderAdminSelect(); } catch (e) { console.warn('renderAdminSelect failed', e); }
-        try { renderGoldCategories(); } catch (e) { console.warn('renderGoldCategories failed', e); }
-        try { renderServerByGame(); } catch (e) { console.warn('renderServerByGame failed', e); }
-        try { loadSelectedGame(); } catch (e) { console.warn('loadSelectedGame failed', e); }
-        try { await loadMarketCatalogFromSupabase(); } catch (e) { console.warn('loadMarketCatalogFromSupabase failed', e); }
-        try { renderStreamingSection(); } catch (e) { console.warn('renderStreamingSection failed', e); }
-        if (marketDetailsWrap) marketDetailsWrap.classList.add('hidden');
-        if (supabaseClient) {
-          const { data: authData } = await supabaseClient.auth.getSession();
-          currentUser = authData?.session?.user || null;
-          if (currentUser) {
-            await loadUserProfile();
-            await renderUserOrders();
-          }
-          toggleUserButtons();
-          supabaseClient.auth.onAuthStateChange(async (event, session) => {
-            const hadUser = Boolean(currentUser);
-            currentUser = session?.user || null;
+          try { await syncFromSupabase(); } catch (e) { console.warn('syncFromSupabase failed', e); }
+          try { await loadAppAssetsFromSupabase(); } catch (e) { console.warn('loadAppAssetsFromSupabase failed', e); }
+          try { renderGameList(); } catch (e) { console.warn('renderGameList failed', e); }
+          try { renderAdminSelect(); } catch (e) { console.warn('renderAdminSelect failed', e); }
+          try { renderGoldCategories(); } catch (e) { console.warn('renderGoldCategories failed', e); }
+          try { renderServerByGame(); } catch (e) { console.warn('renderServerByGame failed', e); }
+          try { loadSelectedGame(); } catch (e) { console.warn('loadSelectedGame failed', e); }
+          try { await loadMarketCatalogFromSupabase(); } catch (e) { console.warn('loadMarketCatalogFromSupabase failed', e); }
+          try { renderStreamingSection(); } catch (e) { console.warn('renderStreamingSection failed', e); }
+          if (marketDetailsWrap) marketDetailsWrap.classList.add('hidden');
+          if (supabaseClient) {
+            const { data: authData } = await supabaseClient.auth.getSession();
+            currentUser = authData?.session?.user || null;
             if (currentUser) {
-              profileNameTop.textContent = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil';
-              profileEmailTop.textContent = currentUser.email || '';
               await loadUserProfile();
               await renderUserOrders();
-            } else {
-              currentProfile = null;
-              if (event === 'SIGNED_OUT' || hadUser) {
-                profileNameTop.textContent = 'Perfil';
-                profileEmailTop.textContent = '';
-                showAuthNotice('👋 Sesión cerrada correctamente.');
-              }
             }
             toggleUserButtons();
+            supabaseClient.auth.onAuthStateChange(async (event, session) => {
+              const hadUser = Boolean(currentUser);
+              currentUser = session?.user || null;
+              if (currentUser) {
+                profileNameTop.textContent = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil';
+                profileEmailTop.textContent = currentUser.email || '';
+                await loadUserProfile();
+                await renderUserOrders();
+              } else {
+                currentProfile = null;
+                if (event === 'SIGNED_OUT' || hadUser) {
+                  profileNameTop.textContent = 'Perfil';
+                  profileEmailTop.textContent = '';
+                  showAuthNotice('👋 Sesión cerrada correctamente.');
+                }
+              }
+              toggleUserButtons();
+            });
+          }
+          activateAdminTab('juegos');
+          setActivePage('inicio');
+        } finally {
+          window.scrollTo(0, 0);
+          window.requestAnimationFrame(() => {
+            document.body.classList.remove('preload');
           });
         }
-        activateAdminTab('juegos');
-        setActivePage('inicio');
       }
       initializeApp();
 
@@ -5528,10 +5535,6 @@
         }, 450);
       });
 
-      window.scrollTo(0, 0);
-      window.requestAnimationFrame(() => {
-        document.body.classList.remove('preload');
-      });
     </script>
   </body>
 </html>
