@@ -189,7 +189,7 @@ values
 ('streaming','category','CapCut Pro','CapCut Pro','https://upload.wikimedia.org/wikipedia/commons/a/a9/CapCut_logo.svg','',8),
 ('streaming','category','Paramount','Paramount','https://upload.wikimedia.org/wikipedia/commons/9/94/Paramount%2B_logo.svg','',9),
 ('streaming','category','Apple TV','Apple TV','https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg','',10),
-('streaming','category','CANVA EDU PRO','CANVA EDU PRO','https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg','',11),
+('streaming','category','CAMVA EDU PRO','CAMVA EDU PRO','https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg','',11),
 ('giftcards','category','GiftCards Gaming','GiftCards Gaming','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',1)
 on conflict do nothing;
 
@@ -212,7 +212,7 @@ values
 ('streaming','price','CapCut Pro','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',11),
 ('streaming','price','Paramount','1 PERFIL 2.50$ (MES)','','1 PERFIL 2.50$ (MES)',12),
 ('streaming','price','Apple TV','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',13),
-('streaming','price','CANVA EDU PRO','1 AÑO 3$','','1 AÑO 3$',14),
+('streaming','price','CAMVA EDU PRO','1 AÑO 3$','','1 AÑO 3$',14),
 ('giftcards','price','GiftCards','10$','','13$',1),
 ('giftcards','price','GiftCards','20$','','26$',2),
 ('giftcards','price','GiftCards','50$','','65$',3),
