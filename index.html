@@ -4119,8 +4119,14 @@
             description: row.description || '',
             services: (() => {
               const clean = Array.isArray(row.services)
-                ? row.services.filter((service) => ['gold', 'boosting', 'accounts'].includes(String(service).toLowerCase()))
+                ? row.services
+                    .map((service) => String(service || '').trim().toLowerCase())
+                    .filter(Boolean)
                 : [];
+              if (row.custom_service_enabled && row.custom_service_name) {
+                const customName = String(row.custom_service_name).trim().toLowerCase();
+                if (customName && !clean.includes(customName)) clean.push(customName);
+              }
               return clean.length ? clean : [...defaultServices];
             })()
           })));
@@ -4672,6 +4678,7 @@
               showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
               return;
             }
+            await syncFromSupabase();
             showAdminNotice('Categoría actualizada correctamente.', 'ok');
           }
           closeStreamingCategoryModalFn();
@@ -4705,6 +4712,7 @@
         insertedId = data?.id || null;
         marketCatalog[activeMarketType].categories.push({ id: insertedId, name, image });
         setActiveMarketType(activeMarketType);
+        await syncFromSupabase();
         showAdminNotice('Categoría agregada correctamente.', 'ok');
         streamingCategoryNameModal.value = '';
         streamingCategoryImageModal.value = '';
@@ -4779,6 +4787,7 @@
         marketCategoryFormWrap?.classList.add('hidden');
         marketCategoryFormActions?.classList.add('hidden');
         setActiveMarketType(activeMarketType);
+        await syncFromSupabase();
         showAdminNotice(`Categoría agregada en ${marketCatalog[activeMarketType].title}.`, 'ok');
       });
       uploadMarketCategoryImageBtn?.addEventListener('click', async () => {
