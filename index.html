@@ -2417,6 +2417,7 @@
               <button id="saveMarketCategoryBtn" class="panel-btn" type="button">Guardar categoría</button>
               <button id="cancelStreamingCategoryFormBtn" class="mini-btn" type="button">Cancelar</button>
             </div>
+            <div id="marketAdminCategoryList" style="margin-top:.65rem;"></div>
           </div>
           <div id="marketPricesSection" class="editor-box hidden" style="margin-top:.6rem;">
             <strong id="marketPriceTitle" style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Precios streaming</strong>
@@ -2433,9 +2434,6 @@
             <button id="saveMarketPriceBtn" class="panel-btn" type="button">Guardar precio</button>
           </div>
           <div id="marketPriceListSection" class="editor-box hidden" style="margin-top:.6rem;">
-            <strong id="marketAdminListTitle" style="display:block;margin-bottom:.35rem;color:#f0cf7b;">Listado de P2P</strong>
-            <small id="marketAdminCategoryHint" class="auth-hint" style="display:block;margin-bottom:.5rem;">Crea categorías con nombre + icono redondo.</small>
-            <div id="marketAdminCategoryList"></div>
             <strong id="marketAdminPriceTitle" style="display:block;margin:.6rem 0 .35rem;color:#f0cf7b;">Precios de P2P</strong>
             <div id="marketAdminPriceList" style="margin-top:.6rem;"></div>
           </div>
@@ -2844,7 +2842,6 @@
       const marketCatalogSection = document.getElementById('marketCatalogSection');
       const marketPricesSection = document.getElementById('marketPricesSection');
       const marketPriceListSection = document.getElementById('marketPriceListSection');
-      const marketAdminListTitle = document.getElementById('marketAdminListTitle');
       const marketAdminPriceTitle = document.getElementById('marketAdminPriceTitle');
       const streamingCategoryGrid = document.getElementById('streamingCategoryGrid');
       const streamingSearch = document.getElementById('streamingSearch');
@@ -3637,11 +3634,6 @@
         if (!marketAdminCategoryList || !marketAdminPriceList) return;
         const bucket = marketCatalog[type];
         if (!bucket) return;
-        if (marketAdminListTitle) {
-          if (type === 'streaming') marketAdminListTitle.textContent = 'Listado de streaming';
-          else if (type === 'giftcards') marketAdminListTitle.textContent = 'Listado de GiftCards';
-          else marketAdminListTitle.textContent = 'Listado de P2P';
-        }
         if (marketAdminPriceTitle) {
           if (type === 'streaming') marketAdminPriceTitle.textContent = 'Precios de streaming';
           else if (type === 'giftcards') marketAdminPriceTitle.textContent = 'Precios de GiftCards';
