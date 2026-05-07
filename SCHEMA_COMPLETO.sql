@@ -35,7 +35,7 @@ create table if not exists public.tickets (
 );
 
 -- =========================
--- 3) CATÁLOGO MARKETPLACE
+-- 3) CATÁLOGO DE SERVICIOS
 -- =========================
 create table if not exists public.service_catalog_entries (
   id uuid primary key default gen_random_uuid(),
@@ -49,6 +49,8 @@ create table if not exists public.service_catalog_entries (
   sort_order int not null default 0,
   created_at timestamptz not null default now()
 );
+create unique index if not exists service_catalog_entries_unique_key
+on public.service_catalog_entries (service_type, entry_type, category_name, item_name, value);
 
 -- =========================
 -- 4) ORO POR JUEGO/SERVIDOR
@@ -162,7 +164,7 @@ with check (
 );
 
 -- =========================
--- 5) SEED CATÁLOGO MARKETPLACE (P2P, STREAMING, GIFTCARDS)
+-- 5) SEED CATÁLOGO DE SERVICIOS (P2P, STREAMING, GIFTCARDS)
 -- =========================
 insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
 values

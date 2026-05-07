@@ -3087,8 +3087,22 @@
           if (row.entry_type === 'category') {
             marketCatalog[row.service_type].categories.push({ name: row.category_name || row.item_name || '', image: row.image || '' });
           } else if (row.entry_type === 'price') {
-            marketCatalog[row.service_type].prices.push(row.value || row.item_name || row.category_name || '');
+            const raw = row.value || row.item_name || row.category_name || '';
+            const composed = raw.toLowerCase().includes((row.category_name || '').toLowerCase())
+              ? raw
+              : `${row.category_name || ''} - ${raw}`.trim();
+            marketCatalog[row.service_type].prices.push(composed);
           }
+        });
+        Object.keys(marketCatalog).forEach((key) => {
+          const seenCategories = new Map();
+          marketCatalog[key].categories.forEach((cat) => {
+            const name = (cat.name || '').trim();
+            if (!name || seenCategories.has(name.toLowerCase())) return;
+            seenCategories.set(name.toLowerCase(), cat);
+          });
+          marketCatalog[key].categories = Array.from(seenCategories.values());
+          marketCatalog[key].prices = [...new Set(marketCatalog[key].prices.map((p) => p.trim()).filter(Boolean))];
         });
         renderStreamingSection();
       }
