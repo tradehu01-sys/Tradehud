@@ -3647,6 +3647,9 @@
           else marketAdminPriceTitle.textContent = 'Precios de P2P';
         }
         marketAdminCategoryList.innerHTML = '';
+        if (!bucket.categories.length) {
+          marketAdminCategoryList.innerHTML = '<p class="auth-hint">Sin categorías cargadas. Usa + Agregar streaming.</p>';
+        }
         bucket.categories.forEach((cat, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
@@ -4492,6 +4495,7 @@
           if (tabMarketAdmin) tabMarketAdmin.classList.add('active');
           if (editorMarketAdmin) editorMarketAdmin.classList.remove('hidden');
           setActiveMarketType('streaming');
+          renderMarketAdminLists('streaming');
         } else if (tab === 'tickets') {
           tabTicketsAdmin.classList.add('active');
           editorTicketsAdmin.classList.remove('hidden');
@@ -4532,6 +4536,7 @@
         marketCatalogSection?.classList.remove('hidden');
         marketPricesSection?.classList.add('hidden');
         marketPriceListSection?.classList.add('hidden');
+        renderMarketAdminLists(activeMarketType);
       });
       marketViewPricesTab?.addEventListener('click', () => {
         marketViewPricesTab.classList.add('active');
