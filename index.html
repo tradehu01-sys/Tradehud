@@ -3100,6 +3100,10 @@
           .order('sort_order', { ascending: true })
           .order('created_at', { ascending: true });
         if (error || !Array.isArray(data)) return;
+        if (!data.length) {
+          renderStreamingSection();
+          return;
+        }
         ['p2p', 'streaming', 'giftcards'].forEach((key) => {
           marketCatalog[key].categories = [];
           marketCatalog[key].prices = [];
@@ -4459,7 +4463,7 @@
         } else if (tab === 'market') {
           if (tabMarketAdmin) tabMarketAdmin.classList.add('active');
           if (editorMarketAdmin) editorMarketAdmin.classList.remove('hidden');
-          setActiveMarketType(activeMarketType);
+          setActiveMarketType('streaming');
         } else if (tab === 'tickets') {
           tabTicketsAdmin.classList.add('active');
           editorTicketsAdmin.classList.remove('hidden');
