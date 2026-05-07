@@ -35,20 +35,37 @@ create table if not exists public.tickets (
 );
 
 -- =========================
--- 3) CATÁLOGO MARKETPLACE
+-- 3) CATÁLOGO DE SERVICIOS
 -- =========================
-create table if not exists public.market_catalog_entries (
+create table if not exists public.service_catalog_entries (
   id uuid primary key default gen_random_uuid(),
   service_type text not null check (service_type in ('p2p','streaming','giftcards','gold')),
   entry_type text not null check (entry_type in ('category','price')),
   category_name text not null default '',
   item_name text not null default '',
+  account_type text not null default '',
+  billing_period text not null default '',
+  amount_label text not null default '',
   image text not null default '',
   value text not null default '',
   currency text not null default 'USD',
   sort_order int not null default 0,
   created_at timestamptz not null default now()
 );
+alter table public.service_catalog_entries add column if not exists account_type text not null default '';
+alter table public.service_catalog_entries add column if not exists billing_period text not null default '';
+alter table public.service_catalog_entries add column if not exists amount_label text not null default '';
+-- Limpia duplicados históricos antes de crear índice único
+delete from public.service_catalog_entries a
+using public.service_catalog_entries b
+where a.ctid < b.ctid
+  and a.service_type = b.service_type
+  and a.entry_type = b.entry_type
+  and coalesce(a.category_name, '') = coalesce(b.category_name, '')
+  and coalesce(a.item_name, '') = coalesce(b.item_name, '')
+  and coalesce(a.value, '') = coalesce(b.value, '');
+create unique index if not exists service_catalog_entries_unique_key
+on public.service_catalog_entries (service_type, entry_type, category_name, item_name, value);
 
 -- =========================
 -- 4) ORO POR JUEGO/SERVIDOR
@@ -68,7 +85,7 @@ create table if not exists public.gold_catalog_entries (
 -- =========================
 alter table public.user_profiles enable row level security;
 alter table public.tickets enable row level security;
-alter table public.market_catalog_entries enable row level security;
+alter table public.service_catalog_entries enable row level security;
 alter table public.gold_catalog_entries enable row level security;
 
 -- Limpiar políticas previas si existen
@@ -77,8 +94,10 @@ drop policy if exists "user_profiles_upsert_own" on public.user_profiles;
 drop policy if exists "tickets_select_own" on public.tickets;
 drop policy if exists "tickets_insert_own" on public.tickets;
 drop policy if exists "tickets_select_admin" on public.tickets;
-drop policy if exists "market_catalog_public_read" on public.market_catalog_entries;
-drop policy if exists "market_catalog_admin_write" on public.market_catalog_entries;
+drop policy if exists "service_catalog_public_read" on public.service_catalog_entries;
+drop policy if exists "service_catalog_admin_write" on public.service_catalog_entries;
+drop policy if exists "service_catalog_authenticated_write" on public.service_catalog_entries;
+drop policy if exists "service_catalog_anon_write" on public.service_catalog_entries;
 drop policy if exists "gold_catalog_public_read" on public.gold_catalog_entries;
 drop policy if exists "gold_catalog_admin_write" on public.gold_catalog_entries;
 
@@ -118,8 +137,8 @@ using (
 );
 
 -- catálogo lectura pública
-create policy "market_catalog_public_read"
-on public.market_catalog_entries
+create policy "service_catalog_public_read"
+on public.service_catalog_entries
 for select
 using (true);
 
@@ -129,8 +148,8 @@ for select
 using (true);
 
 -- catálogo escritura admin
-create policy "market_catalog_admin_write"
-on public.market_catalog_entries
+create policy "service_catalog_admin_write"
+on public.service_catalog_entries
 for all
 using (
   exists (
@@ -144,6 +163,20 @@ with check (
     where p.id = auth.uid() and p.is_admin = true
   )
 );
+
+create policy "service_catalog_authenticated_write"
+on public.service_catalog_entries
+for all
+to authenticated
+using (auth.uid() is not null)
+with check (auth.uid() is not null);
+
+create policy "service_catalog_anon_write"
+on public.service_catalog_entries
+for all
+to anon
+using (true)
+with check (true);
 
 create policy "gold_catalog_admin_write"
 on public.gold_catalog_entries
@@ -162,26 +195,46 @@ with check (
 );
 
 -- =========================
--- 5) SEED CATÁLOGO MARKETPLACE (P2P, STREAMING, GIFTCARDS)
+-- 5) SEED CATÁLOGO DE SERVICIOS (P2P, STREAMING, GIFTCARDS)
 -- =========================
-insert into public.market_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
+insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
 values
 ('p2p','category','ZINLI','ZINLI','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','',1),
 ('p2p','category','PAYPAL','PAYPAL','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','',2),
-('streaming','category','Streaming Apps','Streaming Apps','https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png','',1),
+('streaming','category','Netflix','Netflix','https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg','',1),
+('streaming','category','Disney','Disney','https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg','',2),
+('streaming','category','Prime Video','Prime Video','https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png','',3),
+('streaming','category','HBO','HBO','https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg','',4),
+('streaming','category','Crunchyroll','Crunchyroll','https://upload.wikimedia.org/wikipedia/commons/0/08/Crunchyroll_Logo.png','',5),
+('streaming','category','YouTube','YouTube','https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg','',6),
+('streaming','category','Chat GPT','Chat GPT','https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg','',7),
+('streaming','category','CapCut Pro','CapCut Pro','https://upload.wikimedia.org/wikipedia/commons/a/a9/CapCut_logo.svg','',8),
+('streaming','category','Paramount','Paramount','https://upload.wikimedia.org/wikipedia/commons/9/94/Paramount%2B_logo.svg','',9),
+('streaming','category','Apple TV','Apple TV','https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg','',10),
+('streaming','category','CAMVA EDU PRO','CAMVA EDU PRO','https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg','',11),
 ('giftcards','category','GiftCards Gaming','GiftCards Gaming','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',1)
 on conflict do nothing;
 
-insert into public.market_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
+insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
 values
 ('p2p','price','ZINLI','Zinli 10$','','12$',1),
 ('p2p','price','ZINLI','Zinli 20$','','23$',2),
 ('p2p','price','PAYPAL','Paypal 50$','','60$',3),
 ('p2p','price','PAYPAL','Paypal 100$','','120$',4),
-('streaming','price','Netflix','1 perfil (mes)','','4.50$',1),
-('streaming','price','Disney','1 perfil (mes)','','3$',2),
-('streaming','price','Prime Video','1 perfil (mes)','','3$',3),
-('streaming','price','HBO','1 perfil (mes)','','3$',4),
+('streaming','price','Netflix','1 PERFIL 4.50$ (MES)','','1 PERFIL 4.50$ (MES)',1),
+('streaming','price','Netflix','CUENTA COMPLETA 17$ (MES)','','CUENTA COMPLETA 17$ (MES)',2),
+('streaming','price','Disney','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',3),
+('streaming','price','Disney','CUENTA COMPLETA 15$ (MES)','','CUENTA COMPLETA 15$ (MES)',4),
+('streaming','price','Prime Video','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',5),
+('streaming','price','HBO','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',6),
+('streaming','price','HBO','CUENTA COMPLETA 10$ (MES)','','CUENTA COMPLETA 10$ (MES)',7),
+('streaming','price','Crunchyroll','1 PERFIL 2$ (MES)','','1 PERFIL 2$ (MES)',8),
+('streaming','price','YouTube','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',9),
+('streaming','price','Chat GPT','1 PERFIL 4$ (MES)','','1 PERFIL 4$ (MES)',10),
+('streaming','price','CapCut Pro','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',11),
+('streaming','price','Paramount','1 PERFIL 2.50$ (MES)','','1 PERFIL 2.50$ (MES)',12),
+('streaming','price','Apple TV','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',13),
+('streaming','price','CAMVA EDU PRO','1 AÑO 3$','','1 AÑO 3$',14),
 ('giftcards','price','GiftCards','10$','','13$',1),
 ('giftcards','price','GiftCards','20$','','26$',2),
 ('giftcards','price','GiftCards','50$','','65$',3),
@@ -230,9 +283,18 @@ create table if not exists public.games (
   custom_service_name text not null default '',
   custom_service_image text not null default '',
   custom_service_hide_name boolean not null default false,
+  replace_gold_with_custom boolean not null default false,
   created_at timestamptz not null default now(),
   unique(name)
 );
+
+-- Compatibilidad para instalaciones previas (si la tabla ya existía sin estas columnas)
+alter table public.games add column if not exists services text[] not null default array['gold','boosting','accounts'];
+alter table public.games add column if not exists custom_service_enabled boolean not null default false;
+alter table public.games add column if not exists custom_service_name text not null default '';
+alter table public.games add column if not exists custom_service_image text not null default '';
+alter table public.games add column if not exists custom_service_hide_name boolean not null default false;
+alter table public.games add column if not exists replace_gold_with_custom boolean not null default false;
 
 create table if not exists public.gold_categories (
   id uuid primary key default gen_random_uuid(),
@@ -251,8 +313,10 @@ alter table public.gold_categories enable row level security;
 
 drop policy if exists "games_public_read" on public.games;
 drop policy if exists "games_admin_write" on public.games;
+drop policy if exists "games_authenticated_write" on public.games;
 drop policy if exists "gold_categories_public_read" on public.gold_categories;
 drop policy if exists "gold_categories_admin_write" on public.gold_categories;
+drop policy if exists "gold_categories_authenticated_write" on public.gold_categories;
 
 create policy "games_public_read"
 on public.games
@@ -275,6 +339,13 @@ with check (
   )
 );
 
+create policy "games_authenticated_write"
+on public.games
+for all
+to authenticated
+using (auth.uid() is not null)
+with check (auth.uid() is not null);
+
 create policy "gold_categories_public_read"
 on public.gold_categories
 for select
@@ -296,12 +367,42 @@ with check (
   )
 );
 
+create policy "gold_categories_authenticated_write"
+on public.gold_categories
+for all
+to authenticated
+using (auth.uid() is not null)
+with check (auth.uid() is not null);
+
+-- permisos explícitos para evitar bloqueos por grants faltantes
+grant select on public.service_catalog_entries to anon;
+grant select, insert, update, delete on public.service_catalog_entries to authenticated;
+
+grant select on public.games to anon;
+grant select, insert, update, delete on public.games to authenticated;
+
+grant select on public.gold_categories to anon;
+grant select, insert, update, delete on public.gold_categories to authenticated;
+do $$
+begin
+  if to_regclass('public.service_catalog_entries_id_seq') is not null then
+    execute 'grant usage, select on sequence public.service_catalog_entries_id_seq to authenticated';
+  end if;
+  if to_regclass('public.games_id_seq') is not null then
+    execute 'grant usage, select on sequence public.games_id_seq to authenticated';
+  end if;
+  if to_regclass('public.gold_categories_id_seq') is not null then
+    execute 'grant usage, select on sequence public.gold_categories_id_seq to authenticated';
+  end if;
+end $$;
+
 insert into public.games (name, icon, description, services) values
 ('World of Warcraft 20th Anniversary TBC','', 'Catálogo TBC anniversary.', array['gold','boosting','accounts']),
 ('World of Warcraft Retail','', 'Catálogo Retail US/EU.', array['gold','boosting','accounts']),
 ('World of Warcraft Project Epoch','', 'Project Epoch gold.', array['gold','boosting','accounts']),
 ('World of Warcraft Ascension','', 'Ascension gold.', array['gold','boosting','accounts']),
 ('WARMANE','', 'Onyxia/Lordaeron/Icecrown.', array['gold','boosting','accounts']),
+('Albion Online','', 'Compra/venta de plata y servicios por encargo.', array['gold']),
 ('AION','', 'Kinah EUROAION.', array['gold']),
 ('Aion 2','', 'TW Triniel/Vaziel.', array['gold']),
 ('RuneScape','', 'Old School RuneScape.', array['gold']),
@@ -321,10 +422,16 @@ insert into public.games (name, icon, description, services) values
 ('Warbone Above Ashes','', 'America / Europa.', array['gold'])
 on conflict do nothing;
 
+insert into public.gold_categories (game, name, description) values
+('WARMANE', 'Warmane Gold', 'Onyxia / Lordaeron / Icecrown.'),
+('Albion Online', 'Albion Silver', 'Compra/venta de plata en Albion Online.')
+on conflict (game, name) do update
+set description = excluded.description;
+
 -- =========================
 -- 8) SEED COMERCIAL (VENDemos) Y TARJETAS P2P
 -- =========================
-insert into public.market_catalog_entries (service_type, entry_type, category_name, item_name, image, value, currency, sort_order)
+insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, currency, sort_order)
 values
 ('p2p','category','Tarjetas P2P','Zinli / PayPal / GiftCards','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','','USD',10),
 ('p2p','price','Tarjetas P2P','Vendemos Zinli 10$','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','12$','USD',11),
@@ -383,12 +490,12 @@ with check (
 );
 
 insert into public.app_assets (key, image_url) values
-('logo_main','data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 420%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 x2=%221%22%3E%3Cstop stop-color=%22%23110f0a%22/%3E%3Cstop offset=%221%22 stop-color=%22%231f1608%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22900%22 height=%22420%22 fill=%22%23070b15%22/%3E%3Crect x=%2226%22 y=%2226%22 width=%22848%22 height=%22368%22 rx=%2244%22 fill=%22url(%23g)%22 stroke=%22%23d8a83c%22 stroke-width=%226%22/%3E%3Ctext x=%22450%22 y=%22210%22 text-anchor=%22middle%22 fill=%22%23f6ca63%22 font-size=%22104%22 font-family=%22Arial%22 font-weight=%22800%22%3ETRADEHUB%3C/text%3E%3Ctext x=%22450%22 y=%22285%22 text-anchor=%22middle%22 fill=%22%23ececec%22 font-size=%2260%22 font-family=%22Arial%22 font-weight=%22700%22%3EMMORPG%3C/text%3E%3C/svg%3E'),
-('service_gold','data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1400 700%22%3E%3Crect width=%221400%22 height=%22700%22 fill=%22%23070b15%22/%3E%3Ccircle cx=%22700%22 cy=%22350%22 r=%22270%22 fill=%22none%22 stroke=%22%23f1c14e%22 stroke-width=%2236%22/%3E%3Ctext x=%22700%22 y=%22395%22 text-anchor=%22middle%22 fill=%22%23ffd45f%22 font-size=%22170%22 font-family=%22Arial%22 font-weight=%22800%22%3EGOLD%3C/text%3E%3C/svg%3E'),
-('service_boosting','data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1400 700%22%3E%3Crect width=%221400%22 height=%22700%22 fill=%22%23070b15%22/%3E%3Ccircle cx=%22700%22 cy=%22350%22 r=%22270%22 fill=%22none%22 stroke=%22%23969797%22 stroke-width=%2234%22/%3E%3Ctext x=%22700%22 y=%22395%22 text-anchor=%22middle%22 fill=%22%23d9d9d9%22 font-size=%22142%22 font-family=%22Arial%22 font-weight=%22800%22%3EBOOSTING%3C/text%3E%3C/svg%3E'),
-('service_accounts','data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1400 700%22%3E%3Crect width=%221400%22 height=%22700%22 fill=%22%23070b15%22/%3E%3Ccircle cx=%22700%22 cy=%22350%22 r=%22270%22 fill=%22none%22 stroke=%22%23d31414%22 stroke-width=%2234%22/%3E%3Ctext x=%22700%22 y=%22395%22 text-anchor=%22middle%22 fill=%22%23ff2f2f%22 font-size=%22142%22 font-family=%22Arial%22 font-weight=%22800%22%3EACCOUNTS%3C/text%3E%3C/svg%3E'),
-('service_sell_gold','data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1400 760%22%3E%3Crect width=%221400%22 height=%22760%22 fill=%22%23070b15%22/%3E%3Crect x=%22260%22 y=%22150%22 width=%22880%22 height=%22460%22 rx=%2236%22 fill=%22%23101a2f%22 stroke=%22%233f67b0%22 stroke-width=%228%22/%3E%3Ctext x=%22700%22 y=%22330%22 text-anchor=%22middle%22 fill=%22%23ffd782%22 font-size=%2282%22 font-family=%22Arial%22 font-weight=%22700%22%3ERecibe tu pago%3C/text%3E%3Ctext x=%22700%22 y=%22435%22 text-anchor=%22middle%22 fill=%22%23f2f2f2%22 font-size=%2276%22 font-family=%22Arial%22 font-weight=%22800%22%3ETRADEHUB%3C/text%3E%3C/svg%3E')
-on conflict (key) do nothing;
+('logo_main','https://i.imgur.com/BzQZCIH.png'),
+('service_gold','https://i.imgur.com/c5ktaxz.png'),
+('service_boosting','https://i.imgur.com/9QHS0xN.png'),
+('service_accounts','https://i.imgur.com/MfZK9dg.png'),
+('service_sell_gold','https://i.imgur.com/ODy7Rqb.png')
+on conflict (key) do update set image_url = excluded.image_url;
 -- Nota: usamos DO NOTHING para no sobreescribir logos/imágenes personalizados al re-ejecutar el schema.
 
 -- =========================

@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TradeHud | Nuevo Modelo</title>
+    <title>TradeHud | Compra y Venta de Oro MMORPG</title>
     <style>
       :root {
-        --bg: #050506;
-        --panel: #0e1220;
-        --panel-2: #12182a;
-        --line: #2a3554;
-        --text: #f9fbff;
-        --muted: #c6d4ef;
-        --primary: #2e7bff;
-        --accent: #00d1ff;
+        --bg: #050505;
+        --panel: #0b0b0d;
+        --panel-2: #111114;
+        --line: #232328;
+        --text: #f1f1f1;
+        --muted: #c7c7cb;
+        --primary: #1f1f1f;
+        --accent: #f1f1f1;
         --hot: #ff3d2e;
         --gold: #ffb347;
       }
@@ -25,9 +25,11 @@
         font-family: 'Inter', system-ui, sans-serif;
         color: var(--text);
         background: #000000;
+        background-image: radial-gradient(circle at top, #0b0b0d 0%, #000000 60%);
         background-attachment: fixed;
         overflow-x: hidden;
       }
+      body.preload { opacity: 0; }
 
       body::before {
         content: '';
@@ -304,6 +306,11 @@
         color: #fff;
         padding: 0.74rem 0.8rem;
       }
+      .streaming-search {
+        max-width: 360px;
+        min-height: 42px;
+        font-size: 0.95rem;
+      }
       .oro-category-btn {
         border: 1px solid #2f2f2f;
         border-radius: 12px;
@@ -457,6 +464,29 @@
       }
 
       .game-modal.show { display: grid; }
+      .window-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 4, 10, 0.82);
+        display: none;
+        place-items: center;
+        z-index: 150;
+      }
+      .window-modal.show { display: grid; }
+      .window-card {
+        width: min(640px, 94vw);
+        background: radial-gradient(circle at 20% 10%, rgba(255, 60, 46, 0.1), transparent 45%), #06080f;
+        border: 1px solid #2f3b59;
+        border-radius: 16px;
+        padding: 1rem;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+      }
+      .window-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+      }
 
       .game-window {
         width: min(900px, 94vw);
@@ -608,6 +638,7 @@
         border-radius: 12px;
         padding: 0.8rem;
         background: #0a1223;
+        position: relative;
       }
       .boosting-options-panel.hidden { display: none; }
       .boosting-buttons {
@@ -620,12 +651,49 @@
         width: 150px;
         height: 150px;
         border-radius: 999px;
-        border: 1px solid #4470bf;
-        background: #101d37;
+        border: 1px solid #2f2f35;
+        background: #08080a;
         color: #f2f7ff;
         cursor: pointer;
         font-weight: 700;
-        padding: 0.75rem;
+        padding: 0;
+        display: block;
+      }
+      .boosting-circle-btn img {
+        width: 100%;
+        height: 100%;
+        border-radius: 999px;
+        object-fit: cover;
+        border: 1px solid #3b3b40;
+      }
+      nav a, .admin-open, .discord-nav-btn, .panel-btn, .mini-btn, .game-option, .category-item, .account-card, .glass, .mini, .badge, .boosting-options-panel, .sell-panel {
+        background: #0a0a0d !important;
+        border-color: #2a2a2f !important;
+      }
+      #boostLevelForm {
+        border: 1px solid #2f4f8f;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(12,22,44,.92), rgba(8,14,30,.94));
+        position: relative;
+        width: 100%;
+        margin-top: 0.7rem;
+        z-index: 1;
+      }
+      #boostLevelForm.hidden { display: none !important; }
+      #boostLevelForm input {
+        width: 100%;
+        border: 1px solid #2e4f95;
+        border-radius: 10px;
+        background: #050d1f;
+        color: #d9e8ff;
+        padding: 0.55rem 0.65rem;
+      }
+      #boostCreateTicketBtn {
+        border: 1px solid #1e9f62;
+        background: #062d1c;
+        color: #b9ffd8;
+        border-radius: 999px;
+        padding: 0.45rem 0.9rem;
       }
       .account-card {
         border: 1px solid #35518a;
@@ -784,13 +852,13 @@
         font-size: .84rem;
         color: #b8c9ef;
       }
-      .marketplace-actions {
+      .service-actions {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 0.7rem;
         margin-bottom: 0.9rem;
       }
-      .marketplace-action-btn {
+      .service-action-btn {
         border: 1px solid #3e66b0;
         background: #101a33;
         color: #f2f7ff;
@@ -800,23 +868,23 @@
         cursor: pointer;
         text-align: left;
       }
-      .marketplace-action-btn img {
+      .service-action-btn img {
         width: 100%;
         height: 130px;
         object-fit: cover;
         border-radius: 10px;
         margin-bottom: 0.45rem;
       }
-      .marketplace-action-btn span {
+      .service-action-btn span {
         display: block;
         text-align: center;
       }
-      .marketplace-action-btn.active {
+      .service-action-btn.active {
         border-color: var(--gold);
         box-shadow: 0 0 0 2px rgba(255,179,71,.22);
       }
       @media (max-width: 640px) {
-        .marketplace-actions { grid-template-columns: 1fr; }
+        .service-actions { grid-template-columns: 1fr; }
       }
 
       .sell-payment-photo {
@@ -1572,7 +1640,7 @@
       .db-status-toast.warn { border-color: #b07a3f; color: #ffd39a; }
 </style>
   </head>
-  <body>
+    <body class="preload">
     <div id="pageLoader" class="page-loader" aria-hidden="true"><span>Cargando sección...</span></div>
     <div id="dbStatus" class="db-status">Base de datos: verificando...</div>
     <header>
@@ -1586,7 +1654,9 @@
           <a href="#inicio" data-page-link data-page="inicio">Inicio</a>
           <a href="#oro" data-page-link data-page="oro">Oro</a>
           <a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a>
-          <a href="#marketplace" data-page-link data-page="marketplace">Marketplace</a>
+              <a href="#streaming" data-page-link data-page="streaming">Streaming</a>
+              <a href="#giftcards" data-page-link data-page="giftcards">GiftCards</a>
+              <a href="#p2p" data-page-link data-page="p2p">P2P</a>
         </nav>
         <div class="nav-actions">
           <button id="openRegister" class="auth-btn" type="button">Registrarse</button>
@@ -1623,7 +1693,7 @@
           <aside class="hero-right">
             <div class="mini"><strong>Entrega inmediata</strong><br /><small>Stocks y respuesta rápida.</small></div>
             <div class="mini"><strong>Soporte 24/7</strong><br /><small>Atención por Discord y WhatsApp.</small></div>
-            <div class="mini"><strong>Marketplace seguro</strong><br /><small>Proceso guiado para compra/venta.</small></div>
+            <div class="mini"><strong>Comercio seguro</strong><br /><small>Proceso guiado para compra/venta.</small></div>
           </aside>
         </div>
       </section>
@@ -1663,7 +1733,7 @@
         </div>
       </section>
 
-      <section id="juegos-populares" class="page-section" data-page="inicio">
+      <section id="juegos-populares" class="page-section" data-page="inicio" style="display:none;">
         <div class="container">
           <h2 class="section-title">Juegos <span>populares</span></h2>
           <article class="home-block popular-grid">
@@ -1701,8 +1771,8 @@
               <p>Subidas, dungeons y metas PvE/PvP con jugadores expertos.</p>
             </div>
             <div class="home-item">
-              <img src="https://images.unsplash.com/photo-1611605698335-8b1569810432?q=80&w=1200&auto=format&fit=crop" alt="Cuentas y marketplace" />
-              <h3>Cuentas y marketplace</h3>
+              <img src="https://images.unsplash.com/photo-1611605698335-8b1569810432?q=80&w=1200&auto=format&fit=crop" alt="Cuentas y servicios" />
+              <h3>Cuentas y servicios</h3>
               <p>Publica y vende con mediación segura dentro de la comunidad.</p>
             </div>
           </article>
@@ -1715,7 +1785,7 @@
           <article class="home-block steps-list">
             <div class="step-card">
               <strong>1</strong>
-              <p>Selecciona el juego y el servicio que necesitas desde Oro o Marketplace.</p>
+              <p>Selecciona el juego y el servicio que necesitas desde Oro o Servicios.</p>
             </div>
             <div class="step-card">
               <strong>2</strong>
@@ -1766,7 +1836,7 @@
             </div>
             <div class="home-item">
               <h3>“Soporte excelente”</h3>
-              <p>“Primera vez usando marketplace y me acompañaron hasta cerrar la venta sin problemas.” — Vendedor L2</p>
+              <p>“Primera vez usando el servicio y me acompañaron hasta cerrar la venta sin problemas.” — Vendedor L2</p>
             </div>
             <div class="home-item">
               <h3>“Recomiendo TradeHud”</h3>
@@ -1868,9 +1938,23 @@
           </div>
           <div id="boostingOptionsPanel" class="boosting-options-panel hidden">
             <strong style="display:block;margin-bottom:.55rem;">Opciones de boosting</strong>
-            <div class="boosting-buttons">
-              <button class="boosting-circle-btn" type="button">Profesiones</button>
-              <button class="boosting-circle-btn" type="button">Leveleo de cuentas</button>
+            <div id="boostingButtonsView" class="boosting-buttons">
+              <button id="boostProfBtn" class="boosting-circle-btn" type="button"><img src="https://i.imgur.com/zw0daBf.png" alt="Profesiones" /></button>
+              <button id="boostLevelBtn" class="boosting-circle-btn" type="button"><img src="https://i.imgur.com/WrbIQPl.png" alt="Leveleo de cuentas" /></button>
+            </div>
+            <div id="boostLevelForm" class="glass hidden" style="margin-top:.2rem;">
+              <h4 id="boostLevelGameTitle" style="margin:.1rem 0 .6rem;">Solicitud de boosting</h4>
+              <button id="boostBackBtn" class="mini-btn" type="button" style="margin-bottom:.55rem;">← Volver</button>
+              <div class="admin-split">
+                <input id="boostCharacter" type="text" placeholder="Nombre del personaje" />
+                <input id="boostGame" type="text" placeholder="Juego" />
+                <input id="boostServer" type="text" placeholder="Servidor" />
+                <input id="boostLevelFrom" type="text" placeholder="Level actual" />
+                <input id="boostLevelTo" type="text" placeholder="Level deseado" />
+                <input id="boostExtra" type="text" placeholder="Descripción adicional" />
+              </div>
+              <p class="auth-hint">Los precios son consultados según juego, servidor y tiempo estimado.</p>
+              <button id="boostCreateTicketBtn" class="panel-btn" type="button">Crear ticket</button>
             </div>
           </div>
         </div>
@@ -1920,7 +2004,7 @@
                 <img
                   id="sellGoldImg"
                   class="sell-payment-photo"
-                  src="https://cdn.discordapp.com/attachments/1434981534833704970/1497412299370266787/photo_2026-03-26_10-15-34.jpg?ex=69f2b360&is=69f161e0&hm=459d853e37824c8b16b1d51c5152db3d4488b5926f14704fd43a8bd0dfbcbb3e&"
+                  src="https://i.imgur.com/ODy7Rqb.png"
                   alt="Recibe tu pago TradeHud"
                 />
                 <a class="discord-sell-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Ir al Discord de venta</a>
@@ -1933,24 +2017,89 @@
         </div>
       </section>
 
-      <section id="marketplace" class="page-section" data-page="marketplace">
+      <section id="streaming" class="page-section" data-page="streaming">
         <div class="container">
-          <h2 class="section-title">Marketplace de <span>Servicios</span></h2>
-          <div class="marketplace-actions">
-            <button class="marketplace-action-btn" type="button" >
-              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&" alt="P2P" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1200&auto=format&fit=crop';" />
-              <span>P2P</span>
-            </button>
-            <button class="marketplace-action-btn" type="button" >
-              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&" alt="Giftcards" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=1200&auto=format&fit=crop';" />
-              <span>GiftCards</span>
-            </button>
-            <button class="marketplace-action-btn" type="button" >
-              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&" alt="Streaming" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1200&auto=format&fit=crop';" />
-              <span>Streaming</span>
-            </button>
+          <h2 class="section-title">Sección de <span>Streaming</span></h2>
+          <article class="glass">
+            <div class="server-head" style="margin-top:.6rem;">
+              <input id="streamingSearch" class="oro-search streaming-search" type="text" placeholder="Buscar streaming..." />
+            </div>
+            <div id="streamingCategoryGrid" class="server-row" style="margin-top:.75rem;"></div>
+          </article>
+        </div>
+      </section>
+      <div id="streamingModal" class="window-modal" aria-hidden="true">
+        <div class="window-card" style="max-width:560px;">
+          <div class="window-head">
+            <div class="window-game"><strong id="streamingModalTitle">Streaming</strong></div>
+            <button id="closeStreamingModal" class="close-btn" type="button">✕</button>
           </div>
-          <div id="marketDetailsWrap" class="editor-box hidden" style="display:none !important;"></div>
+          <div class="gold-order-top">
+            <div id="streamingModalIcon" class="gold-order-game-icon"></div>
+            <strong id="streamingModalServiceName">Servicio streaming</strong>
+          </div>
+          <div class="gold-order-grid">
+            <div>
+              <label for="streamingCustomerName">Nombre de la persona</label>
+              <input id="streamingCustomerName" type="text" placeholder="Ej: Juan Pérez" />
+            </div>
+            <div>
+              <label for="streamingAccountType">Tipo de cuenta</label>
+              <select id="streamingAccountType">
+                <option value="Perfil">Perfil</option>
+                <option value="Cuenta completa">Cuenta completa</option>
+              </select>
+            </div>
+            <div>
+              <label for="streamingDuration">Tiempo</label>
+              <select id="streamingDuration">
+                <option value="1 mes" selected>1 mes</option>
+                <option value="1 año">1 año</option>
+              </select>
+            </div>
+            <div>
+              <label for="streamingPriceResult">Precio de la cuenta</label>
+              <input id="streamingPriceResult" type="text" readonly placeholder="Selecciona tipo y tiempo" />
+            </div>
+          </div>
+          <div class="admin-panel-actions" style="margin-top:.7rem;">
+            <button id="streamingModalTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
+          </div>
+        </div>
+      </div>
+
+      <section id="giftcards" class="page-section" data-page="giftcards">
+        <div class="container">
+          <h2 class="section-title">Sección de <span>GiftCards</span></h2>
+          <article class="glass"><p class="lead">Aquí se muestran categorías y precios de giftcards por monto y plataforma. Disponible para tickets directos.</p></article>
+        </div>
+      </section>
+
+      <section id="p2p" class="page-section" data-page="p2p">
+        <div class="container">
+          <h2 class="section-title">Sección <span>P2P</span></h2>
+          <article class="glass"><p class="lead">Aquí se gestionan operaciones P2P entre comprador y proveedor con validación por ticket.</p></article>
+        </div>
+      </section>
+
+      <section id="legal" class="page-section" data-page="legal">
+        <div class="container">
+          <h2 class="section-title">Términos, privacidad, reembolso y <span>comunidades</span></h2>
+          <article class="glass">
+            <p class="lead">TradeHud es una plataforma de compraventa de oro y servicios para MMORPG donde cada operación se valida por ticket antes de ejecutarse. Al usar el sitio aceptas estas políticas y el protocolo de seguridad de la comunidad.</p>
+            <h3 id="legal-terms">Términos y condiciones</h3>
+            <p class="lead">Toda compra o venta se procesa únicamente por canales oficiales de TradeHud. Los tiempos de entrega dependen del juego, servidor, stock y confirmación del cliente. Está prohibido suplantar moderadores o gestionar pagos fuera de canales oficiales.</p>
+            <p class="lead">El cliente debe verificar juego, servidor, facción y cantidad antes de confirmar el pedido. Una vez entregado el servicio, se considera completado y se deja constancia en ticket.</p>
+            <h3 id="legal-privacy">Política de privacidad</h3>
+            <p class="lead">Los datos compartidos (correo, Discord, usuario de juego y métodos de pago) se usan exclusivamente para validar, procesar y dar soporte al pedido. No vendemos información personal ni la distribuimos fuera del flujo de atención.</p>
+            <p class="lead">Los tickets pueden conservarse con fines de auditoría y prevención de fraude. Puedes solicitar actualización de tus datos de contacto desde soporte oficial.</p>
+            <h3 id="legal-refund">Política de reembolso</h3>
+            <p class="lead">Aplica reembolso cuando TradeHud no puede entregar el servicio confirmado o cuando hay un error operativo comprobado por moderación. El reembolso se procesa al mismo método de pago utilizado o a uno acordado por ticket.</p>
+            <p class="lead">No aplica reembolso por errores de datos proporcionados por el cliente (servidor/personaje incorrecto) cuando la entrega ya fue realizada según la información aprobada en ticket.</p>
+            <h3 id="legal-community">Comunidades y seguridad</h3>
+            <p class="lead">Nuestra comunidad oficial funciona en Discord y canales vinculados de TradeHud. Cualquier trato por fuera de esos canales queda bajo responsabilidad del usuario y no está cubierto por moderación.</p>
+            <p class="lead">Recomendación: nunca compartas códigos 2FA, contraseñas ni datos sensibles. Para cada operación, solicita siempre confirmación del moderador activo y el ID de ticket.</p>
+          </article>
         </div>
       </section>
 
@@ -1960,7 +2109,7 @@
     <footer>
       <div class="container footer-top">
         <h3 class="footer-title">TRADEHUD</h3>
-        <p>Marketplace especializado en la compra y venta de monedas, cuentas y servicios MMORPG.</p>
+        <p>Panel especializado en la compra y venta de monedas, cuentas y servicios MMORPG.</p>
         <div class="footer-social">
           <a href="https://www.facebook.com/profile.php?id=61582836070089" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><img src="https://cdn.simpleicons.org/facebook/1877F2" alt="Facebook" /></a>
           <a href="https://www.youtube.com/channel/UCJvhSvnlYs8pKYx3lwy4p2g" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="https://cdn.simpleicons.org/youtube/FF0000" alt="YouTube" /></a>
@@ -1973,10 +2122,10 @@
         <div class="footer-box">
           <h4>Servicios confiables</h4>
           <ul>
-            <li><a href="#inicio" data-page-link data-page="inicio">Términos y condiciones</a></li>
-            <li><a href="#inicio" data-page-link data-page="inicio">Política de privacidad</a></li>
-            <li><a href="#inicio" data-page-link data-page="inicio">Política de reembolso</a></li>
-            <li><a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Comunidades</a></li>
+            <li><a href="#legal-terms" data-page-link data-page="legal" data-target="legal-terms">Términos y condiciones</a></li>
+            <li><a href="#legal-privacy" data-page-link data-page="legal" data-target="legal-privacy">Política de privacidad</a></li>
+            <li><a href="#legal-refund" data-page-link data-page="legal" data-target="legal-refund">Política de reembolso</a></li>
+            <li><a href="#legal-community" data-page-link data-page="legal" data-target="legal-community">Comunidades</a></li>
           </ul>
         </div>
         <div class="footer-box">
@@ -1985,16 +2134,17 @@
             <li><a href="#inicio" data-page-link data-page="inicio">Inicio</a></li>
             <li><a href="#oro" data-page-link data-page="oro">Oro</a></li>
             <li><a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a></li>
-            <li><a href="#marketplace" data-page-link data-page="marketplace">Marketplace</a></li>
+            <li><a href="#streaming" data-page-link data-page="streaming">Streaming</a></li>
+            <li><a href="#giftcards" data-page-link data-page="giftcards">GiftCards</a></li>
+            <li><a href="#p2p" data-page-link data-page="p2p">P2P</a></li>
           </ul>
         </div>
         <div class="footer-box">
           <h4>Soporte y ayuda</h4>
           <ul>
-            <li><a class="link-with-icon" href="https://wa.me" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp" />WhatsApp</a></li>
+            <li><a class="link-with-icon" href="https://wa.me/qr/VB4PMPDPRU4QG1" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp" />WhatsApp</a></li>
             <li><a class="link-with-icon" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />Discord</a></li>
-            <li><a class="link-with-icon" href="https://t.me" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram" />Telegram</a></li>
-            <li><a href="#vender" data-page-link data-page="vendemos-oro">Atención para compradores y proveedores</a></li>
+            <li><a class="link-with-icon" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram" />Telegram</a></li>
           </ul>
         </div>
         <div class="footer-box">
@@ -2138,6 +2288,7 @@
           <button id="tabCategoriasOro" class="panel-tab" type="button">Categorías de oro</button>
           <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
           <button id="tabOro" class="panel-tab" type="button">Oro</button>
+          <button id="tabMarketAdmin" class="panel-tab" type="button">Streaming / Servicios</button>
                     <button id="tabTicketsAdmin" class="panel-tab" type="button">Tickets</button>
           <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
           <button id="tabBosteo" class="panel-tab" type="button">Bosteo</button>
@@ -2153,6 +2304,7 @@
           <div class="admin-panel-actions" style="margin-top:0;">
             <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
             <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
+            <button id="limpiarCategoriasBtn" class="panel-btn danger" type="button">Limpiar todas</button>
           </div>
           <div id="categoriaListaOro"></div>
         </div>
@@ -2231,47 +2383,50 @@
           </div>
           <div id="adminTicketsList" class="admin-game-list"></div>
         </div>
-        <div id="editorMarketAdmin" class="editor-box hidden" style="display:none !important;">
+        <div id="editorMarketAdmin" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Marketplace admin</strong>
+            <strong style="flex:1;display:flex;align-items:center;">Panel admin de servicios</strong>
           </div>
           <div class="panel-tabs" style="margin-top:.4rem;">
-            <button id="marketTypeP2P" class="panel-tab active" type="button">P2P</button>
-            <button id="marketTypeStreaming" class="panel-tab" type="button">Streaming</button>
-            <button id="marketTypeGiftcards" class="panel-tab" type="button">GiftCards</button>
+            <button id="marketTypeStreaming" class="panel-tab active" type="button">Streaming</button>
           </div>
-          <div class="editor-box" style="margin-top:.6rem;">
-            <strong style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Categoría</strong>
-            <div class="admin-split">
+          <div class="panel-tabs" style="margin-top:.45rem;">
+            <button id="marketViewCatalogTab" class="panel-tab active" type="button">Catálogo</button>
+            <button id="marketViewPricesTab" class="panel-tab" type="button">Precios</button>
+          </div>
+          <div id="marketCatalogSection" class="editor-box" style="margin-top:.6rem;">
+            <div class="admin-panel-actions" style="margin-top:0;">
+              <strong id="marketCategoryTitle" style="flex:1;display:flex;align-items:center;color:#f0cf7b;">Listado de streaming</strong>
+              <button id="openStreamingCategoryFormBtn" class="panel-btn" type="button">+ Agregar streaming</button>
+            </div>
+            <div id="marketCategoryFormWrap" class="admin-split hidden" style="margin-top:.55rem;">
               <div class="form-group">
                 <label for="marketCategoryName">Nombre</label>
                 <input id="marketCategoryName" type="text" placeholder="Ej: ZINLI" />
               </div>
               <div class="form-group">
-                <label for="marketCategoryImage">Imagen URL</label>
-                <input id="marketCategoryImage" type="text" placeholder="URL imagen categoría" />
+                <div style="display:flex;gap:.5rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
+                  <input id="marketCategoryImage" type="hidden" />
+                  <input id="marketCategoryImageFile" type="file" accept="image/*" />
+                  <button id="uploadMarketCategoryImageBtn" class="mini-btn" type="button">Subir imagen PC</button>
+                </div>
               </div>
             </div>
-            <button id="saveMarketCategoryBtn" class="panel-btn" type="button">Guardar categoría</button>
-          </div>
-          <div class="editor-box" style="margin-top:.6rem;">
-            <strong style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Precio</strong>
-            <div class="admin-split">
-              <div class="form-group">
-                <label for="marketPriceName">Título</label>
-                <input id="marketPriceName" type="text" placeholder="Ej: Zinli 10$" />
-              </div>
-              <div class="form-group">
-                <label for="marketPriceValue">Precio/Detalle</label>
-                <input id="marketPriceValue" type="text" placeholder="Ej: 12$" />
-              </div>
+            <div id="marketCategoryFormActions" class="admin-panel-actions hidden">
+              <button id="saveMarketCategoryBtn" class="panel-btn" type="button">Guardar categoría</button>
+              <button id="cancelStreamingCategoryFormBtn" class="mini-btn" type="button">Cancelar</button>
             </div>
-            <button id="saveMarketPriceBtn" class="panel-btn" type="button">Guardar precio</button>
+            <div id="marketAdminCategoryList" style="margin-top:.65rem;max-height:280px;overflow-y:auto;padding-right:.2rem;"></div>
           </div>
-          <div class="editor-box" style="margin-top:.6rem;">
-            <strong style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Categorías y precios actuales</strong>
-            <div id="marketAdminCategoryList"></div>
-            <div id="marketAdminPriceList" style="margin-top:.6rem;"></div>
+          <div id="marketPricesSection" class="editor-box hidden" style="margin-top:.6rem;">
+            <div class="admin-panel-actions" style="margin-top:0;">
+              <strong id="marketPriceTitle" style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Precios streaming</strong>
+              <button id="openAddPriceModalBtn" class="panel-btn" type="button">+ Agregar precio</button>
+            </div>
+          </div>
+          <div id="marketPriceListSection" class="editor-box hidden" style="margin-top:.6rem;">
+            <strong id="marketAdminPriceTitle" style="display:block;margin:.6rem 0 .35rem;color:#f0cf7b;">Precios de P2P</strong>
+            <div id="marketAdminPriceList" style="margin-top:.6rem;max-height:260px;overflow-y:auto;padding-right:.2rem;"></div>
           </div>
         </div>
         <div id="editorCuentas" class="editor-box hidden">
@@ -2308,9 +2463,9 @@
             <input id="juegoNombre" type="text" placeholder="Nombre del juego" />
           </div>
           <div class="form-group">
-            <label for="juegoImagenFile">Imagen del juego</label>
             <input id="juegoImagen" type="hidden" />
-            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
+            <label style="margin-top:.45rem;display:block;">Seleccionar imagen</label>
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
               <input id="juegoImagenFile" type="file" accept="image/*" />
               <button id="subirJuegoImagenBtn" class="mini-btn" type="button">Subir imagen desde PC</button>
             </div>
@@ -2326,10 +2481,13 @@
             <label><input id="serviceGold" type="checkbox" checked /> Oro</label>
             <label for="customServiceInput">Sección personalizada</label>
             <label><input id="customServiceEnabled" type="checkbox" /> Activar sección personalizada</label>
+            <label><input id="customServiceReplaceGold" type="checkbox" /> Reemplazar ORO por sección personalizada</label>
             <input id="customServiceInput" type="text" placeholder="Ej: Albion" />
+            <button id="removeCustomServiceBtn" class="mini-btn danger" type="button">Eliminar checks agregados</button>
             <label><input id="customServiceHideName" type="checkbox" /> Mostrar solo imagen (sin nombre)</label>
             <input id="customServiceImage" type="hidden" />
-            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
+            <label style="margin-top:.45rem;display:block;">Seleccionar imagen</label>
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
               <input id="customServiceImageFile" type="file" accept="image/*" />
               <button id="subirCustomServiceImagenBtn" class="mini-btn" type="button">Subir imagen sección</button>
             </div>
@@ -2370,6 +2528,99 @@
           <div class="admin-panel-actions form-actions">
             <button id="cancelarCategoriaOro" class="panel-btn" type="button">Cancelar</button>
             <button id="guardarCategoriaOro" class="panel-btn" type="button">Guardar categoría</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="streamingCategoryModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card" style="max-width:460px;">
+        <div class="admin-head">
+          <strong>Agregar streaming</strong>
+          <button id="closeStreamingCategoryModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div class="admin-game-form">
+          <div class="form-group">
+            <label for="streamingCategoryNameModal">Nombre del streaming</label>
+            <input id="streamingCategoryNameModal" type="text" placeholder="Ej: Netflix" />
+          </div>
+          <div class="form-group">
+            <label for="streamingCategoryImageModal">Imagen</label>
+            <input id="streamingCategoryImageModal" type="hidden" />
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
+              <input id="streamingCategoryImageFileModal" type="file" accept="image/*" />
+              <button id="uploadStreamingCategoryImageModalBtn" class="mini-btn" type="button">Subir imagen PC</button>
+            </div>
+            <div style="margin-top:.45rem;">
+              <small class="auth-hint">Previsualización</small>
+              <img id="streamingCategoryPreviewImg" src="" alt="Preview imagen" style="display:block;width:44px;height:44px;border-radius:999px;border:1px solid #3b5ea5;object-fit:cover;margin-top:.25rem;" />
+            </div>
+          </div>
+          <div class="admin-panel-actions form-actions">
+            <button id="cancelStreamingCategoryModal" class="panel-btn" type="button">Cancelar</button>
+            <button id="saveStreamingCategoryModalBtn" class="panel-btn" type="button">Guardar streaming</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="streamingPriceModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card" style="max-width:460px;">
+        <div class="admin-head">
+          <strong>Editar precio</strong>
+          <button id="closeStreamingPriceModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div class="admin-game-form">
+          <div class="form-group">
+            <label for="streamingPriceModalCatalog">Catálogo</label>
+            <select id="streamingPriceModalCatalog"></select>
+          </div>
+          <div class="form-group">
+            <label for="streamingPriceModalType">Tipo</label>
+            <select id="streamingPriceModalType"><option value="1 PERFIL">1 PERFIL</option><option value="CUENTA COMPLETA">CUENTA COMPLETA</option></select>
+          </div>
+          <div class="form-group">
+            <label for="streamingPriceModalTime">Tiempo</label>
+            <select id="streamingPriceModalTime"><option value="MES">MES</option><option value="AÑO">AÑO</option></select>
+          </div>
+          <div class="form-group">
+            <label for="streamingPriceModalAmount">Precio ($)</label>
+            <input id="streamingPriceModalAmount" type="text" placeholder="Ej: 4.50" />
+          </div>
+          <div class="admin-panel-actions form-actions">
+            <button id="cancelStreamingPriceModal" class="panel-btn" type="button">Cancelar</button>
+            <button id="saveStreamingPriceModalBtn" class="panel-btn" type="button">Guardar cambios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="addPriceModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card" style="max-width:460px;">
+        <div class="admin-head">
+          <strong>Agregar precio</strong>
+          <button id="closeAddPriceModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div class="admin-game-form">
+          <div class="form-group">
+            <label for="addPriceCatalogSelect">Catálogo</label>
+            <select id="addPriceCatalogSelect"></select>
+          </div>
+          <div class="form-group">
+            <label for="addPriceTypeSelect">Tipo de cuenta</label>
+            <select id="addPriceTypeSelect"><option value="1 PERFIL">1 PERFIL</option><option value="CUENTA COMPLETA">CUENTA COMPLETA</option></select>
+          </div>
+          <div class="form-group">
+            <label for="addPriceTimeSelect">Tiempo</label>
+            <select id="addPriceTimeSelect"><option value="MES">MES</option><option value="AÑO">AÑO</option></select>
+          </div>
+          <div class="form-group">
+            <label for="addPriceAmountInput">Precio ($)</label>
+            <input id="addPriceAmountInput" type="text" placeholder="Ej: 4.50" />
+          </div>
+          <div class="admin-panel-actions form-actions">
+            <button id="cancelAddPriceModal" class="panel-btn" type="button">Cancelar</button>
+            <button id="saveAddPriceModalBtn" class="panel-btn" type="button">Guardar precio</button>
           </div>
         </div>
       </div>
@@ -2417,8 +2668,8 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="accountImageInput">Imagen (URL)</label>
-            <input id="accountImageInput" type="text" placeholder="URL de imagen de la cuenta" />
+            <label>Imagen</label>
+            <input id="accountImageInput" type="hidden" />
             <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
               <input id="accountImageFile" type="file" accept="image/*" />
               <button id="subirAccountImagenBtn" class="mini-btn" type="button">Subir imagen desde PC</button>
@@ -2467,7 +2718,7 @@
       const marketItemType = document.getElementById('marketItemType');
       const marketAmountToPay = document.getElementById('marketAmountToPay');
       const marketOpenTicketBtn = document.getElementById('marketOpenTicketBtn');
-      const marketActionButtons = document.querySelectorAll('.marketplace-action-btn[data-market-service]');
+      const marketActionButtons = document.querySelectorAll('.service-action-btn[data-market-service]');
       const gameWindowModal = document.getElementById('gameWindowModal');
       const gameWindow = document.getElementById('gameWindow');
       const gameWindowTitle = document.getElementById('gameWindowTitle');
@@ -2487,12 +2738,25 @@
       const accountsPanel = document.getElementById('accountsPanel');
       const accountsPanelList = document.getElementById('accountsPanelList');
       const boostingOptionsPanel = document.getElementById('boostingOptionsPanel');
+      const boostingButtonsView = document.getElementById('boostingButtonsView');
+      const boostProfBtn = document.getElementById('boostProfBtn');
+      const boostLevelBtn = document.getElementById('boostLevelBtn');
+      const boostBackBtn = document.getElementById('boostBackBtn');
+      const boostLevelForm = document.getElementById('boostLevelForm');
+      const boostCreateTicketBtn = document.getElementById('boostCreateTicketBtn');
+      const boostLevelGameTitle = document.getElementById('boostLevelGameTitle');
+      const boostCharacter = document.getElementById('boostCharacter');
+      const boostGame = document.getElementById('boostGame');
+      const boostServer = document.getElementById('boostServer');
+      const boostLevelFrom = document.getElementById('boostLevelFrom');
+      const boostLevelTo = document.getElementById('boostLevelTo');
+      const boostExtra = document.getElementById('boostExtra');
       const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
       const openRegister = document.getElementById('openRegister');
       const openLogin = document.getElementById('openLogin');
       const openProfile = document.getElementById('openProfile');
-      const DEFAULT_LOGO_DATA_URL = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 420%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 x2=%221%22%3E%3Cstop stop-color=%22%23110f0a%22/%3E%3Cstop offset=%221%22 stop-color=%22%231f1608%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22900%22 height=%22420%22 fill=%22%23070b15%22/%3E%3Crect x=%2226%22 y=%2226%22 width=%22848%22 height=%22368%22 rx=%2244%22 fill=%22url(%23g)%22 stroke=%22%23d8a83c%22 stroke-width=%226%22/%3E%3Ctext x=%22450%22 y=%22210%22 text-anchor=%22middle%22 fill=%22%23f6ca63%22 font-size=%22104%22 font-family=%22Arial%22 font-weight=%22800%22%3ETRADEHUB%3C/text%3E%3Ctext x=%22450%22 y=%22285%22 text-anchor=%22middle%22 fill=%22%23ececec%22 font-size=%2260%22 font-family=%22Arial%22 font-weight=%22700%22%3EMMORPG%3C/text%3E%3C/svg%3E';
+      const DEFAULT_LOGO_DATA_URL = 'https://i.imgur.com/BzQZCIH.png';
       const mainLogoImg = document.getElementById('mainLogoImg');
       const authMiniLogoImg = document.querySelector('.auth-mini-logo');
       const adminLogoImg = document.querySelector('.admin-logo');
@@ -2565,10 +2829,12 @@
       const serviceGold = document.getElementById('serviceGold');
       const customServiceInput = document.getElementById('customServiceInput');
       const customServiceEnabled = document.getElementById('customServiceEnabled');
+      const customServiceReplaceGold = document.getElementById('customServiceReplaceGold');
       const customServiceHideName = document.getElementById('customServiceHideName');
       const customServiceImage = document.getElementById('customServiceImage');
       const customServiceImageFile = document.getElementById('customServiceImageFile');
       const subirCustomServiceImagenBtn = document.getElementById('subirCustomServiceImagenBtn');
+      const removeCustomServiceBtn = document.getElementById('removeCustomServiceBtn');
       const previewImagenJuego = document.getElementById('previewImagenJuego');
       const previewNombreJuego = document.getElementById('previewNombreJuego');
       const previewDescripcionJuego = document.getElementById('previewDescripcionJuego');
@@ -2612,16 +2878,66 @@
       const marketTypeGiftcards = document.getElementById('marketTypeGiftcards');
       const marketCategoryName = document.getElementById('marketCategoryName');
       const marketCategoryImage = document.getElementById('marketCategoryImage');
+      const marketCategoryTitle = document.getElementById('marketCategoryTitle');
+      const marketCategoryFormWrap = document.getElementById('marketCategoryFormWrap');
+      const marketCategoryFormActions = document.getElementById('marketCategoryFormActions');
+      const openStreamingCategoryFormBtn = document.getElementById('openStreamingCategoryFormBtn');
+      const cancelStreamingCategoryFormBtn = document.getElementById('cancelStreamingCategoryFormBtn');
+      const streamingCategoryModal = document.getElementById('streamingCategoryModal');
+      const closeStreamingCategoryModal = document.getElementById('closeStreamingCategoryModal');
+      const cancelStreamingCategoryModal = document.getElementById('cancelStreamingCategoryModal');
+      const saveStreamingCategoryModalBtn = document.getElementById('saveStreamingCategoryModalBtn');
+      const streamingCategoryNameModal = document.getElementById('streamingCategoryNameModal');
+      const streamingCategoryImageModal = document.getElementById('streamingCategoryImageModal');
+      const streamingCategoryImageFileModal = document.getElementById('streamingCategoryImageFileModal');
+      const uploadStreamingCategoryImageModalBtn = document.getElementById('uploadStreamingCategoryImageModalBtn');
+      const streamingCategoryPreviewImg = document.getElementById('streamingCategoryPreviewImg');
+      const streamingPriceModal = document.getElementById('streamingPriceModal');
+      const closeStreamingPriceModal = document.getElementById('closeStreamingPriceModal');
+      const cancelStreamingPriceModal = document.getElementById('cancelStreamingPriceModal');
+      const saveStreamingPriceModalBtn = document.getElementById('saveStreamingPriceModalBtn');
+      const streamingPriceModalCatalog = document.getElementById('streamingPriceModalCatalog');
+      const streamingPriceModalType = document.getElementById('streamingPriceModalType');
+      const streamingPriceModalTime = document.getElementById('streamingPriceModalTime');
+      const streamingPriceModalAmount = document.getElementById('streamingPriceModalAmount');
+      const marketCategoryImageFile = document.getElementById('marketCategoryImageFile');
+      const uploadMarketCategoryImageBtn = document.getElementById('uploadMarketCategoryImageBtn');
       const saveMarketCategoryBtn = document.getElementById('saveMarketCategoryBtn');
-      const marketPriceName = document.getElementById('marketPriceName');
-      const marketPriceValue = document.getElementById('marketPriceValue');
-      const saveMarketPriceBtn = document.getElementById('saveMarketPriceBtn');
+      const openAddPriceModalBtn = document.getElementById('openAddPriceModalBtn');
+      const addPriceModal = document.getElementById('addPriceModal');
+      const closeAddPriceModal = document.getElementById('closeAddPriceModal');
+      const cancelAddPriceModal = document.getElementById('cancelAddPriceModal');
+      const saveAddPriceModalBtn = document.getElementById('saveAddPriceModalBtn');
+      const addPriceCatalogSelect = document.getElementById('addPriceCatalogSelect');
+      const addPriceTypeSelect = document.getElementById('addPriceTypeSelect');
+      const addPriceTimeSelect = document.getElementById('addPriceTimeSelect');
+      const addPriceAmountInput = document.getElementById('addPriceAmountInput');
+      const marketPriceTitle = document.getElementById('marketPriceTitle');
       const marketAdminCategoryList = document.getElementById('marketAdminCategoryList');
       const marketAdminPriceList = document.getElementById('marketAdminPriceList');
+      const marketViewCatalogTab = document.getElementById('marketViewCatalogTab');
+      const marketViewPricesTab = document.getElementById('marketViewPricesTab');
+      const marketCatalogSection = document.getElementById('marketCatalogSection');
+      const marketPricesSection = document.getElementById('marketPricesSection');
+      const marketPriceListSection = document.getElementById('marketPriceListSection');
+      const marketAdminPriceTitle = document.getElementById('marketAdminPriceTitle');
+      const streamingCategoryGrid = document.getElementById('streamingCategoryGrid');
+      const streamingSearch = document.getElementById('streamingSearch');
+      const streamingModal = document.getElementById('streamingModal');
+      const streamingModalTitle = document.getElementById('streamingModalTitle');
+      const streamingModalIcon = document.getElementById('streamingModalIcon');
+      const streamingModalServiceName = document.getElementById('streamingModalServiceName');
+      const streamingModalTicketBtn = document.getElementById('streamingModalTicketBtn');
+      const closeStreamingModal = document.getElementById('closeStreamingModal');
+      const streamingCustomerName = document.getElementById('streamingCustomerName');
+      const streamingAccountType = document.getElementById('streamingAccountType');
+      const streamingDuration = document.getElementById('streamingDuration');
+      const streamingPriceResult = document.getElementById('streamingPriceResult');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
       const abrirFormularioCategoriaOro = document.getElementById('abrirFormularioCategoriaOro');
+      const limpiarCategoriasBtn = document.getElementById('limpiarCategoriasBtn');
       const abrirFormularioCategoriaCuentas = document.getElementById('abrirFormularioCategoriaCuentas');
       const abrirFormularioCategoriaBosteo = document.getElementById('abrirFormularioCategoriaBosteo');
       const serverGameSelect = document.getElementById('serverGameSelect');
@@ -2650,32 +2966,54 @@
       const categoriasVistaLista = document.getElementById('categoriasVistaLista');
       const cerrarCategoriasVista = document.getElementById('cerrarCategoriasVista');
       const defaultServices = ['gold', 'boosting', 'accounts'];
+      const FIXED_GOLD_IMG = 'https://i.imgur.com/c5ktaxz.png';
+      const FIXED_BOOSTING_IMG = 'https://i.imgur.com/9QHS0xN.png';
+      const FIXED_ACCOUNTS_IMG = 'https://i.imgur.com/MfZK9dg.png';
+      const FIXED_SELL_GOLD_IMG = 'https://i.imgur.com/ODy7Rqb.png';
       const serviceCatalog = {
         boosting: {
           className: 'boost',
           title: 'BOOSTING',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006561200472115/ChatGPT_Image_20_abr_2026_06_41_28_p.m..png?ex=69f384ee&is=69f2336e&hm=7936fade266d5772c87fb455c134c898022aacc484e8b04be98260e0e9da3790&'
+          image: FIXED_BOOSTING_IMG
         },
         accounts: {
           className: 'accounts',
           title: 'ACCOUNTS',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006645220905070/ChatGPT_Image_20_abr_2026_06_43_30_p.m..png?ex=69f38502&is=69f23382&hm=6a9e1ab5f0fb0aa0b1c2659e9e502136b09924a473bbd565bc850736c4c152fa&'
+          image: FIXED_ACCOUNTS_IMG
         },
         gold: {
           className: 'gold',
           title: 'GOLD',
-          image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496006601390428240/ChatGPT_Image_20_abr_2026_06_42_34_p.m..png?ex=69f384f8&is=69f23378&hm=1cc06e24f43ce71b54bf4549f0027bea82423cabfa8c1eee4949eb779f5ba76a&'
+          image: FIXED_GOLD_IMG
         }
       };
-      const SUPABASE_URL =
-        window.TRADEHUD_SUPABASE_URL ||
-        window.NEXT_PUBLIC_SUPABASE_URL ||
-        'https://lveocmzvfndvzjdqknnf.supabase.co';
-      const SUPABASE_ANON_KEY =
+      const sanitizeEnvValue = (value, expected = 'text') => {
+        if (!value) return '';
+        const raw = String(value).replace(/\\n/g, '\n').trim();
+        if (!raw) return '';
+        if (expected === 'url') {
+          const match = raw.match(/https:\/\/[a-z0-9-]+\.supabase\.co/i);
+          return match ? match[0] : raw.split(/\s+/)[0];
+        }
+        if (expected === 'key') {
+          const jwtMatch = raw.match(/eyJ[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+/);
+          if (jwtMatch) return jwtMatch[0];
+          const publishableMatch = raw.match(/sb_publishable_[a-zA-Z0-9._-]+/);
+          if (publishableMatch) return publishableMatch[0];
+        }
+        return raw.split(/\s+/)[0];
+      };
+      const SUPABASE_URL = sanitizeEnvValue(
+        window.TRADEHUD_SUPABASE_URL || window.NEXT_PUBLIC_SUPABASE_URL || 'https://lveocmzvfndvzjdqknnf.supabase.co',
+        'url'
+      );
+      const SUPABASE_ANON_KEY = sanitizeEnvValue(
         window.TRADEHUD_SUPABASE_ANON_KEY ||
         window.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
         window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-        'sb_publishable_So-MKH0I5IJ_kmSweJo1IQ_H5kxNgMG';
+        'sb_publishable_So-MKH0I5IJ_kmSweJo1IQ_H5kxNgMG',
+        'key'
+      );
       const isServiceRoleKey = (() => {
         try {
           if (!SUPABASE_ANON_KEY.includes('.')) return false;
@@ -2758,10 +3096,11 @@
 
       function toggleCustomServiceFields() {
         const enabled = customServiceEnabled.checked;
-        [customServiceInput, customServiceHideName, customServiceImageFile, subirCustomServiceImagenBtn].forEach((el) => {
+        [customServiceInput, customServiceReplaceGold, customServiceHideName, customServiceImage, customServiceImageFile, subirCustomServiceImagenBtn].forEach((el) => {
           if (!el) return;
           el.disabled = !enabled;
         });
+        if (removeCustomServiceBtn) removeCustomServiceBtn.disabled = false;
       }
       const marketCatalog = {
         p2p: {
@@ -2774,14 +3113,46 @@
         },
         streaming: {
           title: 'Streaming',
-          categories: [{ name: 'Streaming apps', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&' }],
-          prices: ['Netflix perfil 4.50$', 'Disney perfil 3$', 'Prime Video perfil 3$', 'HBO perfil 3$']
+          categories: [
+            { name: 'Netflix', image: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg' },
+            { name: 'Disney', image: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg' },
+            { name: 'Prime Video', image: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png' },
+            { name: 'HBO', image: 'https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg' },
+            { name: 'Crunchyroll', image: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Crunchyroll_Logo.png' },
+            { name: 'YouTube', image: 'https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg' },
+            { name: 'Chat GPT', image: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg' },
+            { name: 'CapCut Pro', image: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/CapCut_logo.svg' },
+            { name: 'Paramount', image: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Paramount%2B_logo.svg' },
+            { name: 'Apple TV', image: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg' },
+            { name: 'CAMVA EDU PRO', image: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg' }
+          ],
+          prices: [
+            'Netflix - 1 PERFIL 4.50$ (MES)',
+            'Netflix - CUENTA COMPLETA 17$ (MES)',
+            'Disney - 1 PERFIL 3$ (MES)',
+            'Disney - CUENTA COMPLETA 15$ (MES)',
+            'Prime Video - 1 PERFIL 3$ (MES)',
+            'HBO - 1 PERFIL 3$ (MES)',
+            'HBO - CUENTA COMPLETA 10$ (MES)',
+            'Crunchyroll - 1 PERFIL 2$ (MES)',
+            'YouTube - 1 PERFIL 3$ (MES)',
+            'Chat GPT - 1 PERFIL 4$ (MES)',
+            'CapCut Pro - 1 PERFIL 3$ (MES)',
+            'Paramount - 1 PERFIL 2.50$ (MES)',
+            'Apple TV - 1 PERFIL 3$ (MES)',
+            'CAMVA EDU PRO - 1 AÑO 3$'
+          ]
         },
         giftcards: {
           title: 'GiftCards',
           categories: [{ name: 'GiftCards gaming', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' }],
           prices: ['10$ - 13$', '20$ - 26$', '50$ - 65$', '100$ - 130$']
         }
+      };
+      const marketDefaultImages = {
+        p2p: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&',
+        streaming: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&',
+        giftcards: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&'
       };
       const gameServers = [
         { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
@@ -2806,6 +3177,8 @@
         { game: 'World of Warcraft', server: 'Ragnaros', amount: 300, price: 10.2 }
       ];
       let activeCategoryType = 'oro';
+      let editingStreamingCategoryIndex = null;
+      let editingStreamingPriceIndex = null;
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
@@ -2813,8 +3186,9 @@
       let currentUser = null;
       let currentProfile = null;
       let recoveryMode = false;
-      let activeMarketType = 'p2p';
+      let activeMarketType = 'streaming';
       let selectedMarketCategory = '';
+      let dbConnectionNoticeShown = false;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
 
       function isAdminUser(user, profile = null) {
@@ -2825,23 +3199,49 @@
       async function loadMarketCatalogFromSupabase() {
         if (!supabaseClient) return;
         const { data, error } = await supabaseClient
-          .from('market_catalog_entries')
+          .from('service_catalog_entries')
           .select('id,service_type,entry_type,category_name,item_name,image,value,sort_order,created_at')
           .order('sort_order', { ascending: true })
           .order('created_at', { ascending: true });
         if (error || !Array.isArray(data)) return;
+        if (!data.length) {
+          renderStreamingSection();
+          return;
+        }
+        const grouped = { p2p: [], streaming: [], giftcards: [] };
+        data.forEach((row) => {
+          if (!grouped[row.service_type]) return;
+          grouped[row.service_type].push(row);
+        });
         ['p2p', 'streaming', 'giftcards'].forEach((key) => {
-          marketCatalog[key].categories = [];
-          marketCatalog[key].prices = [];
+          if (grouped[key].length) {
+            marketCatalog[key].categories = [];
+            marketCatalog[key].prices = [];
+          }
         });
         data.forEach((row) => {
           if (!marketCatalog[row.service_type]) return;
           if (row.entry_type === 'category') {
-            marketCatalog[row.service_type].categories.push({ name: row.category_name || row.item_name || '', image: row.image || '' });
+            marketCatalog[row.service_type].categories.push({ id: row.id || null, name: row.category_name || row.item_name || '', image: row.image || '' });
           } else if (row.entry_type === 'price') {
-            marketCatalog[row.service_type].prices.push(row.value || row.item_name || row.category_name || '');
+            const raw = row.value || row.item_name || row.category_name || '';
+            const composed = raw.toLowerCase().includes((row.category_name || '').toLowerCase())
+              ? raw
+              : `${row.category_name || ''} - ${raw}`.trim();
+            marketCatalog[row.service_type].prices.push(composed);
           }
         });
+        Object.keys(marketCatalog).forEach((key) => {
+          const seenCategories = new Map();
+          marketCatalog[key].categories.forEach((cat) => {
+            const name = (cat.name || '').trim();
+            if (!name || seenCategories.has(name.toLowerCase())) return;
+            seenCategories.set(name.toLowerCase(), cat);
+          });
+          marketCatalog[key].categories = Array.from(seenCategories.values());
+          marketCatalog[key].prices = [...new Set(marketCatalog[key].prices.map((p) => p.trim()).filter(Boolean))];
+        });
+        renderStreamingSection();
       }
 
       function renderGoldOrderProducts() {
@@ -2923,11 +3323,17 @@
 
       function openBoostingOptionsPanel() {
         boostingOptionsPanel.classList.remove('hidden');
+        if (boostingButtonsView) boostingButtonsView.style.display = 'flex';
+        if (boostLevelForm) boostLevelForm.classList.add('hidden');
+        if (boostGame && activeOrderGame?.name) boostGame.value = activeOrderGame.name;
+        if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Boosting · ${activeOrderGame?.name || 'Juego seleccionado'}`;
         gameWindow.classList.add('gold-focus');
       }
 
       function closeBoostingOptionsPanel() {
         boostingOptionsPanel.classList.add('hidden');
+        if (boostingButtonsView) boostingButtonsView.style.display = 'flex';
+        if (boostLevelForm) boostLevelForm.classList.add('hidden');
         if (goldOrderPanel.classList.contains('hidden') && accountsPanel.classList.contains('hidden')) {
           gameWindow.classList.remove('gold-focus');
         }
@@ -3076,13 +3482,16 @@
       function openGamePage(index) {
         const game = games[index];
         if (!game) return;
-        const gameServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
+        const rawServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
+        const gameServices = [...new Set(rawServices.map((item) => String(item || '').toLowerCase().trim()).filter(Boolean))];
         const customMeta = customServiceMetaByGame[game.name] || null;
+        const replaceGoldWithCustom = Boolean(customMeta?.replaceGold && gameServices.some((service) => !['boosting', 'accounts', 'gold'].includes(service)));
         gameWindowTitle.textContent = game.name;
         gameWindowDesc.textContent = game.description || '';
         gameWindowIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
         gameWindowOptions.innerHTML = '';
         serviceRenderOrder.filter((serviceKey) => gameServices.includes(serviceKey)).forEach((serviceKey) => {
+          if (serviceKey === 'gold' && replaceGoldWithCustom) return;
           const config = serviceCatalog[serviceKey];
           if (!config) return;
           const button = document.createElement('button');
@@ -3111,8 +3520,12 @@
           });
           gameWindowOptions.appendChild(button);
         });
+        const customServiceForReplacement = replaceGoldWithCustom
+          ? gameServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service))
+          : null;
         gameServices
           .filter((serviceKey) => !serviceRenderOrder.includes(serviceKey))
+          .filter((serviceKey) => !(replaceGoldWithCustom && serviceKey === customServiceForReplacement))
           .forEach((serviceKey) => {
             const button = document.createElement('button');
             button.className = 'game-option boost';
@@ -3127,6 +3540,23 @@
             });
             gameWindowOptions.appendChild(button);
           });
+        if (replaceGoldWithCustom) {
+          const customServiceKey = customServiceForReplacement;
+          if (customServiceKey) {
+            const onlyImage = Boolean(customMeta?.hideName);
+            const button = document.createElement('button');
+            button.className = 'game-option gold';
+            button.type = 'button';
+            button.innerHTML = `<img src="${customMeta?.image || serviceCatalog.gold.image}" alt="${customServiceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${customServiceKey}</span>`}`;
+            button.addEventListener('click', () => {
+              openGoldOrderPanel(game);
+              closeAccountsPanel();
+              closeBoostingOptionsPanel();
+              showAdminNotice('Se abrió el apartado de ORO para la categoría personalizada.', 'ok');
+            });
+            gameWindowOptions.prepend(button);
+          }
+        }
         if (!gameWindowOptions.children.length) {
           gameWindowOptions.innerHTML = '';
         }
@@ -3188,7 +3618,7 @@
         bucket.forEach((category, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p><button class="mini-btn danger" type="button" data-remove-category="${index}" data-category-type="${type}">Eliminar</button>`;
+          item.innerHTML = `<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-category="${index}" data-category-type="${type}">Editar</button><button class="mini-btn danger" type="button" data-remove-category="${index}" data-category-type="${type}">Eliminar</button></div>`;
           target.appendChild(item);
         });
       }
@@ -3210,14 +3640,20 @@
       }
 
       function renderMarketCatalog(type = 'p2p') {
-        if (!marketServiceTitle || !marketCategoryGrid || !marketPriceList || !marketOrderPanel) return;
         const bucket = marketCatalog[type];
         if (!bucket) return;
-        marketServiceTitle.textContent = type === 'giftcards'
-          ? 'GiftCards · Selecciona una categoría'
-          : `${bucket.title} · Selecciona categoría para ver apartados y crear ticket`;
-        marketCategoryGrid.innerHTML = '';
-        marketPriceList.innerHTML = '';
+        const hasMarketUi = Boolean(marketServiceTitle && marketCategoryGrid && marketPriceList && marketOrderPanel);
+        if (hasMarketUi) {
+          marketServiceTitle.textContent = type === 'giftcards'
+            ? 'GiftCards · Selecciona una categoría'
+            : `${bucket.title} · Selecciona categoría para ver apartados y crear ticket`;
+          marketCategoryGrid.innerHTML = '';
+          marketPriceList.innerHTML = '';
+          if (type === 'streaming') {
+            marketCategoryGrid.insertAdjacentHTML('beforeend', '<p class="auth-hint" style="grid-column:1/-1;margin:0 0 .25rem 0;">Listado de streaming</p>');
+            marketPriceList.insertAdjacentHTML('beforeend', '<p class="auth-hint" style="margin:0 0 .4rem 0;">Precios streaming</p>');
+          }
+        }
 
         const renderCategoryItems = (categoryName) => {
           const term = categoryName.toLowerCase();
@@ -3241,7 +3677,7 @@
           });
         };
 
-        bucket.categories.forEach((cat, index) => {
+        if (hasMarketUi) bucket.categories.forEach((cat, index) => {
           const card = document.createElement('button');
           card.type = 'button';
           card.className = 'account-card';
@@ -3265,48 +3701,126 @@
             renderCategoryItems(cat.name);
           }
         });
-        if (type === 'giftcards') {
+        if (hasMarketUi && type === 'p2p' && !bucket.categories.length) {
+          marketOrderPanel.classList.remove('hidden');
+          marketSelectedService.value = bucket.title;
+          marketSelectedCategory.value = 'Nueva categoría P2P';
+          marketItemType.value = '';
+          marketAmountToPay.value = '';
+          marketPriceList.innerHTML = '<p class="auth-hint">Ventana P2P lista. Agrega categorías desde panel admin.</p>';
+        }
+        if (hasMarketUi && type === 'giftcards') {
           marketOrderPanel.classList.add('hidden');
           marketPriceList.innerHTML = '<p class="auth-hint">Elige una categoría de giftcard para ver especificaciones.</p>';
         }
         renderMarketAdminLists(type);
+        renderStreamingSection();
       }
 
       function renderMarketAdminLists(type = activeMarketType) {
         if (!marketAdminCategoryList || !marketAdminPriceList) return;
         const bucket = marketCatalog[type];
         if (!bucket) return;
+        if (marketAdminPriceTitle) {
+          if (type === 'streaming') marketAdminPriceTitle.textContent = 'Precios de streaming';
+          else if (type === 'giftcards') marketAdminPriceTitle.textContent = 'Precios de GiftCards';
+          else marketAdminPriceTitle.textContent = 'Precios de P2P';
+        }
         marketAdminCategoryList.innerHTML = '';
+        if (!bucket.categories.length) {
+          marketAdminCategoryList.innerHTML = '<p class="auth-hint">Sin categorías cargadas. Usa + Agregar streaming.</p>';
+        }
         bucket.categories.forEach((cat, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<strong>${cat.name}</strong><p class="admin-game-desc">${cat.image}</p><button class="mini-btn danger" type="button" data-remove-market-category="${index}">Eliminar</button>`;
+          item.innerHTML = `<div style="display:flex;align-items:center;gap:.5rem;"><img src="${cat.image || ''}" alt="${cat.name}" style="width:32px;height:32px;border-radius:999px;border:1px solid #3b5ea5;object-fit:cover;" /><strong>${cat.name}</strong></div><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-market-category="${index}">Editar</button><button class="mini-btn danger" type="button" data-remove-market-category="${index}">Eliminar</button></div>`;
           marketAdminCategoryList.appendChild(item);
         });
         marketAdminPriceList.innerHTML = '';
         bucket.prices.forEach((price, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<strong>${price}</strong><button class="mini-btn danger" type="button" data-remove-market-price="${index}">Eliminar</button>`;
+          item.innerHTML = `<strong>${price}</strong><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-market-price="${index}">Editar</button><button class="mini-btn danger" type="button" data-remove-market-price="${index}">Eliminar</button></div>`;
           marketAdminPriceList.appendChild(item);
         });
       }
 
-      function setActiveMarketType(type = 'p2p') {
+      function renderStreamingSection() {
+        if (!streamingCategoryGrid) return;
+        const bucket = marketCatalog.streaming;
+        streamingCategoryGrid.innerHTML = '';
+        const term = streamingSearch?.value?.trim().toLowerCase?.() || '';
+        const categories = bucket.categories.filter((cat) => (cat.name || '').toLowerCase().includes(term));
+        const openStreamingModal = (name) => {
+          const prices = bucket.prices.filter((price) => price.toLowerCase().includes(name.toLowerCase()));
+          const selectedCategory = bucket.categories.find((cat) => cat.name === name);
+          const parsedPrices = prices.map((entry) => {
+            const upper = entry.toUpperCase();
+            const isFull = upper.includes('CUENTA COMPLETA');
+            const isYear = upper.includes('AÑO');
+            const match = entry.match(/(\d+(?:[.,]\d+)?)\$/);
+            const amount = match ? `${match[1]}$` : entry;
+            return {
+              raw: entry,
+              type: isFull ? 'Cuenta completa' : 'Perfil',
+              duration: isYear ? '1 año' : '1 mes',
+              amount
+            };
+          });
+          streamingModalTitle.textContent = name;
+          streamingModalServiceName.textContent = name;
+          streamingModalIcon.innerHTML = `<img src="${selectedCategory?.image || ''}" alt="${name}" />`;
+          const availableTypes = [...new Set(parsedPrices.map((p) => p.type))];
+          streamingAccountType.innerHTML = availableTypes.map((t) => `<option value="${t}">${t}</option>`).join('');
+          const availableDurations = [...new Set(parsedPrices.map((p) => p.duration))];
+          streamingDuration.innerHTML = availableDurations.map((d) => `<option value="${d}">${d}</option>`).join('');
+          const updatePrice = () => {
+            const selected = parsedPrices.find((p) => p.type === streamingAccountType.value && p.duration === streamingDuration.value)
+              || parsedPrices.find((p) => p.type === streamingAccountType.value)
+              || parsedPrices[0];
+            streamingPriceResult.value = selected ? selected.amount : 'Sin precio disponible';
+            streamingModalTicketBtn.dataset.priceRaw = selected?.raw || '';
+          };
+          streamingAccountType.onchange = updatePrice;
+          streamingDuration.onchange = updatePrice;
+          updatePrice();
+          streamingModalTicketBtn.dataset.category = name;
+          streamingModal.classList.add('show');
+          streamingModal.setAttribute('aria-hidden', 'false');
+        };
+        categories.forEach((cat, index) => {
+          const btn = document.createElement('button');
+          btn.className = 'server';
+          btn.type = 'button';
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span>`;
+          btn.addEventListener('click', () => {
+            openStreamingModal(cat.name);
+          });
+          streamingCategoryGrid.appendChild(btn);
+        });
+      }
+
+      function setActiveMarketType(type = 'streaming') {
         if (!marketDetailsWrap || !marketOrderPanel) return;
         activeMarketType = type;
         selectedMarketCategory = '';
         marketOrderPanel.classList.add('hidden');
-        marketDetailsWrap.classList.toggle('hidden', type !== 'giftcards');
+        marketDetailsWrap.classList.remove('hidden');
         marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
         [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].filter(Boolean).forEach((btn) => {
           btn.classList.toggle('active', btn.id.toLowerCase().includes(type));
         });
-        if (type === 'giftcards') {
-          renderMarketCatalog(type);
-        } else {
-          renderMarketAdminLists(type);
-        }
+        if (marketCategoryTitle) marketCategoryTitle.textContent = type === 'streaming' ? 'Listado de streaming' : `Listado de ${marketCatalog[type]?.title || type}`;
+        if (marketPriceTitle) marketPriceTitle.textContent = type === 'streaming' ? 'Precios streaming' : `Precios ${marketCatalog[type]?.title || type}`;
+        if (openStreamingCategoryFormBtn) openStreamingCategoryFormBtn.textContent = type === 'streaming' ? '+ Agregar streaming' : '+ Agregar categoría';
+        marketCategoryFormWrap?.classList.add('hidden');
+        marketCategoryFormActions?.classList.add('hidden');
+        if (marketViewCatalogTab) marketViewCatalogTab.classList.add('active');
+        if (marketViewPricesTab) marketViewPricesTab.classList.remove('active');
+        marketCatalogSection?.classList.remove('hidden');
+        marketPricesSection?.classList.add('hidden');
+        marketPriceListSection?.classList.add('hidden');
+        renderMarketCatalog(type);
       }
 
       function renderCategoriasVista() {
@@ -3401,6 +3915,7 @@
         customServiceInput.value = selectedServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service)) || '';
         const meta = customServiceMetaByGame[game.name] || {};
         customServiceEnabled.checked = Boolean(meta.enabled || customServiceInput.value);
+        customServiceReplaceGold.checked = Boolean(meta.replaceGold);
         customServiceHideName.checked = Boolean(meta.hideName);
         customServiceImage.value = meta.image || '';
         toggleCustomServiceFields();
@@ -3415,6 +3930,7 @@
         serviceAccounts.checked = true;
         serviceGold.checked = true;
         customServiceEnabled.checked = false;
+        customServiceReplaceGold.checked = false;
         customServiceInput.value = '';
         customServiceHideName.checked = false;
         customServiceImage.value = '';
@@ -3428,7 +3944,8 @@
         if (serviceAccounts.checked) services.push('accounts');
         if (serviceGold.checked) services.push('gold');
         if (customServiceEnabled.checked && customServiceInput.value.trim()) services.push(customServiceInput.value.trim().toLowerCase());
-        return services.length ? services : [...defaultServices];
+        const unique = [...new Set(services.map((item) => String(item || '').toLowerCase().trim()).filter(Boolean))];
+        return unique.length ? unique : [...defaultServices];
       }
 
       function updateGamePreview() {
@@ -3474,9 +3991,39 @@
 
       function setDbStatus(message, kind = 'info') {
         if (!dbStatus) return;
+        dbStatus.style.display = 'inline-flex';
         dbStatus.textContent = `Base de datos: ${message}`;
         dbStatus.classList.remove('ok', 'warn');
         if (kind === 'ok' || kind === 'warn') dbStatus.classList.add(kind);
+        clearTimeout(setDbStatus._timer);
+        setDbStatus._timer = setTimeout(() => {
+          dbStatus.style.display = 'none';
+        }, 5000);
+      }
+
+      async function fileToOptimizedDataUrl(file, maxSize = 1280, quality = 0.82) {
+        const sourceDataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result || ''));
+          reader.onerror = () => reject(new Error('No se pudo leer el archivo.'));
+          reader.readAsDataURL(file);
+        });
+        const mime = (file?.type || '').toLowerCase();
+        if (!mime.startsWith('image/')) return sourceDataUrl;
+        const bitmap = await new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error('No se pudo procesar la imagen.'));
+          img.src = sourceDataUrl;
+        });
+        const scale = Math.min(1, maxSize / Math.max(bitmap.width || 1, bitmap.height || 1));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round((bitmap.width || 1) * scale));
+        canvas.height = Math.max(1, Math.round((bitmap.height || 1) * scale));
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return sourceDataUrl;
+        ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL('image/webp', quality);
       }
 
       async function uploadImageFromPc(file, folder = 'general') {
@@ -3484,13 +4031,7 @@
           showAdminNotice('Selecciona una imagen primero.', 'warn');
           return null;
         }
-        const toDataUrl = () => new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(String(reader.result || ''));
-          reader.onerror = () => reject(new Error('No se pudo leer el archivo.'));
-          reader.readAsDataURL(file);
-        });
-        const dataUrl = await toDataUrl();
+        const dataUrl = await fileToOptimizedDataUrl(file);
         // Política actual: persistir SIEMPRE en data URL para evitar enlaces rotos/borrados.
         // Opcional: también intenta subir a Storage para respaldo, sin bloquear el flujo principal.
         if (!supabaseClient) return dataUrl;
@@ -3502,6 +4043,9 @@
           contentType: file.type || 'image/png'
         });
         if (uploadError) showAdminNotice(`Respaldo en Storage falló (${uploadError.message}), se guardó en data URL.`, 'warn');
+        if (dataUrl.length > 2_000_000) {
+          showAdminNotice('Imagen muy grande. Se comprimió en data URL, pero si falla al guardar usa una imagen más liviana.', 'warn');
+        }
         return dataUrl;
       }
 
@@ -3522,28 +4066,46 @@
       async function syncFromSupabase() {
         if (isServiceRoleKey) {
           showAdminNotice('Clave bloqueada: detectamos service_role. Usa SOLO la anon public key en frontend.', 'warn');
-          showDbStatus('Base de datos NO conectada (clave inválida).', 'warn');
           setDbStatus('error de configuración (service_role detectada)', 'warn');
           return;
         }
         if (!supabaseClient) {
           showAdminNotice('Supabase no configurado. Define URL+ANON key válidas en window.TRADEHUD_SUPABASE_URL y window.TRADEHUD_SUPABASE_ANON_KEY.', 'warn');
-          showDbStatus('Base de datos NO conectada (falta configuración).', 'warn');
           setDbStatus('sin configurar (falta URL o ANON KEY)', 'warn');
-          showDbStatus('Falta configurar Supabase URL y ANON KEY.', 'warn');
           return;
         }
-        const [{ data: gamesData, error: gamesError }, { data: categoriesData, error: categoriesError }] = await Promise.all([
-          supabaseClient.from('games').select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name').order('created_at', { ascending: true }),
+        let gamesResult = await supabaseClient
+          .from('games')
+          .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name,replace_gold_with_custom')
+          .order('created_at', { ascending: true });
+        const gamesColumnError = gamesResult.error?.message?.toLowerCase() || '';
+        if (gamesColumnError.includes('custom_service_enabled') || gamesColumnError.includes('custom_service_name') || gamesColumnError.includes('custom_service_image') || gamesColumnError.includes('custom_service_hide_name') || gamesColumnError.includes('replace_gold_with_custom')) {
+          gamesResult = await supabaseClient
+            .from('games')
+            .select('id,name,icon,description,services')
+            .order('created_at', { ascending: true });
+          if (!gamesResult.error) {
+            gamesResult.data = (gamesResult.data || []).map((row) => ({
+              ...row,
+              custom_service_enabled: false,
+              custom_service_name: '',
+              custom_service_image: '',
+              custom_service_hide_name: false,
+              replace_gold_with_custom: false
+            }));
+            showAdminNotice('Faltan columnas custom_service_* en games. Cargado en modo compatibilidad. Ejecuta el schema actualizado.', 'warn');
+          }
+        }
+        const [{ data: categoriesData, error: categoriesError }] = await Promise.all([
           supabaseClient.from('gold_categories').select('id,game,name,description').order('created_at', { ascending: true })
         ]);
+        const { data: gamesData, error: gamesError } = gamesResult;
         if (gamesError || categoriesError) {
           if (gamesError?.message?.toLowerCase().includes('services')) {
             showAdminNotice('Falta la columna "services" en la tabla games de Supabase.', 'warn');
           } else {
             const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
             showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
-            showDbStatus('Base de datos no conectada. Verifica URL, ANON KEY y políticas RLS.', 'warn');
             setDbStatus(`no conectada: ${detail}`.slice(0, 120), 'warn');
           }
           return;
@@ -3555,7 +4117,18 @@
             name: row.name,
             icon: row.icon || existingIconByName.get(normalizeGameName(row.name)) || albionGameIcon,
             description: row.description || '',
-            services: Array.isArray(row.services) && row.services.length ? row.services : [...defaultServices]
+            services: (() => {
+              const clean = Array.isArray(row.services)
+                ? row.services
+                    .map((service) => String(service || '').trim().toLowerCase())
+                    .filter(Boolean)
+                : [];
+              if (row.custom_service_enabled && row.custom_service_name) {
+                const customName = String(row.custom_service_name).trim().toLowerCase();
+                if (customName && !clean.includes(customName)) clean.push(customName);
+              }
+              return clean.length ? clean : [...defaultServices];
+            })()
           })));
           games.splice(0, games.length, ...uniqueGames);
           (gamesData || []).forEach((row) => {
@@ -3563,7 +4136,8 @@
             customServiceMetaByGame[row.name] = {
               enabled: Boolean(row.custom_service_enabled),
               image: row.custom_service_image || '',
-              hideName: Boolean(row.custom_service_hide_name)
+              hideName: Boolean(row.custom_service_hide_name),
+              replaceGold: Boolean(row.replace_gold_with_custom)
             };
           });
         }
@@ -3575,8 +4149,10 @@
             description: row.description || 'Sin descripción.'
           })));
         }
-        showAdminNotice(`Conectado a Supabase correctamente. Juegos: ${gamesData?.length || 0}, categorías: ${categoriesData?.length || 0}.`, 'ok');
-        showDbStatus('✅ Base conectada correctamente.', 'ok');
+        if (!dbConnectionNoticeShown) {
+          showAdminNotice(`Conectado a Supabase correctamente. Juegos: ${gamesData?.length || 0}, categorías: ${categoriesData?.length || 0}.`, 'ok');
+          dbConnectionNoticeShown = true;
+        }
         setDbStatus('conectada correctamente', 'ok');
       }
 
@@ -3587,75 +4163,84 @@
           .select('key,image_url');
         if (error || !Array.isArray(data)) return;
         const byKey = Object.fromEntries(data.map((row) => [row.key, row.image_url]).filter((row) => row[1]));
-        const savedLogo = byKey.logo_main || DEFAULT_LOGO_DATA_URL;
+        const legacyLogoDetected = String(byKey.logo_main || '').startsWith('data:image/svg+xml');
+        const savedLogo = legacyLogoDetected ? DEFAULT_LOGO_DATA_URL : (byKey.logo_main || DEFAULT_LOGO_DATA_URL);
         if (mainLogoImg) mainLogoImg.src = savedLogo;
         if (authMiniLogoImg) authMiniLogoImg.src = savedLogo;
         if (adminLogoImg) adminLogoImg.src = savedLogo;
-        if (byKey.service_sell_gold && sellGoldImg) sellGoldImg.src = byKey.service_sell_gold;
-        if (byKey.service_gold) serviceCatalog.gold.image = byKey.service_gold;
-        if (byKey.service_boosting) serviceCatalog.boosting.image = byKey.service_boosting;
-        if (byKey.service_accounts) serviceCatalog.accounts.image = byKey.service_accounts;
+        if (sellGoldImg) sellGoldImg.src = FIXED_SELL_GOLD_IMG;
+        serviceCatalog.gold.image = FIXED_GOLD_IMG;
+        serviceCatalog.boosting.image = FIXED_BOOSTING_IMG;
+        serviceCatalog.accounts.image = FIXED_ACCOUNTS_IMG;
       }
 
       async function initializeApp() {
         setDbStatus('verificando conexión...', 'info');
         toggleCustomServiceFields();
         const rawHash = window.location.hash || '';
-        if (rawHash.includes('error=') || rawHash.includes('error_code=')) {
-          const hashParams = new URLSearchParams(rawHash.replace(/^#/, ''));
-          const errorCode = hashParams.get('error_code');
-          const errorDescription = hashParams.get('error_description');
-          if (errorCode === 'otp_expired') {
-            showAuthNotice('El enlace de confirmación expiró. Solicita un nuevo registro/inicio para recibir otro correo.', 'warn');
-          } else if (errorDescription) {
-            showAuthNotice(errorDescription, 'warn');
+        try {
+          if (rawHash.includes('error=') || rawHash.includes('error_code=')) {
+            const hashParams = new URLSearchParams(rawHash.replace(/^#/, ''));
+            const errorCode = hashParams.get('error_code');
+            const errorDescription = hashParams.get('error_description');
+            if (errorCode === 'otp_expired') {
+              showAuthNotice('El enlace de confirmación expiró. Solicita un nuevo registro/inicio para recibir otro correo.', 'warn');
+            } else if (errorDescription) {
+              showAuthNotice(errorDescription, 'warn');
+            }
+            history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+          } else if (rawHash.includes('type=recovery')) {
+            recoveryMode = true;
+            setAuthView('login');
+            openAuth('login');
+            showAuthNotice('Ahora define tu nueva contraseña para recuperar la cuenta.');
+            history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
           }
-          history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
-        } else if (rawHash.includes('type=recovery')) {
-          recoveryMode = true;
-          setAuthView('login');
-          openAuth('login');
-          showAuthNotice('Ahora define tu nueva contraseña para recuperar la cuenta.');
-          history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
-        }
-        await syncFromSupabase();
-        await loadAppAssetsFromSupabase();
-        renderGameList();
-        renderAdminSelect();
-        renderGoldCategories();
-        renderServerByGame();
-        loadSelectedGame();
-        await loadMarketCatalogFromSupabase();
-        marketDetailsWrap.classList.add('hidden');
-        if (supabaseClient) {
-          const { data: authData } = await supabaseClient.auth.getSession();
-          currentUser = authData?.session?.user || null;
-          if (currentUser) {
-            await loadUserProfile();
-            await renderUserOrders();
-          }
-          toggleUserButtons();
-          supabaseClient.auth.onAuthStateChange(async (event, session) => {
-            const hadUser = Boolean(currentUser);
-            currentUser = session?.user || null;
+          try { await syncFromSupabase(); } catch (e) { console.warn('syncFromSupabase failed', e); }
+          try { await loadAppAssetsFromSupabase(); } catch (e) { console.warn('loadAppAssetsFromSupabase failed', e); }
+          try { renderGameList(); } catch (e) { console.warn('renderGameList failed', e); }
+          try { renderAdminSelect(); } catch (e) { console.warn('renderAdminSelect failed', e); }
+          try { renderGoldCategories(); } catch (e) { console.warn('renderGoldCategories failed', e); }
+          try { renderServerByGame(); } catch (e) { console.warn('renderServerByGame failed', e); }
+          try { loadSelectedGame(); } catch (e) { console.warn('loadSelectedGame failed', e); }
+          try { await loadMarketCatalogFromSupabase(); } catch (e) { console.warn('loadMarketCatalogFromSupabase failed', e); }
+          try { renderStreamingSection(); } catch (e) { console.warn('renderStreamingSection failed', e); }
+          if (marketDetailsWrap) marketDetailsWrap.classList.add('hidden');
+          if (supabaseClient) {
+            const { data: authData } = await supabaseClient.auth.getSession();
+            currentUser = authData?.session?.user || null;
             if (currentUser) {
-              profileNameTop.textContent = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil';
-              profileEmailTop.textContent = currentUser.email || '';
               await loadUserProfile();
               await renderUserOrders();
-            } else {
-              currentProfile = null;
-              if (event === 'SIGNED_OUT' || hadUser) {
-                profileNameTop.textContent = 'Perfil';
-                profileEmailTop.textContent = '';
-                showAuthNotice('👋 Sesión cerrada correctamente.');
-              }
             }
             toggleUserButtons();
+            supabaseClient.auth.onAuthStateChange(async (event, session) => {
+              const hadUser = Boolean(currentUser);
+              currentUser = session?.user || null;
+              if (currentUser) {
+                profileNameTop.textContent = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil';
+                profileEmailTop.textContent = currentUser.email || '';
+                await loadUserProfile();
+                await renderUserOrders();
+              } else {
+                currentProfile = null;
+                if (event === 'SIGNED_OUT' || hadUser) {
+                  profileNameTop.textContent = 'Perfil';
+                  profileEmailTop.textContent = '';
+                  showAuthNotice('👋 Sesión cerrada correctamente.');
+                }
+              }
+              toggleUserButtons();
+            });
+          }
+          activateAdminTab('juegos');
+          setActivePage('inicio');
+        } finally {
+          window.scrollTo(0, 0);
+          window.requestAnimationFrame(() => {
+            document.body.classList.remove('preload');
           });
         }
-        activateAdminTab('juegos');
-        setActivePage('inicio');
       }
       initializeApp();
 
@@ -3663,14 +4248,17 @@
         link.addEventListener('click', (e) => {
           e.preventDefault();
           showPage(link.dataset.page);
+          const targetId = link.dataset.target;
+          if (targetId) {
+            setTimeout(() => {
+              document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 40);
+          }
         });
       });
 
       document.querySelectorAll('a[href="#oro"]').forEach((link) => {
         link.addEventListener('click', () => showPage('oro'));
-      });
-      document.querySelectorAll('a[href="#marketplace"]').forEach((link) => {
-        link.addEventListener('click', () => showPage('marketplace'));
       });
 
       closeGameWindow.addEventListener('click', () => {
@@ -4000,7 +4588,8 @@
         } else if (tab === 'market') {
           if (tabMarketAdmin) tabMarketAdmin.classList.add('active');
           if (editorMarketAdmin) editorMarketAdmin.classList.remove('hidden');
-          setActiveMarketType(activeMarketType);
+          setActiveMarketType('streaming');
+          renderMarketAdminLists('streaming');
         } else if (tab === 'tickets') {
           tabTicketsAdmin.classList.add('active');
           editorTicketsAdmin.classList.remove('hidden');
@@ -4026,22 +4615,202 @@
       tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
       tabBosteo.addEventListener('click', () => activateAdminTab('bosteo'));
 
-      marketActionButtons.forEach((btn) => {
-        btn.addEventListener('click', () => setActiveMarketType(btn.dataset.marketService || 'p2p'));
+      marketActionButtons.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          const fallbackType = idx === 1 ? 'giftcards' : idx === 2 ? 'streaming' : 'p2p';
+          setActiveMarketType(btn.dataset.marketService || fallbackType);
+        });
       });
       if (marketTypeP2P) marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
       if (marketTypeStreaming) marketTypeStreaming.addEventListener('click', () => setActiveMarketType('streaming'));
       if (marketTypeGiftcards) marketTypeGiftcards.addEventListener('click', () => setActiveMarketType('giftcards'));
-      if (saveMarketCategoryBtn) saveMarketCategoryBtn.addEventListener('click', async () => {
-        const name = marketCategoryName.value.trim();
-        const image = marketCategoryImage.value.trim();
-        if (!name || !image) return;
+      marketViewCatalogTab?.addEventListener('click', () => {
+        marketViewCatalogTab.classList.add('active');
+        marketViewPricesTab?.classList.remove('active');
+        marketCatalogSection?.classList.remove('hidden');
+        marketPricesSection?.classList.add('hidden');
+        marketPriceListSection?.classList.add('hidden');
+        renderMarketAdminLists(activeMarketType);
+      });
+      marketViewPricesTab?.addEventListener('click', () => {
+        marketViewPricesTab.classList.add('active');
+        marketViewCatalogTab?.classList.remove('active');
+        marketCatalogSection?.classList.add('hidden');
+        marketPricesSection?.classList.remove('hidden');
+        marketPriceListSection?.classList.remove('hidden');
+      });
+      openStreamingCategoryFormBtn?.addEventListener('click', () => {
+        editingStreamingCategoryIndex = null;
+        if (saveStreamingCategoryModalBtn) saveStreamingCategoryModalBtn.textContent = 'Guardar streaming';
+        streamingCategoryModal?.classList.add('show');
+        streamingCategoryModal?.setAttribute('aria-hidden', 'false');
+      });
+      const closeStreamingCategoryModalFn = () => {
+        streamingCategoryModal?.classList.remove('show');
+        streamingCategoryModal?.setAttribute('aria-hidden', 'true');
+      };
+      closeStreamingCategoryModal?.addEventListener('click', closeStreamingCategoryModalFn);
+      cancelStreamingCategoryModal?.addEventListener('click', closeStreamingCategoryModalFn);
+      cancelStreamingCategoryFormBtn?.addEventListener('click', closeStreamingCategoryModalFn);
+      saveStreamingCategoryModalBtn?.addEventListener('click', async () => {
+        if (editingStreamingCategoryIndex !== null) {
+          const target = marketCatalog[activeMarketType].categories[editingStreamingCategoryIndex];
+          if (!target) {
+            showAdminNotice('No se encontró la categoría seleccionada para editar.', 'warn');
+            return;
+          }
+          if (!supabaseClient) {
+            showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
+            return;
+          }
+          const nextName = streamingCategoryNameModal.value.trim() || target.name;
+          const nextImage = streamingCategoryImageModal.value.trim() || target.image || marketDefaultImages[activeMarketType] || '';
+          const previousName = target.name;
+          const previousImage = target.image;
+          let targetRowId = target.id || null;
+          if (!targetRowId) {
+            const { data: foundRows, error: findError } = await supabaseClient
+              .from('service_catalog_entries')
+              .select('id,category_name')
+              .eq('service_type', activeMarketType)
+              .eq('entry_type', 'category')
+              .ilike('category_name', previousName)
+              .limit(1);
+            if (findError) {
+              showAdminNotice(`No se pudo buscar la categoría en Supabase: ${findError.message}`, 'warn');
+              return;
+            }
+            targetRowId = foundRows?.[0]?.id || null;
+          }
+          let updatedRows = [];
+          if (targetRowId) {
+            const { data, error: updateError } = await supabaseClient
+              .from('service_catalog_entries')
+              .update({ category_name: nextName, item_name: nextName, image: nextImage })
+              .eq('id', targetRowId)
+              .eq('service_type', activeMarketType)
+              .eq('entry_type', 'category')
+              .select('id');
+            if (updateError) {
+              showAdminNotice(`No se pudo guardar el cambio en Supabase: ${updateError.message}`, 'warn');
+              return;
+            }
+            updatedRows = Array.isArray(data) ? data : [];
+          }
+          if (!updatedRows?.length) {
+            const { data: insertedRow, error: insertError } = await supabaseClient
+              .from('service_catalog_entries')
+              .insert({
+                service_type: activeMarketType,
+                entry_type: 'category',
+                category_name: nextName,
+                item_name: nextName,
+                image: nextImage,
+                value: '',
+                sort_order: marketCatalog[activeMarketType].categories.length + 1
+              })
+              .select('id')
+              .single();
+            if (insertError) {
+              showAdminNotice(`No se encontró para actualizar y tampoco se pudo crear: ${insertError.message}`, 'warn');
+              return;
+            }
+            updatedRows = insertedRow ? [insertedRow] : [];
+          }
+          target.name = nextName;
+          target.image = nextImage;
+          target.id = updatedRows[0]?.id || target.id || null;
+          setActiveMarketType(activeMarketType);
+          await syncFromSupabase();
+          showAdminNotice('Categoría actualizada correctamente.', 'ok');
+          closeStreamingCategoryModalFn();
+          return;
+        }
+        const name = streamingCategoryNameModal.value.trim();
+        const image = streamingCategoryImageModal.value.trim() || marketDefaultImages[activeMarketType] || '';
+        if (!name) {
+          showAdminNotice('Escribe un nombre de categoría antes de guardar.', 'warn');
+          return;
+        }
         if (!supabaseClient) {
           showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
           return;
         }
         const nextSort = marketCatalog[activeMarketType].categories.length + 1;
-        const { error } = await supabaseClient.from('market_catalog_entries').insert({
+        let insertedId = null;
+        const { data, error } = await supabaseClient.from('service_catalog_entries').insert({
+          service_type: activeMarketType,
+          entry_type: 'category',
+          category_name: name,
+          item_name: name,
+          image,
+          value: '',
+          sort_order: nextSort
+        }).select('id,category_name,image').single();
+        if (error) {
+          showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
+          return;
+        }
+        insertedId = data?.id || null;
+        marketCatalog[activeMarketType].categories.push({ id: insertedId, name, image });
+        setActiveMarketType(activeMarketType);
+        await syncFromSupabase();
+        showAdminNotice('Categoría agregada correctamente.', 'ok');
+        streamingCategoryNameModal.value = '';
+        streamingCategoryImageModal.value = '';
+        closeStreamingCategoryModalFn();
+      });
+      uploadStreamingCategoryImageModalBtn?.addEventListener('click', async () => {
+        const file = streamingCategoryImageFileModal?.files?.[0];
+        const url = await uploadImageFromPc(file, 'streaming-categories');
+        if (!url) return;
+        streamingCategoryImageModal.value = url;
+        if (streamingCategoryPreviewImg) streamingCategoryPreviewImg.src = url;
+      });
+      streamingCategoryImageModal?.addEventListener('input', () => {
+        if (streamingCategoryPreviewImg) streamingCategoryPreviewImg.src = streamingCategoryImageModal.value.trim();
+      });
+      const closeStreamingPriceModalFn = () => {
+        streamingPriceModal?.classList.remove('show');
+        streamingPriceModal?.setAttribute('aria-hidden', 'true');
+      };
+      closeStreamingPriceModal?.addEventListener('click', closeStreamingPriceModalFn);
+      cancelStreamingPriceModal?.addEventListener('click', closeStreamingPriceModalFn);
+      saveStreamingPriceModalBtn?.addEventListener('click', async () => {
+        if (editingStreamingPriceIndex === null) return;
+        const catalog = streamingPriceModalCatalog.value.trim();
+        const type = streamingPriceModalType.value.trim();
+        const time = streamingPriceModalTime.value.trim();
+        const amount = streamingPriceModalAmount.value.trim();
+        if (!catalog || !amount) return showAdminNotice('Completa catálogo y precio.', 'warn');
+        const nextValue = `${catalog} - ${type} ${amount}$ (${time})`;
+        const previous = marketCatalog[activeMarketType].prices[editingStreamingPriceIndex];
+        marketCatalog[activeMarketType].prices[editingStreamingPriceIndex] = nextValue;
+        if (supabaseClient) {
+          await supabaseClient
+            .from('service_catalog_entries')
+            .update({ value: nextValue, item_name: `${type} ${amount}$ (${time})`, category_name: catalog })
+            .eq('service_type', activeMarketType)
+            .eq('entry_type', 'price')
+            .eq('value', previous)
+            .limit(1);
+        }
+        setActiveMarketType(activeMarketType);
+        closeStreamingPriceModalFn();
+      });
+      if (saveMarketCategoryBtn) saveMarketCategoryBtn.addEventListener('click', async () => {
+        const name = marketCategoryName.value.trim();
+        if (!name) {
+          showAdminNotice('Escribe un nombre de categoría antes de guardar.', 'warn');
+          return;
+        }
+        const image = marketCategoryImage.value.trim() || marketDefaultImages[activeMarketType] || '';
+        if (!supabaseClient) {
+          showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
+          return;
+        }
+        const nextSort = marketCatalog[activeMarketType].categories.length + 1;
+        const { error } = await supabaseClient.from('service_catalog_entries').insert({
             service_type: activeMarketType,
             entry_type: 'category',
             category_name: name,
@@ -4057,48 +4826,81 @@
         marketCatalog[activeMarketType].categories.push({ name, image });
         marketCategoryName.value = '';
         marketCategoryImage.value = '';
+        marketCategoryFormWrap?.classList.add('hidden');
+        marketCategoryFormActions?.classList.add('hidden');
         setActiveMarketType(activeMarketType);
+        await syncFromSupabase();
         showAdminNotice(`Categoría agregada en ${marketCatalog[activeMarketType].title}.`, 'ok');
       });
-      if (saveMarketPriceBtn) saveMarketPriceBtn.addEventListener('click', async () => {
-        const title = marketPriceName.value.trim();
-        const value = marketPriceValue.value.trim();
-        if (!title || !value) return;
-        const fullValue = `${title} - ${value}`;
-        if (!supabaseClient) {
-          showAdminNotice('Supabase no está conectado. No se guardó el precio.', 'warn');
-          return;
-        }
+      uploadMarketCategoryImageBtn?.addEventListener('click', async () => {
+        const file = marketCategoryImageFile?.files?.[0];
+        const url = await uploadImageFromPc(file, 'market-categories');
+        if (!url) return;
+        marketCategoryImage.value = url;
+        showAdminNotice('Imagen de categoría P2P subida desde PC.', 'ok');
+      });
+      const closeAddPriceModalFn = () => {
+        addPriceModal?.classList.remove('show');
+        addPriceModal?.setAttribute('aria-hidden', 'true');
+      };
+      openAddPriceModalBtn?.addEventListener('click', () => {
+        addPriceCatalogSelect.innerHTML = marketCatalog[activeMarketType].categories.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
+        addPriceAmountInput.value = '';
+        addPriceModal?.classList.add('show');
+        addPriceModal?.setAttribute('aria-hidden', 'false');
+      });
+      closeAddPriceModal?.addEventListener('click', closeAddPriceModalFn);
+      cancelAddPriceModal?.addEventListener('click', closeAddPriceModalFn);
+      saveAddPriceModalBtn?.addEventListener('click', async () => {
+        const catalog = addPriceCatalogSelect.value.trim();
+        const type = addPriceTypeSelect.value.trim();
+        const time = addPriceTimeSelect.value.trim();
+        const amount = addPriceAmountInput.value.trim();
+        if (!catalog || !amount) return showAdminNotice('Completa catálogo y precio.', 'warn');
+        if (!supabaseClient) return showAdminNotice('Supabase no está conectado. No se guardó el precio.', 'warn');
+        const fullValue = `${catalog} - ${type} ${amount}$ (${time})`;
         const nextSort = marketCatalog[activeMarketType].prices.length + 1;
-        const { error } = await supabaseClient.from('market_catalog_entries').insert({
-            service_type: activeMarketType,
-            entry_type: 'price',
-            category_name: title,
-            item_name: title,
-            image: '',
-            value: fullValue,
-            sort_order: nextSort
-          });
-        if (error) {
-          showAdminNotice(`Error guardando precio: ${error.message}`, 'warn');
-          return;
-        }
+        const { error } = await supabaseClient.from('service_catalog_entries').insert({
+          service_type: activeMarketType,
+          entry_type: 'price',
+          category_name: catalog,
+          item_name: `${type} ${amount}$ (${time})`,
+          image: '',
+          value: fullValue,
+          sort_order: nextSort
+        });
+        if (error) return showAdminNotice(`Error guardando precio: ${error.message}`, 'warn');
         marketCatalog[activeMarketType].prices.push(fullValue);
-        marketPriceName.value = '';
-        marketPriceValue.value = '';
         setActiveMarketType(activeMarketType);
-        showAdminNotice(`Precio agregado en ${marketCatalog[activeMarketType].title}.`, 'ok');
+        closeAddPriceModalFn();
+        showAdminNotice('Precio agregado correctamente.', 'ok');
       });
       if (marketAdminCategoryList) marketAdminCategoryList.addEventListener('click', async (e) => {
+        const editBtn = e.target.closest('button[data-edit-market-category]');
+        if (editBtn) {
+          const index = Number(editBtn.dataset.editMarketCategory);
+          if (Number.isNaN(index)) return;
+          const target = marketCatalog[activeMarketType].categories[index];
+          if (!target) return;
+          editingStreamingCategoryIndex = index;
+          streamingCategoryNameModal.value = target.name || '';
+          streamingCategoryImageModal.value = target.image || '';
+          if (saveStreamingCategoryModalBtn) saveStreamingCategoryModalBtn.textContent = 'Guardar cambios';
+          streamingCategoryModal?.classList.add('show');
+          streamingCategoryModal?.setAttribute('aria-hidden', 'false');
+          return;
+        }
         const btn = e.target.closest('button[data-remove-market-category]');
         if (!btn) return;
         const index = Number(btn.dataset.removeMarketCategory);
         if (Number.isNaN(index)) return;
         const target = marketCatalog[activeMarketType].categories[index];
+        const confirmRemoveMarket = window.confirm(`¿Desea eliminar la categoría "${target?.name || 'seleccionada'}"?`);
+        if (!confirmRemoveMarket) return;
         marketCatalog[activeMarketType].categories.splice(index, 1);
         if (supabaseClient && target) {
           await supabaseClient
-            .from('market_catalog_entries')
+            .from('service_catalog_entries')
             .delete()
             .eq('service_type', activeMarketType)
             .eq('entry_type', 'category')
@@ -4109,6 +4911,29 @@
         setActiveMarketType(activeMarketType);
       });
       if (marketAdminPriceList) marketAdminPriceList.addEventListener('click', async (e) => {
+        const editBtn = e.target.closest('button[data-edit-market-price]');
+        if (editBtn) {
+          const index = Number(editBtn.dataset.editMarketPrice);
+          if (Number.isNaN(index)) return;
+          editingStreamingPriceIndex = index;
+          const raw = marketCatalog[activeMarketType].prices[index] || '';
+          const parts = raw.split(' - ');
+          const catalog = parts[0] || '';
+          const detail = parts.slice(1).join(' - ');
+          const match = detail.match(/(1 PERFIL|CUENTA COMPLETA)\s+([\d.,]+)\$\s+\((MES|AÑO)\)/i);
+          streamingPriceModalCatalog.innerHTML = marketCatalog[activeMarketType].categories.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
+          streamingPriceModalCatalog.value = catalog || streamingPriceModalCatalog.value;
+          if (match) {
+            streamingPriceModalType.value = match[1].toUpperCase();
+            streamingPriceModalAmount.value = match[2];
+            streamingPriceModalTime.value = match[3].toUpperCase();
+          } else {
+            streamingPriceModalAmount.value = '';
+          }
+          streamingPriceModal?.classList.add('show');
+          streamingPriceModal?.setAttribute('aria-hidden', 'false');
+          return;
+        }
         const btn = e.target.closest('button[data-remove-market-price]');
         if (!btn) return;
         const index = Number(btn.dataset.removeMarketPrice);
@@ -4117,7 +4942,7 @@
         marketCatalog[activeMarketType].prices.splice(index, 1);
         if (supabaseClient && target) {
           await supabaseClient
-            .from('market_catalog_entries')
+            .from('service_catalog_entries')
             .delete()
             .eq('service_type', activeMarketType)
             .eq('entry_type', 'price')
@@ -4136,7 +4961,7 @@
         if (supabaseClient) {
           await supabaseClient.from('tickets').insert({
             user_id: currentUser.id,
-            game: marketSelectedService.value || 'Marketplace',
+            game: marketSelectedService.value || 'Servicios',
             server: marketSelectedCategory.value || '',
             product: marketItemType.value || '',
             delivery: `${marketPaymentMethod.value} - ${marketAmountToPay.value}`,
@@ -4189,42 +5014,110 @@
       juegoNombre.addEventListener('input', updateGamePreview);
       juegoImagen.addEventListener('input', updateGamePreview);
       juegoDescripcion.addEventListener('input', updateGamePreview);
-      subirJuegoImagenBtn.addEventListener('click', async () => {
-        const file = juegoImagenFile.files?.[0];
+      subirJuegoImagenBtn?.addEventListener('click', async () => {
+        const file = juegoImagenFile?.files?.[0];
         const url = await uploadImageFromPc(file, 'games');
         if (!url) return;
         juegoImagen.value = url;
         updateGamePreview();
-        showAdminNotice('Imagen del juego subida y guardada en formato data:image/...;base64.', 'ok');
       });
-      juegoImagenFile.addEventListener('change', async () => {
-        const file = juegoImagenFile.files?.[0];
-        if (!file) return;
-        const url = await uploadImageFromPc(file, 'games');
-        if (!url) return;
-        juegoImagen.value = url;
-        updateGamePreview();
-        showAdminNotice('Logo/icono del juego actualizado al seleccionar imagen.', 'ok');
-      });
-      subirCustomServiceImagenBtn.addEventListener('click', async () => {
-        const file = customServiceImageFile.files?.[0];
+      subirCustomServiceImagenBtn?.addEventListener('click', async () => {
+        const file = customServiceImageFile?.files?.[0];
         const url = await uploadImageFromPc(file, 'services');
         if (!url) return;
         customServiceImage.value = url;
-        showAdminNotice('Imagen de sección personalizada subida.', 'ok');
       });
       customServiceEnabled.addEventListener('change', () => {
         if (!customServiceEnabled.checked) {
           customServiceInput.value = '';
+          customServiceImage.value = '';
+          customServiceReplaceGold.checked = false;
         }
         toggleCustomServiceFields();
         updateGamePreview();
+      });
+      removeCustomServiceBtn?.addEventListener('click', () => {
+        customServiceEnabled.checked = false;
+        customServiceReplaceGold.checked = false;
+        customServiceInput.value = '';
+        customServiceImage.value = '';
+        customServiceHideName.checked = false;
+        toggleCustomServiceFields();
+        updateGamePreview();
+        showAdminNotice('Checks extra eliminados para este juego.', 'warn');
       });
       serviceBoosting.addEventListener('change', updateGamePreview);
       serviceAccounts.addEventListener('change', updateGamePreview);
       serviceGold.addEventListener('change', updateGamePreview);
       customServiceInput.addEventListener("input", updateGamePreview);
+      boostLevelBtn?.addEventListener('click', () => {
+        if (boostingButtonsView) boostingButtonsView.style.display = 'none';
+        if (boostLevelForm) boostLevelForm.classList.remove('hidden');
+        if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Leveleo de cuentas · ${activeOrderGame?.name || 'Juego seleccionado'}`;
+      });
+      boostProfBtn?.addEventListener('click', () => {
+        if (boostingButtonsView) boostingButtonsView.style.display = 'none';
+        if (boostLevelForm) boostLevelForm.classList.remove('hidden');
+        if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Profesiones · ${activeOrderGame?.name || 'Juego seleccionado'}`;
+      });
+      boostBackBtn?.addEventListener('click', () => {
+        if (boostingButtonsView) boostingButtonsView.style.display = 'flex';
+        if (boostLevelForm) boostLevelForm.classList.add('hidden');
+      });
+      boostCreateTicketBtn?.addEventListener('click', async () => {
+        if (!currentUser) {
+          openAuth('login');
+          return;
+        }
+        const summary = `Boosting | ${boostGame?.value || ''} | ${boostServer?.value || ''} | ${boostCharacter?.value || ''} | ${boostLevelFrom?.value || ''}->${boostLevelTo?.value || ''} | ${boostExtra?.value || ''}`;
+        if (supabaseClient) {
+          await supabaseClient.from('tickets').insert({
+            user_id: currentUser.id,
+            game: boostGame?.value || 'Boosting',
+            server: boostServer?.value || '',
+            product: `Leveo ${boostLevelFrom?.value || ''}-${boostLevelTo?.value || ''}`,
+            character: boostCharacter?.value || '',
+            delivery: boostExtra?.value || '',
+            status: 'pendiente'
+          });
+          await renderUserOrders();
+          await renderAdminTickets();
+        }
+        window.open(`https://discord.gg/DKd9HxK8?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
+      });
       oroSearch.addEventListener('input', renderGameList);
+      streamingSearch?.addEventListener('input', renderStreamingSection);
+      closeStreamingModal?.addEventListener('click', () => {
+        streamingModal?.classList.remove('show');
+        streamingModal?.setAttribute('aria-hidden', 'true');
+      });
+      streamingModalTicketBtn?.addEventListener('click', async () => {
+        const category = streamingModalTicketBtn.dataset.category || 'Streaming';
+        const customer = streamingCustomerName?.value?.trim() || 'Sin nombre';
+        const accType = streamingAccountType?.value || 'Perfil';
+        const duration = streamingDuration?.value || '1 mes';
+        const price = streamingPriceResult?.value || '';
+        if (!currentUser) {
+          openAuth('login');
+          showAuthNotice('Debes iniciar sesión para abrir ticket.');
+          return;
+        }
+        const summary = `Streaming | ${category} | ${customer} | ${accType} | ${duration} | ${streamingModalTicketBtn.dataset.priceRaw || price}`;
+        if (supabaseClient) {
+          await supabaseClient.from('tickets').insert({
+            user_id: currentUser.id,
+            game: 'Streaming',
+            server: category,
+            product: `${accType} - ${duration}`,
+            character: customer,
+            delivery: price,
+            status: 'pendiente'
+          });
+          await renderUserOrders();
+          await renderAdminTickets();
+        }
+        window.open(`https://discord.gg/DKd9HxK8?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
+      });
 
       function openCategoriaModal(type = 'oro') {
         activeCategoryType = type;
@@ -4311,7 +5204,7 @@
         const url = await uploadImageFromPc(file, 'accounts');
         if (!url) return;
         accountImageInput.value = url;
-        showAdminNotice('Imagen de cuenta subida y guardada en Supabase Storage.', 'ok');
+        showAdminNotice('Imagen de cuenta convertida y guardada como data URL.', 'ok');
       });
 
       adminAccountsList.addEventListener('click', (e) => {
@@ -4430,32 +5323,55 @@
           description: categoriaDescripcion.value.trim() || 'Sin descripción.'
         };
         const bucket = getCategoryBucket(activeCategoryType);
+        const editIndex = Number(guardarCategoriaOro.dataset.editIndex || '-1');
+        const isEditing = editIndex >= 0;
         if (activeCategoryType === 'oro' && supabaseClient) {
-          const { data, error } = await supabaseClient
-            .from('gold_categories')
-            .insert(payload)
-            .select('id,game,name,description')
-            .single();
+          const currentId = isEditing ? bucket[editIndex]?.id : null;
+          const query = currentId
+            ? supabaseClient.from('gold_categories').update(payload).eq('id', currentId)
+            : supabaseClient.from('gold_categories').insert(payload);
+          const { data, error } = await query.select('id,game,name,description').single();
           if (error) {
             showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
             return;
           }
-          bucket.push(data);
+          if (isEditing) bucket[editIndex] = data;
+          else bucket.push(data);
         } else {
-          bucket.push({ id: null, ...payload });
+          if (isEditing) bucket[editIndex] = { ...bucket[editIndex], ...payload };
+          else bucket.push({ id: null, ...payload });
         }
         renderGoldCategories();
-        showAdminNotice(`Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
+        showAdminNotice(isEditing ? 'Categoría de oro actualizada.' : `Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
+        guardarCategoriaOro.dataset.editIndex = '';
         closeCategoriaModal();
       });
 
       async function handleRemoveCategory(e) {
+        const editBtn = e.target.closest('button[data-edit-category]');
+        if (editBtn) {
+          const type = editBtn.dataset.categoryType || 'oro';
+          if (type !== 'oro') return;
+          const bucket = getCategoryBucket(type);
+          const idx = Number(editBtn.dataset.editCategory);
+          const target = bucket[idx];
+          if (!target) return;
+          categoriaJuego.value = target.game || '';
+          categoriaNombre.value = target.name || '';
+          categoriaDescripcion.value = target.description || '';
+          guardarCategoriaOro.dataset.editIndex = String(idx);
+          categoriaOroModal.classList.add('show');
+          categoriaOroModal.setAttribute('aria-hidden', 'false');
+          return;
+        }
         const removeBtn = e.target.closest('button[data-remove-category]');
         if (!removeBtn) return;
         const type = removeBtn.dataset.categoryType || 'oro';
         const bucket = getCategoryBucket(type);
         const idx = Number(removeBtn.dataset.removeCategory);
         const target = bucket[idx];
+        const confirmRemove = window.confirm(`¿Desea eliminar la categoría "${target?.name || 'seleccionada'}"?`);
+        if (!confirmRemove) return;
         if (type === 'oro' && supabaseClient && target?.id) {
           const { error } = await supabaseClient.from('gold_categories').delete().eq('id', target.id);
           if (error) {
@@ -4471,6 +5387,20 @@
       categoriaListaOro.addEventListener('click', handleRemoveCategory);
       categoriaListaCuentas.addEventListener('click', handleRemoveCategory);
       categoriaListaBosteo.addEventListener('click', handleRemoveCategory);
+      limpiarCategoriasBtn?.addEventListener('click', async () => {
+        const confirmed = window.confirm('¿Eliminar SOLO las categorías de ORO? Esta acción no se puede deshacer.');
+        if (!confirmed) return;
+        if (supabaseClient) {
+          const { error } = await supabaseClient.from('gold_categories').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+          if (error) {
+            showAdminNotice(`No se pudieron limpiar categorías remotas: ${error.message}`, 'warn');
+            return;
+          }
+        }
+        goldCategories.splice(0, goldCategories.length);
+        renderGoldCategories();
+        showAdminNotice('Categorías de ORO eliminadas correctamente.', 'ok');
+      });
 
       cancelarJuegoForm.addEventListener('click', () => {
         editingAdminIndex = null;
@@ -4503,16 +5433,29 @@
           showAdminNotice('El juego necesita nombre para poder guardarse.', 'warn');
           return;
         }
+        if (!juegoImagen.value.trim() && juegoImagenFile?.files?.[0]) {
+          const autoUploadedGameIcon = await uploadImageFromPc(juegoImagenFile.files[0], 'games');
+          if (autoUploadedGameIcon) {
+            juegoImagen.value = autoUploadedGameIcon;
+            updateGamePreview();
+          }
+        }
+        if (customServiceEnabled.checked && !customServiceImage.value.trim() && customServiceImageFile?.files?.[0]) {
+          const autoUploadedImage = await uploadImageFromPc(customServiceImageFile.files[0], 'services');
+          if (autoUploadedImage) customServiceImage.value = autoUploadedImage;
+        }
         const payload = {
           name: juegoNombre.value.trim(),
           icon: juegoImagen.value.trim() || games[0].icon,
           description: juegoDescripcion.value.trim(),
           services: getSelectedServices()
         };
+        const customServiceResolvedImage = customServiceImage.value.trim() || payload.icon || serviceCatalog.gold.image;
         customServiceMetaByGame[payload.name] = {
           enabled: customServiceEnabled.checked,
-          image: customServiceImage.value.trim(),
-          hideName: customServiceHideName.checked
+          image: customServiceResolvedImage,
+          hideName: customServiceHideName.checked,
+          replaceGold: customServiceReplaceGold.checked
         };
         if (editingAdminIndex === null) {
           const normalizedName = normalizeGameName(payload.name);
@@ -4521,7 +5464,7 @@
             return;
           }
           if (!supabaseClient) {
-            showAdminNotice('Supabase no está configurado. No se guardó el juego para evitar registros locales sin ID.', 'warn');
+            showAdminNotice('Supabase no está conectado. No se guardó el juego.', 'warn');
             return;
           }
           const supabasePayload = {
@@ -4531,10 +5474,11 @@
             services: payload.services,
             custom_service_name: customServiceInput.value.trim().toLowerCase(),
             custom_service_enabled: customServiceEnabled.checked,
-            custom_service_image: customServiceImage.value.trim(),
-            custom_service_hide_name: customServiceHideName.checked
+            custom_service_image: customServiceResolvedImage,
+            custom_service_hide_name: customServiceHideName.checked,
+            replace_gold_with_custom: customServiceReplaceGold.checked
           };
-          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name').single();
+          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name,replace_gold_with_custom').single();
           if (error) {
             if (error.message?.toLowerCase().includes('services')) {
               showAdminNotice('No existe columna "services" en Supabase. Ejecuta el schema actualizado.', 'warn');
@@ -4555,22 +5499,22 @@
               services: payload.services,
               custom_service_name: customServiceInput.value.trim().toLowerCase(),
               custom_service_enabled: customServiceEnabled.checked,
-              custom_service_image: customServiceImage.value.trim(),
-              custom_service_hide_name: customServiceHideName.checked
+              custom_service_image: customServiceResolvedImage,
+              custom_service_hide_name: customServiceHideName.checked,
+              replace_gold_with_custom: customServiceReplaceGold.checked
             };
             const { data, error } = await supabaseClient
               .from('games')
               .update(supabasePayload)
               .eq('id', games[editingAdminIndex].id)
-              .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name')
+              .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name,replace_gold_with_custom')
               .single();
             if (error) {
-              games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
               selectedAdminIndex = editingAdminIndex;
               if (error.message?.toLowerCase().includes('services')) {
-                showAdminNotice('No existe columna "services" en Supabase. Se actualizó localmente.', 'warn');
+                showAdminNotice('No existe columna "services" en Supabase. Ejecuta el schema actualizado.', 'warn');
               } else {
-                showAdminNotice('No se pudo actualizar en Supabase. Se actualizó localmente.', 'warn');
+                showAdminNotice(`No se pudo actualizar en Supabase: ${error.message}`, 'warn');
               }
             } else {
               games[editingAdminIndex] = { ...data, services: payload.services };
@@ -4578,9 +5522,8 @@
               showAdminNotice(`Juego actualizado: ${payload.name}.`, 'ok');
             }
           } else {
-            games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
-            selectedAdminIndex = editingAdminIndex;
-            showAdminNotice(`Juego actualizado localmente: ${payload.name}.`, 'info');
+            showAdminNotice('Supabase no está conectado. No se guardó el juego.', 'warn');
+            return;
           }
         }
         renderGameList();
@@ -4602,6 +5545,7 @@
           adminMsg.style.color = '#8fdcff';
         }, 450);
       });
+
     </script>
   </body>
 </html>
