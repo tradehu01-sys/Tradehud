@@ -3156,8 +3156,30 @@
         },
         giftcards: {
           title: 'GiftCards',
-          categories: [{ name: 'GiftCards gaming', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' }],
-          prices: ['10$ - 13$', '20$ - 26$', '50$ - 65$', '100$ - 130$']
+          categories: [
+            { name: 'Battle Net Gift Card', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Amazon Gift Card', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Roblox Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'PlayStation Gift Card', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Apple Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Steam Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Xbox Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Valorant Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Garena Free Fire Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Google Play Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' }
+          ],
+          prices: [
+            'Battle Net Gift Card - 10$ (USD)',
+            'Amazon Gift Card - 10$ (USD)',
+            'Roblox Gift Cards - 10$ (USD)',
+            'PlayStation Gift Card - 10$ (USD)',
+            'Apple Gift Cards - 10$ (USD)',
+            'Steam Gift Cards - 10$ (USD)',
+            'Xbox Gift Cards - 10$ (USD)',
+            'Valorant Gift Cards - 10$ (USD)',
+            'Garena Free Fire Gift Cards - 10$ (USD)',
+            'Google Play Gift Cards - 10$ (USD)'
+          ]
         }
       };
       const marketDefaultImages = {
@@ -4758,6 +4780,8 @@
           target.image = nextImage;
           target.id = updatedRows[0]?.id || target.id || null;
           setActiveMarketType(activeMarketType);
+          renderMarketCatalog(activeMarketType);
+          renderStreamingSection();
           await syncFromSupabase();
           showAdminNotice('Categoría actualizada correctamente.', 'ok');
           closeStreamingCategoryModalFn();
@@ -4791,6 +4815,8 @@
         insertedId = data?.id || null;
         marketCatalog[activeMarketType].categories.push({ id: insertedId, name, image });
         setActiveMarketType(activeMarketType);
+        renderMarketCatalog(activeMarketType);
+        renderStreamingSection();
         await syncFromSupabase();
         showAdminNotice('Categoría agregada correctamente.', 'ok');
         streamingCategoryNameModal.value = '';
