@@ -43,12 +43,18 @@ create table if not exists public.service_catalog_entries (
   entry_type text not null check (entry_type in ('category','price')),
   category_name text not null default '',
   item_name text not null default '',
+  account_type text not null default '',
+  billing_period text not null default '',
+  amount_label text not null default '',
   image text not null default '',
   value text not null default '',
   currency text not null default 'USD',
   sort_order int not null default 0,
   created_at timestamptz not null default now()
 );
+alter table public.service_catalog_entries add column if not exists account_type text not null default '';
+alter table public.service_catalog_entries add column if not exists billing_period text not null default '';
+alter table public.service_catalog_entries add column if not exists amount_label text not null default '';
 -- Limpia duplicados históricos antes de crear índice único
 delete from public.service_catalog_entries a
 using public.service_catalog_entries b
