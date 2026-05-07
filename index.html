@@ -306,6 +306,11 @@
         color: #fff;
         padding: 0.74rem 0.8rem;
       }
+      .streaming-search {
+        max-width: 360px;
+        min-height: 42px;
+        font-size: 0.95rem;
+      }
       .oro-category-btn {
         border: 1px solid #2f2f2f;
         border-radius: 12px;
@@ -459,6 +464,29 @@
       }
 
       .game-modal.show { display: grid; }
+      .window-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 4, 10, 0.82);
+        display: none;
+        place-items: center;
+        z-index: 150;
+      }
+      .window-modal.show { display: grid; }
+      .window-card {
+        width: min(640px, 94vw);
+        background: radial-gradient(circle at 20% 10%, rgba(255, 60, 46, 0.1), transparent 45%), #06080f;
+        border: 1px solid #2f3b59;
+        border-radius: 16px;
+        padding: 1rem;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+      }
+      .window-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+      }
 
       .game-window {
         width: min(900px, 94vw);
@@ -1994,7 +2022,7 @@
           <h2 class="section-title">Sección de <span>Streaming</span></h2>
           <article class="glass">
             <div class="server-head" style="margin-top:.6rem;">
-              <input id="streamingSearch" class="oro-search" type="text" placeholder="Buscar streaming..." />
+              <input id="streamingSearch" class="oro-search streaming-search" type="text" placeholder="Buscar streaming..." />
             </div>
             <div id="streamingCategoryGrid" class="server-row" style="margin-top:.75rem;"></div>
           </article>
