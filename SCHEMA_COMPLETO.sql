@@ -96,6 +96,7 @@ drop policy if exists "tickets_insert_own" on public.tickets;
 drop policy if exists "tickets_select_admin" on public.tickets;
 drop policy if exists "service_catalog_public_read" on public.service_catalog_entries;
 drop policy if exists "service_catalog_admin_write" on public.service_catalog_entries;
+drop policy if exists "service_catalog_authenticated_write" on public.service_catalog_entries;
 drop policy if exists "gold_catalog_public_read" on public.gold_catalog_entries;
 drop policy if exists "gold_catalog_admin_write" on public.gold_catalog_entries;
 
@@ -161,6 +162,13 @@ with check (
     where p.id = auth.uid() and p.is_admin = true
   )
 );
+
+create policy "service_catalog_authenticated_write"
+on public.service_catalog_entries
+for all
+to authenticated
+using (auth.uid() is not null)
+with check (auth.uid() is not null);
 
 create policy "gold_catalog_admin_write"
 on public.gold_catalog_entries
@@ -297,8 +305,10 @@ alter table public.gold_categories enable row level security;
 
 drop policy if exists "games_public_read" on public.games;
 drop policy if exists "games_admin_write" on public.games;
+drop policy if exists "games_authenticated_write" on public.games;
 drop policy if exists "gold_categories_public_read" on public.gold_categories;
 drop policy if exists "gold_categories_admin_write" on public.gold_categories;
+drop policy if exists "gold_categories_authenticated_write" on public.gold_categories;
 
 create policy "games_public_read"
 on public.games
@@ -321,6 +331,13 @@ with check (
   )
 );
 
+create policy "games_authenticated_write"
+on public.games
+for all
+to authenticated
+using (auth.uid() is not null)
+with check (auth.uid() is not null);
+
 create policy "gold_categories_public_read"
 on public.gold_categories
 for select
@@ -341,6 +358,13 @@ with check (
     where p.id = auth.uid() and p.is_admin = true
   )
 );
+
+create policy "gold_categories_authenticated_write"
+on public.gold_categories
+for all
+to authenticated
+using (auth.uid() is not null)
+with check (auth.uid() is not null);
 
 insert into public.games (name, icon, description, services) values
 ('World of Warcraft 20th Anniversary TBC','', 'Catálogo TBC anniversary.', array['gold','boosting','accounts']),
