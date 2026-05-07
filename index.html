@@ -4663,12 +4663,11 @@
           return;
         }
         const name = streamingCategoryNameModal.value.trim();
-        const image = streamingCategoryImageModal.value.trim();
+        const image = streamingCategoryImageModal.value.trim() || marketDefaultImages[activeMarketType] || '';
         if (!name) {
           showAdminNotice('Escribe un nombre de categoría antes de guardar.', 'warn');
           return;
         }
-        if (!image) return showAdminNotice('Sube la imagen desde PC antes de guardar.', 'warn');
         if (!supabaseClient) {
           showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
           return;
@@ -5368,13 +5367,10 @@
           description: juegoDescripcion.value.trim(),
           services: getSelectedServices()
         };
-        if (customServiceEnabled.checked && !customServiceImage.value.trim()) {
-          showAdminNotice('Activa servicio personalizado: falta subir/guardar su imagen.', 'warn');
-          return;
-        }
+        const customServiceResolvedImage = customServiceImage.value.trim() || payload.icon || serviceCatalog.gold.image;
         customServiceMetaByGame[payload.name] = {
           enabled: customServiceEnabled.checked,
-          image: customServiceImage.value.trim(),
+          image: customServiceResolvedImage,
           hideName: customServiceHideName.checked,
           replaceGold: customServiceReplaceGold.checked
         };
@@ -5403,7 +5399,7 @@
             services: payload.services,
             custom_service_name: customServiceInput.value.trim().toLowerCase(),
             custom_service_enabled: customServiceEnabled.checked,
-            custom_service_image: customServiceImage.value.trim(),
+            custom_service_image: customServiceResolvedImage,
             custom_service_hide_name: customServiceHideName.checked
           };
           const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name').single();
@@ -5427,7 +5423,7 @@
               services: payload.services,
               custom_service_name: customServiceInput.value.trim().toLowerCase(),
               custom_service_enabled: customServiceEnabled.checked,
-              custom_service_image: customServiceImage.value.trim(),
+              custom_service_image: customServiceResolvedImage,
               custom_service_hide_name: customServiceHideName.checked
             };
             const { data, error } = await supabaseClient
