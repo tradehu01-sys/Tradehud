@@ -5513,14 +5513,14 @@
           showAdminNotice('El juego necesita nombre para poder guardarse.', 'warn');
           return;
         }
-        if (!juegoImagen.value.trim() && juegoImagenFile?.files?.[0]) {
+        if (juegoImagenFile?.files?.[0]) {
           const autoUploadedGameIcon = await uploadImageFromPc(juegoImagenFile.files[0], 'games');
           if (autoUploadedGameIcon) {
             juegoImagen.value = autoUploadedGameIcon;
             updateGamePreview();
           }
         }
-        if (customServiceEnabled.checked && !customServiceImage.value.trim() && customServiceImageFile?.files?.[0]) {
+        if (customServiceEnabled.checked && customServiceImageFile?.files?.[0]) {
           const autoUploadedImage = await uploadImageFromPc(customServiceImageFile.files[0], 'services');
           if (autoUploadedImage) customServiceImage.value = autoUploadedImage;
         }
