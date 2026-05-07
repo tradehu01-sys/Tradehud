@@ -1654,7 +1654,7 @@
         </div>
         <nav>
           <a href="#inicio" data-page-link data-page="inicio">Inicio</a>
-          <a href="#oro" data-page-link data-page="oro">Oro</a>
+          <a href="#oro" data-page-link data-page="oro">Marketplace</a>
           <a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a>
               <a href="#streaming" data-page-link data-page="streaming">Streaming</a>
               <a href="#giftcards" data-page-link data-page="giftcards">GiftCards</a>
@@ -1688,7 +1688,7 @@
               Plataforma enfocada en personas, con navegación simple, procesos claros y atención directa para cada pedido.
             </p>
             <div class="cta-row">
-              <a class="btn" href="#oro">Comprar Oro</a>
+              <a class="btn" href="#oro">Marketplace</a>
               <a class="btn alt" href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a>
             </div>
           </article>
@@ -1870,7 +1870,7 @@
 
       <section id="oro" class="page-section" data-page="oro">
         <div class="container">
-          <h2 class="section-title">Sección de <span>oro de juegos</span></h2>
+          <h2 class="section-title">Sección de <span>Marketplace</span></h2>
           <article class="oro-panel">
             <div class="oro-toolbar">
               <button id="verCategoriasOro" class="oro-category-btn" type="button">Ver categorías</button>
@@ -2139,7 +2139,7 @@
           <h4>Enlaces importantes</h4>
           <ul>
             <li><a href="#inicio" data-page-link data-page="inicio">Inicio</a></li>
-            <li><a href="#oro" data-page-link data-page="oro">Oro</a></li>
+            <li><a href="#oro" data-page-link data-page="oro">Marketplace</a></li>
             <li><a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a></li>
             <li><a href="#streaming" data-page-link data-page="streaming">Streaming</a></li>
             <li><a href="#giftcards" data-page-link data-page="giftcards">GiftCards</a></li>
@@ -2292,7 +2292,7 @@
         <div id="adminNotice" class="admin-notice"></div>
         <div class="panel-tabs">
           <button id="tabListaJuegosAdmin" class="panel-tab active" type="button">Lista de juegos</button>
-          <button id="tabCategoriasOro" class="panel-tab" type="button">Categorías de oro</button>
+          <button id="tabCategoriasOro" class="panel-tab" type="button">Categorías de marketplace</button>
           <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
           <button id="tabOro" class="panel-tab" type="button">Oro</button>
           <button id="tabMarketAdmin" class="panel-tab" type="button">Streaming / Servicios</button>
@@ -2309,7 +2309,7 @@
         </div>
         <div id="editorCategoriasOro" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
+            <strong style="flex:1;display:flex;align-items:center;">Categorías de marketplace</strong>
             <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
             <button id="limpiarCategoriasBtn" class="panel-btn danger" type="button">Limpiar todas</button>
           </div>
@@ -2517,7 +2517,7 @@
     <div id="categoriaOroModal" class="juego-form-modal" aria-hidden="true">
       <div class="juego-form-card">
         <div class="admin-head">
-          <strong>Categoría de oro</strong>
+          <strong>Categoría de marketplace</strong>
           <button id="cerrarCategoriaOroModal" class="close-btn" type="button">✕</button>
         </div>
         <div class="admin-game-form">
@@ -4684,8 +4684,8 @@
         } else if (tab === 'market') {
           if (tabMarketAdmin) tabMarketAdmin.classList.add('active');
           if (editorMarketAdmin) editorMarketAdmin.classList.remove('hidden');
-          setActiveMarketType('streaming');
-          renderMarketAdminLists('streaming');
+          setActiveMarketType(activeMarketType || 'streaming');
+          renderMarketAdminLists(activeMarketType || 'streaming');
         } else if (tab === 'tickets') {
           tabTicketsAdmin.classList.add('active');
           editorTicketsAdmin.classList.remove('hidden');
@@ -4719,7 +4719,7 @@
       });
       if (marketTypeP2P) marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
       if (marketTypeStreaming) marketTypeStreaming.addEventListener('click', () => setActiveMarketType('streaming'));
-      if (marketTypeGiftcards) marketTypeGiftcards.addEventListener('click', () => setActiveMarketType('giftcards'));
+      if (marketTypeGiftcards) marketTypeGiftcards.addEventListener('click', (e) => { e.preventDefault(); setActiveMarketType('giftcards'); renderMarketAdminLists('giftcards'); });
       marketViewCatalogTab?.addEventListener('click', () => {
         marketViewCatalogTab.classList.add('active');
         marketViewPricesTab?.classList.remove('active');
@@ -5493,7 +5493,7 @@
         }
         renderGoldCategories();
         renderGameList();
-        showAdminNotice(isEditing ? 'Categoría de oro actualizada y sincronizada.' : `Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
+        showAdminNotice(isEditing ? 'Categoría de marketplace actualizada y sincronizada.' : `Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
         guardarCategoriaOro.dataset.editIndex = '';
         closeCategoriaModal();
       });
