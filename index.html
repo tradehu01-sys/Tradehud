@@ -1994,14 +1994,24 @@
           <h2 class="section-title">Sección de <span>Streaming</span></h2>
           <article class="glass">
             <div class="server-head" style="margin-top:.6rem;">
-              <button class="tab active" type="button">Categorías streaming</button>
-              <input id="streamingSearch" class="oro-search" type="text" placeholder="Buscar categoría..." />
+              <input id="streamingSearch" class="oro-search" type="text" placeholder="Buscar streaming..." />
             </div>
             <div id="streamingCategoryGrid" class="server-row" style="margin-top:.75rem;"></div>
-            <div id="streamingPriceList" class="editor-box hidden" style="margin-top:.75rem;"></div>
           </article>
         </div>
       </section>
+      <div id="streamingModal" class="window-modal" aria-hidden="true">
+        <div class="window-card" style="max-width:560px;">
+          <div class="window-head">
+            <div class="window-game"><strong id="streamingModalTitle">Streaming</strong></div>
+            <button id="closeStreamingModal" class="close-btn" type="button">✕</button>
+          </div>
+          <div id="streamingModalPrices" class="admin-game-list"></div>
+          <div class="admin-panel-actions" style="margin-top:.7rem;">
+            <button id="streamingModalTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
+          </div>
+        </div>
+      </div>
 
       <section id="giftcards" class="page-section" data-page="giftcards">
         <div class="container">
@@ -2733,8 +2743,12 @@
       const marketAdminListTitle = document.getElementById('marketAdminListTitle');
       const marketAdminPriceTitle = document.getElementById('marketAdminPriceTitle');
       const streamingCategoryGrid = document.getElementById('streamingCategoryGrid');
-      const streamingPriceList = document.getElementById('streamingPriceList');
       const streamingSearch = document.getElementById('streamingSearch');
+      const streamingModal = document.getElementById('streamingModal');
+      const streamingModalTitle = document.getElementById('streamingModalTitle');
+      const streamingModalPrices = document.getElementById('streamingModalPrices');
+      const streamingModalTicketBtn = document.getElementById('streamingModalTicketBtn');
+      const closeStreamingModal = document.getElementById('closeStreamingModal');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
@@ -3521,26 +3535,24 @@
       }
 
       function renderStreamingSection() {
-        if (!streamingCategoryGrid || !streamingPriceList) return;
+        if (!streamingCategoryGrid) return;
         const bucket = marketCatalog.streaming;
         streamingCategoryGrid.innerHTML = '';
-        streamingPriceList.classList.add('hidden');
-        streamingPriceList.innerHTML = '';
         const term = streamingSearch?.value?.trim().toLowerCase?.() || '';
         const categories = bucket.categories.filter((cat) => (cat.name || '').toLowerCase().includes(term));
-        const renderPricesByCategory = (name) => {
-          streamingPriceList.classList.remove('hidden');
-          streamingPriceList.innerHTML = `<strong style="display:block;margin-bottom:.45rem;color:#f0cf7b;">Precios de streaming · ${name}</strong>`;
-          const list = document.createElement('div');
-          list.className = 'admin-game-list';
+        const openStreamingModal = (name) => {
           const prices = bucket.prices.filter((price) => price.toLowerCase().includes(name.toLowerCase()));
+          streamingModalTitle.textContent = name;
+          streamingModalPrices.innerHTML = '';
           (prices.length ? prices : bucket.prices).forEach((price) => {
             const row = document.createElement('article');
             row.className = 'category-item';
             row.innerHTML = `<strong>${price}</strong>`;
-            list.appendChild(row);
+            streamingModalPrices.appendChild(row);
           });
-          streamingPriceList.appendChild(list);
+          streamingModalTicketBtn.dataset.category = name;
+          streamingModal.classList.add('show');
+          streamingModal.setAttribute('aria-hidden', 'false');
         };
         categories.forEach((cat, index) => {
           const btn = document.createElement('button');
@@ -3548,9 +3560,7 @@
           btn.type = 'button';
           btn.innerHTML = `<div class="server-icon"><img src="${cat.image}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span>`;
           btn.addEventListener('click', () => {
-            streamingCategoryGrid.querySelectorAll('.server').forEach((el) => el.classList.remove('active'));
-            btn.classList.add('active');
-            renderPricesByCategory(cat.name);
+            openStreamingModal(cat.name);
           });
           streamingCategoryGrid.appendChild(btn);
         });
@@ -4622,6 +4632,32 @@
       });
       oroSearch.addEventListener('input', renderGameList);
       streamingSearch?.addEventListener('input', renderStreamingSection);
+      closeStreamingModal?.addEventListener('click', () => {
+        streamingModal?.classList.remove('show');
+        streamingModal?.setAttribute('aria-hidden', 'true');
+      });
+      streamingModalTicketBtn?.addEventListener('click', async () => {
+        const category = streamingModalTicketBtn.dataset.category || 'Streaming';
+        if (!currentUser) {
+          openAuth('login');
+          showAuthNotice('Debes iniciar sesión para abrir ticket.');
+          return;
+        }
+        const summary = `Streaming | ${category}`;
+        if (supabaseClient) {
+          await supabaseClient.from('tickets').insert({
+            user_id: currentUser.id,
+            game: 'Streaming',
+            server: category,
+            product: 'Consulta de streaming',
+            delivery: '',
+            status: 'pendiente'
+          });
+          await renderUserOrders();
+          await renderAdminTickets();
+        }
+        window.open(`https://discord.gg/DKd9HxK8?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
+      });
 
       function openCategoriaModal(type = 'oro') {
         activeCategoryType = type;
