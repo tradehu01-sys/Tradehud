@@ -2373,8 +2373,10 @@
             <button id="saveMarketPriceBtn" class="panel-btn" type="button">Guardar precio</button>
           </div>
           <div class="editor-box" style="margin-top:.6rem;">
-            <strong id="marketAdminListTitle" style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Listado de P2P y precios</strong>
+            <strong id="marketAdminListTitle" style="display:block;margin-bottom:.35rem;color:#f0cf7b;">Listado de P2P</strong>
+            <small id="marketAdminCategoryHint" class="auth-hint" style="display:block;margin-bottom:.5rem;">Crea categorías con nombre + icono redondo.</small>
             <div id="marketAdminCategoryList"></div>
+            <strong id="marketAdminPriceTitle" style="display:block;margin:.6rem 0 .35rem;color:#f0cf7b;">Precios de P2P</strong>
             <div id="marketAdminPriceList" style="margin-top:.6rem;"></div>
           </div>
         </div>
@@ -2743,6 +2745,7 @@
       const marketAdminCategoryList = document.getElementById('marketAdminCategoryList');
       const marketAdminPriceList = document.getElementById('marketAdminPriceList');
       const marketAdminListTitle = document.getElementById('marketAdminListTitle');
+      const marketAdminPriceTitle = document.getElementById('marketAdminPriceTitle');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
@@ -2923,8 +2926,35 @@
         },
         streaming: {
           title: 'Streaming',
-          categories: [{ name: 'Streaming apps', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&' }],
-          prices: ['Netflix perfil 4.50$', 'Disney perfil 3$', 'Prime Video perfil 3$', 'HBO perfil 3$']
+          categories: [
+            { name: 'Netflix', image: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg' },
+            { name: 'Disney', image: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg' },
+            { name: 'Prime Video', image: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png' },
+            { name: 'HBO', image: 'https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg' },
+            { name: 'Crunchyroll', image: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Crunchyroll_Logo.png' },
+            { name: 'YouTube', image: 'https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg' },
+            { name: 'Chat GPT', image: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg' },
+            { name: 'CapCut Pro', image: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/CapCut_logo.svg' },
+            { name: 'Paramount', image: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Paramount%2B_logo.svg' },
+            { name: 'Apple TV', image: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg' },
+            { name: 'CANVA EDU PRO', image: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg' }
+          ],
+          prices: [
+            'Netflix - 1 PERFIL 4.50$ (MES)',
+            'Netflix - CUENTA COMPLETA 17$ (MES)',
+            'Disney - 1 PERFIL 3$ (MES)',
+            'Disney - CUENTA COMPLETA 15$ (MES)',
+            'Prime Video - 1 PERFIL 3$ (MES)',
+            'HBO - 1 PERFIL 3$ (MES)',
+            'HBO - CUENTA COMPLETA 10$ (MES)',
+            'Crunchyroll - 1 PERFIL 2$ (MES)',
+            'YouTube - 1 PERFIL 3$ (MES)',
+            'Chat GPT - 1 PERFIL 4$ (MES)',
+            'CapCut Pro - 1 PERFIL 3$ (MES)',
+            'Paramount - 1 PERFIL 2.50$ (MES)',
+            'Apple TV - 1 PERFIL 3$ (MES)',
+            'CANVA EDU PRO - 1 AÑO 3$'
+          ]
         },
         giftcards: {
           title: 'GiftCards',
@@ -3474,9 +3504,14 @@
         const bucket = marketCatalog[type];
         if (!bucket) return;
         if (marketAdminListTitle) {
-          if (type === 'streaming') marketAdminListTitle.textContent = 'Listado de streaming y precios streaming';
-          else if (type === 'giftcards') marketAdminListTitle.textContent = 'Listado de GiftCards y precios';
-          else marketAdminListTitle.textContent = 'Listado de P2P y precios';
+          if (type === 'streaming') marketAdminListTitle.textContent = 'Listado de streaming';
+          else if (type === 'giftcards') marketAdminListTitle.textContent = 'Listado de GiftCards';
+          else marketAdminListTitle.textContent = 'Listado de P2P';
+        }
+        if (marketAdminPriceTitle) {
+          if (type === 'streaming') marketAdminPriceTitle.textContent = 'Precios de streaming';
+          else if (type === 'giftcards') marketAdminPriceTitle.textContent = 'Precios de GiftCards';
+          else marketAdminPriceTitle.textContent = 'Precios de P2P';
         }
         marketAdminCategoryList.innerHTML = '';
         bucket.categories.forEach((cat, index) => {
