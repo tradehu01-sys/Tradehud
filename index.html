@@ -2392,7 +2392,11 @@
             <button id="marketTypeStreaming" class="panel-tab" type="button">Streaming</button>
             <button id="marketTypeGiftcards" class="panel-tab" type="button">GiftCards</button>
           </div>
-          <div class="editor-box" style="margin-top:.6rem;">
+          <div class="panel-tabs" style="margin-top:.45rem;">
+            <button id="marketViewCatalogTab" class="panel-tab active" type="button">Catálogo</button>
+            <button id="marketViewPricesTab" class="panel-tab" type="button">Precios</button>
+          </div>
+          <div id="marketCatalogSection" class="editor-box" style="margin-top:.6rem;">
             <div class="admin-panel-actions" style="margin-top:0;">
               <strong id="marketCategoryTitle" style="flex:1;display:flex;align-items:center;color:#f0cf7b;">Listado de streaming</strong>
               <button id="openStreamingCategoryFormBtn" class="panel-btn" type="button">+ Agregar streaming</button>
@@ -2416,7 +2420,7 @@
               <button id="cancelStreamingCategoryFormBtn" class="mini-btn" type="button">Cancelar</button>
             </div>
           </div>
-          <div class="editor-box" style="margin-top:.6rem;">
+          <div id="marketPricesSection" class="editor-box hidden" style="margin-top:.6rem;">
             <strong id="marketPriceTitle" style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Precios streaming</strong>
             <div class="admin-split">
               <div class="form-group">
@@ -2430,7 +2434,7 @@
             </div>
             <button id="saveMarketPriceBtn" class="panel-btn" type="button">Guardar precio</button>
           </div>
-          <div class="editor-box" style="margin-top:.6rem;">
+          <div id="marketPriceListSection" class="editor-box hidden" style="margin-top:.6rem;">
             <strong id="marketAdminListTitle" style="display:block;margin-bottom:.35rem;color:#f0cf7b;">Listado de P2P</strong>
             <small id="marketAdminCategoryHint" class="auth-hint" style="display:block;margin-bottom:.5rem;">Crea categorías con nombre + icono redondo.</small>
             <div id="marketAdminCategoryList"></div>
@@ -2808,6 +2812,11 @@
       const marketPriceTitle = document.getElementById('marketPriceTitle');
       const marketAdminCategoryList = document.getElementById('marketAdminCategoryList');
       const marketAdminPriceList = document.getElementById('marketAdminPriceList');
+      const marketViewCatalogTab = document.getElementById('marketViewCatalogTab');
+      const marketViewPricesTab = document.getElementById('marketViewPricesTab');
+      const marketCatalogSection = document.getElementById('marketCatalogSection');
+      const marketPricesSection = document.getElementById('marketPricesSection');
+      const marketPriceListSection = document.getElementById('marketPriceListSection');
       const marketAdminListTitle = document.getElementById('marketAdminListTitle');
       const marketAdminPriceTitle = document.getElementById('marketAdminPriceTitle');
       const streamingCategoryGrid = document.getElementById('streamingCategoryGrid');
@@ -3691,6 +3700,11 @@
         if (openStreamingCategoryFormBtn) openStreamingCategoryFormBtn.textContent = type === 'streaming' ? '+ Agregar streaming' : '+ Agregar categoría';
         marketCategoryFormWrap?.classList.add('hidden');
         marketCategoryFormActions?.classList.add('hidden');
+        if (marketViewCatalogTab) marketViewCatalogTab.classList.add('active');
+        if (marketViewPricesTab) marketViewPricesTab.classList.remove('active');
+        marketCatalogSection?.classList.remove('hidden');
+        marketPricesSection?.classList.add('hidden');
+        marketPriceListSection?.classList.add('hidden');
         renderMarketCatalog(type);
       }
 
@@ -4480,6 +4494,20 @@
       if (marketTypeP2P) marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
       if (marketTypeStreaming) marketTypeStreaming.addEventListener('click', () => setActiveMarketType('streaming'));
       if (marketTypeGiftcards) marketTypeGiftcards.addEventListener('click', () => setActiveMarketType('giftcards'));
+      marketViewCatalogTab?.addEventListener('click', () => {
+        marketViewCatalogTab.classList.add('active');
+        marketViewPricesTab?.classList.remove('active');
+        marketCatalogSection?.classList.remove('hidden');
+        marketPricesSection?.classList.add('hidden');
+        marketPriceListSection?.classList.add('hidden');
+      });
+      marketViewPricesTab?.addEventListener('click', () => {
+        marketViewPricesTab.classList.add('active');
+        marketViewCatalogTab?.classList.remove('active');
+        marketCatalogSection?.classList.add('hidden');
+        marketPricesSection?.classList.remove('hidden');
+        marketPriceListSection?.classList.remove('hidden');
+      });
       openStreamingCategoryFormBtn?.addEventListener('click', () => {
         marketCategoryFormWrap?.classList.remove('hidden');
         marketCategoryFormActions?.classList.remove('hidden');
