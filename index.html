@@ -2544,6 +2544,29 @@
       </div>
     </div>
 
+    <div id="streamingCategoryModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card" style="max-width:520px;">
+        <div class="admin-head">
+          <strong>Agregar streaming</strong>
+          <button id="closeStreamingCategoryModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div class="admin-game-form">
+          <div class="form-group">
+            <label for="streamingCategoryNameModal">Nombre del streaming</label>
+            <input id="streamingCategoryNameModal" type="text" placeholder="Ej: Netflix" />
+          </div>
+          <div class="form-group">
+            <label for="streamingCategoryImageModal">Imagen URL / Icono</label>
+            <input id="streamingCategoryImageModal" type="text" placeholder="URL del icono" />
+          </div>
+          <div class="admin-panel-actions form-actions">
+            <button id="cancelStreamingCategoryModal" class="panel-btn" type="button">Cancelar</button>
+            <button id="saveStreamingCategoryModalBtn" class="panel-btn" type="button">Guardar streaming</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="accountFormModal" class="juego-form-modal" aria-hidden="true">
       <div class="juego-form-card">
         <div class="admin-head">
@@ -2801,6 +2824,12 @@
       const marketCategoryFormActions = document.getElementById('marketCategoryFormActions');
       const openStreamingCategoryFormBtn = document.getElementById('openStreamingCategoryFormBtn');
       const cancelStreamingCategoryFormBtn = document.getElementById('cancelStreamingCategoryFormBtn');
+      const streamingCategoryModal = document.getElementById('streamingCategoryModal');
+      const closeStreamingCategoryModal = document.getElementById('closeStreamingCategoryModal');
+      const cancelStreamingCategoryModal = document.getElementById('cancelStreamingCategoryModal');
+      const saveStreamingCategoryModalBtn = document.getElementById('saveStreamingCategoryModalBtn');
+      const streamingCategoryNameModal = document.getElementById('streamingCategoryNameModal');
+      const streamingCategoryImageModal = document.getElementById('streamingCategoryImageModal');
       const marketCategoryImageFile = document.getElementById('marketCategoryImageFile');
       const uploadMarketCategoryImageBtn = document.getElementById('uploadMarketCategoryImageBtn');
       const saveMarketCategoryBtn = document.getElementById('saveMarketCategoryBtn');
@@ -4513,12 +4542,23 @@
         marketPriceListSection?.classList.remove('hidden');
       });
       openStreamingCategoryFormBtn?.addEventListener('click', () => {
-        marketCategoryFormWrap?.classList.remove('hidden');
-        marketCategoryFormActions?.classList.remove('hidden');
+        streamingCategoryModal?.classList.add('show');
+        streamingCategoryModal?.setAttribute('aria-hidden', 'false');
       });
-      cancelStreamingCategoryFormBtn?.addEventListener('click', () => {
-        marketCategoryFormWrap?.classList.add('hidden');
-        marketCategoryFormActions?.classList.add('hidden');
+      const closeStreamingCategoryModalFn = () => {
+        streamingCategoryModal?.classList.remove('show');
+        streamingCategoryModal?.setAttribute('aria-hidden', 'true');
+      };
+      closeStreamingCategoryModal?.addEventListener('click', closeStreamingCategoryModalFn);
+      cancelStreamingCategoryModal?.addEventListener('click', closeStreamingCategoryModalFn);
+      cancelStreamingCategoryFormBtn?.addEventListener('click', closeStreamingCategoryModalFn);
+      saveStreamingCategoryModalBtn?.addEventListener('click', async () => {
+        marketCategoryName.value = streamingCategoryNameModal.value.trim();
+        marketCategoryImage.value = streamingCategoryImageModal.value.trim();
+        await saveMarketCategoryBtn?.click();
+        streamingCategoryNameModal.value = '';
+        streamingCategoryImageModal.value = '';
+        closeStreamingCategoryModalFn();
       });
       if (saveMarketCategoryBtn) saveMarketCategoryBtn.addEventListener('click', async () => {
         const name = marketCategoryName.value.trim();
