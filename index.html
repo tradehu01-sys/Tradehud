@@ -2547,7 +2547,7 @@
           </div>
           <div class="form-group">
             <label for="streamingCategoryImageModal">Imagen URL / Icono</label>
-            <input id="streamingCategoryImageModal" type="text" placeholder="URL del icono" />
+            <input id="streamingCategoryImageModal" type="text" placeholder="Sube imagen desde PC" readonly />
             <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
               <input id="streamingCategoryImageFileModal" type="file" accept="image/*" />
               <button id="uploadStreamingCategoryImageModalBtn" class="mini-btn" type="button">Subir imagen PC</button>
@@ -3223,7 +3223,7 @@
         data.forEach((row) => {
           if (!marketCatalog[row.service_type]) return;
           if (row.entry_type === 'category') {
-            marketCatalog[row.service_type].categories.push({ name: row.category_name || row.item_name || '', image: row.image || '' });
+            marketCatalog[row.service_type].categories.push({ id: row.id || null, name: row.category_name || row.item_name || '', image: row.image || '' });
           } else if (row.entry_type === 'price') {
             const raw = row.value || row.item_name || row.category_name || '';
             const composed = raw.toLowerCase().includes((row.category_name || '').toLowerCase())
@@ -4643,17 +4643,18 @@
         if (editingStreamingCategoryIndex !== null) {
           const target = marketCatalog[activeMarketType].categories[editingStreamingCategoryIndex];
           if (target) {
-            const old = { ...target };
+            const previousName = target.name;
             target.name = streamingCategoryNameModal.value.trim() || target.name;
             target.image = streamingCategoryImageModal.value.trim() || target.image;
             if (supabaseClient) {
-              await supabaseClient
+              const query = supabaseClient
                 .from('service_catalog_entries')
                 .update({ category_name: target.name, item_name: target.name, image: target.image })
                 .eq('service_type', activeMarketType)
-                .eq('entry_type', 'category')
-                .eq('category_name', old.name)
-                .limit(1);
+                .eq('entry_type', 'category');
+              if (target.id) query.eq('id', target.id);
+              else query.eq('category_name', previousName);
+              await query.limit(1);
             }
             setActiveMarketType(activeMarketType);
             showAdminNotice('Categoría actualizada correctamente.', 'ok');
@@ -4662,17 +4663,18 @@
           return;
         }
         const name = streamingCategoryNameModal.value.trim();
-        const image = streamingCategoryImageModal.value.trim() || marketDefaultImages[activeMarketType] || '';
+        const image = streamingCategoryImageModal.value.trim();
         if (!name) {
           showAdminNotice('Escribe un nombre de categoría antes de guardar.', 'warn');
           return;
         }
+        if (!image) return showAdminNotice('Sube la imagen desde PC antes de guardar.', 'warn');
         if (!supabaseClient) {
           showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
           return;
         }
         const nextSort = marketCatalog[activeMarketType].categories.length + 1;
-        const { error } = await supabaseClient.from('service_catalog_entries').insert({
+        const { data, error } = await supabaseClient.from('service_catalog_entries').insert({
           service_type: activeMarketType,
           entry_type: 'category',
           category_name: name,
@@ -4680,12 +4682,12 @@
           image,
           value: '',
           sort_order: nextSort
-        });
+        }).select('id,category_name,image').single();
         if (error) {
           showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
           return;
         }
-        marketCatalog[activeMarketType].categories.push({ name, image });
+        marketCatalog[activeMarketType].categories.push({ id: data?.id || null, name, image });
         setActiveMarketType(activeMarketType);
         showAdminNotice('Categoría agregada correctamente.', 'ok');
         streamingCategoryNameModal.value = '';
