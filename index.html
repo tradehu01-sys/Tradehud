@@ -2388,9 +2388,7 @@
             <strong style="flex:1;display:flex;align-items:center;">Panel admin de servicios</strong>
           </div>
           <div class="panel-tabs" style="margin-top:.4rem;">
-            <button id="marketTypeP2P" class="panel-tab active" type="button">P2P</button>
-            <button id="marketTypeStreaming" class="panel-tab" type="button">Streaming</button>
-            <button id="marketTypeGiftcards" class="panel-tab" type="button">GiftCards</button>
+            <button id="marketTypeStreaming" class="panel-tab active" type="button">Streaming</button>
           </div>
           <div class="panel-tabs" style="margin-top:.45rem;">
             <button id="marketViewCatalogTab" class="panel-tab active" type="button">Catálogo</button>
@@ -3082,7 +3080,7 @@
       let currentUser = null;
       let currentProfile = null;
       let recoveryMode = false;
-      let activeMarketType = 'p2p';
+      let activeMarketType = 'streaming';
       let selectedMarketCategory = '';
       let dbConnectionNoticeShown = false;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
@@ -3691,7 +3689,7 @@
         });
       }
 
-      function setActiveMarketType(type = 'p2p') {
+      function setActiveMarketType(type = 'streaming') {
         if (!marketDetailsWrap || !marketOrderPanel) return;
         activeMarketType = type;
         selectedMarketCategory = '';
