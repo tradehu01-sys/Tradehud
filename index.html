@@ -2053,17 +2053,15 @@
             <div>
               <label for="streamingDuration">Tiempo</label>
               <select id="streamingDuration">
-                <option value="1 semana">1 semana</option>
                 <option value="1 mes" selected>1 mes</option>
                 <option value="1 año">1 año</option>
               </select>
             </div>
             <div>
-              <label for="streamingPriceSelect">Precio de la cuenta</label>
-              <select id="streamingPriceSelect"></select>
+              <label for="streamingPriceResult">Precio de la cuenta</label>
+              <input id="streamingPriceResult" type="text" readonly placeholder="Selecciona tipo y tiempo" />
             </div>
           </div>
-          <div id="streamingModalPrices" class="admin-game-list" style="margin-top:.65rem;"></div>
           <div class="admin-panel-actions" style="margin-top:.7rem;">
             <button id="streamingModalTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
           </div>
@@ -2805,13 +2803,12 @@
       const streamingModalTitle = document.getElementById('streamingModalTitle');
       const streamingModalIcon = document.getElementById('streamingModalIcon');
       const streamingModalServiceName = document.getElementById('streamingModalServiceName');
-      const streamingModalPrices = document.getElementById('streamingModalPrices');
       const streamingModalTicketBtn = document.getElementById('streamingModalTicketBtn');
       const closeStreamingModal = document.getElementById('closeStreamingModal');
       const streamingCustomerName = document.getElementById('streamingCustomerName');
       const streamingAccountType = document.getElementById('streamingAccountType');
       const streamingDuration = document.getElementById('streamingDuration');
-      const streamingPriceSelect = document.getElementById('streamingPriceSelect');
+      const streamingPriceResult = document.getElementById('streamingPriceResult');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
@@ -3606,21 +3603,36 @@
         const openStreamingModal = (name) => {
           const prices = bucket.prices.filter((price) => price.toLowerCase().includes(name.toLowerCase()));
           const selectedCategory = bucket.categories.find((cat) => cat.name === name);
+          const parsedPrices = prices.map((entry) => {
+            const upper = entry.toUpperCase();
+            const isFull = upper.includes('CUENTA COMPLETA');
+            const isYear = upper.includes('AÑO');
+            const match = entry.match(/(\d+(?:[.,]\d+)?)\$/);
+            const amount = match ? `${match[1]}$` : entry;
+            return {
+              raw: entry,
+              type: isFull ? 'Cuenta completa' : 'Perfil',
+              duration: isYear ? '1 año' : '1 mes',
+              amount
+            };
+          });
           streamingModalTitle.textContent = name;
           streamingModalServiceName.textContent = name;
           streamingModalIcon.innerHTML = `<img src="${selectedCategory?.image || ''}" alt="${name}" />`;
-          streamingModalPrices.innerHTML = '';
-          streamingPriceSelect.innerHTML = '';
-          (prices.length ? prices : bucket.prices).forEach((price) => {
-            const row = document.createElement('article');
-            row.className = 'category-item';
-            row.innerHTML = `<strong>${price}</strong>`;
-            streamingModalPrices.appendChild(row);
-            const option = document.createElement('option');
-            option.value = price;
-            option.textContent = price;
-            streamingPriceSelect.appendChild(option);
-          });
+          const availableTypes = [...new Set(parsedPrices.map((p) => p.type))];
+          streamingAccountType.innerHTML = availableTypes.map((t) => `<option value="${t}">${t}</option>`).join('');
+          const availableDurations = [...new Set(parsedPrices.map((p) => p.duration))];
+          streamingDuration.innerHTML = availableDurations.map((d) => `<option value="${d}">${d}</option>`).join('');
+          const updatePrice = () => {
+            const selected = parsedPrices.find((p) => p.type === streamingAccountType.value && p.duration === streamingDuration.value)
+              || parsedPrices.find((p) => p.type === streamingAccountType.value)
+              || parsedPrices[0];
+            streamingPriceResult.value = selected ? selected.amount : 'Sin precio disponible';
+            streamingModalTicketBtn.dataset.priceRaw = selected?.raw || '';
+          };
+          streamingAccountType.onchange = updatePrice;
+          streamingDuration.onchange = updatePrice;
+          updatePrice();
           streamingModalTicketBtn.dataset.category = name;
           streamingModal.classList.add('show');
           streamingModal.setAttribute('aria-hidden', 'false');
@@ -4712,13 +4724,13 @@
         const customer = streamingCustomerName?.value?.trim() || 'Sin nombre';
         const accType = streamingAccountType?.value || 'Perfil';
         const duration = streamingDuration?.value || '1 mes';
-        const price = streamingPriceSelect?.value || '';
+        const price = streamingPriceResult?.value || '';
         if (!currentUser) {
           openAuth('login');
           showAuthNotice('Debes iniciar sesión para abrir ticket.');
           return;
         }
-        const summary = `Streaming | ${category} | ${customer} | ${accType} | ${duration} | ${price}`;
+        const summary = `Streaming | ${category} | ${customer} | ${accType} | ${duration} | ${streamingModalTicketBtn.dataset.priceRaw || price}`;
         if (supabaseClient) {
           await supabaseClient.from('tickets').insert({
             user_id: currentUser.id,
