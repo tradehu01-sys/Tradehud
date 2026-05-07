@@ -4035,7 +4035,7 @@
         renderServerByGame();
         loadSelectedGame();
         await loadMarketCatalogFromSupabase();
-        marketDetailsWrap.classList.add('hidden');
+        if (marketDetailsWrap) marketDetailsWrap.classList.add('hidden');
         if (supabaseClient) {
           const { data: authData } = await supabaseClient.auth.getSession();
           currentUser = authData?.session?.user || null;
