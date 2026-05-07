@@ -2560,6 +2560,10 @@
               <input id="streamingCategoryImageFileModal" type="file" accept="image/*" />
               <button id="uploadStreamingCategoryImageModalBtn" class="mini-btn" type="button">Subir imagen PC</button>
             </div>
+            <div style="margin-top:.45rem;">
+              <small class="auth-hint">Previsualización</small>
+              <img id="streamingCategoryPreviewImg" src="" alt="Preview icono" style="display:block;width:44px;height:44px;border-radius:999px;border:1px solid #3b5ea5;object-fit:cover;margin-top:.25rem;" />
+            </div>
           </div>
           <div class="admin-panel-actions form-actions">
             <button id="cancelStreamingCategoryModal" class="panel-btn" type="button">Cancelar</button>
@@ -2853,6 +2857,7 @@
       const streamingCategoryImageModal = document.getElementById('streamingCategoryImageModal');
       const streamingCategoryImageFileModal = document.getElementById('streamingCategoryImageFileModal');
       const uploadStreamingCategoryImageModalBtn = document.getElementById('uploadStreamingCategoryImageModalBtn');
+      const streamingCategoryPreviewImg = document.getElementById('streamingCategoryPreviewImg');
       const streamingPriceModal = document.getElementById('streamingPriceModal');
       const closeStreamingPriceModal = document.getElementById('closeStreamingPriceModal');
       const cancelStreamingPriceModal = document.getElementById('cancelStreamingPriceModal');
@@ -3685,7 +3690,7 @@
         bucket.categories.forEach((cat, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<strong>${cat.name}</strong><p class="admin-game-desc">${cat.image}</p><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-market-category="${index}">Editar</button><button class="mini-btn danger" type="button" data-remove-market-category="${index}">Eliminar</button></div>`;
+          item.innerHTML = `<div style="display:flex;align-items:center;gap:.5rem;"><img src="${cat.image || ''}" alt="${cat.name}" style="width:32px;height:32px;border-radius:999px;border:1px solid #3b5ea5;object-fit:cover;" /><strong>${cat.name}</strong></div><p class="admin-game-desc">${cat.image}</p><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-market-category="${index}">Editar</button><button class="mini-btn danger" type="button" data-remove-market-category="${index}">Eliminar</button></div>`;
           marketAdminCategoryList.appendChild(item);
         });
         marketAdminPriceList.innerHTML = '';
@@ -4607,13 +4612,38 @@
                 .limit(1);
             }
             setActiveMarketType(activeMarketType);
+            showAdminNotice('Categoría actualizada correctamente.', 'ok');
           }
           closeStreamingCategoryModalFn();
           return;
         }
-        marketCategoryName.value = streamingCategoryNameModal.value.trim();
-        marketCategoryImage.value = streamingCategoryImageModal.value.trim();
-        await saveMarketCategoryBtn?.click();
+        const name = streamingCategoryNameModal.value.trim();
+        const image = streamingCategoryImageModal.value.trim() || marketDefaultImages[activeMarketType] || '';
+        if (!name) {
+          showAdminNotice('Escribe un nombre de categoría antes de guardar.', 'warn');
+          return;
+        }
+        if (!supabaseClient) {
+          showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
+          return;
+        }
+        const nextSort = marketCatalog[activeMarketType].categories.length + 1;
+        const { error } = await supabaseClient.from('service_catalog_entries').insert({
+          service_type: activeMarketType,
+          entry_type: 'category',
+          category_name: name,
+          item_name: name,
+          image,
+          value: '',
+          sort_order: nextSort
+        });
+        if (error) {
+          showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
+          return;
+        }
+        marketCatalog[activeMarketType].categories.push({ name, image });
+        setActiveMarketType(activeMarketType);
+        showAdminNotice('Categoría agregada correctamente.', 'ok');
         streamingCategoryNameModal.value = '';
         streamingCategoryImageModal.value = '';
         closeStreamingCategoryModalFn();
@@ -4623,6 +4653,10 @@
         const url = await uploadImageFromPc(file, 'streaming-categories');
         if (!url) return;
         streamingCategoryImageModal.value = url;
+        if (streamingCategoryPreviewImg) streamingCategoryPreviewImg.src = url;
+      });
+      streamingCategoryImageModal?.addEventListener('input', () => {
+        if (streamingCategoryPreviewImg) streamingCategoryPreviewImg.src = streamingCategoryImageModal.value.trim();
       });
       const closeStreamingPriceModalFn = () => {
         streamingPriceModal?.classList.remove('show');
