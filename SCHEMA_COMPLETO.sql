@@ -49,6 +49,15 @@ create table if not exists public.service_catalog_entries (
   sort_order int not null default 0,
   created_at timestamptz not null default now()
 );
+-- Limpia duplicados históricos antes de crear índice único
+delete from public.service_catalog_entries a
+using public.service_catalog_entries b
+where a.ctid < b.ctid
+  and a.service_type = b.service_type
+  and a.entry_type = b.entry_type
+  and coalesce(a.category_name, '') = coalesce(b.category_name, '')
+  and coalesce(a.item_name, '') = coalesce(b.item_name, '')
+  and coalesce(a.value, '') = coalesce(b.value, '');
 create unique index if not exists service_catalog_entries_unique_key
 on public.service_catalog_entries (service_type, entry_type, category_name, item_name, value);
 
