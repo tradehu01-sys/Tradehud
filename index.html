@@ -3128,9 +3128,16 @@
           renderStreamingSection();
           return;
         }
+        const grouped = { p2p: [], streaming: [], giftcards: [] };
+        data.forEach((row) => {
+          if (!grouped[row.service_type]) return;
+          grouped[row.service_type].push(row);
+        });
         ['p2p', 'streaming', 'giftcards'].forEach((key) => {
-          marketCatalog[key].categories = [];
-          marketCatalog[key].prices = [];
+          if (grouped[key].length) {
+            marketCatalog[key].categories = [];
+            marketCatalog[key].prices = [];
+          }
         });
         data.forEach((row) => {
           if (!marketCatalog[row.service_type]) return;
