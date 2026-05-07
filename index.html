@@ -2405,9 +2405,8 @@
                 <input id="marketCategoryName" type="text" placeholder="Ej: ZINLI" />
               </div>
               <div class="form-group">
-                <label for="marketCategoryImage">Imagen</label>
-                <input id="marketCategoryImage" type="text" placeholder="Sube imagen desde PC" readonly />
                 <div style="display:flex;gap:.5rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
+                  <input id="marketCategoryImage" type="hidden" />
                   <input id="marketCategoryImageFile" type="file" accept="image/*" />
                   <button id="uploadMarketCategoryImageBtn" class="mini-btn" type="button">Subir imagen PC</button>
                 </div>
@@ -2547,7 +2546,7 @@
           </div>
           <div class="form-group">
             <label for="streamingCategoryImageModal">Imagen</label>
-            <input id="streamingCategoryImageModal" type="text" placeholder="Sube imagen desde PC" readonly />
+            <input id="streamingCategoryImageModal" type="hidden" />
             <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
               <input id="streamingCategoryImageFileModal" type="file" accept="image/*" />
               <button id="uploadStreamingCategoryImageModalBtn" class="mini-btn" type="button">Subir imagen PC</button>
@@ -2669,8 +2668,8 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="accountImageInput">Imagen</label>
-            <input id="accountImageInput" type="text" placeholder="Sube imagen desde PC" readonly />
+            <label>Imagen</label>
+            <input id="accountImageInput" type="hidden" />
             <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
               <input id="accountImageFile" type="file" accept="image/*" />
               <button id="subirAccountImagenBtn" class="mini-btn" type="button">Subir imagen desde PC</button>
@@ -3734,7 +3733,7 @@
         bucket.categories.forEach((cat, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<div style="display:flex;align-items:center;gap:.5rem;"><img src="${cat.image || ''}" alt="${cat.name}" style="width:32px;height:32px;border-radius:999px;border:1px solid #3b5ea5;object-fit:cover;" /><strong>${cat.name}</strong></div><p class="admin-game-desc">${cat.image}</p><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-market-category="${index}">Editar</button><button class="mini-btn danger" type="button" data-remove-market-category="${index}">Eliminar</button></div>`;
+          item.innerHTML = `<div style="display:flex;align-items:center;gap:.5rem;"><img src="${cat.image || ''}" alt="${cat.name}" style="width:32px;height:32px;border-radius:999px;border:1px solid #3b5ea5;object-fit:cover;" /><strong>${cat.name}</strong></div><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-market-category="${index}">Editar</button><button class="mini-btn danger" type="button" data-remove-market-category="${index}">Eliminar</button></div>`;
           marketAdminCategoryList.appendChild(item);
         });
         marketAdminPriceList.innerHTML = '';
@@ -4668,27 +4667,27 @@
           showAdminNotice('Escribe un nombre de categoría antes de guardar.', 'warn');
           return;
         }
-        if (!supabaseClient) {
-          showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
-          return;
-        }
         const nextSort = marketCatalog[activeMarketType].categories.length + 1;
-        const { data, error } = await supabaseClient.from('service_catalog_entries').insert({
-          service_type: activeMarketType,
-          entry_type: 'category',
-          category_name: name,
-          item_name: name,
-          image,
-          value: '',
-          sort_order: nextSort
-        }).select('id,category_name,image').single();
-        if (error) {
-          showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
-          return;
+        let insertedId = null;
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient.from('service_catalog_entries').insert({
+            service_type: activeMarketType,
+            entry_type: 'category',
+            category_name: name,
+            item_name: name,
+            image,
+            value: '',
+            sort_order: nextSort
+          }).select('id,category_name,image').single();
+          if (error) {
+            showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
+            return;
+          }
+          insertedId = data?.id || null;
         }
-        marketCatalog[activeMarketType].categories.push({ id: data?.id || null, name, image });
+        marketCatalog[activeMarketType].categories.push({ id: insertedId, name, image });
         setActiveMarketType(activeMarketType);
-        showAdminNotice('Categoría agregada correctamente.', 'ok');
+        showAdminNotice(supabaseClient ? 'Categoría agregada correctamente.' : 'Categoría agregada localmente (sin Supabase).', supabaseClient ? 'ok' : 'info');
         streamingCategoryNameModal.value = '';
         streamingCategoryImageModal.value = '';
         closeStreamingCategoryModalFn();
@@ -4738,23 +4737,21 @@
           return;
         }
         const image = marketCategoryImage.value.trim() || marketDefaultImages[activeMarketType] || '';
-        if (!supabaseClient) {
-          showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
-          return;
-        }
         const nextSort = marketCatalog[activeMarketType].categories.length + 1;
-        const { error } = await supabaseClient.from('service_catalog_entries').insert({
-            service_type: activeMarketType,
-            entry_type: 'category',
-            category_name: name,
-            item_name: name,
-            image,
-            value: '',
-            sort_order: nextSort
-          });
-        if (error) {
-          showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
-          return;
+        if (supabaseClient) {
+          const { error } = await supabaseClient.from('service_catalog_entries').insert({
+              service_type: activeMarketType,
+              entry_type: 'category',
+              category_name: name,
+              item_name: name,
+              image,
+              value: '',
+              sort_order: nextSort
+            });
+          if (error) {
+            showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
+            return;
+          }
         }
         marketCatalog[activeMarketType].categories.push({ name, image });
         marketCategoryName.value = '';
@@ -4762,7 +4759,12 @@
         marketCategoryFormWrap?.classList.add('hidden');
         marketCategoryFormActions?.classList.add('hidden');
         setActiveMarketType(activeMarketType);
-        showAdminNotice(`Categoría agregada en ${marketCatalog[activeMarketType].title}.`, 'ok');
+        showAdminNotice(
+          supabaseClient
+            ? `Categoría agregada en ${marketCatalog[activeMarketType].title}.`
+            : `Categoría agregada localmente en ${marketCatalog[activeMarketType].title} (sin Supabase).`,
+          supabaseClient ? 'ok' : 'info'
+        );
       });
       uploadMarketCategoryImageBtn?.addEventListener('click', async () => {
         const file = marketCategoryImageFile?.files?.[0];
