@@ -2417,7 +2417,7 @@
               <button id="saveMarketCategoryBtn" class="panel-btn" type="button">Guardar categoría</button>
               <button id="cancelStreamingCategoryFormBtn" class="mini-btn" type="button">Cancelar</button>
             </div>
-            <div id="marketAdminCategoryList" style="margin-top:.65rem;"></div>
+            <div id="marketAdminCategoryList" style="margin-top:.65rem;max-height:280px;overflow-y:auto;padding-right:.2rem;"></div>
           </div>
           <div id="marketPricesSection" class="editor-box hidden" style="margin-top:.6rem;">
             <strong id="marketPriceTitle" style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Precios streaming</strong>
@@ -2542,8 +2542,8 @@
       </div>
     </div>
 
-    <div id="streamingCategoryModal" class="juego-form-modal" aria-hidden="true">
-      <div class="juego-form-card" style="max-width:520px;">
+      <div id="streamingCategoryModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card" style="max-width:460px;">
         <div class="admin-head">
           <strong>Agregar streaming</strong>
           <button id="closeStreamingCategoryModal" class="close-btn" type="button">✕</button>
@@ -2556,6 +2556,10 @@
           <div class="form-group">
             <label for="streamingCategoryImageModal">Imagen URL / Icono</label>
             <input id="streamingCategoryImageModal" type="text" placeholder="URL del icono" />
+            <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;flex-wrap:wrap;">
+              <input id="streamingCategoryImageFileModal" type="file" accept="image/*" />
+              <button id="uploadStreamingCategoryImageModalBtn" class="mini-btn" type="button">Subir imagen PC</button>
+            </div>
           </div>
           <div class="admin-panel-actions form-actions">
             <button id="cancelStreamingCategoryModal" class="panel-btn" type="button">Cancelar</button>
@@ -2828,6 +2832,8 @@
       const saveStreamingCategoryModalBtn = document.getElementById('saveStreamingCategoryModalBtn');
       const streamingCategoryNameModal = document.getElementById('streamingCategoryNameModal');
       const streamingCategoryImageModal = document.getElementById('streamingCategoryImageModal');
+      const streamingCategoryImageFileModal = document.getElementById('streamingCategoryImageFileModal');
+      const uploadStreamingCategoryImageModalBtn = document.getElementById('uploadStreamingCategoryImageModalBtn');
       const marketCategoryImageFile = document.getElementById('marketCategoryImageFile');
       const uploadMarketCategoryImageBtn = document.getElementById('uploadMarketCategoryImageBtn');
       const saveMarketCategoryBtn = document.getElementById('saveMarketCategoryBtn');
@@ -3099,6 +3105,7 @@
         { game: 'World of Warcraft', server: 'Ragnaros', amount: 300, price: 10.2 }
       ];
       let activeCategoryType = 'oro';
+      let editingStreamingCategoryIndex = null;
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
@@ -4546,6 +4553,8 @@
         marketPriceListSection?.classList.remove('hidden');
       });
       openStreamingCategoryFormBtn?.addEventListener('click', () => {
+        editingStreamingCategoryIndex = null;
+        if (saveStreamingCategoryModalBtn) saveStreamingCategoryModalBtn.textContent = 'Guardar streaming';
         streamingCategoryModal?.classList.add('show');
         streamingCategoryModal?.setAttribute('aria-hidden', 'false');
       });
@@ -4557,12 +4566,38 @@
       cancelStreamingCategoryModal?.addEventListener('click', closeStreamingCategoryModalFn);
       cancelStreamingCategoryFormBtn?.addEventListener('click', closeStreamingCategoryModalFn);
       saveStreamingCategoryModalBtn?.addEventListener('click', async () => {
+        if (editingStreamingCategoryIndex !== null) {
+          const target = marketCatalog[activeMarketType].categories[editingStreamingCategoryIndex];
+          if (target) {
+            const old = { ...target };
+            target.name = streamingCategoryNameModal.value.trim() || target.name;
+            target.image = streamingCategoryImageModal.value.trim() || target.image;
+            if (supabaseClient) {
+              await supabaseClient
+                .from('service_catalog_entries')
+                .update({ category_name: target.name, item_name: target.name, image: target.image })
+                .eq('service_type', activeMarketType)
+                .eq('entry_type', 'category')
+                .eq('category_name', old.name)
+                .limit(1);
+            }
+            setActiveMarketType(activeMarketType);
+          }
+          closeStreamingCategoryModalFn();
+          return;
+        }
         marketCategoryName.value = streamingCategoryNameModal.value.trim();
         marketCategoryImage.value = streamingCategoryImageModal.value.trim();
         await saveMarketCategoryBtn?.click();
         streamingCategoryNameModal.value = '';
         streamingCategoryImageModal.value = '';
         closeStreamingCategoryModalFn();
+      });
+      uploadStreamingCategoryImageModalBtn?.addEventListener('click', async () => {
+        const file = streamingCategoryImageFileModal?.files?.[0];
+        const url = await uploadImageFromPc(file, 'streaming-categories');
+        if (!url) return;
+        streamingCategoryImageModal.value = url;
       });
       if (saveMarketCategoryBtn) saveMarketCategoryBtn.addEventListener('click', async () => {
         const name = marketCategoryName.value.trim();
@@ -4643,23 +4678,12 @@
           if (Number.isNaN(index)) return;
           const target = marketCatalog[activeMarketType].categories[index];
           if (!target) return;
-          const nextName = window.prompt('Nuevo nombre de categoría', target.name) || '';
-          if (!nextName.trim()) return;
-          const nextImage = window.prompt('Nueva imagen URL (o deja igual)', target.image || '') || '';
-          const previous = { ...target };
-          target.name = nextName.trim();
-          target.image = nextImage.trim() || target.image;
-          if (supabaseClient) {
-            await supabaseClient
-              .from('service_catalog_entries')
-              .update({ category_name: target.name, item_name: target.name, image: target.image })
-              .eq('service_type', activeMarketType)
-              .eq('entry_type', 'category')
-              .eq('category_name', previous.name)
-              .eq('image', previous.image || '')
-              .limit(1);
-          }
-          setActiveMarketType(activeMarketType);
+          editingStreamingCategoryIndex = index;
+          streamingCategoryNameModal.value = target.name || '';
+          streamingCategoryImageModal.value = target.image || '';
+          if (saveStreamingCategoryModalBtn) saveStreamingCategoryModalBtn.textContent = 'Guardar cambios';
+          streamingCategoryModal?.classList.add('show');
+          streamingCategoryModal?.setAttribute('aria-hidden', 'false');
           return;
         }
         const btn = e.target.closest('button[data-remove-market-category]');
