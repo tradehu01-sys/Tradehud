@@ -4058,14 +4058,15 @@
           showAuthNotice('Ahora define tu nueva contraseña para recuperar la cuenta.');
           history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
         }
-        await syncFromSupabase();
-        await loadAppAssetsFromSupabase();
-        renderGameList();
-        renderAdminSelect();
-        renderGoldCategories();
-        renderServerByGame();
-        loadSelectedGame();
-        await loadMarketCatalogFromSupabase();
+        try { await syncFromSupabase(); } catch (e) { console.warn('syncFromSupabase failed', e); }
+        try { await loadAppAssetsFromSupabase(); } catch (e) { console.warn('loadAppAssetsFromSupabase failed', e); }
+        try { renderGameList(); } catch (e) { console.warn('renderGameList failed', e); }
+        try { renderAdminSelect(); } catch (e) { console.warn('renderAdminSelect failed', e); }
+        try { renderGoldCategories(); } catch (e) { console.warn('renderGoldCategories failed', e); }
+        try { renderServerByGame(); } catch (e) { console.warn('renderServerByGame failed', e); }
+        try { loadSelectedGame(); } catch (e) { console.warn('loadSelectedGame failed', e); }
+        try { await loadMarketCatalogFromSupabase(); } catch (e) { console.warn('loadMarketCatalogFromSupabase failed', e); }
+        try { renderStreamingSection(); } catch (e) { console.warn('renderStreamingSection failed', e); }
         if (marketDetailsWrap) marketDetailsWrap.classList.add('hidden');
         if (supabaseClient) {
           const { data: authData } = await supabaseClient.auth.getSession();
