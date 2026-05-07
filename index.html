@@ -4668,7 +4668,11 @@
               }
             }
             setActiveMarketType(activeMarketType);
-            showAdminNotice(supabaseClient ? 'Categoría actualizada correctamente.' : 'Categoría actualizada localmente (sin Supabase).', supabaseClient ? 'ok' : 'info');
+            if (!supabaseClient) {
+              showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
+              return;
+            }
+            showAdminNotice('Categoría actualizada correctamente.', 'ok');
           }
           closeStreamingCategoryModalFn();
           return;
@@ -4679,27 +4683,29 @@
           showAdminNotice('Escribe un nombre de categoría antes de guardar.', 'warn');
           return;
         }
+        if (!supabaseClient) {
+          showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
+          return;
+        }
         const nextSort = marketCatalog[activeMarketType].categories.length + 1;
         let insertedId = null;
-        if (supabaseClient) {
-          const { data, error } = await supabaseClient.from('service_catalog_entries').insert({
-            service_type: activeMarketType,
-            entry_type: 'category',
-            category_name: name,
-            item_name: name,
-            image,
-            value: '',
-            sort_order: nextSort
-          }).select('id,category_name,image').single();
-          if (error) {
-            showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
-            return;
-          }
-          insertedId = data?.id || null;
+        const { data, error } = await supabaseClient.from('service_catalog_entries').insert({
+          service_type: activeMarketType,
+          entry_type: 'category',
+          category_name: name,
+          item_name: name,
+          image,
+          value: '',
+          sort_order: nextSort
+        }).select('id,category_name,image').single();
+        if (error) {
+          showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
+          return;
         }
+        insertedId = data?.id || null;
         marketCatalog[activeMarketType].categories.push({ id: insertedId, name, image });
         setActiveMarketType(activeMarketType);
-        showAdminNotice(supabaseClient ? 'Categoría agregada correctamente.' : 'Categoría agregada localmente (sin Supabase).', supabaseClient ? 'ok' : 'info');
+        showAdminNotice('Categoría agregada correctamente.', 'ok');
         streamingCategoryNameModal.value = '';
         streamingCategoryImageModal.value = '';
         closeStreamingCategoryModalFn();
@@ -4749,21 +4755,23 @@
           return;
         }
         const image = marketCategoryImage.value.trim() || marketDefaultImages[activeMarketType] || '';
+        if (!supabaseClient) {
+          showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
+          return;
+        }
         const nextSort = marketCatalog[activeMarketType].categories.length + 1;
-        if (supabaseClient) {
-          const { error } = await supabaseClient.from('service_catalog_entries').insert({
-              service_type: activeMarketType,
-              entry_type: 'category',
-              category_name: name,
-              item_name: name,
-              image,
-              value: '',
-              sort_order: nextSort
-            });
-          if (error) {
-            showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
-            return;
-          }
+        const { error } = await supabaseClient.from('service_catalog_entries').insert({
+            service_type: activeMarketType,
+            entry_type: 'category',
+            category_name: name,
+            item_name: name,
+            image,
+            value: '',
+            sort_order: nextSort
+          });
+        if (error) {
+          showAdminNotice(`Error guardando categoría: ${error.message}`, 'warn');
+          return;
         }
         marketCatalog[activeMarketType].categories.push({ name, image });
         marketCategoryName.value = '';
@@ -4771,12 +4779,7 @@
         marketCategoryFormWrap?.classList.add('hidden');
         marketCategoryFormActions?.classList.add('hidden');
         setActiveMarketType(activeMarketType);
-        showAdminNotice(
-          supabaseClient
-            ? `Categoría agregada en ${marketCatalog[activeMarketType].title}.`
-            : `Categoría agregada localmente en ${marketCatalog[activeMarketType].title} (sin Supabase).`,
-          supabaseClient ? 'ok' : 'info'
-        );
+        showAdminNotice(`Categoría agregada en ${marketCatalog[activeMarketType].title}.`, 'ok');
       });
       uploadMarketCategoryImageBtn?.addEventListener('click', async () => {
         const file = marketCategoryImageFile?.files?.[0];
@@ -5399,15 +5402,7 @@
             return;
           }
           if (!supabaseClient) {
-            games.push({ id: null, ...payload });
-            selectedAdminIndex = games.length - 1;
-            showAdminNotice(`Juego agregado localmente: ${payload.name}.`, 'info');
-            renderGameList();
-            renderAdminSelect();
-            editingAdminIndex = null;
-            juegoFormModal.classList.remove('show');
-            juegoFormModal.setAttribute('aria-hidden', 'true');
-            clearGameForm();
+            showAdminNotice('Supabase no está conectado. No se guardó el juego.', 'warn');
             return;
           }
           const supabasePayload = {
@@ -5453,12 +5448,11 @@
               .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name,replace_gold_with_custom')
               .single();
             if (error) {
-              games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
               selectedAdminIndex = editingAdminIndex;
               if (error.message?.toLowerCase().includes('services')) {
-                showAdminNotice('No existe columna "services" en Supabase. Se actualizó localmente.', 'warn');
+                showAdminNotice('No existe columna "services" en Supabase. Ejecuta el schema actualizado.', 'warn');
               } else {
-                showAdminNotice('No se pudo actualizar en Supabase. Se actualizó localmente.', 'warn');
+                showAdminNotice(`No se pudo actualizar en Supabase: ${error.message}`, 'warn');
               }
             } else {
               games[editingAdminIndex] = { ...data, services: payload.services };
@@ -5466,9 +5460,8 @@
               showAdminNotice(`Juego actualizado: ${payload.name}.`, 'ok');
             }
           } else {
-            games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
-            selectedAdminIndex = editingAdminIndex;
-            showAdminNotice(`Juego actualizado localmente: ${payload.name}.`, 'info');
+            showAdminNotice('Supabase no está conectado. No se guardó el juego.', 'warn');
+            return;
           }
         }
         renderGameList();
