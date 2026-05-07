@@ -2034,7 +2034,36 @@
             <div class="window-game"><strong id="streamingModalTitle">Streaming</strong></div>
             <button id="closeStreamingModal" class="close-btn" type="button">✕</button>
           </div>
-          <div id="streamingModalPrices" class="admin-game-list"></div>
+          <div class="gold-order-top">
+            <div id="streamingModalIcon" class="gold-order-game-icon"></div>
+            <strong id="streamingModalServiceName">Servicio streaming</strong>
+          </div>
+          <div class="gold-order-grid">
+            <div>
+              <label for="streamingCustomerName">Nombre de la persona</label>
+              <input id="streamingCustomerName" type="text" placeholder="Ej: Juan Pérez" />
+            </div>
+            <div>
+              <label for="streamingAccountType">Tipo de cuenta</label>
+              <select id="streamingAccountType">
+                <option value="Perfil">Perfil</option>
+                <option value="Cuenta completa">Cuenta completa</option>
+              </select>
+            </div>
+            <div>
+              <label for="streamingDuration">Tiempo</label>
+              <select id="streamingDuration">
+                <option value="1 semana">1 semana</option>
+                <option value="1 mes" selected>1 mes</option>
+                <option value="1 año">1 año</option>
+              </select>
+            </div>
+            <div>
+              <label for="streamingPriceSelect">Precio de la cuenta</label>
+              <select id="streamingPriceSelect"></select>
+            </div>
+          </div>
+          <div id="streamingModalPrices" class="admin-game-list" style="margin-top:.65rem;"></div>
           <div class="admin-panel-actions" style="margin-top:.7rem;">
             <button id="streamingModalTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
           </div>
@@ -2774,9 +2803,15 @@
       const streamingSearch = document.getElementById('streamingSearch');
       const streamingModal = document.getElementById('streamingModal');
       const streamingModalTitle = document.getElementById('streamingModalTitle');
+      const streamingModalIcon = document.getElementById('streamingModalIcon');
+      const streamingModalServiceName = document.getElementById('streamingModalServiceName');
       const streamingModalPrices = document.getElementById('streamingModalPrices');
       const streamingModalTicketBtn = document.getElementById('streamingModalTicketBtn');
       const closeStreamingModal = document.getElementById('closeStreamingModal');
+      const streamingCustomerName = document.getElementById('streamingCustomerName');
+      const streamingAccountType = document.getElementById('streamingAccountType');
+      const streamingDuration = document.getElementById('streamingDuration');
+      const streamingPriceSelect = document.getElementById('streamingPriceSelect');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
@@ -3570,13 +3605,21 @@
         const categories = bucket.categories.filter((cat) => (cat.name || '').toLowerCase().includes(term));
         const openStreamingModal = (name) => {
           const prices = bucket.prices.filter((price) => price.toLowerCase().includes(name.toLowerCase()));
+          const selectedCategory = bucket.categories.find((cat) => cat.name === name);
           streamingModalTitle.textContent = name;
+          streamingModalServiceName.textContent = name;
+          streamingModalIcon.innerHTML = `<img src="${selectedCategory?.image || ''}" alt="${name}" />`;
           streamingModalPrices.innerHTML = '';
+          streamingPriceSelect.innerHTML = '';
           (prices.length ? prices : bucket.prices).forEach((price) => {
             const row = document.createElement('article');
             row.className = 'category-item';
             row.innerHTML = `<strong>${price}</strong>`;
             streamingModalPrices.appendChild(row);
+            const option = document.createElement('option');
+            option.value = price;
+            option.textContent = price;
+            streamingPriceSelect.appendChild(option);
           });
           streamingModalTicketBtn.dataset.category = name;
           streamingModal.classList.add('show');
@@ -4666,19 +4709,24 @@
       });
       streamingModalTicketBtn?.addEventListener('click', async () => {
         const category = streamingModalTicketBtn.dataset.category || 'Streaming';
+        const customer = streamingCustomerName?.value?.trim() || 'Sin nombre';
+        const accType = streamingAccountType?.value || 'Perfil';
+        const duration = streamingDuration?.value || '1 mes';
+        const price = streamingPriceSelect?.value || '';
         if (!currentUser) {
           openAuth('login');
           showAuthNotice('Debes iniciar sesión para abrir ticket.');
           return;
         }
-        const summary = `Streaming | ${category}`;
+        const summary = `Streaming | ${category} | ${customer} | ${accType} | ${duration} | ${price}`;
         if (supabaseClient) {
           await supabaseClient.from('tickets').insert({
             user_id: currentUser.id,
             game: 'Streaming',
             server: category,
-            product: 'Consulta de streaming',
-            delivery: '',
+            product: `${accType} - ${duration}`,
+            character: customer,
+            delivery: price,
             status: 'pendiente'
           });
           await renderUserOrders();
