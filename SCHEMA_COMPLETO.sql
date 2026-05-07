@@ -311,6 +311,7 @@ insert into public.games (name, icon, description, services) values
 ('World of Warcraft Project Epoch','', 'Project Epoch gold.', array['gold','boosting','accounts']),
 ('World of Warcraft Ascension','', 'Ascension gold.', array['gold','boosting','accounts']),
 ('WARMANE','', 'Onyxia/Lordaeron/Icecrown.', array['gold','boosting','accounts']),
+('Albion Online','', 'Compra/venta de plata y servicios por encargo.', array['gold']),
 ('AION','', 'Kinah EUROAION.', array['gold']),
 ('Aion 2','', 'TW Triniel/Vaziel.', array['gold']),
 ('RuneScape','', 'Old School RuneScape.', array['gold']),

@@ -2373,7 +2373,7 @@
             <button id="saveMarketPriceBtn" class="panel-btn" type="button">Guardar precio</button>
           </div>
           <div class="editor-box" style="margin-top:.6rem;">
-            <strong style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Categorías y precios actuales</strong>
+            <strong id="marketAdminListTitle" style="display:block;margin-bottom:.5rem;color:#f0cf7b;">Listado de P2P y precios</strong>
             <div id="marketAdminCategoryList"></div>
             <div id="marketAdminPriceList" style="margin-top:.6rem;"></div>
           </div>
@@ -2742,6 +2742,7 @@
       const saveMarketPriceBtn = document.getElementById('saveMarketPriceBtn');
       const marketAdminCategoryList = document.getElementById('marketAdminCategoryList');
       const marketAdminPriceList = document.getElementById('marketAdminPriceList');
+      const marketAdminListTitle = document.getElementById('marketAdminListTitle');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
@@ -2930,6 +2931,11 @@
           categories: [{ name: 'GiftCards gaming', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' }],
           prices: ['10$ - 13$', '20$ - 26$', '50$ - 65$', '100$ - 130$']
         }
+      };
+      const marketDefaultImages = {
+        p2p: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&',
+        streaming: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&',
+        giftcards: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&'
       };
       const gameServers = [
         { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
@@ -3397,6 +3403,10 @@
           : `${bucket.title} · Selecciona categoría para ver apartados y crear ticket`;
         marketCategoryGrid.innerHTML = '';
         marketPriceList.innerHTML = '';
+        if (type === 'streaming') {
+          marketCategoryGrid.insertAdjacentHTML('beforeend', '<p class="auth-hint" style="grid-column:1/-1;margin:0 0 .25rem 0;">Listado de streaming</p>');
+          marketPriceList.insertAdjacentHTML('beforeend', '<p class="auth-hint" style="margin:0 0 .4rem 0;">Precios streaming</p>');
+        }
 
         const renderCategoryItems = (categoryName) => {
           const term = categoryName.toLowerCase();
@@ -3463,6 +3473,11 @@
         if (!marketAdminCategoryList || !marketAdminPriceList) return;
         const bucket = marketCatalog[type];
         if (!bucket) return;
+        if (marketAdminListTitle) {
+          if (type === 'streaming') marketAdminListTitle.textContent = 'Listado de streaming y precios streaming';
+          else if (type === 'giftcards') marketAdminListTitle.textContent = 'Listado de GiftCards y precios';
+          else marketAdminListTitle.textContent = 'Listado de P2P y precios';
+        }
         marketAdminCategoryList.innerHTML = '';
         bucket.categories.forEach((cat, index) => {
           const item = document.createElement('article');
@@ -4282,8 +4297,11 @@
       if (marketTypeGiftcards) marketTypeGiftcards.addEventListener('click', () => setActiveMarketType('giftcards'));
       if (saveMarketCategoryBtn) saveMarketCategoryBtn.addEventListener('click', async () => {
         const name = marketCategoryName.value.trim();
-        const image = marketCategoryImage.value.trim();
-        if (!name || !image) return;
+        if (!name) {
+          showAdminNotice('Escribe un nombre de categoría antes de guardar.', 'warn');
+          return;
+        }
+        const image = marketCategoryImage.value.trim() || marketDefaultImages[activeMarketType] || '';
         if (!supabaseClient) {
           showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
           return;
@@ -4318,7 +4336,10 @@
       if (saveMarketPriceBtn) saveMarketPriceBtn.addEventListener('click', async () => {
         const title = marketPriceName.value.trim();
         const value = marketPriceValue.value.trim();
-        if (!title || !value) return;
+        if (!title || !value) {
+          showAdminNotice('Completa título y precio/detalle antes de guardar.', 'warn');
+          return;
+        }
         const fullValue = `${title} - ${value}`;
         if (!supabaseClient) {
           showAdminNotice('Supabase no está conectado. No se guardó el precio.', 'warn');
