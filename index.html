@@ -4668,6 +4668,13 @@
       cancelStreamingCategoryModal?.addEventListener('click', closeStreamingCategoryModalFn);
       cancelStreamingCategoryFormBtn?.addEventListener('click', closeStreamingCategoryModalFn);
       saveStreamingCategoryModalBtn?.addEventListener('click', async () => {
+        if ((!streamingCategoryImageModal?.value || !streamingCategoryImageModal.value.trim()) && streamingCategoryImageFileModal?.files?.[0]) {
+          const autoUrl = await uploadImageFromPc(streamingCategoryImageFileModal.files[0], 'streaming-categories');
+          if (autoUrl) {
+            streamingCategoryImageModal.value = autoUrl;
+            if (streamingCategoryPreviewImg) streamingCategoryPreviewImg.src = autoUrl;
+          }
+        }
         if (editingStreamingCategoryIndex !== null) {
           const target = marketCatalog[activeMarketType].categories[editingStreamingCategoryIndex];
           if (!target) {
@@ -5341,6 +5348,13 @@
       });
 
       guardarCategoriaOro.addEventListener('click', async () => {
+        if ((!categoriaImagen?.value || !categoriaImagen.value.trim()) && categoriaImagenFile?.files?.[0]) {
+          const autoUrl = await uploadImageFromPc(categoriaImagenFile.files[0], 'gold-categories');
+          if (autoUrl) {
+            if (categoriaImagen) categoriaImagen.value = autoUrl;
+            if (previewCategoriaImagen) previewCategoriaImagen.src = autoUrl;
+          }
+        }
         if (!categoriaNombre.value.trim()) {
           showAdminNotice('Escribe un nombre para la categoría.', 'warn');
           return;
