@@ -4076,10 +4076,10 @@
         }
         let gamesResult = await supabaseClient
           .from('games')
-          .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name')
+          .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name,replace_gold_with_custom')
           .order('created_at', { ascending: true });
         const gamesColumnError = gamesResult.error?.message?.toLowerCase() || '';
-        if (gamesColumnError.includes('custom_service_enabled') || gamesColumnError.includes('custom_service_name') || gamesColumnError.includes('custom_service_image') || gamesColumnError.includes('custom_service_hide_name')) {
+        if (gamesColumnError.includes('custom_service_enabled') || gamesColumnError.includes('custom_service_name') || gamesColumnError.includes('custom_service_image') || gamesColumnError.includes('custom_service_hide_name') || gamesColumnError.includes('replace_gold_with_custom')) {
           gamesResult = await supabaseClient
             .from('games')
             .select('id,name,icon,description,services')
@@ -4091,6 +4091,7 @@
               custom_service_name: '',
               custom_service_image: '',
               custom_service_hide_name: false,
+              replace_gold_with_custom: false
             }));
             showAdminNotice('Faltan columnas custom_service_* en games. Cargado en modo compatibilidad. Ejecuta el schema actualizado.', 'warn');
           }
@@ -4130,7 +4131,7 @@
               enabled: Boolean(row.custom_service_enabled),
               image: row.custom_service_image || '',
               hideName: Boolean(row.custom_service_hide_name),
-              replaceGold: false
+              replaceGold: Boolean(row.replace_gold_with_custom)
             };
           });
         }
@@ -5406,9 +5407,10 @@
             custom_service_name: customServiceInput.value.trim().toLowerCase(),
             custom_service_enabled: customServiceEnabled.checked,
             custom_service_image: customServiceResolvedImage,
-            custom_service_hide_name: customServiceHideName.checked
+            custom_service_hide_name: customServiceHideName.checked,
+            replace_gold_with_custom: customServiceReplaceGold.checked
           };
-          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name').single();
+          const { data, error } = await supabaseClient.from('games').insert(supabasePayload).select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name,replace_gold_with_custom').single();
           if (error) {
             if (error.message?.toLowerCase().includes('services')) {
               showAdminNotice('No existe columna "services" en Supabase. Ejecuta el schema actualizado.', 'warn');
@@ -5430,13 +5432,14 @@
               custom_service_name: customServiceInput.value.trim().toLowerCase(),
               custom_service_enabled: customServiceEnabled.checked,
               custom_service_image: customServiceResolvedImage,
-              custom_service_hide_name: customServiceHideName.checked
+              custom_service_hide_name: customServiceHideName.checked,
+              replace_gold_with_custom: customServiceReplaceGold.checked
             };
             const { data, error } = await supabaseClient
               .from('games')
               .update(supabasePayload)
               .eq('id', games[editingAdminIndex].id)
-              .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name')
+              .select('id,name,icon,description,services,custom_service_enabled,custom_service_name,custom_service_image,custom_service_hide_name,replace_gold_with_custom')
               .single();
             if (error) {
               games[editingAdminIndex] = { ...games[editingAdminIndex], ...payload };
