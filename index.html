@@ -4648,39 +4648,39 @@
       saveStreamingCategoryModalBtn?.addEventListener('click', async () => {
         if (editingStreamingCategoryIndex !== null) {
           const target = marketCatalog[activeMarketType].categories[editingStreamingCategoryIndex];
-          if (target) {
-            const previousName = target.name;
-            const previousImage = target.image;
-            target.name = streamingCategoryNameModal.value.trim() || target.name;
-            target.image = streamingCategoryImageModal.value.trim() || target.image;
-            if (supabaseClient) {
-              let query = supabaseClient
-                .from('service_catalog_entries')
-                .update({ category_name: target.name, item_name: target.name, image: target.image })
-                .eq('service_type', activeMarketType)
-                .eq('entry_type', 'category');
-              if (target.id) query = query.eq('id', target.id);
-              else query = query.eq('category_name', previousName);
-              const { data: updatedRows, error: updateError } = await query.select('id');
-              if (updateError) {
-                target.name = previousName;
-                target.image = previousImage;
-                setActiveMarketType(activeMarketType);
-                showAdminNotice(`No se pudo guardar el cambio en Supabase: ${updateError.message}`, 'warn');
-                return;
-              }
-              if (!updatedRows?.length) {
-                showAdminNotice('No se encontró la categoría en Supabase para actualizar. Verifica conexión/políticas.', 'warn');
-              }
-            }
-            setActiveMarketType(activeMarketType);
-            if (!supabaseClient) {
-              showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
-              return;
-            }
-            await syncFromSupabase();
-            showAdminNotice('Categoría actualizada correctamente.', 'ok');
+          if (!target) {
+            showAdminNotice('No se encontró la categoría seleccionada para editar.', 'warn');
+            return;
           }
+          if (!supabaseClient) {
+            showAdminNotice('Supabase no está conectado. No se guardó la categoría.', 'warn');
+            return;
+          }
+          const nextName = streamingCategoryNameModal.value.trim() || target.name;
+          const nextImage = streamingCategoryImageModal.value.trim() || target.image || marketDefaultImages[activeMarketType] || '';
+          const previousName = target.name;
+          const previousImage = target.image;
+          let query = supabaseClient
+            .from('service_catalog_entries')
+            .update({ category_name: nextName, item_name: nextName, image: nextImage })
+            .eq('service_type', activeMarketType)
+            .eq('entry_type', 'category');
+          if (target.id) query = query.eq('id', target.id);
+          else query = query.eq('category_name', previousName);
+          const { data: updatedRows, error: updateError } = await query.select('id');
+          if (updateError) {
+            showAdminNotice(`No se pudo guardar el cambio en Supabase: ${updateError.message}`, 'warn');
+            return;
+          }
+          if (!updatedRows?.length) {
+            showAdminNotice('No se encontró la categoría en Supabase para actualizar. Verifica conexión/políticas.', 'warn');
+            return;
+          }
+          target.name = nextName;
+          target.image = nextImage;
+          setActiveMarketType(activeMarketType);
+          await syncFromSupabase();
+          showAdminNotice('Categoría actualizada correctamente.', 'ok');
           closeStreamingCategoryModalFn();
           return;
         }
