@@ -2013,7 +2013,11 @@
       <section id="streaming" class="page-section" data-page="streaming">
         <div class="container">
           <h2 class="section-title">Sección de <span>Streaming</span></h2>
-          <article class="glass"><p class="lead">Aquí se publican categorías y precios de cuentas/perfiles de streaming. Usa el panel admin para gestionar catálogo y tickets.</p></article>
+          <article class="glass">
+            <p class="lead">Aquí se publican categorías y precios de cuentas/perfiles de streaming. Usa el panel admin para gestionar catálogo y tickets.</p>
+            <div id="streamingCategoryGrid" class="market-grid" style="margin-top:.75rem;"></div>
+            <div id="streamingPriceList" style="margin-top:.75rem;"></div>
+          </article>
         </div>
       </section>
 
@@ -2331,7 +2335,7 @@
           </div>
           <div id="adminTicketsList" class="admin-game-list"></div>
         </div>
-        <div id="editorMarketAdmin" class="editor-box hidden" style="display:none !important;">
+        <div id="editorMarketAdmin" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
             <strong style="flex:1;display:flex;align-items:center;">Marketplace admin</strong>
           </div>
@@ -2746,6 +2750,8 @@
       const marketAdminPriceList = document.getElementById('marketAdminPriceList');
       const marketAdminListTitle = document.getElementById('marketAdminListTitle');
       const marketAdminPriceTitle = document.getElementById('marketAdminPriceTitle');
+      const streamingCategoryGrid = document.getElementById('streamingCategoryGrid');
+      const streamingPriceList = document.getElementById('streamingPriceList');
       const categoriaListaOro = document.getElementById('categoriaListaOro');
       const categoriaListaCuentas = document.getElementById('categoriaListaCuentas');
       const categoriaListaBosteo = document.getElementById('categoriaListaBosteo');
@@ -3027,6 +3033,7 @@
             marketCatalog[row.service_type].prices.push(row.value || row.item_name || row.category_name || '');
           }
         });
+        renderStreamingSection();
       }
 
       function renderGoldOrderProducts() {
@@ -3497,6 +3504,7 @@
           marketPriceList.innerHTML = '<p class="auth-hint">Elige una categoría de giftcard para ver especificaciones.</p>';
         }
         renderMarketAdminLists(type);
+        renderStreamingSection();
       }
 
       function renderMarketAdminLists(type = activeMarketType) {
@@ -3527,6 +3535,28 @@
           item.innerHTML = `<strong>${price}</strong><button class="mini-btn danger" type="button" data-remove-market-price="${index}">Eliminar</button>`;
           marketAdminPriceList.appendChild(item);
         });
+      }
+
+      function renderStreamingSection() {
+        if (!streamingCategoryGrid || !streamingPriceList) return;
+        const bucket = marketCatalog.streaming;
+        streamingCategoryGrid.innerHTML = '';
+        streamingPriceList.innerHTML = '<strong style="display:block;margin-bottom:.45rem;color:#f0cf7b;">Precios de streaming</strong>';
+        bucket.categories.forEach((cat) => {
+          const card = document.createElement('article');
+          card.className = 'account-card';
+          card.innerHTML = `<img src="${cat.image}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /><strong>${cat.name}</strong>`;
+          streamingCategoryGrid.appendChild(card);
+        });
+        const list = document.createElement('div');
+        list.className = 'admin-game-list';
+        bucket.prices.forEach((price) => {
+          const row = document.createElement('article');
+          row.className = 'category-item';
+          row.innerHTML = `<strong>${price}</strong>`;
+          list.appendChild(row);
+        });
+        streamingPriceList.appendChild(list);
       }
 
       function setActiveMarketType(type = 'p2p') {
