@@ -3604,7 +3604,7 @@
         bucket.forEach((category, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p><button class="mini-btn danger" type="button" data-remove-category="${index}" data-category-type="${type}">Eliminar</button>`;
+          item.innerHTML = `<strong>${category.name}</strong><p class="admin-game-desc" style="margin-top:0.35rem;">Juego: ${category.game}</p><p class="admin-game-desc">${category.description}</p><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-category="${index}" data-category-type="${type}">Editar</button><button class="mini-btn danger" type="button" data-remove-category="${index}" data-category-type="${type}">Eliminar</button></div>`;
           target.appendChild(item);
         });
       }
@@ -5220,26 +5220,47 @@
           description: categoriaDescripcion.value.trim() || 'Sin descripción.'
         };
         const bucket = getCategoryBucket(activeCategoryType);
+        const editIndex = Number(guardarCategoriaOro.dataset.editIndex || '-1');
+        const isEditing = editIndex >= 0;
         if (activeCategoryType === 'oro' && supabaseClient) {
-          const { data, error } = await supabaseClient
-            .from('gold_categories')
-            .insert(payload)
-            .select('id,game,name,description')
-            .single();
+          const currentId = isEditing ? bucket[editIndex]?.id : null;
+          const query = currentId
+            ? supabaseClient.from('gold_categories').update(payload).eq('id', currentId)
+            : supabaseClient.from('gold_categories').insert(payload);
+          const { data, error } = await query.select('id,game,name,description').single();
           if (error) {
             showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
             return;
           }
-          bucket.push(data);
+          if (isEditing) bucket[editIndex] = data;
+          else bucket.push(data);
         } else {
-          bucket.push({ id: null, ...payload });
+          if (isEditing) bucket[editIndex] = { ...bucket[editIndex], ...payload };
+          else bucket.push({ id: null, ...payload });
         }
         renderGoldCategories();
-        showAdminNotice(`Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
+        showAdminNotice(isEditing ? 'Categoría de oro actualizada.' : `Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
+        guardarCategoriaOro.dataset.editIndex = '';
         closeCategoriaModal();
       });
 
       async function handleRemoveCategory(e) {
+        const editBtn = e.target.closest('button[data-edit-category]');
+        if (editBtn) {
+          const type = editBtn.dataset.categoryType || 'oro';
+          if (type !== 'oro') return;
+          const bucket = getCategoryBucket(type);
+          const idx = Number(editBtn.dataset.editCategory);
+          const target = bucket[idx];
+          if (!target) return;
+          categoriaJuego.value = target.game || '';
+          categoriaNombre.value = target.name || '';
+          categoriaDescripcion.value = target.description || '';
+          guardarCategoriaOro.dataset.editIndex = String(idx);
+          categoriaOroModal.classList.add('show');
+          categoriaOroModal.setAttribute('aria-hidden', 'false');
+          return;
+        }
         const removeBtn = e.target.closest('button[data-remove-category]');
         if (!removeBtn) return;
         const type = removeBtn.dataset.categoryType || 'oro';
