@@ -2435,7 +2435,7 @@
           </div>
           <div id="marketPriceListSection" class="editor-box hidden" style="margin-top:.6rem;">
             <strong id="marketAdminPriceTitle" style="display:block;margin:.6rem 0 .35rem;color:#f0cf7b;">Precios de P2P</strong>
-            <div id="marketAdminPriceList" style="margin-top:.6rem;"></div>
+            <div id="marketAdminPriceList" style="margin-top:.6rem;max-height:260px;overflow-y:auto;padding-right:.2rem;"></div>
           </div>
         </div>
         <div id="editorCuentas" class="editor-box hidden">
@@ -2542,7 +2542,7 @@
       </div>
     </div>
 
-      <div id="streamingCategoryModal" class="juego-form-modal" aria-hidden="true">
+    <div id="streamingCategoryModal" class="juego-form-modal" aria-hidden="true">
       <div class="juego-form-card" style="max-width:460px;">
         <div class="admin-head">
           <strong>Agregar streaming</strong>
@@ -2564,6 +2564,25 @@
           <div class="admin-panel-actions form-actions">
             <button id="cancelStreamingCategoryModal" class="panel-btn" type="button">Cancelar</button>
             <button id="saveStreamingCategoryModalBtn" class="panel-btn" type="button">Guardar streaming</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="streamingPriceModal" class="juego-form-modal" aria-hidden="true">
+      <div class="juego-form-card" style="max-width:460px;">
+        <div class="admin-head">
+          <strong>Editar precio</strong>
+          <button id="closeStreamingPriceModal" class="close-btn" type="button">✕</button>
+        </div>
+        <div class="admin-game-form">
+          <div class="form-group">
+            <label for="streamingPriceModalValue">Precio / detalle</label>
+            <input id="streamingPriceModalValue" type="text" placeholder="Ej: 1 PERFIL 4.50$ (MES)" />
+          </div>
+          <div class="admin-panel-actions form-actions">
+            <button id="cancelStreamingPriceModal" class="panel-btn" type="button">Cancelar</button>
+            <button id="saveStreamingPriceModalBtn" class="panel-btn" type="button">Guardar cambios</button>
           </div>
         </div>
       </div>
@@ -2834,6 +2853,11 @@
       const streamingCategoryImageModal = document.getElementById('streamingCategoryImageModal');
       const streamingCategoryImageFileModal = document.getElementById('streamingCategoryImageFileModal');
       const uploadStreamingCategoryImageModalBtn = document.getElementById('uploadStreamingCategoryImageModalBtn');
+      const streamingPriceModal = document.getElementById('streamingPriceModal');
+      const closeStreamingPriceModal = document.getElementById('closeStreamingPriceModal');
+      const cancelStreamingPriceModal = document.getElementById('cancelStreamingPriceModal');
+      const saveStreamingPriceModalBtn = document.getElementById('saveStreamingPriceModalBtn');
+      const streamingPriceModalValue = document.getElementById('streamingPriceModalValue');
       const marketCategoryImageFile = document.getElementById('marketCategoryImageFile');
       const uploadMarketCategoryImageBtn = document.getElementById('uploadMarketCategoryImageBtn');
       const saveMarketCategoryBtn = document.getElementById('saveMarketCategoryBtn');
@@ -3106,6 +3130,7 @@
       ];
       let activeCategoryType = 'oro';
       let editingStreamingCategoryIndex = null;
+      let editingStreamingPriceIndex = null;
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
@@ -3667,7 +3692,7 @@
         bucket.prices.forEach((price, index) => {
           const item = document.createElement('article');
           item.className = 'category-item';
-          item.innerHTML = `<strong>${price}</strong><button class="mini-btn danger" type="button" data-remove-market-price="${index}">Eliminar</button>`;
+          item.innerHTML = `<strong>${price}</strong><div class="admin-game-actions"><button class="mini-btn" type="button" data-edit-market-price="${index}">Editar</button><button class="mini-btn danger" type="button" data-remove-market-price="${index}">Eliminar</button></div>`;
           marketAdminPriceList.appendChild(item);
         });
       }
@@ -4599,6 +4624,30 @@
         if (!url) return;
         streamingCategoryImageModal.value = url;
       });
+      const closeStreamingPriceModalFn = () => {
+        streamingPriceModal?.classList.remove('show');
+        streamingPriceModal?.setAttribute('aria-hidden', 'true');
+      };
+      closeStreamingPriceModal?.addEventListener('click', closeStreamingPriceModalFn);
+      cancelStreamingPriceModal?.addEventListener('click', closeStreamingPriceModalFn);
+      saveStreamingPriceModalBtn?.addEventListener('click', async () => {
+        if (editingStreamingPriceIndex === null) return;
+        const nextValue = streamingPriceModalValue.value.trim();
+        if (!nextValue) return;
+        const previous = marketCatalog[activeMarketType].prices[editingStreamingPriceIndex];
+        marketCatalog[activeMarketType].prices[editingStreamingPriceIndex] = nextValue;
+        if (supabaseClient) {
+          await supabaseClient
+            .from('service_catalog_entries')
+            .update({ value: nextValue, item_name: nextValue })
+            .eq('service_type', activeMarketType)
+            .eq('entry_type', 'price')
+            .eq('value', previous)
+            .limit(1);
+        }
+        setActiveMarketType(activeMarketType);
+        closeStreamingPriceModalFn();
+      });
       if (saveMarketCategoryBtn) saveMarketCategoryBtn.addEventListener('click', async () => {
         const name = marketCategoryName.value.trim();
         if (!name) {
@@ -4705,6 +4754,16 @@
         setActiveMarketType(activeMarketType);
       });
       if (marketAdminPriceList) marketAdminPriceList.addEventListener('click', async (e) => {
+        const editBtn = e.target.closest('button[data-edit-market-price]');
+        if (editBtn) {
+          const index = Number(editBtn.dataset.editMarketPrice);
+          if (Number.isNaN(index)) return;
+          editingStreamingPriceIndex = index;
+          streamingPriceModalValue.value = marketCatalog[activeMarketType].prices[index] || '';
+          streamingPriceModal?.classList.add('show');
+          streamingPriceModal?.setAttribute('aria-hidden', 'false');
+          return;
+        }
         const btn = e.target.closest('button[data-remove-market-price]');
         if (!btn) return;
         const index = Number(btn.dataset.removeMarketPrice);
