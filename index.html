@@ -1993,13 +1993,12 @@
         <div class="container">
           <h2 class="section-title">Sección de <span>Streaming</span></h2>
           <article class="glass">
-            <p class="lead">Aquí se publican categorías y precios de cuentas/perfiles de streaming. Usa el panel admin para gestionar catálogo y tickets.</p>
             <div class="server-head" style="margin-top:.6rem;">
-              <button class="tab active" type="button">Ver categorías</button>
+              <button class="tab active" type="button">Categorías streaming</button>
               <input id="streamingSearch" class="oro-search" type="text" placeholder="Buscar categoría..." />
             </div>
             <div id="streamingCategoryGrid" class="server-row" style="margin-top:.75rem;"></div>
-            <div id="streamingPriceList" class="editor-box" style="margin-top:.75rem;"></div>
+            <div id="streamingPriceList" class="editor-box hidden" style="margin-top:.75rem;"></div>
           </article>
         </div>
       </section>
@@ -3525,9 +3524,12 @@
         if (!streamingCategoryGrid || !streamingPriceList) return;
         const bucket = marketCatalog.streaming;
         streamingCategoryGrid.innerHTML = '';
+        streamingPriceList.classList.add('hidden');
+        streamingPriceList.innerHTML = '';
         const term = streamingSearch?.value?.trim().toLowerCase?.() || '';
         const categories = bucket.categories.filter((cat) => (cat.name || '').toLowerCase().includes(term));
         const renderPricesByCategory = (name) => {
+          streamingPriceList.classList.remove('hidden');
           streamingPriceList.innerHTML = `<strong style="display:block;margin-bottom:.45rem;color:#f0cf7b;">Precios de streaming · ${name}</strong>`;
           const list = document.createElement('div');
           list.className = 'admin-game-list';
@@ -3542,7 +3544,7 @@
         };
         categories.forEach((cat, index) => {
           const btn = document.createElement('button');
-          btn.className = `server${index === 0 ? ' active' : ''}`;
+          btn.className = 'server';
           btn.type = 'button';
           btn.innerHTML = `<div class="server-icon"><img src="${cat.image}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span>`;
           btn.addEventListener('click', () => {
@@ -3552,8 +3554,6 @@
           });
           streamingCategoryGrid.appendChild(btn);
         });
-        const firstCategory = categories[0]?.name || bucket.categories[0]?.name || 'Streaming';
-        renderPricesByCategory(firstCategory);
       }
 
       function setActiveMarketType(type = 'p2p') {
