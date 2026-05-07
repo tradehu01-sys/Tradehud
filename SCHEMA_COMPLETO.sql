@@ -422,6 +422,12 @@ insert into public.games (name, icon, description, services) values
 ('Warbone Above Ashes','', 'America / Europa.', array['gold'])
 on conflict do nothing;
 
+insert into public.gold_categories (game, name, description) values
+('WARMANE', 'Warmane Gold', 'Onyxia / Lordaeron / Icecrown.'),
+('Albion Online', 'Albion Silver', 'Compra/venta de plata en Albion Online.')
+on conflict (game, name) do update
+set description = excluded.description;
+
 -- =========================
 -- 8) SEED COMERCIAL (VENDemos) Y TARJETAS P2P
 -- =========================

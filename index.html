@@ -4895,6 +4895,8 @@
         const index = Number(btn.dataset.removeMarketCategory);
         if (Number.isNaN(index)) return;
         const target = marketCatalog[activeMarketType].categories[index];
+        const confirmRemoveMarket = window.confirm(`¿Desea eliminar la categoría "${target?.name || 'seleccionada'}"?`);
+        if (!confirmRemoveMarket) return;
         marketCatalog[activeMarketType].categories.splice(index, 1);
         if (supabaseClient && target) {
           await supabaseClient
@@ -5368,6 +5370,8 @@
         const bucket = getCategoryBucket(type);
         const idx = Number(removeBtn.dataset.removeCategory);
         const target = bucket[idx];
+        const confirmRemove = window.confirm(`¿Desea eliminar la categoría "${target?.name || 'seleccionada'}"?`);
+        if (!confirmRemove) return;
         if (type === 'oro' && supabaseClient && target?.id) {
           const { error } = await supabaseClient.from('gold_categories').delete().eq('id', target.id);
           if (error) {
@@ -5428,6 +5432,13 @@
         if (!juegoNombre.value.trim()) {
           showAdminNotice('El juego necesita nombre para poder guardarse.', 'warn');
           return;
+        }
+        if (!juegoImagen.value.trim() && juegoImagenFile?.files?.[0]) {
+          const autoUploadedGameIcon = await uploadImageFromPc(juegoImagenFile.files[0], 'games');
+          if (autoUploadedGameIcon) {
+            juegoImagen.value = autoUploadedGameIcon;
+            updateGamePreview();
+          }
         }
         if (customServiceEnabled.checked && !customServiceImage.value.trim() && customServiceImageFile?.files?.[0]) {
           const autoUploadedImage = await uploadImageFromPc(customServiceImageFile.files[0], 'services');
