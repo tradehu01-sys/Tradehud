@@ -37,7 +37,7 @@ create table if not exists public.tickets (
 -- =========================
 -- 3) CATÁLOGO MARKETPLACE
 -- =========================
-create table if not exists public.market_catalog_entries (
+create table if not exists public.service_catalog_entries (
   id uuid primary key default gen_random_uuid(),
   service_type text not null check (service_type in ('p2p','streaming','giftcards','gold')),
   entry_type text not null check (entry_type in ('category','price')),
@@ -68,7 +68,7 @@ create table if not exists public.gold_catalog_entries (
 -- =========================
 alter table public.user_profiles enable row level security;
 alter table public.tickets enable row level security;
-alter table public.market_catalog_entries enable row level security;
+alter table public.service_catalog_entries enable row level security;
 alter table public.gold_catalog_entries enable row level security;
 
 -- Limpiar políticas previas si existen
@@ -77,8 +77,8 @@ drop policy if exists "user_profiles_upsert_own" on public.user_profiles;
 drop policy if exists "tickets_select_own" on public.tickets;
 drop policy if exists "tickets_insert_own" on public.tickets;
 drop policy if exists "tickets_select_admin" on public.tickets;
-drop policy if exists "market_catalog_public_read" on public.market_catalog_entries;
-drop policy if exists "market_catalog_admin_write" on public.market_catalog_entries;
+drop policy if exists "service_catalog_public_read" on public.service_catalog_entries;
+drop policy if exists "service_catalog_admin_write" on public.service_catalog_entries;
 drop policy if exists "gold_catalog_public_read" on public.gold_catalog_entries;
 drop policy if exists "gold_catalog_admin_write" on public.gold_catalog_entries;
 
@@ -118,8 +118,8 @@ using (
 );
 
 -- catálogo lectura pública
-create policy "market_catalog_public_read"
-on public.market_catalog_entries
+create policy "service_catalog_public_read"
+on public.service_catalog_entries
 for select
 using (true);
 
@@ -129,8 +129,8 @@ for select
 using (true);
 
 -- catálogo escritura admin
-create policy "market_catalog_admin_write"
-on public.market_catalog_entries
+create policy "service_catalog_admin_write"
+on public.service_catalog_entries
 for all
 using (
   exists (
@@ -164,7 +164,7 @@ with check (
 -- =========================
 -- 5) SEED CATÁLOGO MARKETPLACE (P2P, STREAMING, GIFTCARDS)
 -- =========================
-insert into public.market_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
+insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
 values
 ('p2p','category','ZINLI','ZINLI','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','',1),
 ('p2p','category','PAYPAL','PAYPAL','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','',2),
@@ -182,7 +182,7 @@ values
 ('giftcards','category','GiftCards Gaming','GiftCards Gaming','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',1)
 on conflict do nothing;
 
-insert into public.market_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
+insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
 values
 ('p2p','price','ZINLI','Zinli 10$','','12$',1),
 ('p2p','price','ZINLI','Zinli 20$','','23$',2),
@@ -354,7 +354,7 @@ on conflict do nothing;
 -- =========================
 -- 8) SEED COMERCIAL (VENDemos) Y TARJETAS P2P
 -- =========================
-insert into public.market_catalog_entries (service_type, entry_type, category_name, item_name, image, value, currency, sort_order)
+insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, currency, sort_order)
 values
 ('p2p','category','Tarjetas P2P','Zinli / PayPal / GiftCards','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','','USD',10),
 ('p2p','price','Tarjetas P2P','Vendemos Zinli 10$','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','12$','USD',11),

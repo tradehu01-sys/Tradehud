@@ -1989,27 +1989,6 @@
         </div>
       </section>
 
-      <section id="servicios" class="page-section" data-page="servicios">
-        <div class="container">
-          <h2 class="section-title">Panel de <span>Servicios</span></h2>
-          <div class="service-actions">
-            <button class="service-action-btn" type="button" data-market-service="p2p">
-              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&" alt="P2P" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1200&auto=format&fit=crop';" />
-              <span>P2P</span>
-            </button>
-            <button class="service-action-btn" type="button" data-market-service="giftcards">
-              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&" alt="Giftcards" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=1200&auto=format&fit=crop';" />
-              <span>GiftCards</span>
-            </button>
-            <button class="service-action-btn" type="button" data-market-service="streaming">
-              <img src="https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&" alt="Streaming" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1200&auto=format&fit=crop';" />
-              <span>Streaming</span>
-            </button>
-          </div>
-          <div id="marketDetailsWrap" class="editor-box hidden" style="display:none !important;"></div>
-        </div>
-      </section>
-
       <section id="streaming" class="page-section" data-page="streaming">
         <div class="container">
           <h2 class="section-title">Sección de <span>Streaming</span></h2>
@@ -3016,7 +2995,7 @@
       async function loadMarketCatalogFromSupabase() {
         if (!supabaseClient) return;
         const { data, error } = await supabaseClient
-          .from('market_catalog_entries')
+          .from('service_catalog_entries')
           .select('id,service_type,entry_type,category_name,item_name,image,value,sort_order,created_at')
           .order('sort_order', { ascending: true })
           .order('created_at', { ascending: true });
@@ -3994,9 +3973,6 @@
       document.querySelectorAll('a[href="#oro"]').forEach((link) => {
         link.addEventListener('click', () => showPage('oro'));
       });
-      document.querySelectorAll('a[href="#servicios"]').forEach((link) => {
-        link.addEventListener('click', () => showPage('servicios'));
-      });
 
       closeGameWindow.addEventListener('click', () => {
         gameWindowModal.classList.remove('show');
@@ -4372,7 +4348,7 @@
           return;
         }
         const nextSort = marketCatalog[activeMarketType].categories.length + 1;
-        const { error } = await supabaseClient.from('market_catalog_entries').insert({
+        const { error } = await supabaseClient.from('service_catalog_entries').insert({
             service_type: activeMarketType,
             entry_type: 'category',
             category_name: name,
@@ -4411,7 +4387,7 @@
           return;
         }
         const nextSort = marketCatalog[activeMarketType].prices.length + 1;
-        const { error } = await supabaseClient.from('market_catalog_entries').insert({
+        const { error } = await supabaseClient.from('service_catalog_entries').insert({
             service_type: activeMarketType,
             entry_type: 'price',
             category_name: title,
@@ -4445,7 +4421,7 @@
           target.image = nextImage.trim() || target.image;
           if (supabaseClient) {
             await supabaseClient
-              .from('market_catalog_entries')
+              .from('service_catalog_entries')
               .update({ category_name: target.name, item_name: target.name, image: target.image })
               .eq('service_type', activeMarketType)
               .eq('entry_type', 'category')
@@ -4464,7 +4440,7 @@
         marketCatalog[activeMarketType].categories.splice(index, 1);
         if (supabaseClient && target) {
           await supabaseClient
-            .from('market_catalog_entries')
+            .from('service_catalog_entries')
             .delete()
             .eq('service_type', activeMarketType)
             .eq('entry_type', 'category')
@@ -4483,7 +4459,7 @@
         marketCatalog[activeMarketType].prices.splice(index, 1);
         if (supabaseClient && target) {
           await supabaseClient
-            .from('market_catalog_entries')
+            .from('service_catalog_entries')
             .delete()
             .eq('service_type', activeMarketType)
             .eq('entry_type', 'price')
