@@ -2573,8 +2573,20 @@
         </div>
         <div class="admin-game-form">
           <div class="form-group">
-            <label for="streamingPriceModalValue">Precio / detalle</label>
-            <input id="streamingPriceModalValue" type="text" placeholder="Ej: 1 PERFIL 4.50$ (MES)" />
+            <label for="streamingPriceModalCatalog">Catálogo</label>
+            <select id="streamingPriceModalCatalog"></select>
+          </div>
+          <div class="form-group">
+            <label for="streamingPriceModalType">Tipo</label>
+            <select id="streamingPriceModalType"><option value="1 PERFIL">1 PERFIL</option><option value="CUENTA COMPLETA">CUENTA COMPLETA</option></select>
+          </div>
+          <div class="form-group">
+            <label for="streamingPriceModalTime">Tiempo</label>
+            <select id="streamingPriceModalTime"><option value="MES">MES</option><option value="AÑO">AÑO</option></select>
+          </div>
+          <div class="form-group">
+            <label for="streamingPriceModalAmount">Precio ($)</label>
+            <input id="streamingPriceModalAmount" type="text" placeholder="Ej: 4.50" />
           </div>
           <div class="admin-panel-actions form-actions">
             <button id="cancelStreamingPriceModal" class="panel-btn" type="button">Cancelar</button>
@@ -2885,7 +2897,10 @@
       const closeStreamingPriceModal = document.getElementById('closeStreamingPriceModal');
       const cancelStreamingPriceModal = document.getElementById('cancelStreamingPriceModal');
       const saveStreamingPriceModalBtn = document.getElementById('saveStreamingPriceModalBtn');
-      const streamingPriceModalValue = document.getElementById('streamingPriceModalValue');
+      const streamingPriceModalCatalog = document.getElementById('streamingPriceModalCatalog');
+      const streamingPriceModalType = document.getElementById('streamingPriceModalType');
+      const streamingPriceModalTime = document.getElementById('streamingPriceModalTime');
+      const streamingPriceModalAmount = document.getElementById('streamingPriceModalAmount');
       const marketCategoryImageFile = document.getElementById('marketCategoryImageFile');
       const uploadMarketCategoryImageBtn = document.getElementById('uploadMarketCategoryImageBtn');
       const saveMarketCategoryBtn = document.getElementById('saveMarketCategoryBtn');
@@ -4695,14 +4710,18 @@
       cancelStreamingPriceModal?.addEventListener('click', closeStreamingPriceModalFn);
       saveStreamingPriceModalBtn?.addEventListener('click', async () => {
         if (editingStreamingPriceIndex === null) return;
-        const nextValue = streamingPriceModalValue.value.trim();
-        if (!nextValue) return;
+        const catalog = streamingPriceModalCatalog.value.trim();
+        const type = streamingPriceModalType.value.trim();
+        const time = streamingPriceModalTime.value.trim();
+        const amount = streamingPriceModalAmount.value.trim();
+        if (!catalog || !amount) return showAdminNotice('Completa catálogo y precio.', 'warn');
+        const nextValue = `${catalog} - ${type} ${amount}$ (${time})`;
         const previous = marketCatalog[activeMarketType].prices[editingStreamingPriceIndex];
         marketCatalog[activeMarketType].prices[editingStreamingPriceIndex] = nextValue;
         if (supabaseClient) {
           await supabaseClient
             .from('service_catalog_entries')
-            .update({ value: nextValue, item_name: nextValue })
+            .update({ value: nextValue, item_name: `${type} ${amount}$ (${time})`, category_name: catalog })
             .eq('service_type', activeMarketType)
             .eq('entry_type', 'price')
             .eq('value', previous)
@@ -4826,7 +4845,20 @@
           const index = Number(editBtn.dataset.editMarketPrice);
           if (Number.isNaN(index)) return;
           editingStreamingPriceIndex = index;
-          streamingPriceModalValue.value = marketCatalog[activeMarketType].prices[index] || '';
+          const raw = marketCatalog[activeMarketType].prices[index] || '';
+          const parts = raw.split(' - ');
+          const catalog = parts[0] || '';
+          const detail = parts.slice(1).join(' - ');
+          const match = detail.match(/(1 PERFIL|CUENTA COMPLETA)\s+([\d.,]+)\$\s+\((MES|AÑO)\)/i);
+          streamingPriceModalCatalog.innerHTML = marketCatalog[activeMarketType].categories.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
+          streamingPriceModalCatalog.value = catalog || streamingPriceModalCatalog.value;
+          if (match) {
+            streamingPriceModalType.value = match[1].toUpperCase();
+            streamingPriceModalAmount.value = match[2];
+            streamingPriceModalTime.value = match[3].toUpperCase();
+          } else {
+            streamingPriceModalAmount.value = '';
+          }
           streamingPriceModal?.classList.add('show');
           streamingPriceModal?.setAttribute('aria-hidden', 'false');
           return;
