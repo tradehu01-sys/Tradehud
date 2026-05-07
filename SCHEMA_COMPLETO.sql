@@ -366,6 +366,19 @@ to authenticated
 using (auth.uid() is not null)
 with check (auth.uid() is not null);
 
+-- permisos explícitos para evitar bloqueos por grants faltantes
+grant select on public.service_catalog_entries to anon;
+grant select, insert, update, delete on public.service_catalog_entries to authenticated;
+grant usage, select on sequence public.service_catalog_entries_id_seq to authenticated;
+
+grant select on public.games to anon;
+grant select, insert, update, delete on public.games to authenticated;
+grant usage, select on sequence public.games_id_seq to authenticated;
+
+grant select on public.gold_categories to anon;
+grant select, insert, update, delete on public.gold_categories to authenticated;
+grant usage, select on sequence public.gold_categories_id_seq to authenticated;
+
 insert into public.games (name, icon, description, services) values
 ('World of Warcraft 20th Anniversary TBC','', 'Catálogo TBC anniversary.', array['gold','boosting','accounts']),
 ('World of Warcraft Retail','', 'Catálogo Retail US/EU.', array['gold','boosting','accounts']),

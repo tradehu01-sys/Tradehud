@@ -4660,24 +4660,59 @@
           const nextImage = streamingCategoryImageModal.value.trim() || target.image || marketDefaultImages[activeMarketType] || '';
           const previousName = target.name;
           const previousImage = target.image;
-          let query = supabaseClient
-            .from('service_catalog_entries')
-            .update({ category_name: nextName, item_name: nextName, image: nextImage })
-            .eq('service_type', activeMarketType)
-            .eq('entry_type', 'category');
-          if (target.id) query = query.eq('id', target.id);
-          else query = query.eq('category_name', previousName);
-          const { data: updatedRows, error: updateError } = await query.select('id');
-          if (updateError) {
-            showAdminNotice(`No se pudo guardar el cambio en Supabase: ${updateError.message}`, 'warn');
-            return;
+          let targetRowId = target.id || null;
+          if (!targetRowId) {
+            const { data: foundRows, error: findError } = await supabaseClient
+              .from('service_catalog_entries')
+              .select('id,category_name')
+              .eq('service_type', activeMarketType)
+              .eq('entry_type', 'category')
+              .ilike('category_name', previousName)
+              .limit(1);
+            if (findError) {
+              showAdminNotice(`No se pudo buscar la categoría en Supabase: ${findError.message}`, 'warn');
+              return;
+            }
+            targetRowId = foundRows?.[0]?.id || null;
+          }
+          let updatedRows = [];
+          if (targetRowId) {
+            const { data, error: updateError } = await supabaseClient
+              .from('service_catalog_entries')
+              .update({ category_name: nextName, item_name: nextName, image: nextImage })
+              .eq('id', targetRowId)
+              .eq('service_type', activeMarketType)
+              .eq('entry_type', 'category')
+              .select('id');
+            if (updateError) {
+              showAdminNotice(`No se pudo guardar el cambio en Supabase: ${updateError.message}`, 'warn');
+              return;
+            }
+            updatedRows = Array.isArray(data) ? data : [];
           }
           if (!updatedRows?.length) {
-            showAdminNotice('No se encontró la categoría en Supabase para actualizar. Verifica conexión/políticas.', 'warn');
-            return;
+            const { data: insertedRow, error: insertError } = await supabaseClient
+              .from('service_catalog_entries')
+              .insert({
+                service_type: activeMarketType,
+                entry_type: 'category',
+                category_name: nextName,
+                item_name: nextName,
+                image: nextImage,
+                value: '',
+                sort_order: marketCatalog[activeMarketType].categories.length + 1
+              })
+              .select('id')
+              .single();
+            if (insertError) {
+              showAdminNotice(`No se encontró para actualizar y tampoco se pudo crear: ${insertError.message}`, 'warn');
+              return;
+            }
+            updatedRows = insertedRow ? [insertedRow] : [];
           }
           target.name = nextName;
           target.image = nextImage;
+          target.id = updatedRows[0]?.id || target.id || null;
           setActiveMarketType(activeMarketType);
           await syncFromSupabase();
           showAdminNotice('Categoría actualizada correctamente.', 'ok');
