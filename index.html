@@ -5404,7 +5404,7 @@
             if (data) data.image = payload.image || bucket[editIndex]?.image || '';
           }
           if (error) {
-            showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
+            showAdminNotice(`No se pudo guardar la categoría en Supabase: ${error.message || 'sin detalle'}`, 'warn');
             return;
           }
           if (isEditing) bucket[editIndex] = data;
@@ -5424,6 +5424,7 @@
         if (editBtn) {
           const type = editBtn.dataset.categoryType || 'oro';
           if (type !== 'oro') return;
+          activeCategoryType = type;
           const bucket = getCategoryBucket(type);
           const idx = Number(editBtn.dataset.editCategory);
           const target = bucket[idx];
@@ -5441,6 +5442,7 @@
         const removeBtn = e.target.closest('button[data-remove-category]');
         if (!removeBtn) return;
         const type = removeBtn.dataset.categoryType || 'oro';
+        activeCategoryType = type;
         const bucket = getCategoryBucket(type);
         const idx = Number(removeBtn.dataset.removeCategory);
         const target = bucket[idx];
