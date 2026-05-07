@@ -3529,17 +3529,19 @@
       }
 
       function renderMarketCatalog(type = 'p2p') {
-        if (!marketServiceTitle || !marketCategoryGrid || !marketPriceList || !marketOrderPanel) return;
         const bucket = marketCatalog[type];
         if (!bucket) return;
-        marketServiceTitle.textContent = type === 'giftcards'
-          ? 'GiftCards · Selecciona una categoría'
-          : `${bucket.title} · Selecciona categoría para ver apartados y crear ticket`;
-        marketCategoryGrid.innerHTML = '';
-        marketPriceList.innerHTML = '';
-        if (type === 'streaming') {
-          marketCategoryGrid.insertAdjacentHTML('beforeend', '<p class="auth-hint" style="grid-column:1/-1;margin:0 0 .25rem 0;">Listado de streaming</p>');
-          marketPriceList.insertAdjacentHTML('beforeend', '<p class="auth-hint" style="margin:0 0 .4rem 0;">Precios streaming</p>');
+        const hasMarketUi = Boolean(marketServiceTitle && marketCategoryGrid && marketPriceList && marketOrderPanel);
+        if (hasMarketUi) {
+          marketServiceTitle.textContent = type === 'giftcards'
+            ? 'GiftCards · Selecciona una categoría'
+            : `${bucket.title} · Selecciona categoría para ver apartados y crear ticket`;
+          marketCategoryGrid.innerHTML = '';
+          marketPriceList.innerHTML = '';
+          if (type === 'streaming') {
+            marketCategoryGrid.insertAdjacentHTML('beforeend', '<p class="auth-hint" style="grid-column:1/-1;margin:0 0 .25rem 0;">Listado de streaming</p>');
+            marketPriceList.insertAdjacentHTML('beforeend', '<p class="auth-hint" style="margin:0 0 .4rem 0;">Precios streaming</p>');
+          }
         }
 
         const renderCategoryItems = (categoryName) => {
@@ -3564,7 +3566,7 @@
           });
         };
 
-        bucket.categories.forEach((cat, index) => {
+        if (hasMarketUi) bucket.categories.forEach((cat, index) => {
           const card = document.createElement('button');
           card.type = 'button';
           card.className = 'account-card';
@@ -3588,7 +3590,7 @@
             renderCategoryItems(cat.name);
           }
         });
-        if (type === 'p2p' && !bucket.categories.length) {
+        if (hasMarketUi && type === 'p2p' && !bucket.categories.length) {
           marketOrderPanel.classList.remove('hidden');
           marketSelectedService.value = bucket.title;
           marketSelectedCategory.value = 'Nueva categoría P2P';
@@ -3596,7 +3598,7 @@
           marketAmountToPay.value = '';
           marketPriceList.innerHTML = '<p class="auth-hint">Ventana P2P lista. Agrega categorías desde panel admin.</p>';
         }
-        if (type === 'giftcards') {
+        if (hasMarketUi && type === 'giftcards') {
           marketOrderPanel.classList.add('hidden');
           marketPriceList.innerHTML = '<p class="auth-hint">Elige una categoría de giftcard para ver especificaciones.</p>';
         }
