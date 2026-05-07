@@ -5413,8 +5413,12 @@
           if (isEditing) bucket[editIndex] = { ...bucket[editIndex], ...payload };
           else bucket.push({ id: null, ...payload });
         }
+        if (supabaseClient) {
+          try { await syncFromSupabase(); } catch (e) { console.warn('syncFromSupabase failed after guardarCategoriaOro', e); }
+        }
         renderGoldCategories();
-        showAdminNotice(isEditing ? 'Categoría de oro actualizada.' : `Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
+        renderGameList();
+        showAdminNotice(isEditing ? 'Categoría de oro actualizada y sincronizada.' : `Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
         guardarCategoriaOro.dataset.editIndex = '';
         closeCategoriaModal();
       });
@@ -5601,6 +5605,9 @@
             showAdminNotice('Supabase no está conectado. No se guardó el juego.', 'warn');
             return;
           }
+        }
+        if (supabaseClient) {
+          try { await syncFromSupabase(); } catch (e) { console.warn('syncFromSupabase failed after guardarJuegoForm', e); }
         }
         renderGameList();
         renderAdminSelect();
