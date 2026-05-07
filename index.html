@@ -4644,20 +4644,31 @@
           const target = marketCatalog[activeMarketType].categories[editingStreamingCategoryIndex];
           if (target) {
             const previousName = target.name;
+            const previousImage = target.image;
             target.name = streamingCategoryNameModal.value.trim() || target.name;
             target.image = streamingCategoryImageModal.value.trim() || target.image;
             if (supabaseClient) {
-              const query = supabaseClient
+              let query = supabaseClient
                 .from('service_catalog_entries')
                 .update({ category_name: target.name, item_name: target.name, image: target.image })
                 .eq('service_type', activeMarketType)
                 .eq('entry_type', 'category');
-              if (target.id) query.eq('id', target.id);
-              else query.eq('category_name', previousName);
-              await query.limit(1);
+              if (target.id) query = query.eq('id', target.id);
+              else query = query.eq('category_name', previousName);
+              const { data: updatedRows, error: updateError } = await query.select('id');
+              if (updateError) {
+                target.name = previousName;
+                target.image = previousImage;
+                setActiveMarketType(activeMarketType);
+                showAdminNotice(`No se pudo guardar el cambio en Supabase: ${updateError.message}`, 'warn');
+                return;
+              }
+              if (!updatedRows?.length) {
+                showAdminNotice('No se encontró la categoría en Supabase para actualizar. Verifica conexión/políticas.', 'warn');
+              }
             }
             setActiveMarketType(activeMarketType);
-            showAdminNotice('Categoría actualizada correctamente.', 'ok');
+            showAdminNotice(supabaseClient ? 'Categoría actualizada correctamente.' : 'Categoría actualizada localmente (sin Supabase).', supabaseClient ? 'ok' : 'info');
           }
           closeStreamingCategoryModalFn();
           return;
