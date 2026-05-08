@@ -2617,7 +2617,7 @@
         <div class="admin-game-form">
           <div class="form-group">
             <label for="streamingCategoryNameModal" id="streamingCategoryNameModalLabel">Nombre de la categoría</label>
-            <input id="streamingCategoryNameModal" type="text" placeholder="Ej: Netflix" />
+            <input id="streamingCategoryNameModal" type="text" placeholder="Ej: Battle Net Gift Card" />
           </div>
           <div class="form-group">
             <label for="streamingCategoryImageModal">Imagen</label>
@@ -4992,13 +4992,19 @@
         const time = streamingPriceModalTime.value.trim();
         const amount = streamingPriceModalAmount.value.trim();
         if (!catalog || !amount) return showAdminNotice('Completa catálogo y precio.', 'warn');
-        const nextValue = `${catalog} - ${type} ${amount}$ (${time})`;
+        const nextValue = activeMarketType === 'giftcards'
+          ? `${catalog} - ${time} en ${amount}$`
+          : `${catalog} - ${type} ${amount}$ (${time})`;
         const previous = marketCatalog[activeMarketType].prices[editingStreamingPriceIndex];
         marketCatalog[activeMarketType].prices[editingStreamingPriceIndex] = nextValue;
         if (supabaseClient) {
           await supabaseClient
             .from('service_catalog_entries')
-            .update({ value: nextValue, item_name: `${type} ${amount}$ (${time})`, category_name: catalog })
+            .update({
+              value: nextValue,
+              item_name: activeMarketType === 'giftcards' ? `${time} en ${amount}$` : `${type} ${amount}$ (${time})`,
+              category_name: catalog
+            })
             .eq('service_type', activeMarketType)
             .eq('entry_type', 'price')
             .eq('value', previous)
@@ -5053,8 +5059,27 @@
         addPriceModal?.setAttribute('aria-hidden', 'true');
       };
       openAddPriceModalBtn?.addEventListener('click', () => {
+        const activeAdminMarketTab = document.querySelector('[data-market-admin-type].active');
+        activeMarketType = activeAdminMarketTab?.dataset?.marketAdminType || activeMarketType || 'streaming';
         addPriceCatalogSelect.innerHTML = marketCatalog[activeMarketType].categories.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
-        addPriceAmountInput.value = '';
+        if (activeMarketType === 'giftcards') {
+          if (addPriceTypeLabel) addPriceTypeLabel.textContent = 'Nombre de la persona';
+          if (addPriceTimeLabel) addPriceTimeLabel.textContent = 'Monto';
+          if (addPriceAmountLabel) addPriceAmountLabel.textContent = 'Precio total ($)';
+          addPriceTypeSelect.innerHTML = '<option value="Cliente">Cliente</option>';
+          addPriceTimeSelect.innerHTML = '<option value="10$">10$</option><option value="20$">20$</option><option value="30$">30$</option><option value="40$">40$</option><option value="50$">50$</option><option value="100$">100$</option>';
+          const giftMap = { '10$':'13', '20$':'26', '30$':'39', '40$':'52', '50$':'65', '100$':'130' };
+          const syncGiftPrice = () => { addPriceAmountInput.value = giftMap[addPriceTimeSelect.value] || '13'; };
+          addPriceTimeSelect.onchange = syncGiftPrice;
+          syncGiftPrice();
+        } else {
+          if (addPriceTypeLabel) addPriceTypeLabel.textContent = 'Tipo de cuenta';
+          if (addPriceTimeLabel) addPriceTimeLabel.textContent = 'Tiempo';
+          if (addPriceAmountLabel) addPriceAmountLabel.textContent = 'Precio ($)';
+          addPriceTypeSelect.innerHTML = '<option value="1 PERFIL">1 PERFIL</option><option value="CUENTA COMPLETA">CUENTA COMPLETA</option>';
+          addPriceTimeSelect.innerHTML = '<option value="MES">MES</option><option value="AÑO">AÑO</option>';
+          addPriceAmountInput.value = '';
+        }
         addPriceModal?.classList.add('show');
         addPriceModal?.setAttribute('aria-hidden', 'false');
       });
@@ -5067,13 +5092,15 @@
         const amount = addPriceAmountInput.value.trim();
         if (!catalog || !amount) return showAdminNotice('Completa catálogo y precio.', 'warn');
         if (!supabaseClient) return showAdminNotice('Supabase no está conectado. No se guardó el precio.', 'warn');
-        const fullValue = `${catalog} - ${type} ${amount}$ (${time})`;
+        const fullValue = activeMarketType === 'giftcards'
+          ? `${catalog} - ${time} en ${amount}$`
+          : `${catalog} - ${type} ${amount}$ (${time})`;
         const nextSort = marketCatalog[activeMarketType].prices.length + 1;
         const { error } = await supabaseClient.from('service_catalog_entries').insert({
           service_type: activeMarketType,
           entry_type: 'price',
           category_name: catalog,
-          item_name: `${type} ${amount}$ (${time})`,
+            item_name: activeMarketType === 'giftcards' ? `${time} en ${amount}$` : `${type} ${amount}$ (${time})`,
           image: '',
           value: fullValue,
           sort_order: nextSort
