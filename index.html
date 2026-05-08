@@ -3923,13 +3923,28 @@
             activeMarketType = 'giftcards';
             const prices = marketCatalog.giftcards.prices.filter((price) => price.toLowerCase().includes(cat.name.toLowerCase()));
             const parsed = prices.map((entry) => ({ raw: entry, type: 'GiftCard', duration: 'Disponible', amount: entry.match(/(\d+(?:[.,]\d+)?)\$/)?.[0] || entry }));
+            const amountMap = { '10$':'13$', '20$':'26$', '30$':'39$', '40$':'52$', '50$':'65$', '100$':'130$' };
+            const amountOptions = Object.keys(amountMap);
+            const accountTypeLabel = document.querySelector('label[for="streamingAccountType"]');
+            const durationLabel = document.querySelector('label[for="streamingDuration"]');
+            const priceLabel = document.querySelector('label[for="streamingPriceResult"]');
+            if (accountTypeLabel) accountTypeLabel.textContent = 'Tipo de tarjeta';
+            if (durationLabel) durationLabel.textContent = 'Monto';
+            if (priceLabel) priceLabel.textContent = 'Precio total';
             streamingModalTitle.textContent = cat.name;
             streamingModalServiceName.textContent = cat.name;
             streamingModalIcon.innerHTML = `<img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" />`;
-            streamingAccountType.innerHTML = '<option value="GiftCard">GiftCard</option>';
-            streamingDuration.innerHTML = '<option value="Disponible">Disponible</option>';
-            streamingPriceResult.value = parsed[0]?.amount || 'Sin precio disponible';
-            streamingModalTicketBtn.dataset.priceRaw = parsed[0]?.raw || '';
+            streamingAccountType.innerHTML = `<option value="${cat.name}">${cat.name}</option>`;
+            streamingDuration.innerHTML = amountOptions.map((a) => `<option value="${a}">${a}</option>`).join('');
+            const updateGiftPrice = () => {
+              const amount = streamingDuration.value || '10$';
+              const total = amountMap[amount] || '13$';
+              streamingPriceResult.value = total;
+              streamingModalTicketBtn.dataset.priceRaw = `${cat.name} - ${amount} en ${total}`;
+            };
+            streamingDuration.onchange = updateGiftPrice;
+            streamingAccountType.onchange = updateGiftPrice;
+            updateGiftPrice();
             streamingModalTicketBtn.dataset.category = cat.name;
             streamingModalTicketBtn.dataset.serviceType = 'giftcards';
             streamingModal.classList.add('show');
@@ -3947,12 +3962,12 @@
         marketOrderPanel.classList.add('hidden');
         marketDetailsWrap.classList.remove('hidden');
         marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
-        [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].filter(Boolean).forEach((btn) => {
-          btn.classList.toggle('active', btn.id.toLowerCase().includes(type));
+        document.querySelectorAll('[data-market-admin-type]').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.marketAdminType === type);
         });
         if (marketCategoryTitle) marketCategoryTitle.textContent = type === 'streaming' ? 'Listado de streaming' : `Listado de ${marketCatalog[type]?.title || type}`;
         if (marketPriceTitle) marketPriceTitle.textContent = type === 'streaming' ? 'Precios streaming' : `Precios ${marketCatalog[type]?.title || type}`;
-        if (openStreamingCategoryFormBtn) openStreamingCategoryFormBtn.textContent = type === 'streaming' ? '+ Agregar streaming' : '+ Agregar categoría';
+        if (openStreamingCategoryFormBtn) openStreamingCategoryFormBtn.textContent = type === 'streaming' ? '+ Agregar streaming' : type === 'giftcards' ? '+ Agregar giftcard' : '+ Agregar categoría';
         marketCategoryFormWrap?.classList.add('hidden');
         marketCategoryFormActions?.classList.add('hidden');
         if (marketViewCatalogTab) marketViewCatalogTab.classList.add('active');

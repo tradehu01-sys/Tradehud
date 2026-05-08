@@ -26,4 +26,32 @@ values
   ('giftcards', 'category', 'Google Play Gift Cards', 'Google Play Gift Cards', '', '', 10)
 on conflict do nothing;
 
+
+
+-- giftcards_prices_seed
+insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
+select 'giftcards','price', c.category_name, 'PRECIO', '', v.price_text, v.sort_order
+from (values
+  ('10$ en 13$', 101),
+  ('20$ en 26$', 102),
+  ('30$ en 39$', 103),
+  ('40$ en 52$', 104),
+  ('50$ en 65$', 105),
+  ('100$ en 130$', 106)
+) as v(price_text, sort_order)
+cross join (
+  values
+    ('Battle Net Gift Card'),
+    ('Amazon Gift Card'),
+    ('Roblox Gift Cards'),
+    ('PlayStation Gift Card'),
+    ('Apple Gift Cards'),
+    ('Steam Gift Cards'),
+    ('Xbox Gift Cards'),
+    ('Valorant Gift Cards'),
+    ('Garena Free Fire Gift Cards'),
+    ('Google Play Gift Cards')
+) as c(category_name)
+on conflict do nothing;
+
 commit;
