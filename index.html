@@ -382,7 +382,7 @@
 
       .home-item img {
         width: calc(100% + 1.7rem);
-        height: 245px;
+        height: 285px;
         margin: -0.85rem -0.85rem 0.65rem;
         object-fit: cover;
         border-bottom: 1px solid #2f4e8e;
@@ -399,6 +399,16 @@
         line-height: 1.5;
       }
 
+
+      .mmorpg-info-box {
+        margin-top: .9rem;
+        border: 1px solid #32518f;
+        border-radius: 12px;
+        background: #0b152b;
+        padding: .75rem;
+        color: #c8d5ef;
+      }
+      .mmorpg-info-box ul { margin: .45rem 0 0; padding-left: 1.1rem; }
       .steps-list {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -476,12 +486,14 @@
       }
       .window-modal.show { display: grid; }
       .window-card {
-        width: min(640px, 94vw);
+        width: min(1220px, 96vw);
         background: radial-gradient(circle at 20% 10%, rgba(255, 60, 46, 0.1), transparent 45%), #06080f;
         border: 1px solid #2f3b59;
         border-radius: 16px;
         padding: 1rem;
         box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+        max-height: 92vh;
+        overflow: auto;
       }
       .window-head {
         display: flex;
@@ -491,12 +503,14 @@
       }
 
       .game-window {
-        width: min(900px, 94vw);
+        width: min(1280px, 97vw);
         background: radial-gradient(circle at 20% 10%, rgba(255, 60, 46, 0.12), transparent 45%), #06080f;
         border: 1px solid #2f3b59;
         border-radius: 16px;
         padding: 1rem;
         box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+        max-height: 94vh;
+        overflow: auto;
       }
       .game-window.gold-focus .game-window-grid { display: none; }
 
@@ -1419,6 +1433,8 @@
         border-radius: 10px;
         background: linear-gradient(180deg, #081a33, #091423);
         padding: 0.9rem;
+        max-height: 94vh;
+        overflow: auto;
       }
 
       .admin-game-form.hidden { display: none; }
@@ -1435,7 +1451,7 @@
       .juego-form-modal.show { display: grid; }
 
       .juego-form-card {
-        width: min(680px, 94vw);
+        width: min(1220px, 96vw);
         background: linear-gradient(165deg, #0f223f, #091423);
         border: 1px solid #8c6d2a;
         border-radius: 14px;
@@ -1894,6 +1910,10 @@
             <button id="closeGameWindow" class="close-btn">✕</button>
           </div>
           <div id="gameWindowOptions" class="game-window-grid"></div>
+          <div class="mmorpg-info-box">
+            <strong>Información MMORPG general</strong>
+            <ul><li>Compra segura por ticket y validación previa.</li><li>Entrega coordinada según servidor y facción.</li><li>Soporte activo para dudas antes y después de comprar.</li></ul>
+          </div>
           <div id="goldOrderPanel" class="gold-order-panel hidden">
             <div class="gold-order-top">
               <div id="goldOrderGameIcon" class="gold-order-game-icon"></div>
@@ -2065,6 +2085,7 @@
             </div>
           </div>
           <div class="admin-panel-actions" style="margin-top:.7rem;">
+            <div class="mmorpg-info-box" style="width:100%;margin-bottom:.65rem;">Este formulario abre ticket de compra con datos del juego/servicio seleccionado para atención rápida y segura.</div>
             <button id="streamingModalTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
           </div>
         </div>
