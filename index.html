@@ -1677,9 +1677,28 @@
       .db-status-toast.show { display: block; }
       .db-status-toast.ok { border-color: #2f8f62; color: #9affcc; }
       .db-status-toast.warn { border-color: #b07a3f; color: #ffd39a; }
+      .startup-captcha-overlay{position:fixed;inset:0;z-index:99999;background:radial-gradient(1200px 500px at 50% -10%, rgba(255,198,41,.22), transparent), #040812;display:flex;align-items:center;justify-content:center;padding:1rem}
+      .startup-captcha-overlay.hidden{display:none}
+      .startup-captcha-card{width:min(92vw,420px);border:1px solid rgba(255,198,41,.45);border-radius:16px;background:#07142a;box-shadow:0 24px 60px rgba(0,0,0,.55);padding:1rem 1rem 1.2rem}
+      .startup-captcha-logo{font-weight:800;font-size:1.2rem;letter-spacing:.5px;color:#ffd670}
+      .startup-captcha-sub{margin:.4rem 0 .95rem;color:#b9d8ff;font-size:.9rem}
+      .startup-captcha-check{display:flex;gap:.65rem;align-items:center;padding:.75rem;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:#0b1d38;color:#ecf4ff}
+      .startup-captcha-check input{width:20px;height:20px;accent-color:#ffd670}
+      .startup-captcha-btn{margin-top:.9rem;width:100%}
 </style>
   </head>
     <body class="preload">
+    <div id="startupCaptchaOverlay" class="startup-captcha-overlay" aria-hidden="false">
+      <div class="startup-captcha-card">
+        <div class="startup-captcha-logo">TradeHub</div>
+        <p class="startup-captcha-sub">Verificación de carga segura</p>
+        <label class="startup-captcha-check">
+          <input id="startupCaptchaCheck" type="checkbox" />
+          <span>No soy un robot</span>
+        </label>
+        <button id="startupCaptchaEnterBtn" class="panel-btn startup-captcha-btn" type="button" disabled>Entrar a TradeHub</button>
+      </div>
+    </div>
     <div id="pageLoader" class="page-loader" aria-hidden="true"><span>Cargando sección...</span></div>
     <div id="dbStatus" class="db-status">Base de datos: verificando...</div>
     <header>
@@ -5851,6 +5870,20 @@
           adminMsg.style.color = '#8fdcff';
         }, 450);
       });
+
+      const startupCaptchaOverlay = document.getElementById('startupCaptchaOverlay');
+      const startupCaptchaCheck = document.getElementById('startupCaptchaCheck');
+      const startupCaptchaEnterBtn = document.getElementById('startupCaptchaEnterBtn');
+      if (startupCaptchaOverlay && startupCaptchaCheck && startupCaptchaEnterBtn) {
+        startupCaptchaCheck.addEventListener('change', () => {
+          startupCaptchaEnterBtn.disabled = !startupCaptchaCheck.checked;
+        });
+        startupCaptchaEnterBtn.addEventListener('click', () => {
+          if (!startupCaptchaCheck.checked) return;
+          startupCaptchaOverlay.classList.add('hidden');
+          startupCaptchaOverlay.setAttribute('aria-hidden', 'true');
+        });
+      }
 
     </script>
   </body>
