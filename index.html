@@ -2109,7 +2109,7 @@
         </div>
       </section>
       <div id="streamingModal" class="window-modal" aria-hidden="true">
-        <div class="window-card" style="max-width:560px;">
+        <div class="window-card" style="max-width:980px;">
           <div class="window-head">
             <div class="window-game"><strong id="streamingModalTitle">Streaming</strong></div>
             <button id="closeStreamingModal" class="close-btn" type="button">✕</button>
@@ -2146,6 +2146,7 @@
             <div class="mmorpg-info-box" style="width:100%;margin-bottom:.65rem;">Este formulario abre ticket de compra con datos del juego/servicio seleccionado para atención rápida y segura.</div>
             <button id="streamingModalTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
           </div>
+          <div id="streamingServiceDetails" class="mmorpg-info-box" style="margin-top:.8rem;max-height:42vh;overflow:auto;white-space:pre-line;"></div>
         </div>
       </div>
 
@@ -3029,6 +3030,47 @@
       const streamingModalIcon = document.getElementById('streamingModalIcon');
       const streamingModalServiceName = document.getElementById('streamingModalServiceName');
       const streamingModalTicketBtn = document.getElementById('streamingModalTicketBtn');
+      const streamingServiceDetails = document.getElementById('streamingServiceDetails');
+      const streamingTermsByService = {
+        netflix: `NETFLIX TERMINOS
+Perfil por 30 días para 1 dispositivo (PC, CEL o TV).
+- NO cambiar PIN ni contraseñas
+- NO usar varios dispositivos
+- NO manipular medios de pago
+Incumplimiento: corte inmediato sin reclamo.
+
+DETALLES DEL PRODUCTO
+🔥 NETFLIX PERFIL 4K PREMIUM
+Incluye perfil personal, calidad 4K y catálogo completo.
+
+DETALLES DE LA SOLICITUD
+ENTREGA INMEDIATA
+Soporte: WhatsApp · Telegram · Discord`,
+        disney: `DISNEY TERMINOS
+Perfil por 30 días para 1 dispositivo.
+Reglas: no cambiar pin/clave, no multi-dispositivo, no manipular pagos.
+
+DETALLES DEL PRODUCTO
+Perfil Disney+ con Star+ y ESPN incluido, calidad HD/4K.
+
+DETALLES DE LA SOLICITUD
+ENTREGA INMEDIATA
+Soporte: WhatsApp · Telegram · Discord`,
+        default: `TERMINOS GENERALES STREAMING
+Uso para 1 dispositivo por 30 días.
+- No cambiar contraseñas ni pin.
+- No compartir en varios equipos.
+- No modificar medios de pago.
+
+DETALLES DE LA SOLICITUD
+ENTREGA INMEDIATA
+Atención al cliente: WhatsApp · Telegram · Discord`
+      };
+      function renderStreamingTerms(name = '') {
+        if (!streamingServiceDetails) return;
+        const key = (name || '').trim().toLowerCase();
+        streamingServiceDetails.textContent = streamingTermsByService[key] || streamingTermsByService.default;
+      }
       const closeStreamingModal = document.getElementById('closeStreamingModal');
       const streamingCustomerName = document.getElementById('streamingCustomerName');
       const streamingAccountType = document.getElementById('streamingAccountType');
@@ -3916,6 +3958,7 @@
           updatePrice();
           streamingModalTicketBtn.dataset.category = name;
           streamingModalTicketBtn.dataset.serviceType = 'streaming';
+          renderStreamingTerms(name);
           streamingModal.classList.add('show');
           streamingModal.setAttribute('aria-hidden', 'false');
         };
@@ -3972,6 +4015,7 @@
             updateGiftPrice();
             streamingModalTicketBtn.dataset.category = cat.name;
             streamingModalTicketBtn.dataset.serviceType = 'giftcards';
+            renderStreamingTerms('');
             streamingModal.classList.add('show');
             streamingModal.setAttribute('aria-hidden', 'false');
             activeMarketType = currentType;
