@@ -301,9 +301,14 @@ create table if not exists public.gold_categories (
   game text not null default 'General',
   name text not null,
   description text not null default 'Sin descripción.',
+  image text not null default '',
   created_at timestamptz not null default now(),
   unique(game, name)
 );
+
+
+-- Compatibilidad para instalaciones previas (si la tabla ya existía sin columna image)
+alter table public.gold_categories add column if not exists image text not null default '';
 
 create unique index if not exists games_name_key on public.games (name);
 create unique index if not exists gold_categories_game_name_key on public.gold_categories (game, name);
