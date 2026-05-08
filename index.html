@@ -1685,6 +1685,12 @@
       .startup-captcha-check{display:flex;gap:.65rem;align-items:center;padding:.75rem;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:#0b1d38;color:#ecf4ff}
       .startup-captcha-check input{width:20px;height:20px;accent-color:#ffd670}
       .startup-captcha-btn{margin-top:.9rem;width:100%}
+      .streaming-hero-info{margin:.7rem 0 .9rem;padding:.8rem;border:1px solid #345799;border-radius:12px;background:#0b1b34}
+      .streaming-hero-top{display:flex;align-items:center;gap:.8rem;margin-bottom:.55rem}
+      .streaming-hero-top img{width:54px;height:54px;border-radius:14px;object-fit:cover;border:1px solid #4a6fb6;background:#0a162b}
+      .streaming-support-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.45rem}
+      .streaming-support-item{border:1px solid #2f4d87;border-radius:10px;padding:.5rem;background:#0f2445;color:#d8e8ff;font-size:.82rem}
+      .streaming-support-item strong{display:block;color:#ffd670;font-size:.8rem}
 </style>
   </head>
     <body class="preload">
@@ -2117,6 +2123,20 @@
           <div class="gold-order-top">
             <div id="streamingModalIcon" class="gold-order-game-icon"></div>
             <strong id="streamingModalServiceName">Servicio streaming</strong>
+          </div>
+          <div class="streaming-hero-info">
+            <div class="streaming-hero-top">
+              <img id="streamingServiceLogoHero" src="" alt="Logo servicio" />
+              <div>
+                <strong id="streamingServiceHeroTitle">Compra segura de cuentas</strong>
+                <p class="auth-hint" style="margin:.2rem 0 0;">Soporte inmediato y entrega rápida según la categoría seleccionada.</p>
+              </div>
+            </div>
+            <div class="streaming-support-grid">
+              <div class="streaming-support-item"><strong>💬 WhatsApp</strong>Atención en tiempo real</div>
+              <div class="streaming-support-item"><strong>🛰️ Telegram</strong>Soporte y seguimiento</div>
+              <div class="streaming-support-item"><strong>🎮 Discord</strong>Canal comunitario</div>
+            </div>
           </div>
           <div class="gold-order-grid">
             <div>
@@ -3031,6 +3051,8 @@
       const streamingModalServiceName = document.getElementById('streamingModalServiceName');
       const streamingModalTicketBtn = document.getElementById('streamingModalTicketBtn');
       const streamingServiceDetails = document.getElementById('streamingServiceDetails');
+      const streamingServiceLogoHero = document.getElementById('streamingServiceLogoHero');
+      const streamingServiceHeroTitle = document.getElementById('streamingServiceHeroTitle');
       const streamingTermsByService = {
         netflix: `NETFLIX TERMINOS
 Perfil por 30 días para 1 dispositivo (PC, CEL o TV).
@@ -3942,6 +3964,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           streamingModalTitle.textContent = name;
           streamingModalServiceName.textContent = name;
           streamingModalIcon.innerHTML = `<img src="${selectedCategory?.image || ''}" alt="${name}" />`;
+          if (streamingServiceLogoHero) streamingServiceLogoHero.src = selectedCategory?.image || '';
+          if (streamingServiceHeroTitle) streamingServiceHeroTitle.textContent = `${name} · Compra segura`;
           const availableTypes = [...new Set(parsedPrices.map((p) => p.type))];
           streamingAccountType.innerHTML = availableTypes.map((t) => `<option value="${t}">${t}</option>`).join('');
           const availableDurations = [...new Set(parsedPrices.map((p) => p.duration))];
@@ -4002,6 +4026,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             streamingModalTitle.textContent = cat.name;
             streamingModalServiceName.textContent = cat.name;
             streamingModalIcon.innerHTML = `<img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" />`;
+            if (streamingServiceLogoHero) streamingServiceLogoHero.src = cat.image || marketDefaultImages.giftcards;
+            if (streamingServiceHeroTitle) streamingServiceHeroTitle.textContent = `${cat.name} · Pedido rápido`;
             streamingAccountType.innerHTML = `<option value="${cat.name}">${cat.name}</option>`;
             streamingDuration.innerHTML = amountOptions.map((a) => `<option value="${a}">${a}</option>`).join('');
             const updateGiftPrice = () => {
