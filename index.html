@@ -2611,12 +2611,12 @@
     <div id="streamingCategoryModal" class="juego-form-modal" aria-hidden="true">
       <div class="juego-form-card" style="max-width:460px;">
         <div class="admin-head">
-          <strong>Agregar streaming</strong>
+          <strong id="streamingCategoryModalHeader">Agregar categoría</strong>
           <button id="closeStreamingCategoryModal" class="close-btn" type="button">✕</button>
         </div>
         <div class="admin-game-form">
           <div class="form-group">
-            <label for="streamingCategoryNameModal">Nombre del streaming</label>
+            <label for="streamingCategoryNameModal" id="streamingCategoryNameModalLabel">Nombre de la categoría</label>
             <input id="streamingCategoryNameModal" type="text" placeholder="Ej: Netflix" />
           </div>
           <div class="form-group">
@@ -2963,6 +2963,8 @@
       const cancelStreamingCategoryModal = document.getElementById('cancelStreamingCategoryModal');
       const saveStreamingCategoryModalBtn = document.getElementById('saveStreamingCategoryModalBtn');
       const streamingCategoryNameModal = document.getElementById('streamingCategoryNameModal');
+      const streamingCategoryModalHeader = document.getElementById('streamingCategoryModalHeader');
+      const streamingCategoryNameModalLabel = document.getElementById('streamingCategoryNameModalLabel');
       const streamingCategoryImageModal = document.getElementById('streamingCategoryImageModal');
       const streamingCategoryImageFileModal = document.getElementById('streamingCategoryImageFileModal');
       const uploadStreamingCategoryImageModalBtn = document.getElementById('uploadStreamingCategoryImageModalBtn');
@@ -3957,11 +3959,10 @@
         if (!categories.length) giftcardsCategoryGrid.innerHTML = '<p class="auth-hint">No se encontraron giftcards.</p>';
       }
       function setActiveMarketType(type = 'streaming') {
-        if (!marketDetailsWrap || !marketOrderPanel) return;
         activeMarketType = type;
         selectedMarketCategory = '';
-        marketOrderPanel.classList.add('hidden');
-        marketDetailsWrap.classList.remove('hidden');
+        if (marketOrderPanel) marketOrderPanel.classList.add('hidden');
+        if (marketDetailsWrap) marketDetailsWrap.classList.remove('hidden');
         marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
         document.querySelectorAll('[data-market-admin-type]').forEach((btn) => {
           btn.classList.toggle('active', btn.dataset.marketAdminType === type);
@@ -3976,7 +3977,16 @@
         marketCatalogSection?.classList.remove('hidden');
         marketPricesSection?.classList.add('hidden');
         marketPriceListSection?.classList.add('hidden');
-        renderMarketCatalog(type);
+        if (marketDetailsWrap && marketOrderPanel) renderMarketCatalog(type);
+        renderMarketAdminLists(type);
+      }
+
+      function updateMarketCategoryModalCopy(type = 'streaming', isEditing = false) {
+        if (streamingCategoryModalHeader) {
+          if (isEditing) streamingCategoryModalHeader.textContent = type === 'giftcards' ? 'Editar giftcard' : 'Editar streaming';
+          else streamingCategoryModalHeader.textContent = type === 'giftcards' ? 'Agregar giftcard' : 'Agregar streaming';
+        }
+        if (streamingCategoryNameModalLabel) streamingCategoryNameModalLabel.textContent = type === 'giftcards' ? 'Nombre de la giftcard' : 'Nombre del streaming';
       }
 
       function renderCategoriasVista() {
@@ -4825,6 +4835,7 @@
       });
       openStreamingCategoryFormBtn?.addEventListener('click', () => {
         editingStreamingCategoryIndex = null;
+        updateMarketCategoryModalCopy(activeMarketType, false);
         if (saveStreamingCategoryModalBtn) saveStreamingCategoryModalBtn.textContent = activeMarketType === 'giftcards' ? 'Guardar giftcard' : 'Guardar streaming';
         if (streamingCategoryNameModal) streamingCategoryNameModal.value = '';
         if (streamingCategoryImageModal) streamingCategoryImageModal.value = '';
@@ -5081,6 +5092,7 @@
           const target = marketCatalog[activeMarketType].categories[index];
           if (!target) return;
           editingStreamingCategoryIndex = index;
+          updateMarketCategoryModalCopy(activeMarketType, true);
           streamingCategoryNameModal.value = target.name || '';
           streamingCategoryImageModal.value = target.image || '';
           if (saveStreamingCategoryModalBtn) saveStreamingCategoryModalBtn.textContent = 'Guardar cambios';
