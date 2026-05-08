@@ -2455,8 +2455,8 @@
             <strong style="flex:1;display:flex;align-items:center;">Panel admin de servicios</strong>
           </div>
           <div class="panel-tabs" style="margin-top:.4rem;">
-            <button id="marketTypeStreaming" class="panel-tab active" type="button">Streaming</button>
-            <button id="marketTypeGiftcards" class="panel-tab" type="button">GiftCards</button>
+            <button id="marketTypeStreaming" data-market-admin-type="streaming" class="panel-tab active" type="button">Streaming</button>
+            <button id="marketTypeGiftcards" data-market-admin-type="giftcards" class="panel-tab" type="button">GiftCards</button>
           </div>
           <div class="panel-tabs" style="margin-top:.45rem;">
             <button id="marketViewCatalogTab" class="panel-tab active" type="button">Catálogo</button>
@@ -4784,8 +4784,14 @@
         });
       });
       if (marketTypeP2P) marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
-      if (marketTypeStreaming) marketTypeStreaming.addEventListener('click', () => setActiveMarketType('streaming'));
-      if (marketTypeGiftcards) marketTypeGiftcards.addEventListener('click', (e) => { e.preventDefault(); setActiveMarketType('giftcards'); renderMarketAdminLists('giftcards'); });
+      document.querySelectorAll('[data-market-admin-type]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const type = btn.dataset.marketAdminType || 'streaming';
+          setActiveMarketType(type);
+          renderMarketAdminLists(type);
+        });
+      });
       marketViewCatalogTab?.addEventListener('click', () => {
         marketViewCatalogTab.classList.add('active');
         marketViewPricesTab?.classList.remove('active');
