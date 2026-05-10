@@ -2115,7 +2115,7 @@
         </div>
       </section>
       <div id="streamingModal" class="window-modal" aria-hidden="true">
-        <div class="window-card" style="max-width:980px;">
+        <div id="streamingModalCard" class="window-card" style="max-width:1180px;min-height:84vh;">
           <div class="window-head">
             <div class="window-game"><strong id="streamingModalTitle">Streaming</strong></div>
             <button id="closeStreamingModal" class="close-btn" type="button">✕</button>
@@ -2124,7 +2124,7 @@
             <div id="streamingModalIcon" class="gold-order-game-icon"></div>
             <strong id="streamingModalServiceName">Servicio streaming</strong>
           </div>
-          <div class="streaming-hero-info">
+          <div id="streamingHeroInfo" class="streaming-hero-info">
             <div class="streaming-hero-top">
               <img id="streamingServiceLogoHero" src="" alt="Logo servicio" />
               <div>
@@ -2136,6 +2136,11 @@
               <div class="streaming-support-item"><strong>💬 WhatsApp</strong>Atención en tiempo real</div>
               <div class="streaming-support-item"><strong>🛰️ Telegram</strong>Soporte y seguimiento</div>
               <div class="streaming-support-item"><strong>🎮 Discord</strong>Canal comunitario</div>
+            </div>
+            <div class="admin-panel-actions" style="margin-top:.6rem;">
+              <button class="panel-btn" type="button">Ir a WhatsApp</button>
+              <button class="panel-btn secondary" type="button">Ir a Telegram</button>
+              <button class="panel-btn secondary" type="button">Abrir Discord</button>
             </div>
           </div>
           <div class="gold-order-grid">
@@ -2166,7 +2171,7 @@
             <div class="mmorpg-info-box" style="width:100%;margin-bottom:.65rem;">Este formulario abre ticket de compra con datos del juego/servicio seleccionado para atención rápida y segura.</div>
             <button id="streamingModalTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
           </div>
-          <div id="streamingServiceDetails" class="mmorpg-info-box" style="margin-top:.8rem;max-height:42vh;overflow:auto;white-space:pre-line;"></div>
+          <div id="streamingServiceDetails" class="mmorpg-info-box" style="margin-top:.8rem;max-height:46vh;overflow:auto;white-space:pre-line;"></div>
         </div>
       </div>
 
@@ -3053,6 +3058,7 @@
       const streamingServiceDetails = document.getElementById('streamingServiceDetails');
       const streamingServiceLogoHero = document.getElementById('streamingServiceLogoHero');
       const streamingServiceHeroTitle = document.getElementById('streamingServiceHeroTitle');
+      const streamingHeroInfo = document.getElementById('streamingHeroInfo');
       const streamingTermsByService = {
         netflix: `NETFLIX TERMINOS
 Perfil por 30 días para 1 dispositivo (PC, CEL o TV).
@@ -3982,6 +3988,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           updatePrice();
           streamingModalTicketBtn.dataset.category = name;
           streamingModalTicketBtn.dataset.serviceType = 'streaming';
+          if (streamingHeroInfo) streamingHeroInfo.style.display = '';
+          if (streamingServiceDetails) streamingServiceDetails.style.display = '';
           renderStreamingTerms(name);
           streamingModal.classList.add('show');
           streamingModal.setAttribute('aria-hidden', 'false');
@@ -4041,7 +4049,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             updateGiftPrice();
             streamingModalTicketBtn.dataset.category = cat.name;
             streamingModalTicketBtn.dataset.serviceType = 'giftcards';
-            renderStreamingTerms('');
+            if (streamingHeroInfo) streamingHeroInfo.style.display = 'none';
+            if (streamingServiceDetails) streamingServiceDetails.style.display = 'none';
             streamingModal.classList.add('show');
             streamingModal.setAttribute('aria-hidden', 'false');
             activeMarketType = currentType;
