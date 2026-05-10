@@ -3284,7 +3284,13 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             { name: 'ZINLI', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&' },
             { name: 'PAYPAL', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&' }
           ],
-          prices: ['Zinli 10$ - 12$', 'Zinli 20$ - 23$', 'Paypal 50$ - 60$', 'Paypal 100$ - 120$']
+          prices: [
+            'ZINLI - Zinli 1$ - 1.30$','ZINLI - Zinli 2$ - 2.60$','ZINLI - Zinli 5$ - 6.50$','ZINLI - Zinli 10$ - 12$',
+            'ZINLI - Zinli 15$ - 17.25$','ZINLI - Zinli 20$ - 23$','ZINLI - Zinli 25$ - 28.75$','ZINLI - Zinli 30$ - 34.50$',
+            'ZINLI - Zinli 40$ - 46$','ZINLI - Zinli 50$ - 57.50$','ZINLI - Zinli 100$ - 115$',
+            'PAYPAL - Paypal 10$ - 12.50$','PAYPAL - Paypal 20$ - 24$','PAYPAL - Paypal 50$ - 60$',
+            'PAYPAL - Paypal 100$ - 120$','PAYPAL - Paypal 200$ - 240$','PAYPAL - Paypal 300$ - 360$'
+          ]
         },
         streaming: {
           title: 'Streaming',
@@ -4070,7 +4076,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         });
         if (marketCategoryTitle) marketCategoryTitle.textContent = type === 'streaming' ? 'Listado de streaming' : `Listado de ${marketCatalog[type]?.title || type}`;
         if (marketPriceTitle) marketPriceTitle.textContent = type === 'streaming' ? 'Precios streaming' : `Precios ${marketCatalog[type]?.title || type}`;
-        if (openStreamingCategoryFormBtn) openStreamingCategoryFormBtn.textContent = type === 'streaming' ? '+ Agregar streaming' : type === 'giftcards' ? '+ Agregar giftcard' : '+ Agregar categoría';
+        if (openStreamingCategoryFormBtn) openStreamingCategoryFormBtn.textContent = type === 'streaming' ? '+ Agregar streaming' : type === 'giftcards' ? '+ Agregar giftcard' : type === 'p2p' ? '+ Agregar p2p' : '+ Agregar categoría';
         marketCategoryFormWrap?.classList.add('hidden');
         marketCategoryFormActions?.classList.add('hidden');
         if (marketViewCatalogTab) marketViewCatalogTab.classList.add('active');
@@ -4084,10 +4090,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       function updateMarketCategoryModalCopy(type = 'streaming', isEditing = false) {
         if (streamingCategoryModalHeader) {
-          if (isEditing) streamingCategoryModalHeader.textContent = type === 'giftcards' ? 'Editar giftcard' : 'Editar streaming';
-          else streamingCategoryModalHeader.textContent = type === 'giftcards' ? 'Agregar giftcard' : 'Agregar streaming';
+          if (isEditing) streamingCategoryModalHeader.textContent = type === 'giftcards' ? 'Editar giftcard' : type === 'p2p' ? 'Editar p2p' : 'Editar streaming';
+          else streamingCategoryModalHeader.textContent = type === 'giftcards' ? 'Agregar giftcard' : type === 'p2p' ? 'Agregar p2p' : 'Agregar streaming';
         }
-        if (streamingCategoryNameModalLabel) streamingCategoryNameModalLabel.textContent = type === 'giftcards' ? 'Nombre de la giftcard' : 'Nombre del streaming';
+        if (streamingCategoryNameModalLabel) streamingCategoryNameModalLabel.textContent = type === 'giftcards' ? 'Nombre de la giftcard' : type === 'p2p' ? 'Nombre de la categoría p2p' : 'Nombre del streaming';
       }
 
       function renderCategoriasVista() {

@@ -26,6 +26,35 @@ values
   ('giftcards', 'category', 'Google Play Gift Cards', 'Google Play Gift Cards', '', '', 10)
 on conflict do nothing;
 
+-- p2p_categories_seed
+insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
+values
+  ('p2p', 'category', 'ZINLI', 'ZINLI', '', '', 101),
+  ('p2p', 'category', 'PAYPAL', 'PAYPAL', '', '', 102)
+on conflict do nothing;
+
+-- p2p_prices_seed
+insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
+values
+  ('p2p','price','ZINLI','Zinli 1$','','ZINLI - Zinli 1$ - 1.30$',201),
+  ('p2p','price','ZINLI','Zinli 2$','','ZINLI - Zinli 2$ - 2.60$',202),
+  ('p2p','price','ZINLI','Zinli 5$','','ZINLI - Zinli 5$ - 6.50$',203),
+  ('p2p','price','ZINLI','Zinli 10$','','ZINLI - Zinli 10$ - 12$',204),
+  ('p2p','price','ZINLI','Zinli 15$','','ZINLI - Zinli 15$ - 17.25$',205),
+  ('p2p','price','ZINLI','Zinli 20$','','ZINLI - Zinli 20$ - 23$',206),
+  ('p2p','price','ZINLI','Zinli 25$','','ZINLI - Zinli 25$ - 28.75$',207),
+  ('p2p','price','ZINLI','Zinli 30$','','ZINLI - Zinli 30$ - 34.50$',208),
+  ('p2p','price','ZINLI','Zinli 40$','','ZINLI - Zinli 40$ - 46$',209),
+  ('p2p','price','ZINLI','Zinli 50$','','ZINLI - Zinli 50$ - 57.50$',210),
+  ('p2p','price','ZINLI','Zinli 100$','','ZINLI - Zinli 100$ - 115$',211),
+  ('p2p','price','PAYPAL','Paypal 10$','','PAYPAL - Paypal 10$ - 12.50$',221),
+  ('p2p','price','PAYPAL','Paypal 20$','','PAYPAL - Paypal 20$ - 24$',222),
+  ('p2p','price','PAYPAL','Paypal 50$','','PAYPAL - Paypal 50$ - 60$',223),
+  ('p2p','price','PAYPAL','Paypal 100$','','PAYPAL - Paypal 100$ - 120$',224),
+  ('p2p','price','PAYPAL','Paypal 200$','','PAYPAL - Paypal 200$ - 240$',225),
+  ('p2p','price','PAYPAL','Paypal 300$','','PAYPAL - Paypal 300$ - 360$',226)
+on conflict do nothing;
+
 
 
 -- giftcards_prices_seed
