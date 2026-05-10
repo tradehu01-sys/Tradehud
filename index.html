@@ -333,7 +333,7 @@
       .server-icon {
         width: 140px;
         height: 140px;
-        border-radius: 16px;
+        border-radius: 0;
         margin: 0 auto .45rem;
         border: 1px solid #395b9d;
         animation: floatIcon 2.2s ease-in-out infinite;
@@ -344,7 +344,9 @@
       .server-icon img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
+        background: #0a1328;
+        padding: 0.2rem;
       }
 
       .server-name {
@@ -380,7 +382,7 @@
 
       .home-item img {
         width: calc(100% + 1.7rem);
-        height: 130px;
+        height: 285px;
         margin: -0.85rem -0.85rem 0.65rem;
         object-fit: cover;
         border-bottom: 1px solid #2f4e8e;
@@ -397,6 +399,16 @@
         line-height: 1.5;
       }
 
+
+      .mmorpg-info-box {
+        margin-top: .9rem;
+        border: 1px solid #32518f;
+        border-radius: 12px;
+        background: #0b152b;
+        padding: .75rem;
+        color: #c8d5ef;
+      }
+      .mmorpg-info-box ul { margin: .45rem 0 0; padding-left: 1.1rem; }
       .steps-list {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -464,6 +476,7 @@
       }
 
       .game-modal.show { display: grid; }
+      .game-modal { z-index: 220; }
       .window-modal {
         position: fixed;
         inset: 0;
@@ -474,12 +487,14 @@
       }
       .window-modal.show { display: grid; }
       .window-card {
-        width: min(640px, 94vw);
+        width: min(1220px, 96vw);
         background: radial-gradient(circle at 20% 10%, rgba(255, 60, 46, 0.1), transparent 45%), #06080f;
         border: 1px solid #2f3b59;
         border-radius: 16px;
         padding: 1rem;
         box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+        max-height: 92vh;
+        overflow: auto;
       }
       .window-head {
         display: flex;
@@ -489,12 +504,34 @@
       }
 
       .game-window {
-        width: min(900px, 94vw);
+        width: 100vw;
         background: radial-gradient(circle at 20% 10%, rgba(255, 60, 46, 0.12), transparent 45%), #06080f;
         border: 1px solid #2f3b59;
         border-radius: 16px;
         padding: 1rem;
         box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+        max-height: 94vh;
+        overflow: auto;
+      }
+
+      .game-window-layout {
+        display: grid;
+        grid-template-columns: 1.6fr 0.8fr;
+        gap: .9rem;
+      }
+      .game-window-side {
+        border: 1px solid #355594;
+        border-radius: 12px;
+        background: #0b1730;
+        padding: .8rem;
+      }
+      .game-window-side h4 { margin:.1rem 0 .45rem; color:#f0cf7b; }
+      .game-window-side ul { margin:0; padding-left:1.05rem; color:#c8d5ef; line-height:1.5; }
+      .game-contacts { margin-top:.75rem; display:grid; gap:.45rem; }
+      .game-contacts a { text-decoration:none; color:#d9e8ff; border:1px solid #3b5ea5; border-radius:10px; padding:.45rem .6rem; background:#0f2243; }
+      .game-back-btn { width:100%; margin-top:.75rem; }
+      @media (max-width: 980px) {
+        .game-window-layout { grid-template-columns: 1fr; }
       }
       .game-window.gold-focus .game-window-grid { display: none; }
 
@@ -703,7 +740,7 @@
       }
       .account-card img {
         width: 100%;
-        height: 130px;
+        height: 205px;
         object-fit: cover;
         border-radius: 8px;
         margin-bottom: 0.5rem;
@@ -870,7 +907,7 @@
       }
       .service-action-btn img {
         width: 100%;
-        height: 130px;
+        height: 205px;
         object-fit: cover;
         border-radius: 10px;
         margin-bottom: 0.45rem;
@@ -1417,6 +1454,8 @@
         border-radius: 10px;
         background: linear-gradient(180deg, #081a33, #091423);
         padding: 0.9rem;
+        max-height: 94vh;
+        overflow: auto;
       }
 
       .admin-game-form.hidden { display: none; }
@@ -1433,7 +1472,7 @@
       .juego-form-modal.show { display: grid; }
 
       .juego-form-card {
-        width: min(680px, 94vw);
+        width: min(1220px, 96vw);
         background: linear-gradient(165deg, #0f223f, #091423);
         border: 1px solid #8c6d2a;
         border-radius: 14px;
@@ -1638,21 +1677,46 @@
       .db-status-toast.show { display: block; }
       .db-status-toast.ok { border-color: #2f8f62; color: #9affcc; }
       .db-status-toast.warn { border-color: #b07a3f; color: #ffd39a; }
+      .startup-captcha-overlay{position:fixed;inset:0;z-index:99999;background:radial-gradient(1200px 500px at 50% -10%, rgba(255,198,41,.22), transparent), #040812;display:flex;align-items:center;justify-content:center;padding:1rem}
+      .startup-captcha-overlay.hidden{display:none}
+      .startup-captcha-card{width:min(92vw,420px);border:1px solid rgba(255,198,41,.45);border-radius:16px;background:#07142a;box-shadow:0 24px 60px rgba(0,0,0,.55);padding:1rem 1rem 1.2rem}
+      .startup-captcha-logo{font-weight:800;font-size:1.2rem;letter-spacing:.5px;color:#ffd670}
+      .startup-captcha-sub{margin:.4rem 0 .95rem;color:#b9d8ff;font-size:.9rem}
+      .startup-captcha-check{display:flex;gap:.65rem;align-items:center;padding:.75rem;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:#0b1d38;color:#ecf4ff}
+      .startup-captcha-check input{width:20px;height:20px;accent-color:#ffd670}
+      .startup-captcha-btn{margin-top:.9rem;width:100%}
+      .streaming-hero-info{margin:.7rem 0 .9rem;padding:.8rem;border:1px solid #345799;border-radius:12px;background:#0b1b34}
+      .streaming-hero-top{display:flex;align-items:center;gap:.8rem;margin-bottom:.55rem}
+      .streaming-hero-top img{width:54px;height:54px;border-radius:14px;object-fit:cover;border:1px solid #4a6fb6;background:#0a162b}
+      .streaming-support-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.45rem}
+      .streaming-support-item{border:1px solid #2f4d87;border-radius:10px;padding:.5rem;background:#0f2445;color:#d8e8ff;font-size:.82rem}
+      .streaming-support-item strong{display:block;color:#ffd670;font-size:.8rem}
 </style>
   </head>
     <body class="preload">
+    <div id="startupCaptchaOverlay" class="startup-captcha-overlay" aria-hidden="false">
+      <div class="startup-captcha-card">
+        <div class="startup-captcha-logo">TradeHub</div>
+        <p class="startup-captcha-sub">Verificación de carga segura</p>
+        <label class="startup-captcha-check">
+          <input id="startupCaptchaCheck" type="checkbox" />
+          <span>No soy un robot</span>
+        </label>
+        <button id="startupCaptchaEnterBtn" class="panel-btn startup-captcha-btn" type="button" disabled>Entrar a TradeHub</button>
+      </div>
+    </div>
     <div id="pageLoader" class="page-loader" aria-hidden="true"><span>Cargando sección...</span></div>
     <div id="dbStatus" class="db-status">Base de datos: verificando...</div>
     <header>
       <div class="container nav">
         <div class="logo">
           <a href="#inicio" data-page-link data-page="inicio" aria-label="Ir al inicio">
-            <img id="mainLogoImg" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 420%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 x2=%221%22%3E%3Cstop stop-color=%22%23110f0a%22/%3E%3Cstop offset=%221%22 stop-color=%22%231f1608%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22900%22 height=%22420%22 fill=%22%23070b15%22/%3E%3Crect x=%2226%22 y=%2226%22 width=%22848%22 height=%22368%22 rx=%2244%22 fill=%22url(%23g)%22 stroke=%22%23d8a83c%22 stroke-width=%226%22/%3E%3Ctext x=%22450%22 y=%22210%22 text-anchor=%22middle%22 fill=%22%23f6ca63%22 font-size=%22104%22 font-family=%22Arial%22 font-weight=%22800%22%3ETRADEHUB%3C/text%3E%3Ctext x=%22450%22 y=%22285%22 text-anchor=%22middle%22 fill=%22%23ececec%22 font-size=%2260%22 font-family=%22Arial%22 font-weight=%22700%22%3EMMORPG%3C/text%3E%3C/svg%3E" alt="TradeHud" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" />
+            <img id="mainLogoImg" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 420%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 x2=%221%22%3E%3Cstop stop-color=%22%23110f0a%22/%3E%3Cstop offset=%221%22 stop-color=%22%231f1608%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22900%22 height=%22420%22 fill=%22%23070b15%22/%3E%3Crect x=%2226%22 y=%2226%22 width=%22848%22 height=%22368%22 rx=%2244%22 fill=%22url(%23g)%22 stroke=%22%23d8a83c%22 stroke-width=%226%22/%3E%3Ctext x=%22450%22 y=%22210%22 text-anchor=%22middle%22 fill=%22%23f6ca63%22 font-size=%22104%22 font-family=%22Arial%22 font-weight=%22800%22%3ETRADEHUB%3C/text%3E%3Ctext x=%22450%22 y=%22285%22 text-anchor=%22middle%22 fill=%22%23ececec%22 font-size=%2260%22 font-family=%22Arial%22 font-weight=%22700%22%3EMMORPG%3C/text%3E%3C/svg%3E" alt="TradeHud" onerror="this.onerror=null;this.src='https://i.imgur.com/yHA321T.png';" />
           </a>
         </div>
         <nav>
           <a href="#inicio" data-page-link data-page="inicio">Inicio</a>
-          <a href="#oro" data-page-link data-page="oro">Oro</a>
+          <a href="#oro" data-page-link data-page="oro">Marketplace</a>
           <a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a>
               <a href="#streaming" data-page-link data-page="streaming">Streaming</a>
               <a href="#giftcards" data-page-link data-page="giftcards">GiftCards</a>
@@ -1686,7 +1750,7 @@
               Plataforma enfocada en personas, con navegación simple, procesos claros y atención directa para cada pedido.
             </p>
             <div class="cta-row">
-              <a class="btn" href="#oro">Comprar Oro</a>
+              <a class="btn" href="#oro">Marketplace</a>
               <a class="btn alt" href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a>
             </div>
           </article>
@@ -1761,17 +1825,17 @@
           <h2 class="section-title">Servicios <span>detallados</span></h2>
           <article class="home-block services-grid">
             <div class="home-item">
-              <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" alt="Oro y monedas" />
+              <img src="https://i.imgur.com/UiHN4SB.png" alt="Oro y monedas" />
               <h3>Oro y monedas</h3>
               <p>Precios claros, stock confirmado y entrega rápida.</p>
             </div>
             <div class="home-item">
-              <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop" alt="Boosting personalizado" />
+              <img src="https://i.imgur.com/yHA321T.png" alt="Boosting personalizado" />
               <h3>Boosting personalizado</h3>
               <p>Subidas, dungeons y metas PvE/PvP con jugadores expertos.</p>
             </div>
             <div class="home-item">
-              <img src="https://images.unsplash.com/photo-1611605698335-8b1569810432?q=80&w=1200&auto=format&fit=crop" alt="Cuentas y servicios" />
+              <img src="https://i.imgur.com/vypRLxN.png" alt="Cuentas y servicios" />
               <h3>Cuentas y servicios</h3>
               <p>Publica y vende con mediación segura dentro de la comunidad.</p>
             </div>
@@ -1808,17 +1872,17 @@
           <h2 class="section-title">Beneficios / por qué <span>elegirnos</span></h2>
           <article class="home-block benefits-grid">
             <div class="home-item">
-              <img src="https://images.unsplash.com/photo-1522199710521-72d69614c702?q=80&w=1200&auto=format&fit=crop" alt="Atención real" />
+              <img src="https://i.imgur.com/IgUbYQm.png" alt="Atención real" />
               <h3>Atención real</h3>
               <p>No hay bots para resolver tu compra: un agente te guía de inicio a fin con respuesta rápida.</p>
             </div>
             <div class="home-item">
-              <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1200&auto=format&fit=crop" alt="Proceso transparente" />
+              <img src="https://i.imgur.com/u0R10zA.png" alt="Proceso transparente" />
               <h3>Proceso transparente</h3>
               <p>Precios, tiempos y condiciones claras antes de confirmar cualquier pago o entrega.</p>
             </div>
             <div class="home-item">
-              <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=1200&auto=format&fit=crop" alt="Seguridad operativa" />
+              <img src="https://i.imgur.com/BORJ6LC.png" alt="Seguridad operativa" />
               <h3>Seguridad operativa</h3>
               <p>Validamos pedidos y usamos pasos de control para proteger comprador y vendedor.</p>
             </div>
@@ -1868,7 +1932,7 @@
 
       <section id="oro" class="page-section" data-page="oro">
         <div class="container">
-          <h2 class="section-title">Sección de <span>oro de juegos</span></h2>
+          <h2 class="section-title">Sección de <span>Marketplace</span></h2>
           <article class="oro-panel">
             <div class="oro-toolbar">
               <button id="verCategoriasOro" class="oro-category-btn" type="button">Ver categorías</button>
@@ -1891,7 +1955,29 @@
             </div>
             <button id="closeGameWindow" class="close-btn">✕</button>
           </div>
-          <div id="gameWindowOptions" class="game-window-grid"></div>
+          <div class="game-window-layout">
+            <div>
+              <div id="gameWindowOptions" class="game-window-grid"></div>
+              <div class="mmorpg-info-box">
+            <strong>Información MMORPG general</strong>
+            <ul><li>Compra segura por ticket y validación previa.</li><li>Entrega coordinada según servidor y facción.</li><li>Soporte activo para dudas antes y después de comprar.</li></ul>
+          </div>
+            </div>
+            <aside class="game-window-side">
+              <h4>Información a la derecha</h4>
+              <ul>
+                <li>Compra validada por ticket y confirmación de stock.</li>
+                <li>Entrega adaptada al MMORPG y servidor seleccionado.</li>
+                <li>Soporte humano antes, durante y después de la compra.</li>
+              </ul>
+              <div class="game-contacts">
+                <a href="https://wa.me/" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Discord</a>
+                <a href="https://t.me/" target="_blank" rel="noopener noreferrer">Telegram</a>
+              </div>
+              <button id="backToCatalogsBtn" class="panel-btn game-back-btn" type="button">⬅ Volver a catálogos</button>
+            </aside>
+          </div>
           <div id="goldOrderPanel" class="gold-order-panel hidden">
             <div class="gold-order-top">
               <div id="goldOrderGameIcon" class="gold-order-game-icon"></div>
@@ -2029,7 +2115,7 @@
         </div>
       </section>
       <div id="streamingModal" class="window-modal" aria-hidden="true">
-        <div class="window-card" style="max-width:560px;">
+        <div id="streamingModalCard" class="window-card" style="max-width:1180px;min-height:84vh;">
           <div class="window-head">
             <div class="window-game"><strong id="streamingModalTitle">Streaming</strong></div>
             <button id="closeStreamingModal" class="close-btn" type="button">✕</button>
@@ -2037,6 +2123,25 @@
           <div class="gold-order-top">
             <div id="streamingModalIcon" class="gold-order-game-icon"></div>
             <strong id="streamingModalServiceName">Servicio streaming</strong>
+          </div>
+          <div id="streamingHeroInfo" class="streaming-hero-info">
+            <div class="streaming-hero-top">
+              <img id="streamingServiceLogoHero" src="" alt="Logo servicio" />
+              <div>
+                <strong id="streamingServiceHeroTitle">Compra segura de cuentas</strong>
+                <p class="auth-hint" style="margin:.2rem 0 0;">Soporte inmediato y entrega rápida según la categoría seleccionada.</p>
+              </div>
+            </div>
+            <div class="streaming-support-grid">
+              <div class="streaming-support-item"><strong>💬 WhatsApp</strong>Atención en tiempo real</div>
+              <div class="streaming-support-item"><strong>🛰️ Telegram</strong>Soporte y seguimiento</div>
+              <div class="streaming-support-item"><strong>🎮 Discord</strong>Canal comunitario</div>
+            </div>
+            <div class="admin-panel-actions" style="margin-top:.6rem;">
+              <button class="panel-btn" type="button">Ir a WhatsApp</button>
+              <button class="panel-btn secondary" type="button">Ir a Telegram</button>
+              <button class="panel-btn secondary" type="button">Abrir Discord</button>
+            </div>
           </div>
           <div class="gold-order-grid">
             <div>
@@ -2063,22 +2168,35 @@
             </div>
           </div>
           <div class="admin-panel-actions" style="margin-top:.7rem;">
+            <div class="mmorpg-info-box" style="width:100%;margin-bottom:.65rem;">Este formulario abre ticket de compra con datos del juego/servicio seleccionado para atención rápida y segura.</div>
             <button id="streamingModalTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
           </div>
+          <div id="streamingServiceDetails" class="mmorpg-info-box" style="margin-top:.8rem;max-height:46vh;overflow:auto;white-space:pre-line;"></div>
         </div>
       </div>
 
       <section id="giftcards" class="page-section" data-page="giftcards">
         <div class="container">
           <h2 class="section-title">Sección de <span>GiftCards</span></h2>
-          <article class="glass"><p class="lead">Aquí se muestran categorías y precios de giftcards por monto y plataforma. Disponible para tickets directos.</p></article>
+          <article class="glass">
+            <div class="server-head" style="margin-top:.6rem;">
+              <input id="giftcardsSearch" class="oro-search streaming-search" type="text" placeholder="Buscar giftcard..." />
+            </div>
+            <div id="giftcardsCategoryGrid" class="server-row" style="margin-top:.75rem;"></div>
+          </article>
         </div>
       </section>
 
       <section id="p2p" class="page-section" data-page="p2p">
         <div class="container">
           <h2 class="section-title">Sección <span>P2P</span></h2>
-          <article class="glass"><p class="lead">Aquí se gestionan operaciones P2P entre comprador y proveedor con validación por ticket.</p></article>
+          <article class="glass">
+            <p class="lead">Aquí se gestionan operaciones P2P entre comprador y proveedor con validación por ticket.</p>
+            <div class="server-head" style="margin-top:.6rem;">
+              <input id="p2pSearch" class="oro-search streaming-search" type="text" placeholder="Buscar p2p..." />
+            </div>
+            <div id="p2pCategoryGrid" class="server-row" style="margin-top:.75rem;"></div>
+          </article>
         </div>
       </section>
 
@@ -2132,7 +2250,7 @@
           <h4>Enlaces importantes</h4>
           <ul>
             <li><a href="#inicio" data-page-link data-page="inicio">Inicio</a></li>
-            <li><a href="#oro" data-page-link data-page="oro">Oro</a></li>
+            <li><a href="#oro" data-page-link data-page="oro">Marketplace</a></li>
             <li><a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a></li>
             <li><a href="#streaming" data-page-link data-page="streaming">Streaming</a></li>
             <li><a href="#giftcards" data-page-link data-page="giftcards">GiftCards</a></li>
@@ -2285,7 +2403,7 @@
         <div id="adminNotice" class="admin-notice"></div>
         <div class="panel-tabs">
           <button id="tabListaJuegosAdmin" class="panel-tab active" type="button">Lista de juegos</button>
-          <button id="tabCategoriasOro" class="panel-tab" type="button">Categorías de oro</button>
+          <button id="tabCategoriasOro" class="panel-tab" type="button">Categorías de marketplace</button>
           <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
           <button id="tabOro" class="panel-tab" type="button">Oro</button>
           <button id="tabMarketAdmin" class="panel-tab" type="button">Streaming / Servicios</button>
@@ -2302,7 +2420,7 @@
         </div>
         <div id="editorCategoriasOro" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Categorías de oro</strong>
+            <strong style="flex:1;display:flex;align-items:center;">Categorías de marketplace</strong>
             <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
             <button id="limpiarCategoriasBtn" class="panel-btn danger" type="button">Limpiar todas</button>
           </div>
@@ -2388,7 +2506,8 @@
             <strong style="flex:1;display:flex;align-items:center;">Panel admin de servicios</strong>
           </div>
           <div class="panel-tabs" style="margin-top:.4rem;">
-            <button id="marketTypeStreaming" class="panel-tab active" type="button">Streaming</button>
+            <button id="marketTypeStreaming" data-market-admin-type="streaming" class="panel-tab active" type="button">Streaming</button>
+            <button id="marketTypeGiftcards" data-market-admin-type="giftcards" class="panel-tab" type="button">GiftCards</button>
           </div>
           <div class="panel-tabs" style="margin-top:.45rem;">
             <button id="marketViewCatalogTab" class="panel-tab active" type="button">Catálogo</button>
@@ -2509,7 +2628,7 @@
     <div id="categoriaOroModal" class="juego-form-modal" aria-hidden="true">
       <div class="juego-form-card">
         <div class="admin-head">
-          <strong>Categoría de oro</strong>
+          <strong>Categoría de marketplace</strong>
           <button id="cerrarCategoriaOroModal" class="close-btn" type="button">✕</button>
         </div>
         <div class="admin-game-form">
@@ -2543,13 +2662,13 @@
     <div id="streamingCategoryModal" class="juego-form-modal" aria-hidden="true">
       <div class="juego-form-card" style="max-width:460px;">
         <div class="admin-head">
-          <strong>Agregar streaming</strong>
+          <strong id="streamingCategoryModalHeader">Agregar categoría</strong>
           <button id="closeStreamingCategoryModal" class="close-btn" type="button">✕</button>
         </div>
         <div class="admin-game-form">
           <div class="form-group">
-            <label for="streamingCategoryNameModal">Nombre del streaming</label>
-            <input id="streamingCategoryNameModal" type="text" placeholder="Ej: Netflix" />
+            <label for="streamingCategoryNameModal" id="streamingCategoryNameModalLabel">Nombre de la categoría</label>
+            <input id="streamingCategoryNameModal" type="text" placeholder="Ej: Battle Net Gift Card" />
           </div>
           <div class="form-group">
             <label for="streamingCategoryImageModal">Imagen</label>
@@ -2895,6 +3014,8 @@
       const cancelStreamingCategoryModal = document.getElementById('cancelStreamingCategoryModal');
       const saveStreamingCategoryModalBtn = document.getElementById('saveStreamingCategoryModalBtn');
       const streamingCategoryNameModal = document.getElementById('streamingCategoryNameModal');
+      const streamingCategoryModalHeader = document.getElementById('streamingCategoryModalHeader');
+      const streamingCategoryNameModalLabel = document.getElementById('streamingCategoryNameModalLabel');
       const streamingCategoryImageModal = document.getElementById('streamingCategoryImageModal');
       const streamingCategoryImageFileModal = document.getElementById('streamingCategoryImageFileModal');
       const uploadStreamingCategoryImageModalBtn = document.getElementById('uploadStreamingCategoryImageModalBtn');
@@ -2919,6 +3040,9 @@
       const addPriceTypeSelect = document.getElementById('addPriceTypeSelect');
       const addPriceTimeSelect = document.getElementById('addPriceTimeSelect');
       const addPriceAmountInput = document.getElementById('addPriceAmountInput');
+      const addPriceTypeLabel = document.querySelector('label[for="addPriceTypeSelect"]');
+      const addPriceTimeLabel = document.querySelector('label[for="addPriceTimeSelect"]');
+      const addPriceAmountLabel = document.querySelector('label[for="addPriceAmountInput"]');
       const marketPriceTitle = document.getElementById('marketPriceTitle');
       const marketAdminCategoryList = document.getElementById('marketAdminCategoryList');
       const marketAdminPriceList = document.getElementById('marketAdminPriceList');
@@ -2930,11 +3054,59 @@
       const marketAdminPriceTitle = document.getElementById('marketAdminPriceTitle');
       const streamingCategoryGrid = document.getElementById('streamingCategoryGrid');
       const streamingSearch = document.getElementById('streamingSearch');
+      const giftcardsSearch = document.getElementById('giftcardsSearch');
+      const giftcardsCategoryGrid = document.getElementById('giftcardsCategoryGrid');
+      const p2pSearch = document.getElementById('p2pSearch');
+      const p2pCategoryGrid = document.getElementById('p2pCategoryGrid');
       const streamingModal = document.getElementById('streamingModal');
       const streamingModalTitle = document.getElementById('streamingModalTitle');
       const streamingModalIcon = document.getElementById('streamingModalIcon');
       const streamingModalServiceName = document.getElementById('streamingModalServiceName');
       const streamingModalTicketBtn = document.getElementById('streamingModalTicketBtn');
+      const streamingServiceDetails = document.getElementById('streamingServiceDetails');
+      const streamingServiceLogoHero = document.getElementById('streamingServiceLogoHero');
+      const streamingServiceHeroTitle = document.getElementById('streamingServiceHeroTitle');
+      const streamingHeroInfo = document.getElementById('streamingHeroInfo');
+      const streamingTermsByService = {
+        netflix: `NETFLIX TERMINOS
+Perfil por 30 días para 1 dispositivo (PC, CEL o TV).
+- NO cambiar PIN ni contraseñas
+- NO usar varios dispositivos
+- NO manipular medios de pago
+Incumplimiento: corte inmediato sin reclamo.
+
+DETALLES DEL PRODUCTO
+🔥 NETFLIX PERFIL 4K PREMIUM
+Incluye perfil personal, calidad 4K y catálogo completo.
+
+DETALLES DE LA SOLICITUD
+ENTREGA INMEDIATA
+Soporte: WhatsApp · Telegram · Discord`,
+        disney: `DISNEY TERMINOS
+Perfil por 30 días para 1 dispositivo.
+Reglas: no cambiar pin/clave, no multi-dispositivo, no manipular pagos.
+
+DETALLES DEL PRODUCTO
+Perfil Disney+ con Star+ y ESPN incluido, calidad HD/4K.
+
+DETALLES DE LA SOLICITUD
+ENTREGA INMEDIATA
+Soporte: WhatsApp · Telegram · Discord`,
+        default: `TERMINOS GENERALES STREAMING
+Uso para 1 dispositivo por 30 días.
+- No cambiar contraseñas ni pin.
+- No compartir en varios equipos.
+- No modificar medios de pago.
+
+DETALLES DE LA SOLICITUD
+ENTREGA INMEDIATA
+Atención al cliente: WhatsApp · Telegram · Discord`
+      };
+      function renderStreamingTerms(name = '') {
+        if (!streamingServiceDetails) return;
+        const key = (name || '').trim().toLowerCase();
+        streamingServiceDetails.textContent = streamingTermsByService[key] || streamingTermsByService.default;
+      }
       const closeStreamingModal = document.getElementById('closeStreamingModal');
       const streamingCustomerName = document.getElementById('streamingCustomerName');
       const streamingAccountType = document.getElementById('streamingAccountType');
@@ -3120,7 +3292,13 @@
             { name: 'ZINLI', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&' },
             { name: 'PAYPAL', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&' }
           ],
-          prices: ['Zinli 10$ - 12$', 'Zinli 20$ - 23$', 'Paypal 50$ - 60$', 'Paypal 100$ - 120$']
+          prices: [
+            'ZINLI - Zinli 1$ - 1.30$','ZINLI - Zinli 2$ - 2.60$','ZINLI - Zinli 5$ - 6.50$','ZINLI - Zinli 10$ - 12$',
+            'ZINLI - Zinli 15$ - 17.25$','ZINLI - Zinli 20$ - 23$','ZINLI - Zinli 25$ - 28.75$','ZINLI - Zinli 30$ - 34.50$',
+            'ZINLI - Zinli 40$ - 46$','ZINLI - Zinli 50$ - 57.50$','ZINLI - Zinli 100$ - 115$',
+            'PAYPAL - Paypal 10$ - 12.50$','PAYPAL - Paypal 20$ - 24$','PAYPAL - Paypal 50$ - 60$',
+            'PAYPAL - Paypal 100$ - 120$','PAYPAL - Paypal 200$ - 240$','PAYPAL - Paypal 300$ - 360$'
+          ]
         },
         streaming: {
           title: 'Streaming',
@@ -3156,8 +3334,30 @@
         },
         giftcards: {
           title: 'GiftCards',
-          categories: [{ name: 'GiftCards gaming', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' }],
-          prices: ['10$ - 13$', '20$ - 26$', '50$ - 65$', '100$ - 130$']
+          categories: [
+            { name: 'Battle Net Gift Card', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Amazon Gift Card', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Roblox Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'PlayStation Gift Card', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Apple Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Steam Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Xbox Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Valorant Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Garena Free Fire Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Google Play Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' }
+          ],
+          prices: [
+            'Battle Net Gift Card - 10$ (USD)',
+            'Amazon Gift Card - 10$ (USD)',
+            'Roblox Gift Cards - 10$ (USD)',
+            'PlayStation Gift Card - 10$ (USD)',
+            'Apple Gift Cards - 10$ (USD)',
+            'Steam Gift Cards - 10$ (USD)',
+            'Xbox Gift Cards - 10$ (USD)',
+            'Valorant Gift Cards - 10$ (USD)',
+            'Garena Free Fire Gift Cards - 10$ (USD)',
+            'Google Play Gift Cards - 10$ (USD)'
+          ]
         }
       };
       const marketDefaultImages = {
@@ -3200,6 +3400,7 @@
       let activeMarketType = 'streaming';
       let selectedMarketCategory = '';
       let dbConnectionNoticeShown = false;
+      let goldCategoriesSupportsImageColumn = true;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
 
       function isAdminUser(user, profile = null) {
@@ -3253,6 +3454,8 @@
           marketCatalog[key].prices = [...new Set(marketCatalog[key].prices.map((p) => p.trim()).filter(Boolean))];
         });
         renderStreamingSection();
+        renderGiftcardsSection();
+        renderP2PSection();
       }
 
       function renderGoldOrderProducts() {
@@ -3693,7 +3896,7 @@
           card.type = 'button';
           card.className = 'account-card';
           card.style.cursor = 'pointer';
-          card.innerHTML = `<img src="${cat.image}" alt="${cat.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop';" /><strong>${cat.name}</strong><p class="admin-game-desc">Ver apartados y abrir ticket</p>`;
+          card.innerHTML = `<img src="${cat.image}" alt="${cat.name}" onerror="this.onerror=null;this.src='https://i.imgur.com/yHA321T.png';" /><strong>${cat.name}</strong><p class="admin-game-desc">Ver apartados y abrir ticket</p>`;
           card.addEventListener('click', () => {
             selectedMarketCategory = cat.name;
             marketOrderPanel.classList.remove('hidden');
@@ -3739,7 +3942,8 @@
         }
         marketAdminCategoryList.innerHTML = '';
         if (!bucket.categories.length) {
-          marketAdminCategoryList.innerHTML = '<p class="auth-hint">Sin categorías cargadas. Usa + Agregar streaming.</p>';
+          const addText = activeMarketType === 'giftcards' ? '+ Agregar giftcard' : '+ Agregar streaming';
+          marketAdminCategoryList.innerHTML = `<p class="auth-hint">Sin categorías cargadas. Usa ${addText}.</p>`;
         }
         bucket.categories.forEach((cat, index) => {
           const item = document.createElement('article');
@@ -3781,6 +3985,8 @@
           streamingModalTitle.textContent = name;
           streamingModalServiceName.textContent = name;
           streamingModalIcon.innerHTML = `<img src="${selectedCategory?.image || ''}" alt="${name}" />`;
+          if (streamingServiceLogoHero) streamingServiceLogoHero.src = selectedCategory?.image || '';
+          if (streamingServiceHeroTitle) streamingServiceHeroTitle.textContent = `${name} · Compra segura`;
           const availableTypes = [...new Set(parsedPrices.map((p) => p.type))];
           streamingAccountType.innerHTML = availableTypes.map((t) => `<option value="${t}">${t}</option>`).join('');
           const availableDurations = [...new Set(parsedPrices.map((p) => p.duration))];
@@ -3796,6 +4002,10 @@
           streamingDuration.onchange = updatePrice;
           updatePrice();
           streamingModalTicketBtn.dataset.category = name;
+          streamingModalTicketBtn.dataset.serviceType = 'streaming';
+          if (streamingHeroInfo) streamingHeroInfo.style.display = '';
+          if (streamingServiceDetails) streamingServiceDetails.style.display = '';
+          renderStreamingTerms(name);
           streamingModal.classList.add('show');
           streamingModal.setAttribute('aria-hidden', 'false');
         };
@@ -3811,19 +4021,122 @@
         });
       }
 
+
+      function renderGiftcardsSection() {
+        if (!giftcardsCategoryGrid) return;
+        const bucket = marketCatalog.giftcards;
+        giftcardsCategoryGrid.innerHTML = '';
+        const term = giftcardsSearch?.value?.trim().toLowerCase?.() || '';
+        const categories = bucket.categories.filter((cat) => (cat.name || '').toLowerCase().includes(term));
+        categories.forEach((cat) => {
+          const btn = document.createElement('button');
+          btn.className = 'server';
+          btn.type = 'button';
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span>`;
+          btn.addEventListener('click', () => {
+            const currentType = activeMarketType;
+            activeMarketType = 'giftcards';
+            const prices = marketCatalog.giftcards.prices.filter((price) => price.toLowerCase().includes(cat.name.toLowerCase()));
+            const parsed = prices.map((entry) => ({ raw: entry, type: 'GiftCard', duration: 'Disponible', amount: entry.match(/(\d+(?:[.,]\d+)?)\$/)?.[0] || entry }));
+            const amountMap = { '10$':'13$', '20$':'26$', '30$':'39$', '40$':'52$', '50$':'65$', '100$':'130$' };
+            const amountOptions = Object.keys(amountMap);
+            const accountTypeLabel = document.querySelector('label[for="streamingAccountType"]');
+            const durationLabel = document.querySelector('label[for="streamingDuration"]');
+            const priceLabel = document.querySelector('label[for="streamingPriceResult"]');
+            if (accountTypeLabel) accountTypeLabel.textContent = 'Tipo de tarjeta';
+            if (durationLabel) durationLabel.textContent = 'Monto';
+            if (priceLabel) priceLabel.textContent = 'Precio total';
+            streamingModalTitle.textContent = cat.name;
+            streamingModalServiceName.textContent = cat.name;
+            streamingModalIcon.innerHTML = `<img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" />`;
+            if (streamingServiceLogoHero) streamingServiceLogoHero.src = cat.image || marketDefaultImages.giftcards;
+            if (streamingServiceHeroTitle) streamingServiceHeroTitle.textContent = `${cat.name} · Pedido rápido`;
+            streamingAccountType.innerHTML = `<option value="${cat.name}">${cat.name}</option>`;
+            streamingDuration.innerHTML = amountOptions.map((a) => `<option value="${a}">${a}</option>`).join('');
+            const updateGiftPrice = () => {
+              const amount = streamingDuration.value || '10$';
+              const total = amountMap[amount] || '13$';
+              streamingPriceResult.value = total;
+              streamingModalTicketBtn.dataset.priceRaw = `${cat.name} - ${amount} en ${total}`;
+            };
+            streamingDuration.onchange = updateGiftPrice;
+            streamingAccountType.onchange = updateGiftPrice;
+            updateGiftPrice();
+            streamingModalTicketBtn.dataset.category = cat.name;
+            streamingModalTicketBtn.dataset.serviceType = 'giftcards';
+            if (streamingHeroInfo) streamingHeroInfo.style.display = 'none';
+            if (streamingServiceDetails) streamingServiceDetails.style.display = 'none';
+            streamingModal.classList.add('show');
+            streamingModal.setAttribute('aria-hidden', 'false');
+            activeMarketType = currentType;
+          });
+          giftcardsCategoryGrid.appendChild(btn);
+        });
+        if (!categories.length) giftcardsCategoryGrid.innerHTML = '<p class="auth-hint">No se encontraron giftcards.</p>';
+      }
+
+      function renderP2PSection() {
+        if (!p2pCategoryGrid) return;
+        const bucket = marketCatalog.p2p;
+        p2pCategoryGrid.innerHTML = '';
+        const term = p2pSearch?.value?.trim().toLowerCase?.() || '';
+        const categories = bucket.categories.filter((cat) => (cat.name || '').toLowerCase().includes(term));
+        categories.forEach((cat) => {
+          const btn = document.createElement('button');
+          btn.className = 'server';
+          btn.type = 'button';
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.p2p}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span>`;
+          btn.addEventListener('click', () => {
+            const related = bucket.prices.filter((p) => p.toLowerCase().includes(cat.name.toLowerCase()));
+            const detail = related.length ? related.join('\n') : 'Sin precios cargados para esta categoría.';
+            const accountTypeLabel = document.querySelector('label[for="streamingAccountType"]');
+            const durationLabel = document.querySelector('label[for="streamingDuration"]');
+            const priceLabel = document.querySelector('label[for="streamingPriceResult"]');
+            if (accountTypeLabel) accountTypeLabel.textContent = 'Tipo de P2P';
+            if (durationLabel) durationLabel.textContent = 'Monto de la tarjeta';
+            if (priceLabel) priceLabel.textContent = 'Monto a pagar';
+            streamingAccountType.innerHTML = `<option value="${cat.name}">${cat.name}</option>`;
+            const parsed = related.map((line) => {
+              const m = line.match(/(\d+(?:[.,]\d+)?)\$\s*-\s*(\d+(?:[.,]\d+)?)\$/);
+              return m ? { amount: `${m[1]}$`, total: `${m[2]}$`, raw: line } : null;
+            }).filter(Boolean);
+            streamingDuration.innerHTML = parsed.map((x) => `<option value="${x.amount}">${x.amount}</option>`).join('') || '<option value="10$">10$</option>';
+            const updateP2PPrice = () => {
+              const selected = parsed.find((x) => x.amount === streamingDuration.value) || parsed[0];
+              streamingPriceResult.value = selected?.total || 'Sin precio';
+              streamingModalTicketBtn.dataset.priceRaw = selected?.raw || detail;
+            };
+            streamingDuration.onchange = updateP2PPrice;
+            streamingAccountType.onchange = updateP2PPrice;
+            updateP2PPrice();
+            if (streamingServiceHeroTitle) streamingServiceHeroTitle.textContent = `${cat.name} · Operación P2P`;
+            if (streamingServiceDetails) streamingServiceDetails.textContent = `PRECIOS ${cat.name}\n${detail}\n\nSoporte: WhatsApp · Telegram · Discord`;
+            streamingModalTitle.textContent = cat.name;
+            streamingModalServiceName.textContent = cat.name;
+            streamingModalIcon.innerHTML = `<img src="${cat.image || marketDefaultImages.p2p}" alt="${cat.name}" />`;
+            if (streamingHeroInfo) streamingHeroInfo.style.display = '';
+            if (streamingServiceDetails) streamingServiceDetails.style.display = '';
+            streamingModalTicketBtn.dataset.category = cat.name;
+            streamingModalTicketBtn.dataset.serviceType = 'p2p';
+            streamingModal.classList.add('show');
+            streamingModal.setAttribute('aria-hidden', 'false');
+          });
+          p2pCategoryGrid.appendChild(btn);
+        });
+        if (!categories.length) p2pCategoryGrid.innerHTML = '<p class="auth-hint">No se encontraron categorías P2P.</p>';
+      }
       function setActiveMarketType(type = 'streaming') {
-        if (!marketDetailsWrap || !marketOrderPanel) return;
         activeMarketType = type;
         selectedMarketCategory = '';
-        marketOrderPanel.classList.add('hidden');
-        marketDetailsWrap.classList.remove('hidden');
+        if (marketOrderPanel) marketOrderPanel.classList.add('hidden');
+        if (marketDetailsWrap) marketDetailsWrap.classList.remove('hidden');
         marketActionButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.marketService === type));
-        [marketTypeP2P, marketTypeStreaming, marketTypeGiftcards].filter(Boolean).forEach((btn) => {
-          btn.classList.toggle('active', btn.id.toLowerCase().includes(type));
+        document.querySelectorAll('[data-market-admin-type]').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.marketAdminType === type);
         });
         if (marketCategoryTitle) marketCategoryTitle.textContent = type === 'streaming' ? 'Listado de streaming' : `Listado de ${marketCatalog[type]?.title || type}`;
         if (marketPriceTitle) marketPriceTitle.textContent = type === 'streaming' ? 'Precios streaming' : `Precios ${marketCatalog[type]?.title || type}`;
-        if (openStreamingCategoryFormBtn) openStreamingCategoryFormBtn.textContent = type === 'streaming' ? '+ Agregar streaming' : '+ Agregar categoría';
+        if (openStreamingCategoryFormBtn) openStreamingCategoryFormBtn.textContent = type === 'streaming' ? '+ Agregar streaming' : type === 'giftcards' ? '+ Agregar giftcard' : type === 'p2p' ? '+ Agregar p2p' : '+ Agregar categoría';
         marketCategoryFormWrap?.classList.add('hidden');
         marketCategoryFormActions?.classList.add('hidden');
         if (marketViewCatalogTab) marketViewCatalogTab.classList.add('active');
@@ -3831,7 +4144,16 @@
         marketCatalogSection?.classList.remove('hidden');
         marketPricesSection?.classList.add('hidden');
         marketPriceListSection?.classList.add('hidden');
-        renderMarketCatalog(type);
+        if (marketDetailsWrap && marketOrderPanel) renderMarketCatalog(type);
+        renderMarketAdminLists(type);
+      }
+
+      function updateMarketCategoryModalCopy(type = 'streaming', isEditing = false) {
+        if (streamingCategoryModalHeader) {
+          if (isEditing) streamingCategoryModalHeader.textContent = type === 'giftcards' ? 'Editar giftcard' : type === 'p2p' ? 'Editar p2p' : 'Editar streaming';
+          else streamingCategoryModalHeader.textContent = type === 'giftcards' ? 'Agregar giftcard' : type === 'p2p' ? 'Agregar p2p' : 'Agregar streaming';
+        }
+        if (streamingCategoryNameModalLabel) streamingCategoryNameModalLabel.textContent = type === 'giftcards' ? 'Nombre de la giftcard' : type === 'p2p' ? 'Nombre de la categoría p2p' : 'Nombre del streaming';
       }
 
       function renderCategoriasVista() {
@@ -4107,9 +4429,23 @@
             showAdminNotice('Faltan columnas custom_service_* en games. Cargado en modo compatibilidad. Ejecuta el schema actualizado.', 'warn');
           }
         }
-        const [{ data: categoriesData, error: categoriesError }] = await Promise.all([
-          supabaseClient.from('gold_categories').select('id,game,name,description,image').order('created_at', { ascending: true })
-        ]);
+        let categoriesData = null;
+        let categoriesError = null;
+        ({ data: categoriesData, error: categoriesError } = await supabaseClient
+          .from('gold_categories')
+          .select('id,game,name,description,image')
+          .order('created_at', { ascending: true }));
+        if (categoriesError?.message?.toLowerCase?.().includes('column gold_categories.image does not exist')) {
+          goldCategoriesSupportsImageColumn = false;
+          ({ data: categoriesData, error: categoriesError } = await supabaseClient
+            .from('gold_categories')
+            .select('id,game,name,description')
+            .order('created_at', { ascending: true }));
+          if (!categoriesError) {
+            categoriesData = (categoriesData || []).map((row) => ({ ...row, image: '' }));
+            showAdminNotice('La tabla gold_categories no tiene columna image. Operando en modo compatibilidad.', 'warn');
+          }
+        }
         const { data: gamesData, error: gamesError } = gamesResult;
         if (gamesError || categoriesError) {
           if (gamesError?.message?.toLowerCase().includes('services')) {
@@ -4217,6 +4553,7 @@
           try { loadSelectedGame(); } catch (e) { console.warn('loadSelectedGame failed', e); }
           try { await loadMarketCatalogFromSupabase(); } catch (e) { console.warn('loadMarketCatalogFromSupabase failed', e); }
           try { renderStreamingSection(); } catch (e) { console.warn('renderStreamingSection failed', e); }
+          try { renderGiftcardsSection(); } catch (e) { console.warn('renderGiftcardsSection failed', e); }
           if (marketDetailsWrap) marketDetailsWrap.classList.add('hidden');
           if (supabaseClient) {
             const { data: authData } = await supabaseClient.auth.getSession();
@@ -4271,6 +4608,12 @@
 
       document.querySelectorAll('a[href="#oro"]').forEach((link) => {
         link.addEventListener('click', () => showPage('oro'));
+      });
+
+      const backToCatalogsBtn = document.getElementById('backToCatalogsBtn');
+      backToCatalogsBtn?.addEventListener('click', () => {
+        gameWindowModal.classList.remove('show');
+        gameWindowModal.setAttribute('aria-hidden', 'true');
       });
 
       closeGameWindow.addEventListener('click', () => {
@@ -4600,8 +4943,8 @@
         } else if (tab === 'market') {
           if (tabMarketAdmin) tabMarketAdmin.classList.add('active');
           if (editorMarketAdmin) editorMarketAdmin.classList.remove('hidden');
-          setActiveMarketType('streaming');
-          renderMarketAdminLists('streaming');
+          setActiveMarketType(activeMarketType || 'streaming');
+          renderMarketAdminLists(activeMarketType || 'streaming');
         } else if (tab === 'tickets') {
           tabTicketsAdmin.classList.add('active');
           editorTicketsAdmin.classList.remove('hidden');
@@ -4634,8 +4977,14 @@
         });
       });
       if (marketTypeP2P) marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
-      if (marketTypeStreaming) marketTypeStreaming.addEventListener('click', () => setActiveMarketType('streaming'));
-      if (marketTypeGiftcards) marketTypeGiftcards.addEventListener('click', () => setActiveMarketType('giftcards'));
+      document.querySelectorAll('[data-market-admin-type]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const type = btn.dataset.marketAdminType || 'streaming';
+          setActiveMarketType(type);
+          renderMarketAdminLists(type);
+        });
+      });
       marketViewCatalogTab?.addEventListener('click', () => {
         marketViewCatalogTab.classList.add('active');
         marketViewPricesTab?.classList.remove('active');
@@ -4653,7 +5002,8 @@
       });
       openStreamingCategoryFormBtn?.addEventListener('click', () => {
         editingStreamingCategoryIndex = null;
-        if (saveStreamingCategoryModalBtn) saveStreamingCategoryModalBtn.textContent = 'Guardar streaming';
+        updateMarketCategoryModalCopy(activeMarketType, false);
+        if (saveStreamingCategoryModalBtn) saveStreamingCategoryModalBtn.textContent = activeMarketType === 'giftcards' ? 'Guardar giftcard' : 'Guardar streaming';
         if (streamingCategoryNameModal) streamingCategoryNameModal.value = '';
         if (streamingCategoryImageModal) streamingCategoryImageModal.value = '';
         if (streamingCategoryPreviewImg) streamingCategoryPreviewImg.src = marketDefaultImages[activeMarketType] || '';
@@ -4668,6 +5018,13 @@
       cancelStreamingCategoryModal?.addEventListener('click', closeStreamingCategoryModalFn);
       cancelStreamingCategoryFormBtn?.addEventListener('click', closeStreamingCategoryModalFn);
       saveStreamingCategoryModalBtn?.addEventListener('click', async () => {
+        if ((!streamingCategoryImageModal?.value || !streamingCategoryImageModal.value.trim()) && streamingCategoryImageFileModal?.files?.[0]) {
+          const autoUrl = await uploadImageFromPc(streamingCategoryImageFileModal.files[0], 'streaming-categories');
+          if (autoUrl) {
+            streamingCategoryImageModal.value = autoUrl;
+            if (streamingCategoryPreviewImg) streamingCategoryPreviewImg.src = autoUrl;
+          }
+        }
         if (editingStreamingCategoryIndex !== null) {
           const target = marketCatalog[activeMarketType].categories[editingStreamingCategoryIndex];
           if (!target) {
@@ -4736,6 +5093,8 @@
           target.image = nextImage;
           target.id = updatedRows[0]?.id || target.id || null;
           setActiveMarketType(activeMarketType);
+          renderMarketCatalog(activeMarketType);
+          renderStreamingSection();
           await syncFromSupabase();
           showAdminNotice('Categoría actualizada correctamente.', 'ok');
           closeStreamingCategoryModalFn();
@@ -4769,6 +5128,8 @@
         insertedId = data?.id || null;
         marketCatalog[activeMarketType].categories.push({ id: insertedId, name, image });
         setActiveMarketType(activeMarketType);
+        renderMarketCatalog(activeMarketType);
+        renderStreamingSection();
         await syncFromSupabase();
         showAdminNotice('Categoría agregada correctamente.', 'ok');
         streamingCategoryNameModal.value = '';
@@ -4798,13 +5159,19 @@
         const time = streamingPriceModalTime.value.trim();
         const amount = streamingPriceModalAmount.value.trim();
         if (!catalog || !amount) return showAdminNotice('Completa catálogo y precio.', 'warn');
-        const nextValue = `${catalog} - ${type} ${amount}$ (${time})`;
+        const nextValue = activeMarketType === 'giftcards'
+          ? `${catalog} - ${time} en ${amount}$`
+          : `${catalog} - ${type} ${amount}$ (${time})`;
         const previous = marketCatalog[activeMarketType].prices[editingStreamingPriceIndex];
         marketCatalog[activeMarketType].prices[editingStreamingPriceIndex] = nextValue;
         if (supabaseClient) {
           await supabaseClient
             .from('service_catalog_entries')
-            .update({ value: nextValue, item_name: `${type} ${amount}$ (${time})`, category_name: catalog })
+            .update({
+              value: nextValue,
+              item_name: activeMarketType === 'giftcards' ? `${time} en ${amount}$` : `${type} ${amount}$ (${time})`,
+              category_name: catalog
+            })
             .eq('service_type', activeMarketType)
             .eq('entry_type', 'price')
             .eq('value', previous)
@@ -4859,8 +5226,27 @@
         addPriceModal?.setAttribute('aria-hidden', 'true');
       };
       openAddPriceModalBtn?.addEventListener('click', () => {
+        const activeAdminMarketTab = document.querySelector('[data-market-admin-type].active');
+        activeMarketType = activeAdminMarketTab?.dataset?.marketAdminType || activeMarketType || 'streaming';
         addPriceCatalogSelect.innerHTML = marketCatalog[activeMarketType].categories.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
-        addPriceAmountInput.value = '';
+        if (activeMarketType === 'giftcards') {
+          if (addPriceTypeLabel) addPriceTypeLabel.textContent = 'Nombre de la persona';
+          if (addPriceTimeLabel) addPriceTimeLabel.textContent = 'Monto';
+          if (addPriceAmountLabel) addPriceAmountLabel.textContent = 'Precio total ($)';
+          addPriceTypeSelect.innerHTML = '<option value="Cliente">Cliente</option>';
+          addPriceTimeSelect.innerHTML = '<option value="10$">10$</option><option value="20$">20$</option><option value="30$">30$</option><option value="40$">40$</option><option value="50$">50$</option><option value="100$">100$</option>';
+          const giftMap = { '10$':'13', '20$':'26', '30$':'39', '40$':'52', '50$':'65', '100$':'130' };
+          const syncGiftPrice = () => { addPriceAmountInput.value = giftMap[addPriceTimeSelect.value] || '13'; };
+          addPriceTimeSelect.onchange = syncGiftPrice;
+          syncGiftPrice();
+        } else {
+          if (addPriceTypeLabel) addPriceTypeLabel.textContent = 'Tipo de cuenta';
+          if (addPriceTimeLabel) addPriceTimeLabel.textContent = 'Tiempo';
+          if (addPriceAmountLabel) addPriceAmountLabel.textContent = 'Precio ($)';
+          addPriceTypeSelect.innerHTML = '<option value="1 PERFIL">1 PERFIL</option><option value="CUENTA COMPLETA">CUENTA COMPLETA</option>';
+          addPriceTimeSelect.innerHTML = '<option value="MES">MES</option><option value="AÑO">AÑO</option>';
+          addPriceAmountInput.value = '';
+        }
         addPriceModal?.classList.add('show');
         addPriceModal?.setAttribute('aria-hidden', 'false');
       });
@@ -4873,13 +5259,15 @@
         const amount = addPriceAmountInput.value.trim();
         if (!catalog || !amount) return showAdminNotice('Completa catálogo y precio.', 'warn');
         if (!supabaseClient) return showAdminNotice('Supabase no está conectado. No se guardó el precio.', 'warn');
-        const fullValue = `${catalog} - ${type} ${amount}$ (${time})`;
+        const fullValue = activeMarketType === 'giftcards'
+          ? `${catalog} - ${time} en ${amount}$`
+          : `${catalog} - ${type} ${amount}$ (${time})`;
         const nextSort = marketCatalog[activeMarketType].prices.length + 1;
         const { error } = await supabaseClient.from('service_catalog_entries').insert({
           service_type: activeMarketType,
           entry_type: 'price',
           category_name: catalog,
-          item_name: `${type} ${amount}$ (${time})`,
+            item_name: activeMarketType === 'giftcards' ? `${time} en ${amount}$` : `${type} ${amount}$ (${time})`,
           image: '',
           value: fullValue,
           sort_order: nextSort
@@ -4898,6 +5286,7 @@
           const target = marketCatalog[activeMarketType].categories[index];
           if (!target) return;
           editingStreamingCategoryIndex = index;
+          updateMarketCategoryModalCopy(activeMarketType, true);
           streamingCategoryNameModal.value = target.name || '';
           streamingCategoryImageModal.value = target.image || '';
           if (saveStreamingCategoryModalBtn) saveStreamingCategoryModalBtn.textContent = 'Guardar cambios';
@@ -4935,15 +5324,36 @@
           const parts = raw.split(' - ');
           const catalog = parts[0] || '';
           const detail = parts.slice(1).join(' - ');
-          const match = detail.match(/(1 PERFIL|CUENTA COMPLETA)\s+([\d.,]+)\$\s+\((MES|AÑO)\)/i);
+          const typeLabel = document.querySelector('label[for="streamingPriceModalType"]');
+          const timeLabel = document.querySelector('label[for="streamingPriceModalTime"]');
+          const amountLabel = document.querySelector('label[for="streamingPriceModalAmount"]');
           streamingPriceModalCatalog.innerHTML = marketCatalog[activeMarketType].categories.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
           streamingPriceModalCatalog.value = catalog || streamingPriceModalCatalog.value;
-          if (match) {
-            streamingPriceModalType.value = match[1].toUpperCase();
-            streamingPriceModalAmount.value = match[2];
-            streamingPriceModalTime.value = match[3].toUpperCase();
+          if (activeMarketType === 'giftcards') {
+            if (typeLabel) typeLabel.textContent = 'Tipo de tarjeta';
+            if (timeLabel) timeLabel.textContent = 'Monto';
+            if (amountLabel) amountLabel.textContent = 'Precio total ($)';
+            const giftMatch = detail.match(/(\d+(?:[.,]\d+)?)\$\s+en\s+(\d+(?:[.,]\d+)?)\$/i);
+            const selectedAmount = giftMatch ? `${giftMatch[1]}$` : '10$';
+            const selectedTotal = giftMatch ? giftMatch[2].replace(',', '.') : '13';
+            streamingPriceModalType.innerHTML = `<option value="${catalog}">${catalog || 'GiftCard'}</option>`;
+            streamingPriceModalTime.innerHTML = '<option value="10$">10$</option><option value="20$">20$</option><option value="30$">30$</option><option value="40$">40$</option><option value="50$">50$</option><option value="100$">100$</option>';
+            streamingPriceModalTime.value = selectedAmount;
+            streamingPriceModalAmount.value = selectedTotal;
           } else {
-            streamingPriceModalAmount.value = '';
+            if (typeLabel) typeLabel.textContent = 'Tipo';
+            if (timeLabel) timeLabel.textContent = 'Tiempo';
+            if (amountLabel) amountLabel.textContent = 'Precio ($)';
+            streamingPriceModalType.innerHTML = '<option value="1 PERFIL">1 PERFIL</option><option value="CUENTA COMPLETA">CUENTA COMPLETA</option>';
+            streamingPriceModalTime.innerHTML = '<option value="MES">MES</option><option value="AÑO">AÑO</option>';
+            const match = detail.match(/(1 PERFIL|CUENTA COMPLETA)\s+([\d.,]+)\$\s+\((MES|AÑO)\)/i);
+            if (match) {
+              streamingPriceModalType.value = match[1].toUpperCase();
+              streamingPriceModalAmount.value = match[2];
+              streamingPriceModalTime.value = match[3].toUpperCase();
+            } else {
+              streamingPriceModalAmount.value = '';
+            }
           }
           streamingPriceModal?.classList.add('show');
           streamingPriceModal?.setAttribute('aria-hidden', 'false');
@@ -5102,6 +5512,8 @@
       });
       oroSearch.addEventListener('input', renderGameList);
       streamingSearch?.addEventListener('input', renderStreamingSection);
+      giftcardsSearch?.addEventListener('input', renderGiftcardsSection);
+      p2pSearch?.addEventListener('input', renderP2PSection);
       closeStreamingModal?.addEventListener('click', () => {
         streamingModal?.classList.remove('show');
         streamingModal?.setAttribute('aria-hidden', 'true');
@@ -5117,11 +5529,13 @@
           showAuthNotice('Debes iniciar sesión para abrir ticket.');
           return;
         }
-        const summary = `Streaming | ${category} | ${customer} | ${accType} | ${duration} | ${streamingModalTicketBtn.dataset.priceRaw || price}`;
+        const rawType = streamingModalTicketBtn.dataset.serviceType || 'streaming';
+        const serviceType = rawType === 'giftcards' ? 'GiftCards' : rawType === 'p2p' ? 'P2P' : 'Streaming';
+        const summary = `${serviceType} | ${category} | ${customer} | ${accType} | ${duration} | ${streamingModalTicketBtn.dataset.priceRaw || price}`;
         if (supabaseClient) {
           await supabaseClient.from('tickets').insert({
             user_id: currentUser.id,
-            game: 'Streaming',
+            game: serviceType,
             server: category,
             product: `${accType} - ${duration}`,
             character: customer,
@@ -5197,7 +5611,7 @@
           role: accountRoleInput.value.trim(),
           faction: accountFactionInput.value.trim(),
           budget: accountBudgetInput.value.trim(),
-          image: accountImageInput.value.trim() || 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop',
+          image: accountImageInput.value.trim() || 'https://i.imgur.com/yHA321T.png',
           description: accountDescriptionInput.value.trim()
         };
         if (!payload.game || !payload.name) {
@@ -5341,6 +5755,13 @@
       });
 
       guardarCategoriaOro.addEventListener('click', async () => {
+        if ((!categoriaImagen?.value || !categoriaImagen.value.trim()) && categoriaImagenFile?.files?.[0]) {
+          const autoUrl = await uploadImageFromPc(categoriaImagenFile.files[0], 'gold-categories');
+          if (autoUrl) {
+            if (categoriaImagen) categoriaImagen.value = autoUrl;
+            if (previewCategoriaImagen) previewCategoriaImagen.src = autoUrl;
+          }
+        }
         if (!categoriaNombre.value.trim()) {
           showAdminNotice('Escribe un nombre para la categoría.', 'warn');
           return;
@@ -5351,17 +5772,31 @@
           description: categoriaDescripcion.value.trim() || 'Sin descripción.',
           image: (categoriaImagen?.value || '').trim()
         };
+        const payloadDb = goldCategoriesSupportsImageColumn
+          ? payload
+          : { game: payload.game, name: payload.name, description: payload.description };
         const bucket = getCategoryBucket(activeCategoryType);
         const editIndex = Number(guardarCategoriaOro.dataset.editIndex || '-1');
         const isEditing = editIndex >= 0;
         if (activeCategoryType === 'oro' && supabaseClient) {
           const currentId = isEditing ? bucket[editIndex]?.id : null;
-          const query = currentId
-            ? supabaseClient.from('gold_categories').update(payload).eq('id', currentId)
-            : supabaseClient.from('gold_categories').insert(payload);
-          const { data, error } = await query.select('id,game,name,description,image').single();
+          let { data, error } = await (currentId
+            ? supabaseClient.from('gold_categories').update(payloadDb).eq('id', currentId)
+            : supabaseClient.from('gold_categories').insert(payloadDb))
+            .select('id,game,name,description,image')
+            .single();
+          if (error?.message?.toLowerCase?.().includes('column gold_categories.image does not exist')) {
+            goldCategoriesSupportsImageColumn = false;
+            const fallbackPayload = { game: payload.game, name: payload.name, description: payload.description };
+            ({ data, error } = await (currentId
+              ? supabaseClient.from('gold_categories').update(fallbackPayload).eq('id', currentId)
+              : supabaseClient.from('gold_categories').insert(fallbackPayload))
+              .select('id,game,name,description')
+              .single());
+            if (data) data.image = payload.image || bucket[editIndex]?.image || '';
+          }
           if (error) {
-            showAdminNotice('No se pudo guardar la categoría en Supabase.', 'warn');
+            showAdminNotice(`No se pudo guardar la categoría en Supabase: ${error.message || 'sin detalle'}`, 'warn');
             return;
           }
           if (isEditing) bucket[editIndex] = data;
@@ -5370,8 +5805,12 @@
           if (isEditing) bucket[editIndex] = { ...bucket[editIndex], ...payload };
           else bucket.push({ id: null, ...payload });
         }
+        if (supabaseClient) {
+          try { await syncFromSupabase(); } catch (e) { console.warn('syncFromSupabase failed after guardarCategoriaOro', e); }
+        }
         renderGoldCategories();
-        showAdminNotice(isEditing ? 'Categoría de oro actualizada.' : `Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
+        renderGameList();
+        showAdminNotice(isEditing ? 'Categoría de marketplace actualizada y sincronizada.' : `Categoría agregada: ${categoriaNombre.value.trim()}.`, 'ok');
         guardarCategoriaOro.dataset.editIndex = '';
         closeCategoriaModal();
       });
@@ -5381,6 +5820,7 @@
         if (editBtn) {
           const type = editBtn.dataset.categoryType || 'oro';
           if (type !== 'oro') return;
+          activeCategoryType = type;
           const bucket = getCategoryBucket(type);
           const idx = Number(editBtn.dataset.editCategory);
           const target = bucket[idx];
@@ -5398,6 +5838,7 @@
         const removeBtn = e.target.closest('button[data-remove-category]');
         if (!removeBtn) return;
         const type = removeBtn.dataset.categoryType || 'oro';
+        activeCategoryType = type;
         const bucket = getCategoryBucket(type);
         const idx = Number(removeBtn.dataset.removeCategory);
         const target = bucket[idx];
@@ -5464,14 +5905,14 @@
           showAdminNotice('El juego necesita nombre para poder guardarse.', 'warn');
           return;
         }
-        if (!juegoImagen.value.trim() && juegoImagenFile?.files?.[0]) {
+        if (juegoImagenFile?.files?.[0]) {
           const autoUploadedGameIcon = await uploadImageFromPc(juegoImagenFile.files[0], 'games');
           if (autoUploadedGameIcon) {
             juegoImagen.value = autoUploadedGameIcon;
             updateGamePreview();
           }
         }
-        if (customServiceEnabled.checked && !customServiceImage.value.trim() && customServiceImageFile?.files?.[0]) {
+        if (customServiceEnabled.checked && customServiceImageFile?.files?.[0]) {
           const autoUploadedImage = await uploadImageFromPc(customServiceImageFile.files[0], 'services');
           if (autoUploadedImage) customServiceImage.value = autoUploadedImage;
         }
@@ -5557,6 +5998,9 @@
             return;
           }
         }
+        if (supabaseClient) {
+          try { await syncFromSupabase(); } catch (e) { console.warn('syncFromSupabase failed after guardarJuegoForm', e); }
+        }
         renderGameList();
         renderAdminSelect();
         editingAdminIndex = null;
@@ -5576,6 +6020,20 @@
           adminMsg.style.color = '#8fdcff';
         }, 450);
       });
+
+      const startupCaptchaOverlay = document.getElementById('startupCaptchaOverlay');
+      const startupCaptchaCheck = document.getElementById('startupCaptchaCheck');
+      const startupCaptchaEnterBtn = document.getElementById('startupCaptchaEnterBtn');
+      if (startupCaptchaOverlay && startupCaptchaCheck && startupCaptchaEnterBtn) {
+        startupCaptchaCheck.addEventListener('change', () => {
+          startupCaptchaEnterBtn.disabled = !startupCaptchaCheck.checked;
+        });
+        startupCaptchaEnterBtn.addEventListener('click', () => {
+          if (!startupCaptchaCheck.checked) return;
+          startupCaptchaOverlay.classList.add('hidden');
+          startupCaptchaOverlay.setAttribute('aria-hidden', 'true');
+        });
+      }
 
     </script>
   </body>

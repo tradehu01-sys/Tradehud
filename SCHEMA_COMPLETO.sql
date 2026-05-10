@@ -217,10 +217,23 @@ on conflict do nothing;
 
 insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
 values
-('p2p','price','ZINLI','Zinli 10$','','12$',1),
-('p2p','price','ZINLI','Zinli 20$','','23$',2),
-('p2p','price','PAYPAL','Paypal 50$','','60$',3),
-('p2p','price','PAYPAL','Paypal 100$','','120$',4),
+('p2p','price','ZINLI','Zinli 1$','','ZINLI - Zinli 1$ - 1.30$',1),
+('p2p','price','ZINLI','Zinli 2$','','ZINLI - Zinli 2$ - 2.60$',2),
+('p2p','price','ZINLI','Zinli 5$','','ZINLI - Zinli 5$ - 6.50$',3),
+('p2p','price','ZINLI','Zinli 10$','','ZINLI - Zinli 10$ - 12$',4),
+('p2p','price','ZINLI','Zinli 15$','','ZINLI - Zinli 15$ - 17.25$',5),
+('p2p','price','ZINLI','Zinli 20$','','ZINLI - Zinli 20$ - 23$',6),
+('p2p','price','ZINLI','Zinli 25$','','ZINLI - Zinli 25$ - 28.75$',7),
+('p2p','price','ZINLI','Zinli 30$','','ZINLI - Zinli 30$ - 34.50$',8),
+('p2p','price','ZINLI','Zinli 40$','','ZINLI - Zinli 40$ - 46$',9),
+('p2p','price','ZINLI','Zinli 50$','','ZINLI - Zinli 50$ - 57.50$',10),
+('p2p','price','ZINLI','Zinli 100$','','ZINLI - Zinli 100$ - 115$',11),
+('p2p','price','PAYPAL','Paypal 10$','','PAYPAL - Paypal 10$ - 12.50$',12),
+('p2p','price','PAYPAL','Paypal 20$','','PAYPAL - Paypal 20$ - 24$',13),
+('p2p','price','PAYPAL','Paypal 50$','','PAYPAL - Paypal 50$ - 60$',14),
+('p2p','price','PAYPAL','Paypal 100$','','PAYPAL - Paypal 100$ - 120$',15),
+('p2p','price','PAYPAL','Paypal 200$','','PAYPAL - Paypal 200$ - 240$',16),
+('p2p','price','PAYPAL','Paypal 300$','','PAYPAL - Paypal 300$ - 360$',17),
 ('streaming','price','Netflix','1 PERFIL 4.50$ (MES)','','1 PERFIL 4.50$ (MES)',1),
 ('streaming','price','Netflix','CUENTA COMPLETA 17$ (MES)','','CUENTA COMPLETA 17$ (MES)',2),
 ('streaming','price','Disney','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',3),
@@ -301,9 +314,14 @@ create table if not exists public.gold_categories (
   game text not null default 'General',
   name text not null,
   description text not null default 'Sin descripción.',
+  image text not null default '',
   created_at timestamptz not null default now(),
   unique(game, name)
 );
+
+
+-- Compatibilidad para instalaciones previas (si la tabla ya existía sin columna image)
+alter table public.gold_categories add column if not exists image text not null default '';
 
 create unique index if not exists games_name_key on public.games (name);
 create unique index if not exists gold_categories_game_name_key on public.gold_categories (game, name);
