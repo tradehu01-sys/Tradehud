@@ -2190,7 +2190,13 @@
       <section id="p2p" class="page-section" data-page="p2p">
         <div class="container">
           <h2 class="section-title">Sección <span>P2P</span></h2>
-          <article class="glass"><p class="lead">Aquí se gestionan operaciones P2P entre comprador y proveedor con validación por ticket.</p></article>
+          <article class="glass">
+            <p class="lead">Aquí se gestionan operaciones P2P entre comprador y proveedor con validación por ticket.</p>
+            <div class="server-head" style="margin-top:.6rem;">
+              <input id="p2pSearch" class="oro-search streaming-search" type="text" placeholder="Buscar p2p..." />
+            </div>
+            <div id="p2pCategoryGrid" class="server-row" style="margin-top:.75rem;"></div>
+          </article>
         </div>
       </section>
 
@@ -3050,6 +3056,8 @@
       const streamingSearch = document.getElementById('streamingSearch');
       const giftcardsSearch = document.getElementById('giftcardsSearch');
       const giftcardsCategoryGrid = document.getElementById('giftcardsCategoryGrid');
+      const p2pSearch = document.getElementById('p2pSearch');
+      const p2pCategoryGrid = document.getElementById('p2pCategoryGrid');
       const streamingModal = document.getElementById('streamingModal');
       const streamingModalTitle = document.getElementById('streamingModalTitle');
       const streamingModalIcon = document.getElementById('streamingModalIcon');
@@ -3447,6 +3455,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         });
         renderStreamingSection();
         renderGiftcardsSection();
+        renderP2PSection();
       }
 
       function renderGoldOrderProducts() {
@@ -4064,6 +4073,37 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           giftcardsCategoryGrid.appendChild(btn);
         });
         if (!categories.length) giftcardsCategoryGrid.innerHTML = '<p class="auth-hint">No se encontraron giftcards.</p>';
+      }
+
+      function renderP2PSection() {
+        if (!p2pCategoryGrid) return;
+        const bucket = marketCatalog.p2p;
+        p2pCategoryGrid.innerHTML = '';
+        const term = p2pSearch?.value?.trim().toLowerCase?.() || '';
+        const categories = bucket.categories.filter((cat) => (cat.name || '').toLowerCase().includes(term));
+        categories.forEach((cat) => {
+          const btn = document.createElement('button');
+          btn.className = 'server';
+          btn.type = 'button';
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.p2p}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span>`;
+          btn.addEventListener('click', () => {
+            const related = bucket.prices.filter((p) => p.toLowerCase().includes(cat.name.toLowerCase()));
+            const detail = related.length ? related.join('\n') : 'Sin precios cargados para esta categoría.';
+            if (streamingServiceHeroTitle) streamingServiceHeroTitle.textContent = `${cat.name} · Operación P2P`;
+            if (streamingServiceDetails) streamingServiceDetails.textContent = `PRECIOS ${cat.name}\n${detail}\n\nSoporte: WhatsApp · Telegram · Discord`;
+            streamingModalTitle.textContent = cat.name;
+            streamingModalServiceName.textContent = cat.name;
+            streamingModalIcon.innerHTML = `<img src="${cat.image || marketDefaultImages.p2p}" alt="${cat.name}" />`;
+            if (streamingHeroInfo) streamingHeroInfo.style.display = '';
+            if (streamingServiceDetails) streamingServiceDetails.style.display = '';
+            streamingModalTicketBtn.dataset.category = cat.name;
+            streamingModalTicketBtn.dataset.serviceType = 'p2p';
+            streamingModal.classList.add('show');
+            streamingModal.setAttribute('aria-hidden', 'false');
+          });
+          p2pCategoryGrid.appendChild(btn);
+        });
+        if (!categories.length) p2pCategoryGrid.innerHTML = '<p class="auth-hint">No se encontraron categorías P2P.</p>';
       }
       function setActiveMarketType(type = 'streaming') {
         activeMarketType = type;
@@ -5453,6 +5493,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       oroSearch.addEventListener('input', renderGameList);
       streamingSearch?.addEventListener('input', renderStreamingSection);
       giftcardsSearch?.addEventListener('input', renderGiftcardsSection);
+      p2pSearch?.addEventListener('input', renderP2PSection);
       closeStreamingModal?.addEventListener('click', () => {
         streamingModal?.classList.remove('show');
         streamingModal?.setAttribute('aria-hidden', 'true');
@@ -5468,7 +5509,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           showAuthNotice('Debes iniciar sesión para abrir ticket.');
           return;
         }
-        const serviceType = streamingModalTicketBtn.dataset.serviceType === 'giftcards' ? 'GiftCards' : 'Streaming';
+        const rawType = streamingModalTicketBtn.dataset.serviceType || 'streaming';
+        const serviceType = rawType === 'giftcards' ? 'GiftCards' : rawType === 'p2p' ? 'P2P' : 'Streaming';
         const summary = `${serviceType} | ${category} | ${customer} | ${accType} | ${duration} | ${streamingModalTicketBtn.dataset.priceRaw || price}`;
         if (supabaseClient) {
           await supabaseClient.from('tickets').insert({
