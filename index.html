@@ -4089,6 +4089,26 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           btn.addEventListener('click', () => {
             const related = bucket.prices.filter((p) => p.toLowerCase().includes(cat.name.toLowerCase()));
             const detail = related.length ? related.join('\n') : 'Sin precios cargados para esta categoría.';
+            const accountTypeLabel = document.querySelector('label[for="streamingAccountType"]');
+            const durationLabel = document.querySelector('label[for="streamingDuration"]');
+            const priceLabel = document.querySelector('label[for="streamingPriceResult"]');
+            if (accountTypeLabel) accountTypeLabel.textContent = 'Tipo de P2P';
+            if (durationLabel) durationLabel.textContent = 'Monto de la tarjeta';
+            if (priceLabel) priceLabel.textContent = 'Monto a pagar';
+            streamingAccountType.innerHTML = `<option value="${cat.name}">${cat.name}</option>`;
+            const parsed = related.map((line) => {
+              const m = line.match(/(\d+(?:[.,]\d+)?)\$\s*-\s*(\d+(?:[.,]\d+)?)\$/);
+              return m ? { amount: `${m[1]}$`, total: `${m[2]}$`, raw: line } : null;
+            }).filter(Boolean);
+            streamingDuration.innerHTML = parsed.map((x) => `<option value="${x.amount}">${x.amount}</option>`).join('') || '<option value="10$">10$</option>';
+            const updateP2PPrice = () => {
+              const selected = parsed.find((x) => x.amount === streamingDuration.value) || parsed[0];
+              streamingPriceResult.value = selected?.total || 'Sin precio';
+              streamingModalTicketBtn.dataset.priceRaw = selected?.raw || detail;
+            };
+            streamingDuration.onchange = updateP2PPrice;
+            streamingAccountType.onchange = updateP2PPrice;
+            updateP2PPrice();
             if (streamingServiceHeroTitle) streamingServiceHeroTitle.textContent = `${cat.name} · Operación P2P`;
             if (streamingServiceDetails) streamingServiceDetails.textContent = `PRECIOS ${cat.name}\n${detail}\n\nSoporte: WhatsApp · Telegram · Discord`;
             streamingModalTitle.textContent = cat.name;
