@@ -1708,6 +1708,23 @@
       .streaming-price-highlight strong{display:block;color:#ffd670;margin-bottom:.25rem}
       .market-card-meta{display:flex;justify-content:center;gap:.45rem;flex-wrap:wrap;margin-top:.55rem}
       .market-card-chip{border:1px solid #3a5fa7;border-radius:999px;background:#0b1d38;color:#cfe1ff;padding:.24rem .55rem;font-size:.76rem}
+      .catalog-info-hero{display:grid;grid-template-columns:1.15fr repeat(3,minmax(0,.75fr));gap:.75rem;margin:.7rem 0 1rem}
+      .catalog-info-main,.catalog-info-card,.catalog-policy-card{border:1px solid #34599f;border-radius:14px;background:linear-gradient(145deg,rgba(17,35,68,.95),rgba(7,14,30,.95));padding:.9rem;color:#dce9ff}
+      .catalog-info-main h3{margin:.1rem 0 .4rem;color:#ffd670;font-size:1.15rem}
+      .catalog-info-main p,.catalog-info-card p,.catalog-policy-card p{margin:.25rem 0 0;color:#c8d6f3;line-height:1.45}
+      .catalog-info-card strong,.catalog-policy-card strong{display:flex;align-items:center;gap:.4rem;color:#f8d57a;margin-bottom:.25rem}
+      .catalog-policy-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem;margin-top:1rem}
+      .gold-order-content{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(310px,.65fr);gap:.9rem;align-items:start}
+      .gold-order-form,.gold-trust-panel{border:1px solid rgba(77,116,191,.72);border-radius:14px;background:linear-gradient(180deg,rgba(12,24,48,.96),rgba(5,11,24,.98));padding:.9rem}
+      .gold-trust-panel h4{margin:.1rem 0 .55rem;color:#ffd670}
+      .gold-trust-list{margin:.55rem 0 0;padding-left:1.1rem;color:#c8d6f3;line-height:1.55}
+      .gold-order-badges{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin:.65rem 0 .85rem}
+      .gold-order-badge{border:1px solid #31599d;border-radius:12px;background:#0c203f;color:#dbeaff;padding:.55rem .65rem;font-size:.84rem}
+      .gold-order-badge strong{display:block;color:#ffd670;margin-bottom:.12rem}
+      .gold-order-note-list{display:grid;gap:.45rem;margin-top:.65rem}
+      .gold-order-note-item{border:1px solid #2f508e;border-radius:10px;background:#08172f;padding:.55rem;color:#dce9ff}
+      @media (max-width: 980px){.catalog-info-hero{grid-template-columns:1fr 1fr}.catalog-policy-grid{grid-template-columns:1fr 1fr}.gold-order-content{grid-template-columns:1fr}.gold-order-badges{grid-template-columns:1fr 1fr}}
+      @media (max-width: 640px){.catalog-info-hero,.catalog-policy-grid,.gold-order-badges{grid-template-columns:1fr}}
       .p2p-rate-table{width:100%;border-collapse:separate;border-spacing:0 .45rem;margin-top:.65rem}
       .p2p-rate-table td{background:#09172e;border-top:1px solid #2e4f8b;border-bottom:1px solid #2e4f8b;padding:.5rem .65rem;color:#dce9ff}
       .p2p-rate-table td:first-child{border-left:1px solid #2e4f8b;border-radius:10px 0 0 10px;color:#ffd670;font-weight:700}
@@ -1957,11 +1974,26 @@
         <div class="container">
           <h2 class="section-title">Sección de <span>Marketplace</span></h2>
           <article class="oro-panel">
+            <div class="catalog-info-hero">
+              <div class="catalog-info-main">
+                <h3>⚔️ Marketplace de oro y servicios MMORPG</h3>
+                <p>Selecciona tu juego, revisa servidores disponibles y abre un ticket para confirmar stock, precio y entrega antes de pagar.</p>
+              </div>
+              <div class="catalog-info-card"><strong>🛡️ Validación</strong><p>Operación moderada por soporte para proteger comprador y vendedor.</p></div>
+              <div class="catalog-info-card"><strong>💰 Precio claro</strong><p>El producto muestra cantidad y costo antes de abrir el ticket.</p></div>
+              <div class="catalog-info-card"><strong>🚚 Entrega guiada</strong><p>Coordinamos servidor, facción, personaje y método dentro del juego.</p></div>
+            </div>
             <div class="oro-toolbar">
               <button id="verCategoriasOro" class="oro-category-btn" type="button">Ver categorías</button>
               <input id="oroSearch" class="oro-search" type="text" placeholder="Buscar juego..." />
             </div>
             <div id="gameList" class="server-row"></div>
+            <div class="catalog-policy-grid" aria-label="Políticas rápidas del marketplace">
+              <div class="catalog-policy-card"><strong>📋 Ticket obligatorio</strong><p>No se procesa ningún pedido sin datos completos y confirmación del agente.</p></div>
+              <div class="catalog-policy-card"><strong>⏳ Stock variable</strong><p>Disponibilidad y tiempos pueden cambiar según servidor, facción y demanda.</p></div>
+              <div class="catalog-policy-card"><strong>🔒 Seguridad</strong><p>No compartas contraseñas; solo solicitamos datos mínimos para entregar.</p></div>
+              <div class="catalog-policy-card"><strong>🤝 Garantía</strong><p>El seguimiento permanece activo hasta confirmar recepción o resolver incidencias.</p></div>
+            </div>
           </article>
         </div>
       </section>
@@ -2006,40 +2038,63 @@
               <div id="goldOrderGameIcon" class="gold-order-game-icon"></div>
               <strong id="goldOrderGameName">Selecciona un juego</strong>
             </div>
-            <div class="gold-order-grid">
-              <div>
-                <label for="goldOrderServer">Servidor</label>
-                <select id="goldOrderServer"></select>
-              </div>
-              <div>
-                <label for="goldOrderProduct">Elige tu producto</label>
-                <select id="goldOrderProduct"></select>
-              </div>
-              <div>
-                <label for="goldOrderFaction">Facción</label>
-                <select id="goldOrderFaction">
-                  <option value="">Selecciona facción</option>
-                  <option value="Alianza">Alianza</option>
-                  <option value="Horda">Horda</option>
-                  <option value="Neutral">Neutral</option>
-                </select>
-              </div>
-              <div>
-                <label for="goldOrderCharacter">Personaje</label>
-                <input id="goldOrderCharacter" type="text" placeholder="Nombre de personaje" />
-              </div>
-              <div style="grid-column:1 / -1;">
-                <label for="goldOrderDelivery">Preferencia de entrega</label>
-                <input id="goldOrderDelivery" type="text" placeholder="Ej: Correo dentro del juego" />
-              </div>
+            <div class="gold-order-badges">
+              <div class="gold-order-badge"><strong>1) Servidor</strong>Elige reino o región.</div>
+              <div class="gold-order-badge"><strong>2) Producto</strong>Selecciona cantidad y precio.</div>
+              <div class="gold-order-badge"><strong>3) Personaje</strong>Indica dónde entregar.</div>
+              <div class="gold-order-badge"><strong>4) Ticket</strong>Confirmamos stock y método.</div>
             </div>
-            <div class="gold-order-actions">
-              <button id="volverOpcionesBtn" class="back-to-services-btn" type="button">Volver</button>
-              <div class="ticket-side-actions">
-                <button id="goldOrderTicketBtn" class="ticket-btn" type="button">Abrir ticket</button>
+            <div class="gold-order-content">
+              <div class="gold-order-form">
+                <div class="gold-order-grid">
+                  <div>
+                    <label for="goldOrderServer">Servidor</label>
+                    <select id="goldOrderServer"></select>
+                  </div>
+                  <div>
+                    <label for="goldOrderProduct">Elige tu producto</label>
+                    <select id="goldOrderProduct"></select>
+                  </div>
+                  <div>
+                    <label for="goldOrderFaction">Facción</label>
+                    <select id="goldOrderFaction">
+                      <option value="">Selecciona facción</option>
+                      <option value="Alianza">Alianza</option>
+                      <option value="Horda">Horda</option>
+                      <option value="Neutral">Neutral</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="goldOrderCharacter">Personaje</label>
+                    <input id="goldOrderCharacter" type="text" placeholder="Nombre de personaje" />
+                  </div>
+                  <div style="grid-column:1 / -1;">
+                    <label for="goldOrderDelivery">Preferencia de entrega</label>
+                    <input id="goldOrderDelivery" type="text" placeholder="Ej: Correo dentro del juego" />
+                  </div>
+                </div>
+                <div class="gold-order-actions">
+                  <button id="volverOpcionesBtn" class="back-to-services-btn" type="button">Volver</button>
+                  <div class="ticket-side-actions">
+                    <button id="goldOrderTicketBtn" class="ticket-btn" type="button">Abrir ticket</button>
+                  </div>
+                </div>
+                <p class="gold-order-note">Al cambiar el servidor se recargan automáticamente los productos disponibles.</p>
               </div>
+              <aside class="gold-trust-panel">
+                <h4>📜 Políticas rápidas de oro</h4>
+                <ul class="gold-trust-list">
+                  <li>El precio final se confirma por ticket antes del pago.</li>
+                  <li>La entrega se coordina según normas del juego y disponibilidad.</li>
+                  <li>Si el servidor no tiene stock, soporte propone alternativa o espera.</li>
+                  <li>No pedimos contraseñas ni códigos de seguridad.</li>
+                </ul>
+                <div class="gold-order-note-list">
+                  <div class="gold-order-note-item">💬 Soporte por Discord, WhatsApp y Telegram.</div>
+                  <div class="gold-order-note-item">✅ Seguimiento hasta confirmar recepción.</div>
+                </div>
+              </aside>
             </div>
-            <p class="gold-order-note">Al cambiar el servidor se recargan automáticamente los productos disponibles.</p>
           </div>
           <div id="accountsPanel" class="accounts-panel hidden">
             <strong style="display:block;margin-bottom:.55rem;">Cuentas disponibles por juego</strong>
@@ -2219,10 +2274,25 @@
         <div class="container">
           <h2 class="section-title">Sección de <span>GiftCards</span></h2>
           <article class="glass">
+            <div class="catalog-info-hero">
+              <div class="catalog-info-main">
+                <h3>🎁 GiftCards digitales verificadas</h3>
+                <p>Compra tarjetas digitales por monto, confirma disponibilidad por ticket y recibe instrucciones claras para canjear o entregar el código.</p>
+              </div>
+              <div class="catalog-info-card"><strong>💳 Montos</strong><p>Elige 10$, 20$, 30$, 40$, 50$ o 100$ según disponibilidad.</p></div>
+              <div class="catalog-info-card"><strong>🧾 Comprobante</strong><p>El ticket conserva servicio, monto y precio total para soporte.</p></div>
+              <div class="catalog-info-card"><strong>⚡ Atención</strong><p>Confirmación rápida por Discord, WhatsApp o Telegram.</p></div>
+            </div>
             <div class="server-head" style="margin-top:.6rem;">
               <input id="giftcardsSearch" class="oro-search streaming-search" type="text" placeholder="Buscar giftcard..." />
             </div>
             <div id="giftcardsCategoryGrid" class="server-row" style="margin-top:.75rem;"></div>
+            <div class="catalog-policy-grid" aria-label="Políticas rápidas de giftcards">
+              <div class="catalog-policy-card"><strong>📌 Confirmar región</strong><p>Antes de pagar verifica país, moneda y plataforma de la tarjeta.</p></div>
+              <div class="catalog-policy-card"><strong>🔐 Código protegido</strong><p>El código se entrega solo por canal acordado y con comprobante.</p></div>
+              <div class="catalog-policy-card"><strong>🚫 Sin devoluciones</strong><p>Una tarjeta entregada/canjeada no puede revertirse salvo error validado.</p></div>
+              <div class="catalog-policy-card"><strong>🛟 Soporte</strong><p>Si hay incidencia, abrimos revisión con evidencia del ticket.</p></div>
+            </div>
           </article>
         </div>
       </section>
@@ -3881,7 +3951,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         filteredGames.forEach(({ game, index }) => {
           const btn = document.createElement('button');
           btn.className = `server${index === 0 ? ' active' : ''}`;
-          btn.innerHTML = `<div class=\"server-icon\"><img src=\"${game.icon}\" alt=\"${game.name}\" /></div><span class=\"server-name\">${game.name}</span>`;
+          btn.innerHTML = `<div class="server-icon"><img src="${game.icon}" alt="${game.name}" /></div><span class="server-name">${game.name}</span><div class="market-card-meta"><span class="market-card-chip">🪙 Oro</span><span class="market-card-chip">🎮 MMORPG</span></div>`;
           btn.addEventListener('click', () => {
             document.querySelectorAll('#gameList .server').forEach((s) => s.classList.remove('active'));
             btn.classList.add('active');
@@ -4142,10 +4212,29 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             streamingDuration.onchange = updateGiftPrice;
             streamingAccountType.onchange = updateGiftPrice;
             updateGiftPrice();
+            const giftDetails = [
+              `INFORMACIÓN ${cat.name}`,
+              '• Selecciona el monto disponible y confirma región/plataforma antes de pagar.',
+              '• El precio total se actualiza automáticamente según el monto elegido.',
+              '• El código o instrucciones se entregan por el canal acordado en el ticket.',
+              '',
+              'POLÍTICAS IMPORTANTES',
+              '• Una giftcard entregada o canjeada no tiene devolución, salvo error validado por soporte.',
+              '• Verifica país, moneda y cuenta destino antes de abrir el pedido.',
+              '• Guarda comprobantes hasta que el ticket quede cerrado.',
+              '',
+              `PRECIOS DISPONIBLES`,
+              amountOptions.map((amount) => `• ${amount} en ${amountMap[amount]}`).join('\n'),
+              '',
+              'Soporte: WhatsApp · Telegram · Discord'
+            ].join('\n');
             streamingModalTicketBtn.dataset.category = cat.name;
             streamingModalTicketBtn.dataset.serviceType = 'giftcards';
-            if (streamingHeroInfo) streamingHeroInfo.style.display = 'none';
-            if (streamingServiceDetails) streamingServiceDetails.style.display = 'none';
+            if (streamingHeroInfo) streamingHeroInfo.style.display = '';
+            if (streamingServiceDetails) {
+              streamingServiceDetails.style.display = '';
+              streamingServiceDetails.textContent = giftDetails;
+            }
             streamingModal.classList.add('show');
             streamingModal.setAttribute('aria-hidden', 'false');
             activeMarketType = currentType;
