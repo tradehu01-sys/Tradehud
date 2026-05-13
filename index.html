@@ -739,6 +739,19 @@
         border-radius: 999px;
         padding: 0.45rem 0.9rem;
       }
+      .boost-calculator-wrap{border:1px solid #315796;border-radius:14px;background:linear-gradient(145deg,rgba(10,24,49,.96),rgba(4,10,22,.98));padding:.85rem;margin-top:.55rem}
+      .boost-calculator-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin-bottom:.7rem}
+      .boost-calculator-head strong{color:#ffd670}
+      .boost-mode-pill{border:1px solid #3a5fa7;border-radius:999px;background:#0b1d38;color:#dbeaff;padding:.28rem .6rem;font-size:.78rem}
+      .boost-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:.7rem 0}
+      .boost-summary-card{border:1px solid #2f508e;border-radius:12px;background:#07172f;color:#dce9ff;padding:.6rem}
+      .boost-summary-card strong{display:block;color:#ffd670;margin-bottom:.18rem;font-size:.8rem}
+      .boost-summary-card span{font-weight:800}
+      .boost-price-list{border:1px solid #2f508e;border-radius:12px;background:#07172f;padding:.65rem;margin:.65rem 0;color:#c8d6f3;max-height:160px;overflow:auto}
+      .boost-price-list strong{display:block;color:#ffd670;margin-bottom:.35rem}
+      .boost-price-list ul{margin:.25rem 0 0;padding-left:1.05rem;line-height:1.55}
+      #boostLevelForm select,#boostLevelForm input{width:100%;border:1px solid #2e4f95;border-radius:10px;background:#050d1f;color:#d9e8ff;padding:.55rem .65rem}
+      @media (max-width: 760px){.boost-summary-grid{grid-template-columns:1fr}}
       .account-card {
         border: 1px solid #35518a;
         border-radius: 10px;
@@ -2137,18 +2150,59 @@
               <button id="boostLevelBtn" class="boosting-circle-btn" type="button"><img src="https://i.imgur.com/WrbIQPl.png" alt="Leveleo de cuentas" /></button>
             </div>
             <div id="boostLevelForm" class="glass hidden" style="margin-top:.2rem;">
-              <h4 id="boostLevelGameTitle" style="margin:.1rem 0 .6rem;">Solicitud de boosting</h4>
-              <button id="boostBackBtn" class="mini-btn" type="button" style="margin-bottom:.55rem;">← Volver</button>
-              <div class="admin-split">
-                <input id="boostCharacter" type="text" placeholder="Nombre del personaje" />
-                <input id="boostGame" type="text" placeholder="Juego" />
-                <input id="boostServer" type="text" placeholder="Servidor" />
-                <input id="boostLevelFrom" type="text" placeholder="Level actual" />
-                <input id="boostLevelTo" type="text" placeholder="Level deseado" />
-                <input id="boostExtra" type="text" placeholder="Descripción adicional" />
+              <div class="boost-calculator-head">
+                <h4 id="boostLevelGameTitle" style="margin:.1rem 0;">Solicitud de boosting</h4>
+                <span id="boostModeLabel" class="boost-mode-pill">Calculadora</span>
               </div>
-              <p class="auth-hint">Los precios son consultados según juego, servidor y tiempo estimado.</p>
-              <button id="boostCreateTicketBtn" class="panel-btn" type="button">Crear ticket</button>
+              <button id="boostBackBtn" class="mini-btn" type="button" style="margin-bottom:.55rem;">← Volver</button>
+              <div class="boost-calculator-wrap">
+                <div class="admin-split">
+                  <div>
+                    <label for="boostCharacter">Nombre del personaje</label>
+                    <input id="boostCharacter" type="text" placeholder="Ej: Thrallbank" />
+                  </div>
+                  <div>
+                    <label for="boostGame">Juego</label>
+                    <input id="boostGame" type="text" placeholder="Juego" readonly />
+                  </div>
+                  <div>
+                    <label for="boostServer">Servidor</label>
+                    <select id="boostServer"></select>
+                  </div>
+                  <div id="boostProfessionWrap" class="hidden">
+                    <label for="boostProfessionSelect">Tipo de bosteo / profesión</label>
+                    <select id="boostProfessionSelect"></select>
+                  </div>
+                  <div>
+                    <label for="boostLevelFrom">Nivel desde</label>
+                    <input id="boostLevelFrom" type="number" min="1" placeholder="Ej: 1" />
+                  </div>
+                  <div>
+                    <label for="boostLevelTo">Hasta nivel</label>
+                    <input id="boostLevelTo" type="number" min="1" placeholder="Ej: 70" />
+                  </div>
+                  <div>
+                    <label for="boostPaymentMethod">Método de pago</label>
+                    <input id="boostPaymentMethod" type="text" placeholder="Ej: PayPal, Zinli, Binance" />
+                  </div>
+                  <div>
+                    <label for="boostCalculatedPrice">Precio calculado</label>
+                    <input id="boostCalculatedPrice" type="text" placeholder="Selecciona rango" readonly />
+                  </div>
+                  <div style="grid-column:1 / -1;">
+                    <label for="boostExtra">Descripción adicional</label>
+                    <input id="boostExtra" type="text" placeholder="Notas, horario, facción o instrucciones" />
+                  </div>
+                </div>
+                <div class="boost-summary-grid">
+                  <div class="boost-summary-card"><strong>Servicio</strong><span id="boostSummaryService">Pendiente</span></div>
+                  <div class="boost-summary-card"><strong>Rango</strong><span id="boostSummaryRange">Pendiente</span></div>
+                  <div class="boost-summary-card"><strong>Total</strong><span id="boostSummaryPrice">Sin calcular</span></div>
+                </div>
+                <div id="boostPriceList" class="boost-price-list"></div>
+              </div>
+              <p class="auth-hint">La calculadora usa la lista de precios configurada para el juego y servidor seleccionado. Si no hay rango exacto, abre ticket para cotización manual.</p>
+              <button id="boostCreateTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
             </div>
           </div>
         </div>
@@ -3026,6 +3080,15 @@
       const boostLevelFrom = document.getElementById('boostLevelFrom');
       const boostLevelTo = document.getElementById('boostLevelTo');
       const boostExtra = document.getElementById('boostExtra');
+      const boostModeLabel = document.getElementById('boostModeLabel');
+      const boostProfessionWrap = document.getElementById('boostProfessionWrap');
+      const boostProfessionSelect = document.getElementById('boostProfessionSelect');
+      const boostPaymentMethod = document.getElementById('boostPaymentMethod');
+      const boostCalculatedPrice = document.getElementById('boostCalculatedPrice');
+      const boostSummaryService = document.getElementById('boostSummaryService');
+      const boostSummaryRange = document.getElementById('boostSummaryRange');
+      const boostSummaryPrice = document.getElementById('boostSummaryPrice');
+      const boostPriceList = document.getElementById('boostPriceList');
       const closeGameWindow = document.getElementById('closeGameWindow');
       const openAdmin = document.getElementById('openAdmin');
       const openRegister = document.getElementById('openRegister');
@@ -3552,11 +3615,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       const gameServers = [
         { game: 'World of Warcraft', servers: ['Ragnaros', 'Azralon', 'QuelThalas'] },
         { game: 'Albion Online', servers: ['West', 'East'] },
-        { game: 'World of Warcraft 20th Anniversary TBC', servers: ['(US) NIGHTSLAYER', '(US) DREAMSCYTHE', '(EU) SPINESHATTER', '(EU) THUNDERSTRIKE', '(EU) SOULSEEKER'] },
-        { game: 'World of Warcraft Retail', servers: ['(US) WOW RETAIL', '(EU) WOW RETAIL'] },
+        { game: 'World of Warcraft 20th Anniversary TBC', servers: ['Thunderstrike EU', 'Spineshatter EU', 'Nightslayer US', 'Dreamscythe US'] },
+        { game: 'World of Warcraft Retail', servers: ['Retail US', 'Retail EU'] },
         { game: 'World of Warcraft Project Epoch', servers: ['KEZAN', 'GURUBASHI'] },
-        { game: 'World of Warcraft Ascension', servers: ['BRONZEBEARD'] },
-        { game: 'WARMANE', servers: ['Onyxia', 'Lordaeron', 'Icecrown'] },
+        { game: 'World of Warcraft Ascension', servers: ['Bronzebeard'] },
+        { game: 'WARMANE', servers: ['ONYXIA', 'LORDAERON', 'ICECROWN'] },
         { game: 'AION', servers: ['EUROAION'] },
         { game: 'Aion 2', servers: ['(TW) Triniel', '(TW) Vaziel'] },
         { game: 'RuneScape', servers: ['Old School RuneScape'] },
@@ -3571,6 +3634,73 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         { game: 'World of Warcraft', server: 'Ragnaros', amount: 200, price: 6.9 },
         { game: 'World of Warcraft', server: 'Ragnaros', amount: 300, price: 10.2 }
       ];
+      const boostingServiceCatalog = {
+        'World of Warcraft 20th Anniversary TBC': {
+          servers: ['Thunderstrike EU', 'Spineshatter EU', 'Nightslayer US', 'Dreamscythe US'],
+          leveling: [
+            { from: 1, to: 70, price: 230 }, { from: 58, to: 70, price: 170 },
+            { from: 60, to: 70, price: 150 }, { from: 65, to: 70, price: 100 }
+          ],
+          professions: [
+            ['Herbalism', 1, 375, 60], ['Skinning', 1, 375, 60], ['Mining', 1, 375, 60],
+            ['Cooking', 1, 375, 60], ['Fishing', 1, 375, 60], ['Leatherworking', 1, 360, 170],
+            ['Tailoring', 1, 360, 140], ['Enchanting', 1, 360, 190], ['Blacksmithing', 1, 360, 170],
+            ['Engineering', 1, 360, 190], ['Alchemy', 1, 360, 70], ['Jewelcrafting', 1, 360, 160]
+          ]
+        },
+        'World of Warcraft Retail': {
+          servers: ['Retail US', 'Retail EU'],
+          leveling: [
+            { from: 1, to: 80, price: 70 }, { from: 58, to: 80, price: 50 },
+            { from: 60, to: 80, price: 40 }, { from: 65, to: 80, price: 30 }
+          ],
+          professions: []
+        },
+        'World of Warcraft Project Epoch': {
+          servers: ['Kezan', 'Gurubashi'],
+          leveling: [
+            { from: 1, to: 60, price: 180 }, { from: 1, to: 20, price: 30 },
+            { from: 20, to: 30, price: 35 }, { from: 30, to: 40, price: 40 },
+            { from: 40, to: 50, price: 50 }, { from: 50, to: 60, price: 70 }
+          ],
+          professions: [
+            ['Herbalism', 1, 300, 60], ['Skinning', 1, 300, 60], ['Mining', 1, 300, 60],
+            ['Cooking', 1, 300, 60], ['Fishing', 1, 300, 60], ['Leatherworking', 1, 300, 170],
+            ['Tailoring', 1, 300, 140], ['Enchanting', 1, 300, 190], ['Blacksmithing', 1, 300, 170],
+            ['Engineering', 1, 360, 190], ['Alchemy', 1, 300, 70], ['Jewelcrafting', 1, 300, 160]
+          ]
+        },
+        'World of Warcraft Ascension': {
+          servers: ['Bronzebeard'],
+          leveling: [
+            { from: 1, to: 60, price: 130 }, { from: 1, to: 20, price: 25 },
+            { from: 20, to: 30, price: 30 }, { from: 30, to: 40, price: 45 },
+            { from: 40, to: 50, price: 50 }, { from: 50, to: 60, price: 60 }
+          ],
+          professions: [
+            ['Herbalism', 1, 300, 50], ['Skinning', 1, 300, 50], ['Mining', 1, 300, 50],
+            ['Cooking', 1, 300, 50], ['Fishing', 1, 300, 50], ['Leatherworking', 1, 300, 120],
+            ['Tailoring', 1, 300, 120], ['Enchanting', 1, 300, 120], ['Blacksmithing', 1, 300, 120],
+            ['Engineering', 1, 360, 120], ['Alchemy', 1, 300, 120], ['Jewelcrafting', 1, 300, 120]
+          ]
+        },
+        WARMANE: {
+          servers: ['ONYXIA', 'LORDAERON', 'ICECROWN'],
+          levelingByServer: {
+            ONYXIA: [{ from: 1, to: 80, price: 70 }, { from: 70, to: 80, price: 40 }],
+            LORDAERON: [{ from: 1, to: 80, price: 230 }, { from: 70, to: 80, price: 80 }],
+            ICECROWN: [{ from: 1, to: 80, price: 60 }, { from: 70, to: 80, price: 25 }]
+          },
+          leveling: [],
+          professions: [
+            ['Herbalism', 1, 450, 50], ['Skinning', 1, 450, 50], ['Mining', 1, 450, 50],
+            ['Cooking', 1, 450, 50], ['Fishing', 1, 450, 50], ['Leatherworking', 1, 450, 50],
+            ['Tailoring', 1, 450, 50], ['Enchanting', 1, 450, 50], ['Blacksmithing', 1, 450, 50],
+            ['Engineering', 1, 450, 50], ['Alchemy', 1, 450, 50], ['Jewelcrafting', 1, 450, 50]
+          ]
+        }
+      };
+      let activeBoostMode = 'leveling';
       let activeCategoryType = 'oro';
       let editingStreamingCategoryIndex = null;
       let editingStreamingPriceIndex = null;
@@ -3744,12 +3874,97 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
       }
 
+      function getBoostConfig(gameName = '') {
+        return boostingServiceCatalog[gameName] || null;
+      }
+
+      function getBoostLevelingRows(config, server = '') {
+        if (!config) return [];
+        if (config.levelingByServer) return config.levelingByServer[server] || [];
+        return config.leveling || [];
+      }
+
+      function renderBoostPriceList() {
+        if (!boostPriceList) return;
+        const config = getBoostConfig(boostGame?.value || activeOrderGame?.name || '');
+        const server = boostServer?.value || '';
+        if (!config) {
+          boostPriceList.innerHTML = '<strong>Lista de precios</strong><p>Este juego no tiene calculadora configurada todavía. Abre ticket para cotizar manualmente.</p>';
+          return;
+        }
+        if (activeBoostMode === 'profession') {
+          const rows = (config.professions || []).map(([name, from, to, price]) => `<li>${name} ${from}-${to} · ${price}$</li>`).join('');
+          boostPriceList.innerHTML = `<strong>Profesiones disponibles</strong><ul>${rows || '<li>Sin profesiones configuradas para este juego.</li>'}</ul>`;
+          return;
+        }
+        const rows = getBoostLevelingRows(config, server).map(({ from, to, price }) => `<li>${from}-${to} · ${price}$</li>`).join('');
+        boostPriceList.innerHTML = `<strong>Rangos de leveleo ${server ? `· ${server}` : ''}</strong><ul>${rows || '<li>Sin rangos configurados para este servidor.</li>'}</ul>`;
+      }
+
+      function updateBoostCalculation() {
+        const config = getBoostConfig(boostGame?.value || activeOrderGame?.name || '');
+        const from = Number(boostLevelFrom?.value || 0);
+        const to = Number(boostLevelTo?.value || 0);
+        let label = activeBoostMode === 'profession' ? 'Profesión' : 'Leveleo';
+        let priceText = 'Sin precio exacto';
+        if (config && from && to) {
+          if (activeBoostMode === 'profession') {
+            const selected = config.professions?.[Number(boostProfessionSelect?.value || 0)];
+            if (selected) {
+              const [name, profFrom, profTo, price] = selected;
+              label = name;
+              if (from === Number(profFrom) && to === Number(profTo)) priceText = `${price}$`;
+              else priceText = `Cotizar ${name} ${from}-${to}`;
+            }
+          } else {
+            const found = getBoostLevelingRows(config, boostServer?.value || '').find((row) => Number(row.from) === from && Number(row.to) === to);
+            priceText = found ? `${found.price}$` : `Cotizar ${from}-${to}`;
+          }
+        }
+        if (boostCalculatedPrice) boostCalculatedPrice.value = priceText;
+        if (boostSummaryService) boostSummaryService.textContent = label;
+        if (boostSummaryRange) boostSummaryRange.textContent = from && to ? `${from}-${to}` : 'Pendiente';
+        if (boostSummaryPrice) boostSummaryPrice.textContent = priceText;
+      }
+
+      function populateBoostCalculator(mode = 'leveling') {
+        activeBoostMode = mode;
+        const gameName = activeOrderGame?.name || '';
+        const config = getBoostConfig(gameName);
+        if (boostGame) boostGame.value = gameName;
+        if (boostModeLabel) boostModeLabel.textContent = mode === 'profession' ? 'Calculadora de profesiones' : 'Calculadora de leveleo';
+        if (boostProfessionWrap) boostProfessionWrap.classList.toggle('hidden', mode !== 'profession');
+        if (boostServer) {
+          const servers = config?.servers || gameServers.find((entry) => entry.game === gameName)?.servers || [];
+          boostServer.innerHTML = servers.map((server) => `<option value="${server}">${server}</option>`).join('') || '<option value="">Sin servidores configurados</option>';
+        }
+        if (boostProfessionSelect) {
+          boostProfessionSelect.innerHTML = (config?.professions || []).map(([name, from, to, price], index) => `<option value="${index}">${name} ${from}-${to} · ${price}$</option>`).join('') || '<option value="">Sin profesiones configuradas</option>';
+        }
+        boostCharacter.value = '';
+        boostPaymentMethod.value = '';
+        boostExtra.value = '';
+        const firstLevel = mode === 'profession'
+          ? config?.professions?.[0]
+          : getBoostLevelingRows(config, boostServer?.value || '')[0];
+        if (Array.isArray(firstLevel)) {
+          boostLevelFrom.value = firstLevel[1] || '';
+          boostLevelTo.value = firstLevel[2] || '';
+        } else {
+          boostLevelFrom.value = firstLevel?.from || '';
+          boostLevelTo.value = firstLevel?.to || '';
+        }
+        renderBoostPriceList();
+        updateBoostCalculation();
+      }
+
       function openBoostingOptionsPanel() {
         boostingOptionsPanel.classList.remove('hidden');
         if (boostingButtonsView) boostingButtonsView.style.display = 'flex';
         if (boostLevelForm) boostLevelForm.classList.add('hidden');
         if (boostGame && activeOrderGame?.name) boostGame.value = activeOrderGame.name;
         if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Boosting · ${activeOrderGame?.name || 'Juego seleccionado'}`;
+        populateBoostCalculator('leveling');
         gameWindow.classList.add('gold-focus');
       }
 
@@ -5768,30 +5983,47 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         if (boostingButtonsView) boostingButtonsView.style.display = 'none';
         if (boostLevelForm) boostLevelForm.classList.remove('hidden');
         if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Leveleo de cuentas · ${activeOrderGame?.name || 'Juego seleccionado'}`;
+        populateBoostCalculator('leveling');
       });
       boostProfBtn?.addEventListener('click', () => {
         if (boostingButtonsView) boostingButtonsView.style.display = 'none';
         if (boostLevelForm) boostLevelForm.classList.remove('hidden');
         if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Profesiones · ${activeOrderGame?.name || 'Juego seleccionado'}`;
+        populateBoostCalculator('profession');
       });
       boostBackBtn?.addEventListener('click', () => {
         if (boostingButtonsView) boostingButtonsView.style.display = 'flex';
         if (boostLevelForm) boostLevelForm.classList.add('hidden');
       });
+      boostServer?.addEventListener('change', () => { renderBoostPriceList(); updateBoostCalculation(); });
+      boostProfessionSelect?.addEventListener('change', () => {
+        const config = getBoostConfig(boostGame?.value || activeOrderGame?.name || '');
+        const selected = config?.professions?.[Number(boostProfessionSelect.value || 0)];
+        if (selected) { boostLevelFrom.value = selected[1]; boostLevelTo.value = selected[2]; }
+        renderBoostPriceList();
+        updateBoostCalculation();
+      });
+      [boostLevelFrom, boostLevelTo, boostPaymentMethod, boostCharacter, boostExtra].forEach((el) => el?.addEventListener('input', updateBoostCalculation));
       boostCreateTicketBtn?.addEventListener('click', async () => {
         if (!currentUser) {
           openAuth('login');
           return;
         }
-        const summary = `Boosting | ${boostGame?.value || ''} | ${boostServer?.value || ''} | ${boostCharacter?.value || ''} | ${boostLevelFrom?.value || ''}->${boostLevelTo?.value || ''} | ${boostExtra?.value || ''}`;
+        updateBoostCalculation();
+        const selectedProfession = activeBoostMode === 'profession' ? boostProfessionSelect?.selectedOptions?.[0]?.textContent || '' : '';
+        const serviceName = activeBoostMode === 'profession' ? `Profesión ${selectedProfession}` : 'Leveleo';
+        const range = `${boostLevelFrom?.value || ''}-${boostLevelTo?.value || ''}`;
+        const price = boostCalculatedPrice?.value || 'Sin precio exacto';
+        const payment = boostPaymentMethod?.value || 'No definido';
+        const summary = `Boosting | ${serviceName} | ${boostGame?.value || ''} | ${boostServer?.value || ''} | ${boostCharacter?.value || ''} | ${range} | ${price} | Pago: ${payment} | ${boostExtra?.value || ''}`;
         if (supabaseClient) {
           await supabaseClient.from('tickets').insert({
             user_id: currentUser.id,
             game: boostGame?.value || 'Boosting',
             server: boostServer?.value || '',
-            product: `Leveo ${boostLevelFrom?.value || ''}-${boostLevelTo?.value || ''}`,
+            product: `${serviceName} ${range} · ${price}`,
             character: boostCharacter?.value || '',
-            delivery: boostExtra?.value || '',
+            delivery: `Pago: ${payment} · ${boostExtra?.value || ''}`,
             status: 'pendiente'
           });
           await renderUserOrders();
