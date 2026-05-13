@@ -2201,7 +2201,7 @@
                 </div>
                 <div id="boostPriceList" class="boost-price-list"></div>
               </div>
-              <p class="auth-hint">La calculadora usa la lista de precios configurada para el juego y servidor seleccionado. Si no hay rango exacto, abre ticket para cotización manual.</p>
+              <p class="auth-hint">La calculadora usa precios exactos, suma tramos disponibles y en profesiones calcula rangos parciales dentro del máximo configurado. Si no hay cobertura, abre ticket para cotización manual.</p>
               <button id="boostCreateTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
             </div>
           </div>
@@ -3901,6 +3901,36 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         boostPriceList.innerHTML = `<strong>Rangos de leveleo ${server ? `· ${server}` : ''}</strong><ul>${rows || '<li>Sin rangos configurados para este servidor.</li>'}</ul>`;
       }
 
+      function calculateLevelingPrice(config, server, from, to) {
+        const rows = getBoostLevelingRows(config, server).map((row) => ({ ...row, from: Number(row.from), to: Number(row.to), price: Number(row.price) }));
+        const exact = rows.find((row) => row.from === from && row.to === to);
+        if (exact) return { price: exact.price, mode: 'exacto' };
+        let cursor = from;
+        let total = 0;
+        const sorted = rows.filter((row) => row.to > row.from).sort((a, b) => a.from - b.from || a.to - b.to);
+        while (cursor < to) {
+          const next = sorted.find((row) => row.from === cursor && row.to <= to);
+          if (!next) return null;
+          total += next.price;
+          cursor = next.to;
+        }
+        return cursor === to ? { price: total, mode: 'por tramos' } : null;
+      }
+
+      function calculateProfessionPrice(selected, from, to) {
+        if (!selected) return null;
+        const [name, profFromRaw, profToRaw, priceRaw] = selected;
+        const profFrom = Number(profFromRaw);
+        const profTo = Number(profToRaw);
+        const fullPrice = Number(priceRaw);
+        if (from === profFrom && to === profTo) return { label: name, price: fullPrice, mode: 'exacto' };
+        if (from < profFrom || to > profTo || from >= to) return null;
+        const totalSpan = Math.max(1, profTo - profFrom);
+        const requestedSpan = Math.max(1, to - from);
+        const proportional = Math.ceil((fullPrice * requestedSpan) / totalSpan);
+        return { label: name, price: Math.max(1, proportional), mode: 'calculado' };
+      }
+
       function updateBoostCalculation() {
         const config = getBoostConfig(boostGame?.value || activeOrderGame?.name || '');
         const from = Number(boostLevelFrom?.value || 0);
@@ -3910,15 +3940,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         if (config && from && to) {
           if (activeBoostMode === 'profession') {
             const selected = config.professions?.[Number(boostProfessionSelect?.value || 0)];
-            if (selected) {
-              const [name, profFrom, profTo, price] = selected;
-              label = name;
-              if (from === Number(profFrom) && to === Number(profTo)) priceText = `${price}$`;
-              else priceText = `Cotizar ${name} ${from}-${to}`;
-            }
+            const result = calculateProfessionPrice(selected, from, to);
+            if (selected) label = selected[0];
+            priceText = result ? `${result.price}$ (${result.mode})` : `Cotizar ${label} ${from}-${to}`;
           } else {
-            const found = getBoostLevelingRows(config, boostServer?.value || '').find((row) => Number(row.from) === from && Number(row.to) === to);
-            priceText = found ? `${found.price}$` : `Cotizar ${from}-${to}`;
+            const result = calculateLevelingPrice(config, boostServer?.value || '', from, to);
+            priceText = result ? `${result.price}$ (${result.mode})` : `Cotizar ${from}-${to}`;
           }
         }
         if (boostCalculatedPrice) boostCalculatedPrice.value = priceText;
