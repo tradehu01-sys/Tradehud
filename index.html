@@ -2653,6 +2653,7 @@
           <div class="panel-tabs" style="margin-top:.4rem;">
             <button id="marketTypeStreaming" data-market-admin-type="streaming" class="panel-tab active" type="button">Streaming</button>
             <button id="marketTypeGiftcards" data-market-admin-type="giftcards" class="panel-tab" type="button">GiftCards</button>
+            <button id="marketTypeP2P" data-market-admin-type="p2p" class="panel-tab" type="button">P2P</button>
           </div>
           <div class="panel-tabs" style="margin-top:.45rem;">
             <button id="marketViewCatalogTab" class="panel-tab active" type="button">Catálogo</button>
@@ -3188,6 +3189,7 @@
       const addPriceTypeSelect = document.getElementById('addPriceTypeSelect');
       const addPriceTimeSelect = document.getElementById('addPriceTimeSelect');
       const addPriceAmountInput = document.getElementById('addPriceAmountInput');
+      const addPriceCatalogLabel = document.querySelector('label[for="addPriceCatalogSelect"]');
       const addPriceTypeLabel = document.querySelector('label[for="addPriceTypeSelect"]');
       const addPriceTimeLabel = document.querySelector('label[for="addPriceTimeSelect"]');
       const addPriceAmountLabel = document.querySelector('label[for="addPriceAmountInput"]');
@@ -3542,7 +3544,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           if (!seen.has(key)) seen.set(key, fallback);
         });
         marketCatalog.p2p.categories = ['paypal', 'zinli'].map((key) => seen.get(key)).filter(Boolean);
-        marketCatalog.p2p.prices = [...p2pOfficialPrices];
+        const cleanPrices = marketCatalog.p2p.prices.filter((price) => getP2PAllowedKey(price));
+        marketCatalog.p2p.prices = cleanPrices.length ? [...new Set(cleanPrices)] : [...p2pOfficialPrices];
       }
       sanitizeP2PCatalog();
 
@@ -5402,9 +5405,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const time = streamingPriceModalTime.value.trim();
         const amount = streamingPriceModalAmount.value.trim();
         if (!catalog || !amount) return showAdminNotice('Completa catálogo y precio.', 'warn');
-        const nextValue = activeMarketType === 'giftcards'
-          ? `${catalog} - ${time} en ${amount}$`
-          : `${catalog} - ${type} ${amount}$ (${time})`;
+        const nextValue = buildMarketPriceValue(activeMarketType, catalog, type, time, amount);
         const previous = marketCatalog[activeMarketType].prices[editingStreamingPriceIndex];
         marketCatalog[activeMarketType].prices[editingStreamingPriceIndex] = nextValue;
         if (supabaseClient) {
@@ -5412,7 +5413,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             .from('service_catalog_entries')
             .update({
               value: nextValue,
-              item_name: activeMarketType === 'giftcards' ? `${time} en ${amount}$` : `${type} ${amount}$ (${time})`,
+              item_name: buildMarketPriceItemName(activeMarketType, type, time, amount),
               category_name: catalog
             })
             .eq('service_type', activeMarketType)
@@ -5468,10 +5469,38 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         addPriceModal?.classList.remove('show');
         addPriceModal?.setAttribute('aria-hidden', 'true');
       };
+      const p2pPayableMap = { '1$':'1.30', '2$':'2.60', '5$':'6.50', '10$':'13.00', '15$':'19.50', '20$':'26.00', '25$':'32.50', '30$':'39.00', '40$':'52.00', '50$':'65.00', '100$':'130.00', '200$':'260.00', '300$':'390.00' };
+      const p2pAmountOptionsHtml = Object.keys(p2pPayableMap).map((amount) => `<option value="${amount}">${amount}</option>`).join('');
+      function buildMarketPriceValue(serviceType, catalog, type, time, amount) {
+        if (serviceType === 'giftcards') return `${catalog} - ${time} en ${amount}$`;
+        if (serviceType === 'p2p') return `${catalog} - ${catalog} ${type} - ${amount}$`;
+        return `${catalog} - ${type} ${amount}$ (${time})`;
+      }
+      function buildMarketPriceItemName(serviceType, type, time, amount) {
+        if (serviceType === 'giftcards') return `${time} en ${amount}$`;
+        if (serviceType === 'p2p') return `${type} - ${amount}$`;
+        return `${type} ${amount}$ (${time})`;
+      }
+      function configureP2PPriceFields(amountValue = '10$', payableValue = '') {
+        if (addPriceTypeLabel) addPriceTypeLabel.textContent = 'Precio';
+        if (addPriceTimeLabel) addPriceTimeLabel.textContent = 'Tipo de operación';
+        if (addPriceAmountLabel) addPriceAmountLabel.textContent = 'Precio a pagar ($)';
+        addPriceTypeSelect.innerHTML = p2pAmountOptionsHtml;
+        addPriceTypeSelect.value = amountValue;
+        addPriceTimeSelect.innerHTML = '<option value="P2P">P2P</option>';
+        const syncP2PPrice = () => { addPriceAmountInput.value = p2pPayableMap[addPriceTypeSelect.value] || payableValue || '13.00'; };
+        addPriceTypeSelect.onchange = syncP2PPrice;
+        addPriceTimeSelect.onchange = null;
+        addPriceAmountInput.value = payableValue || p2pPayableMap[amountValue] || '13.00';
+      }
+
       openAddPriceModalBtn?.addEventListener('click', () => {
         const activeAdminMarketTab = document.querySelector('[data-market-admin-type].active');
         activeMarketType = activeAdminMarketTab?.dataset?.marketAdminType || activeMarketType || 'streaming';
         addPriceCatalogSelect.innerHTML = marketCatalog[activeMarketType].categories.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
+        addPriceTypeSelect.onchange = null;
+        addPriceTimeSelect.onchange = null;
+        if (addPriceCatalogLabel) addPriceCatalogLabel.textContent = activeMarketType === 'p2p' ? 'Categoría seleccionada' : 'Catálogo';
         if (activeMarketType === 'giftcards') {
           if (addPriceTypeLabel) addPriceTypeLabel.textContent = 'Nombre de la persona';
           if (addPriceTimeLabel) addPriceTimeLabel.textContent = 'Monto';
@@ -5482,6 +5511,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const syncGiftPrice = () => { addPriceAmountInput.value = giftMap[addPriceTimeSelect.value] || '13'; };
           addPriceTimeSelect.onchange = syncGiftPrice;
           syncGiftPrice();
+        } else if (activeMarketType === 'p2p') {
+          configureP2PPriceFields('10$');
         } else {
           if (addPriceTypeLabel) addPriceTypeLabel.textContent = 'Tipo de cuenta';
           if (addPriceTimeLabel) addPriceTimeLabel.textContent = 'Tiempo';
@@ -5502,15 +5533,13 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const amount = addPriceAmountInput.value.trim();
         if (!catalog || !amount) return showAdminNotice('Completa catálogo y precio.', 'warn');
         if (!supabaseClient) return showAdminNotice('Supabase no está conectado. No se guardó el precio.', 'warn');
-        const fullValue = activeMarketType === 'giftcards'
-          ? `${catalog} - ${time} en ${amount}$`
-          : `${catalog} - ${type} ${amount}$ (${time})`;
+        const fullValue = buildMarketPriceValue(activeMarketType, catalog, type, time, amount);
         const nextSort = marketCatalog[activeMarketType].prices.length + 1;
         const { error } = await supabaseClient.from('service_catalog_entries').insert({
           service_type: activeMarketType,
           entry_type: 'price',
           category_name: catalog,
-            item_name: activeMarketType === 'giftcards' ? `${time} en ${amount}$` : `${type} ${amount}$ (${time})`,
+            item_name: buildMarketPriceItemName(activeMarketType, type, time, amount),
           image: '',
           value: fullValue,
           sort_order: nextSort
@@ -5567,11 +5596,15 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const parts = raw.split(' - ');
           const catalog = parts[0] || '';
           const detail = parts.slice(1).join(' - ');
+          const catalogLabel = document.querySelector('label[for="streamingPriceModalCatalog"]');
           const typeLabel = document.querySelector('label[for="streamingPriceModalType"]');
           const timeLabel = document.querySelector('label[for="streamingPriceModalTime"]');
           const amountLabel = document.querySelector('label[for="streamingPriceModalAmount"]');
+          if (catalogLabel) catalogLabel.textContent = activeMarketType === 'p2p' ? 'Categoría seleccionada' : 'Catálogo';
           streamingPriceModalCatalog.innerHTML = marketCatalog[activeMarketType].categories.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
           streamingPriceModalCatalog.value = catalog || streamingPriceModalCatalog.value;
+          streamingPriceModalType.onchange = null;
+          streamingPriceModalTime.onchange = null;
           if (activeMarketType === 'giftcards') {
             if (typeLabel) typeLabel.textContent = 'Tipo de tarjeta';
             if (timeLabel) timeLabel.textContent = 'Monto';
@@ -5583,6 +5616,19 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             streamingPriceModalTime.innerHTML = '<option value="10$">10$</option><option value="20$">20$</option><option value="30$">30$</option><option value="40$">40$</option><option value="50$">50$</option><option value="100$">100$</option>';
             streamingPriceModalTime.value = selectedAmount;
             streamingPriceModalAmount.value = selectedTotal;
+          } else if (activeMarketType === 'p2p') {
+            if (typeLabel) typeLabel.textContent = 'Precio';
+            if (timeLabel) timeLabel.textContent = 'Tipo de operación';
+            if (amountLabel) amountLabel.textContent = 'Precio a pagar ($)';
+            const p2pMatch = detail.match(/(\d+(?:[.,]\d+)?\$)\s*-\s*(\d+(?:[.,]\d+)?)\$/i);
+            const selectedAmount = p2pMatch ? p2pMatch[1] : '10$';
+            const selectedPayable = p2pMatch ? p2pMatch[2].replace(',', '.') : (p2pPayableMap[selectedAmount] || '13.00');
+            streamingPriceModalType.innerHTML = p2pAmountOptionsHtml;
+            streamingPriceModalType.value = selectedAmount;
+            streamingPriceModalTime.innerHTML = '<option value="P2P">P2P</option>';
+            streamingPriceModalAmount.value = selectedPayable;
+            streamingPriceModalType.onchange = () => { streamingPriceModalAmount.value = p2pPayableMap[streamingPriceModalType.value] || streamingPriceModalAmount.value || '13.00'; };
+            streamingPriceModalTime.onchange = null;
           } else {
             if (typeLabel) typeLabel.textContent = 'Tipo';
             if (timeLabel) timeLabel.textContent = 'Tiempo';
