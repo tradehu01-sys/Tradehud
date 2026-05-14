@@ -205,6 +205,7 @@ insert into public.service_catalog_entries (service_type, entry_type, category_n
 values
 ('p2p','category','ZINLI','ZINLI','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','',1),
 ('p2p','category','PAYPAL','PAYPAL','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','',2),
+('p2p','category','Cambio BS / USDT','Cambio BS / USDT','','',3),
 ('streaming','category','Netflix','Netflix','https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg','',1),
 ('streaming','category','Disney','Disney','https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg','',2),
 ('streaming','category','Prime Video','Prime Video','https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png','',3),
@@ -249,6 +250,8 @@ values
 ('p2p','price','PAYPAL','Paypal 100$','','PAYPAL - Paypal 100$ - 120$',15),
 ('p2p','price','PAYPAL','Paypal 200$','','PAYPAL - Paypal 200$ - 240$',16),
 ('p2p','price','PAYPAL','Paypal 300$','','PAYPAL - Paypal 300$ - 360$',17),
+('p2p','price','Cambio BS / USDT','BS x USDT','','Cambio BS / USDT - BS x USDT - Tasa del día -30 BS',18),
+('p2p','price','Cambio BS / USDT','USDT x BS','','Cambio BS / USDT - USDT x BS - Tasa del día +30 BS',19),
 ('streaming','price','Netflix','1 PERFIL 4.50$ (MES)','','1 PERFIL 4.50$ (MES)',1),
 ('streaming','price','Netflix','CUENTA COMPLETA 17$ (MES)','','CUENTA COMPLETA 17$ (MES)',2),
 ('streaming','price','Disney','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',3),

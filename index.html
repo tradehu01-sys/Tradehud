@@ -3614,6 +3614,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         p2p: {
           title: 'P2P',
           categories: [
+            { name: 'Cambio BS / USDT', image: '' },
             { name: 'ZINLI', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&' },
             { name: 'PAYPAL', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&' }
           ],
@@ -3622,7 +3623,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             'ZINLI - Zinli 15$ - 17.25$', 'ZINLI - Zinli 20$ - 23$', 'ZINLI - Zinli 25$ - 28.75$', 'ZINLI - Zinli 30$ - 34.50$',
             'ZINLI - Zinli 40$ - 46$', 'ZINLI - Zinli 50$ - 57.50$', 'ZINLI - Zinli 100$ - 115$',
             'PAYPAL - Paypal 10$ - 12.50$', 'PAYPAL - Paypal 20$ - 24$', 'PAYPAL - Paypal 50$ - 60$',
-            'PAYPAL - Paypal 100$ - 120$', 'PAYPAL - Paypal 200$ - 240$', 'PAYPAL - Paypal 300$ - 360$'
+            'PAYPAL - Paypal 100$ - 120$', 'PAYPAL - Paypal 200$ - 240$', 'PAYPAL - Paypal 300$ - 360$',
+            'Cambio BS / USDT - BS x USDT - Tasa del día -30 BS',
+            'Cambio BS / USDT - USDT x BS - Tasa del día +30 BS'
           ]
         },
         streaming: {
@@ -3703,14 +3706,18 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         'ZINLI - Zinli 15$ - 17.25$', 'ZINLI - Zinli 20$ - 23$', 'ZINLI - Zinli 25$ - 28.75$', 'ZINLI - Zinli 30$ - 34.50$',
         'ZINLI - Zinli 40$ - 46$', 'ZINLI - Zinli 50$ - 57.50$', 'ZINLI - Zinli 100$ - 115$',
         'PAYPAL - Paypal 10$ - 12.50$', 'PAYPAL - Paypal 20$ - 24$', 'PAYPAL - Paypal 50$ - 60$',
-        'PAYPAL - Paypal 100$ - 120$', 'PAYPAL - Paypal 200$ - 240$', 'PAYPAL - Paypal 300$ - 360$'
+        'PAYPAL - Paypal 100$ - 120$', 'PAYPAL - Paypal 200$ - 240$', 'PAYPAL - Paypal 300$ - 360$',
+        'Cambio BS / USDT - BS x USDT - Tasa del día -30 BS',
+        'Cambio BS / USDT - USDT x BS - Tasa del día +30 BS'
       ];
       const p2pAllowedCategoryData = {
+        exchange: { name: 'Cambio BS / USDT', image: marketDefaultImages.p2p },
         zinli: { name: 'ZINLI', image: marketDefaultImages.p2p },
         paypal: { name: 'PAYPAL', image: 'https://cdn.simpleicons.org/paypal/00457C' }
       };
       function getP2PAllowedKey(name = '') {
         const normalized = String(name).trim().toLowerCase();
+        if (normalized.includes('cambio') || normalized.includes('usdt') || normalized.includes('ustd') || normalized.includes('divisas') || normalized.includes('bs /')) return 'exchange';
         if (normalized.includes('zinli')) return 'zinli';
         if (normalized.includes('paypal') || normalized.includes('pay pal')) return 'paypal';
         return '';
@@ -3725,7 +3732,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         Object.entries(p2pAllowedCategoryData).forEach(([key, fallback]) => {
           if (!seen.has(key)) seen.set(key, fallback);
         });
-        marketCatalog.p2p.categories = ['paypal', 'zinli'].map((key) => seen.get(key)).filter(Boolean);
+        marketCatalog.p2p.categories = ['exchange', 'paypal', 'zinli'].map((key) => seen.get(key)).filter(Boolean);
         const cleanPrices = marketCatalog.p2p.prices.filter((price) => getP2PAllowedKey(price));
         marketCatalog.p2p.prices = cleanPrices.length ? [...new Set(cleanPrices)] : [...p2pOfficialPrices];
       }
@@ -5062,6 +5069,51 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             const accountTypeLabel = document.querySelector('label[for="streamingAccountType"]');
             const durationLabel = document.querySelector('label[for="streamingDuration"]');
             const priceLabel = document.querySelector('label[for="streamingPriceResult"]');
+            if (p2pKey === 'exchange') {
+              if (accountTypeLabel) accountTypeLabel.textContent = 'Operación';
+              if (durationLabel) durationLabel.textContent = 'Tasa';
+              if (priceLabel) priceLabel.textContent = 'Regla de cambio';
+              const exchangeRates = [
+                { type: 'BS x USDT', rate: 'Tasa del día -30 BS', raw: 'Cambio BS / USDT - BS x USDT - 30 BS menos que la tasa del día' },
+                { type: 'USDT x BS', rate: 'Tasa del día +30 BS', raw: 'Cambio BS / USDT - USDT x BS - 30 BS más de la tasa del día' }
+              ];
+              streamingAccountType.innerHTML = exchangeRates.map((x) => `<option value="${x.type}">${x.type}</option>`).join('');
+              streamingDuration.innerHTML = '<option value="Consultar tasa actual">Consultar tasa actual</option>';
+              const updateExchangePrice = () => {
+                const selected = exchangeRates.find((x) => x.type === streamingAccountType.value) || exchangeRates[0];
+                streamingPriceResult.value = selected.rate;
+                streamingModalTicketBtn.dataset.priceRaw = selected.raw;
+              };
+              streamingAccountType.onchange = updateExchangePrice;
+              streamingDuration.onchange = updateExchangePrice;
+              updateExchangePrice();
+              const exchangeDetail = `Servicio de Cambio de Divisas (BS 🔄 USDT) 💸
+
+Convierte tu dinero de la forma más rápida y segura del mercado. Tratas directamente con administración verificada.
+
+⚡ Rápido: Pago Móvil, transferencias nacionales y red TRC20/Binance.
+🔒 Seguro: canales privados y cero riesgos de estafas.
+🎧 Confiable: atención personalizada paso a paso y tasa competitiva del día.
+
+TASAS
+• BS x USDT: 30 BS menos que la tasa del día.
+• USDT x BS: 30 BS más que la tasa del día.
+
+Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liquidez en minutos!`;
+              if (streamingServiceLogoHero) streamingServiceLogoHero.src = cat.image || marketDefaultImages.p2p;
+              if (streamingServiceHeroTitle) streamingServiceHeroTitle.textContent = `${cat.name} · Cambio de divisas`;
+              if (streamingServiceDetails) streamingServiceDetails.textContent = exchangeDetail;
+              streamingModalTitle.textContent = cat.name;
+              streamingModalServiceName.textContent = cat.name;
+              streamingModalIcon.innerHTML = `<img src="${cat.image || marketDefaultImages.p2p}" alt="${cat.name}" />`;
+              if (streamingHeroInfo) streamingHeroInfo.style.display = '';
+              if (streamingServiceDetails) streamingServiceDetails.style.display = '';
+              streamingModalTicketBtn.dataset.category = cat.name;
+              streamingModalTicketBtn.dataset.serviceType = 'p2p';
+              streamingModal.classList.add('show');
+              streamingModal.setAttribute('aria-hidden', 'false');
+              return;
+            }
             if (accountTypeLabel) accountTypeLabel.textContent = 'Tipo de P2P';
             if (durationLabel) durationLabel.textContent = 'Monto a recibir';
             if (priceLabel) priceLabel.textContent = 'Monto a pagar';
@@ -6201,12 +6253,14 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       };
       const p2pPayableMap = {
         ZINLI: { '1$':'1.30', '2$':'2.60', '5$':'6.50', '10$':'12', '15$':'17.25', '20$':'23', '25$':'28.75', '30$':'34.50', '40$':'46', '50$':'57.50', '100$':'115' },
-        PAYPAL: { '10$':'12.50', '20$':'24', '50$':'60', '100$':'120', '200$':'240', '300$':'360' }
+        PAYPAL: { '10$':'12.50', '20$':'24', '50$':'60', '100$':'120', '200$':'240', '300$':'360' },
+        'CAMBIO BS / USDT': { 'BS x USDT':'Tasa del día -30 BS', 'USDT x BS':'Tasa del día +30 BS' }
       };
       const getP2PPayableMap = (catalog = '') => p2pPayableMap[String(catalog).toUpperCase()] || p2pPayableMap.ZINLI;
       const getP2PAmountOptionsHtml = (catalog = '') => Object.keys(getP2PPayableMap(catalog)).map((amount) => `<option value="${amount}">${amount}</option>`).join('');
       function buildMarketPriceValue(serviceType, catalog, type, time, amount) {
         if (serviceType === 'giftcards') return `${catalog} - ${time} en ${amount}$`;
+        if (serviceType === 'p2p' && getP2PAllowedKey(catalog) === 'exchange') return `${catalog} - ${type} - ${amount}`;
         if (serviceType === 'p2p') return `${catalog} - ${catalog} ${type} - ${amount}$`;
         return `${catalog} - ${type} ${amount}$ (${time})`;
       }
@@ -6247,8 +6301,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           addPriceTimeSelect.onchange = syncGiftPrice;
           syncGiftPrice();
         } else if (activeMarketType === 'p2p') {
-          configureP2PPriceFields(addPriceCatalogSelect.value === 'PAYPAL' ? '10$' : '1$');
-          addPriceCatalogSelect.onchange = () => configureP2PPriceFields(addPriceCatalogSelect.value === 'PAYPAL' ? '10$' : '1$');
+          const getDefaultP2PAmount = () => Object.keys(getP2PPayableMap(addPriceCatalogSelect.value || 'ZINLI'))[0] || '1$';
+          configureP2PPriceFields(getDefaultP2PAmount());
+          addPriceCatalogSelect.onchange = () => configureP2PPriceFields(getDefaultP2PAmount());
         } else {
           if (addPriceTypeLabel) addPriceTypeLabel.textContent = 'Tipo de cuenta';
           if (addPriceTimeLabel) addPriceTimeLabel.textContent = 'Tiempo';

@@ -25,6 +25,7 @@ delete from public.service_catalog_entries where service_type = 'giftcards' and 
 insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order) values
 ('p2p','category','ZINLI','ZINLI','', '', 1),
 ('p2p','category','PAYPAL','PAYPAL','', '', 2),
+('p2p','category','Cambio BS / USDT','Cambio BS / USDT','', '', 3),
 ('streaming','category','Netflix','Netflix','https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg','',1),
 ('streaming','category','Disney','Disney','https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg','',2),
 ('streaming','category','Prime Video','Prime Video','https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png','',3),
@@ -65,6 +66,8 @@ insert into public.service_catalog_entries (service_type, entry_type, category_n
 ('p2p','price','PAYPAL','Paypal 100$','','PAYPAL - Paypal 100$ - 120$',124),
 ('p2p','price','PAYPAL','Paypal 200$','','PAYPAL - Paypal 200$ - 240$',125),
 ('p2p','price','PAYPAL','Paypal 300$','','PAYPAL - Paypal 300$ - 360$',126),
+('p2p','price','Cambio BS / USDT','BS x USDT','','Cambio BS / USDT - BS x USDT - Tasa del día -30 BS',127),
+('p2p','price','Cambio BS / USDT','USDT x BS','','Cambio BS / USDT - USDT x BS - Tasa del día +30 BS',128),
 ('streaming','price','Netflix','1 PERFIL 4.50$ (MES)','','Netflix - 1 PERFIL 4.50$ (MES)',201),
 ('streaming','price','Netflix','CUENTA COMPLETA 17$ (MES)','','Netflix - CUENTA COMPLETA 17$ (MES)',202),
 ('streaming','price','Disney','1 PERFIL 3$ (MES)','','Disney - 1 PERFIL 3$ (MES)',203),
