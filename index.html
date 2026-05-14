@@ -3524,8 +3524,6 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             { name: 'Crunchyroll', image: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Crunchyroll_Logo.png' },
             { name: 'YouTube', image: 'https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg' },
             { name: 'Chat GPT', image: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg' },
-            { name: 'Discord Nitro', image: 'https://cdn.simpleicons.org/discord/5865F2' },
-            { name: 'Gemini', image: 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Google-gemini-icon.svg' },
             { name: 'CapCut Pro', image: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/CapCut_logo.svg' },
             { name: 'Paramount', image: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Paramount%2B_logo.svg' },
             { name: 'Apple TV', image: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg' },
@@ -3542,12 +3540,6 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             'Crunchyroll - 1 PERFIL 2$ (MES)',
             'YouTube - 1 PERFIL 3$ (MES)',
             'Chat GPT - 1 PERFIL 4$ (MES)',
-            'Discord Nitro - BASIC MES 4.49$',
-            'Discord Nitro - BASIC AÑO 44.99$',
-            'Discord Nitro - NITRO MES 11.99$',
-            'Discord Nitro - NITRO AÑO 119.99$',
-            'Gemini - 1 PERFIL 2.50$ (MES)',
-            'Gemini - 1 AÑO 7$',
             'CapCut Pro - 1 PERFIL 3$ (MES)',
             'Paramount - 1 PERFIL 2.50$ (MES)',
             'Apple TV - 1 PERFIL 3$ (MES)',
@@ -3566,7 +3558,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             { name: 'Xbox Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
             { name: 'Valorant Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
             { name: 'Garena Free Fire Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
-            { name: 'Google Play Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' }
+            { name: 'Google Play Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
+            { name: 'Discord Nitro', image: 'https://cdn.simpleicons.org/discord/5865F2' },
+            { name: 'Gemini', image: 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Google-gemini-icon.svg' }
           ],
           prices: [
             'Battle Net Gift Card - 10$ (USD)',
@@ -3578,7 +3572,13 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             'Xbox Gift Cards - 10$ (USD)',
             'Valorant Gift Cards - 10$ (USD)',
             'Garena Free Fire Gift Cards - 10$ (USD)',
-            'Google Play Gift Cards - 10$ (USD)'
+            'Google Play Gift Cards - 10$ (USD)',
+            'Discord Nitro - BASIC MES 4.49$',
+            'Discord Nitro - BASIC AÑO 44.99$',
+            'Discord Nitro - NITRO MES 11.99$',
+            'Discord Nitro - NITRO AÑO 119.99$',
+            'Gemini - 1 MES 2.50$',
+            'Gemini - 1 AÑO 7$'
           ]
         }
       };
@@ -3979,7 +3979,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       ];
       const boostingServiceCatalog = {
         'World of Warcraft 20th Anniversary TBC': {
-          servers: ['Thunderstrike EU', 'Spineshatter EU', 'Nightslayer US', 'Dreamscythe US'],
+          servers: ['(US) NIGHTLASYER', '(US) DREAMSCYTHE', '(EU) SPINESHATTER', '(EU) THUNDERSTRIKE', '(EU) SOULSEEKER'],
           leveling: [
             { from: 1, to: 70, price: 230 }, { from: 58, to: 70, price: 170 },
             { from: 60, to: 70, price: 150 }, { from: 65, to: 70, price: 100 }
@@ -3992,15 +3992,20 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           ]
         },
         'World of Warcraft Retail': {
-          servers: ['Retail US', 'Retail EU'],
+          servers: ['(US) WOW RETAIL', '(EU) WOW RETAIL'],
           leveling: [
             { from: 1, to: 80, price: 70 }, { from: 58, to: 80, price: 50 },
             { from: 60, to: 80, price: 40 }, { from: 65, to: 80, price: 30 }
           ],
-          professions: []
+          professions: [
+            ['Herbalism', 1, 100, 35], ['Skinning', 1, 100, 35], ['Mining', 1, 100, 35],
+            ['Cooking', 1, 100, 35], ['Fishing', 1, 100, 35], ['Alchemy', 1, 100, 45],
+            ['Blacksmithing', 1, 100, 55], ['Enchanting', 1, 100, 55], ['Engineering', 1, 100, 55],
+            ['Jewelcrafting', 1, 100, 55], ['Tailoring', 1, 100, 55], ['Leatherworking', 1, 100, 55]
+          ]
         },
         'World of Warcraft Project Epoch': {
-          servers: ['Kezan', 'Gurubashi'],
+          servers: ['KEZAN', 'GURUBASHI'],
           leveling: [
             { from: 1, to: 60, price: 180 }, { from: 1, to: 20, price: 30 },
             { from: 20, to: 30, price: 35 }, { from: 30, to: 40, price: 40 },
@@ -4014,7 +4019,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           ]
         },
         'World of Warcraft Ascension': {
-          servers: ['Bronzebeard'],
+          servers: ['BRONZEBEARD'],
           leveling: [
             { from: 1, to: 60, price: 130 }, { from: 1, to: 20, price: 25 },
             { from: 20, to: 30, price: 30 }, { from: 30, to: 40, price: 45 },
@@ -4028,11 +4033,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           ]
         },
         WARMANE: {
-          servers: ['ONYXIA', 'LORDAERON', 'ICECROWN'],
+          servers: ['Onyxia', 'Lordaeron', 'Icecrown'],
           levelingByServer: {
-            ONYXIA: [{ from: 1, to: 80, price: 70 }, { from: 70, to: 80, price: 40 }],
-            LORDAERON: [{ from: 1, to: 80, price: 230 }, { from: 70, to: 80, price: 80 }],
-            ICECROWN: [{ from: 1, to: 80, price: 60 }, { from: 70, to: 80, price: 25 }]
+            Onyxia: [{ from: 1, to: 80, price: 70 }, { from: 70, to: 80, price: 40 }],
+            Lordaeron: [{ from: 1, to: 80, price: 230 }, { from: 70, to: 80, price: 80 }],
+            Icecrown: [{ from: 1, to: 80, price: 60 }, { from: 70, to: 80, price: 25 }]
           },
           leveling: [],
           professions: [
@@ -4042,6 +4047,19 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             ['Engineering', 1, 450, 50], ['Alchemy', 1, 450, 50], ['Jewelcrafting', 1, 450, 50]
           ]
         }
+      };
+      const defaultBoostConfig = {
+        leveling: [
+          { from: 1, to: 20, price: 30 }, { from: 20, to: 40, price: 45 },
+          { from: 40, to: 60, price: 60 }, { from: 60, to: 80, price: 80 },
+          { from: 1, to: 60, price: 120 }, { from: 1, to: 80, price: 180 }
+        ],
+        professions: [
+          ['Herbalism', 1, 300, 50], ['Skinning', 1, 300, 50], ['Mining', 1, 300, 50],
+          ['Cooking', 1, 300, 50], ['Fishing', 1, 300, 50], ['Alchemy', 1, 300, 70],
+          ['Blacksmithing', 1, 300, 120], ['Enchanting', 1, 300, 120], ['Engineering', 1, 300, 120],
+          ['Tailoring', 1, 300, 120], ['Leatherworking', 1, 300, 120], ['Jewelcrafting', 1, 300, 120]
+        ]
       };
       let activeBoostMode = 'leveling';
       let activeCategoryType = 'oro';
@@ -4218,7 +4236,15 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function getBoostConfig(gameName = '') {
-        return boostingServiceCatalog[gameName] || null;
+        const configured = boostingServiceCatalog[gameName];
+        if (configured) return configured;
+        const servers = gameServers.find((entry) => entry.game === gameName)?.servers || [];
+        if (!gameName) return null;
+        return {
+          servers,
+          leveling: defaultBoostConfig.leveling,
+          professions: defaultBoostConfig.professions
+        };
       }
 
       function getBoostLevelingRows(config, server = '') {
@@ -4829,18 +4855,25 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const term = giftcardsSearch?.value?.trim().toLowerCase?.() || '';
         const categories = bucket.categories.filter((cat) => (cat.name || '').toLowerCase().includes(term));
         const giftAmountMap = { '10$':'13$', '20$':'26$', '30$':'39$', '40$':'52$', '50$':'65$', '100$':'130$' };
+        const giftcardSpecialPriceMaps = {
+          'Discord Nitro': { 'BASIC MES':'4.49$', 'BASIC AÑO':'44.99$', 'NITRO MES':'11.99$', 'NITRO AÑO':'119.99$' },
+          Gemini: { '1 MES':'2.50$', '1 AÑO':'7$' }
+        };
         const giftAmountPreview = Object.keys(giftAmountMap).slice(0, 4);
         categories.forEach((cat) => {
           const btn = document.createElement('button');
           btn.className = 'server';
           btn.type = 'button';
-          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎁 GiftCard</span><span class="market-card-chip">💳 Digital</span></div><div class="giftcard-price-ribbon">${giftAmountPreview.map((amount) => `<span>${amount}→${giftAmountMap[amount]}</span>`).join('')}</div>`;
+          const specialMap = giftcardSpecialPriceMaps[cat.name];
+          const previewMap = specialMap || giftAmountMap;
+          const previewKeys = Object.keys(previewMap).slice(0, 4);
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎁 GiftCard</span><span class="market-card-chip">💳 Digital</span></div><div class="giftcard-price-ribbon">${previewKeys.map((amount) => `<span>${amount}→${previewMap[amount]}</span>`).join('')}</div>`;
           btn.addEventListener('click', () => {
             const currentType = activeMarketType;
             activeMarketType = 'giftcards';
             const prices = marketCatalog.giftcards.prices.filter((price) => price.toLowerCase().includes(cat.name.toLowerCase()));
             const parsed = prices.map((entry) => ({ raw: entry, type: 'GiftCard', duration: 'Disponible', amount: entry.match(/(\d+(?:[.,]\d+)?)\$/)?.[0] || entry }));
-            const amountMap = giftAmountMap;
+            const amountMap = giftcardSpecialPriceMaps[cat.name] || giftAmountMap;
             const amountOptions = Object.keys(amountMap);
             const accountTypeLabel = document.querySelector('label[for="streamingAccountType"]');
             const durationLabel = document.querySelector('label[for="streamingDuration"]');
@@ -4856,7 +4889,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             streamingAccountType.innerHTML = `<option value="${cat.name}">${cat.name}</option>`;
             streamingDuration.innerHTML = amountOptions.map((a) => `<option value="${a}">${a}</option>`).join('');
             const updateGiftPrice = () => {
-              const amount = streamingDuration.value || '10$';
+              const amount = streamingDuration.value || amountOptions[0] || '10$';
               const total = amountMap[amount] || '13$';
               streamingPriceResult.value = total;
               streamingModalTicketBtn.dataset.priceRaw = `${cat.name} - ${amount} en ${total}`;
@@ -4935,6 +4968,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             streamingDuration.onchange = updateP2PPrice;
             streamingAccountType.onchange = updateP2PPrice;
             updateP2PPrice();
+            if (streamingServiceLogoHero) streamingServiceLogoHero.src = cat.image || marketDefaultImages.p2p;
             if (streamingServiceHeroTitle) streamingServiceHeroTitle.textContent = `${cat.name} · Operación P2P`;
             if (streamingServiceDetails) streamingServiceDetails.textContent = `PRECIOS ${cat.name}\n${detail}\n\nSoporte: WhatsApp · Telegram · Discord`;
             streamingModalTitle.textContent = cat.name;

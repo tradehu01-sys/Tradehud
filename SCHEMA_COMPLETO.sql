@@ -199,6 +199,7 @@ with check (
 -- =========================
 -- Normaliza P2P/Streaming para evitar precios antiguos al re-ejecutar el schema.
 delete from public.service_catalog_entries where service_type in ('p2p','streaming') and entry_type in ('category','price');
+delete from public.service_catalog_entries where service_type = 'giftcards' and category_name in ('Discord Nitro','Gemini');
 insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
 values
 ('p2p','category','ZINLI','ZINLI','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','',1),
@@ -214,9 +215,18 @@ values
 ('streaming','category','Paramount','Paramount','https://upload.wikimedia.org/wikipedia/commons/9/94/Paramount%2B_logo.svg','',9),
 ('streaming','category','Apple TV','Apple TV','https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg','',10),
 ('streaming','category','CAMVA EDU PRO','CAMVA EDU PRO','https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg','',11),
-('streaming','category','Discord Nitro','Discord Nitro','https://cdn.simpleicons.org/discord/5865F2','',12),
-('streaming','category','Gemini','Gemini','https://upload.wikimedia.org/wikipedia/commons/8/8f/Google-gemini-icon.svg','',13),
-('giftcards','category','GiftCards Gaming','GiftCards Gaming','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',1)
+('giftcards','category','Battle Net Gift Card','Battle Net Gift Card','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',1),
+('giftcards','category','Amazon Gift Card','Amazon Gift Card','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',2),
+('giftcards','category','Roblox Gift Cards','Roblox Gift Cards','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',3),
+('giftcards','category','PlayStation Gift Card','PlayStation Gift Card','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',4),
+('giftcards','category','Apple Gift Cards','Apple Gift Cards','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',5),
+('giftcards','category','Steam Gift Cards','Steam Gift Cards','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',6),
+('giftcards','category','Xbox Gift Cards','Xbox Gift Cards','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',7),
+('giftcards','category','Valorant Gift Cards','Valorant Gift Cards','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',8),
+('giftcards','category','Garena Free Fire Gift Cards','Garena Free Fire Gift Cards','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',9),
+('giftcards','category','Google Play Gift Cards','Google Play Gift Cards','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',10),
+('giftcards','category','Discord Nitro','Discord Nitro','https://cdn.simpleicons.org/discord/5865F2','',11),
+('giftcards','category','Gemini','Gemini','https://upload.wikimedia.org/wikipedia/commons/8/8f/Google-gemini-icon.svg','',12)
 on conflict do nothing;
 
 insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
@@ -252,12 +262,12 @@ values
 ('streaming','price','Paramount','1 PERFIL 2.50$ (MES)','','1 PERFIL 2.50$ (MES)',12),
 ('streaming','price','Apple TV','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',13),
 ('streaming','price','CAMVA EDU PRO','1 AÑO 3$','','1 AÑO 3$',14),
-('streaming','price','Discord Nitro','BASIC MES 4.49$','','BASIC MES 4.49$',15),
-('streaming','price','Discord Nitro','BASIC AÑO 44.99$','','BASIC AÑO 44.99$',16),
-('streaming','price','Discord Nitro','NITRO MES 11.99$','','NITRO MES 11.99$',17),
-('streaming','price','Discord Nitro','NITRO AÑO 119.99$','','NITRO AÑO 119.99$',18),
-('streaming','price','Gemini','1 PERFIL 2.50$ (MES)','','1 PERFIL 2.50$ (MES)',19),
-('streaming','price','Gemini','1 AÑO 7$','','1 AÑO 7$',20),
+('giftcards','price','Discord Nitro','BASIC MES 4.49$','','Discord Nitro - BASIC MES 4.49$',101),
+('giftcards','price','Discord Nitro','BASIC AÑO 44.99$','','Discord Nitro - BASIC AÑO 44.99$',102),
+('giftcards','price','Discord Nitro','NITRO MES 11.99$','','Discord Nitro - NITRO MES 11.99$',103),
+('giftcards','price','Discord Nitro','NITRO AÑO 119.99$','','Discord Nitro - NITRO AÑO 119.99$',104),
+('giftcards','price','Gemini','1 MES 2.50$','','Gemini - 1 MES 2.50$',105),
+('giftcards','price','Gemini','1 AÑO 7$','','Gemini - 1 AÑO 7$',106),
 ('giftcards','price','GiftCards','10$','','13$',1),
 ('giftcards','price','GiftCards','20$','','26$',2),
 ('giftcards','price','GiftCards','50$','','65$',3),
