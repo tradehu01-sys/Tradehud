@@ -198,8 +198,9 @@ with check (
 -- 5) SEED CATÁLOGO DE SERVICIOS (P2P, STREAMING, GIFTCARDS)
 -- =========================
 -- Normaliza P2P/Streaming para evitar precios antiguos al re-ejecutar el schema.
-delete from public.service_catalog_entries where service_type in ('p2p','streaming') and entry_type in ('category','price');
-delete from public.service_catalog_entries where service_type = 'giftcards' and category_name in ('Discord Nitro','Gemini');
+delete from public.service_catalog_entries where service_type in ('p2p','streaming') and entry_type = 'price';
+delete from public.service_catalog_entries where service_type = 'streaming' and entry_type = 'category' and category_name in ('Discord Nitro','Gemini');
+delete from public.service_catalog_entries where service_type = 'giftcards' and entry_type = 'price' and category_name in ('Discord Nitro','Gemini');
 insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
 values
 ('p2p','category','ZINLI','ZINLI','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','',1),

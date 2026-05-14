@@ -1764,6 +1764,117 @@
       .p2p-rate-table td:last-child{border-right:1px solid #2e4f8b;border-radius:0 10px 10px 0;text-align:right;font-weight:800}
       @media (max-width: 980px){.streaming-modal-layout{grid-template-columns:1fr}.streaming-modal-badges{grid-template-columns:1fr 1fr}.streaming-order-window{min-height:auto}}
       @media (max-width: 640px){.streaming-modal-badges{grid-template-columns:1fr}}
+
+      /* Monochrome theme override: toda la UI queda negra/blanca sin azul ni amarillo. */
+      :root {
+        --bg: #000000 !important;
+        --panel: #000000 !important;
+        --panel-2: #000000 !important;
+        --line: #ffffff !important;
+        --text: #ffffff !important;
+        --muted: #ffffff !important;
+        --primary: #000000 !important;
+        --accent: #ffffff !important;
+        --hot: #ffffff !important;
+        --gold: #ffffff !important;
+      }
+      html,
+      body,
+      header,
+      main,
+      footer,
+      section,
+      aside,
+      .page-loader,
+      .container,
+      .glass,
+      .mini,
+      .oro-panel,
+      .server,
+      .account-card,
+      .game-modal,
+      .game-window,
+      .window-card,
+      .streaming-order-window,
+      .streaming-form-panel,
+      .streaming-detail-panel,
+      .streaming-hero-info,
+      .streaming-support-item,
+      .streaming-modal-badge,
+      .streaming-price-highlight,
+      .catalog-info-main,
+      .catalog-info-card,
+      .catalog-policy-card,
+      .gold-order-panel,
+      .gold-order-form,
+      .gold-trust-panel,
+      .gold-order-badge,
+      .gold-order-note-item,
+      .gold-live-summary,
+      .gold-summary-card,
+      .gold-helper-item,
+      .giftcard-guide-card,
+      .giftcard-price-ribbon span,
+      .market-card-chip,
+      .p2p-rate-table td,
+      .category-item,
+      .admin-card,
+      .auth-card,
+      .profile-card,
+      .order-card,
+      .ticket-card,
+      .mmorpg-info-box,
+      .db-status,
+      .db-status.ok,
+      .db-status.warn {
+        background: #000000 !important;
+        background-image: none !important;
+        color: #ffffff !important;
+        border-color: #ffffff !important;
+        box-shadow: none !important;
+      }
+      *,
+      *::before,
+      *::after {
+        color: #ffffff !important;
+        text-shadow: none !important;
+      }
+      input,
+      select,
+      textarea,
+      button,
+      .btn,
+      .btn.alt,
+      .admin-open,
+      .discord-nav-btn,
+      nav a,
+      .panel-btn,
+      .mini-btn,
+      .game-option,
+      .streaming-search,
+      .oro-search {
+        background: #000000 !important;
+        background-image: none !important;
+        color: #ffffff !important;
+        border-color: #ffffff !important;
+        box-shadow: none !important;
+      }
+      input::placeholder,
+      textarea::placeholder {
+        color: #ffffff !important;
+        opacity: .75 !important;
+      }
+      .server.active,
+      button:hover,
+      a:hover,
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: #ffffff !important;
+        outline-color: #ffffff !important;
+        box-shadow: 0 0 0 1px #ffffff !important;
+      }
+
 </style>
   </head>
     <body class="preload">

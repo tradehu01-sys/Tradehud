@@ -18,8 +18,9 @@ where a.ctid < b.ctid
 create unique index if not exists gold_catalog_entries_unique_key
 on public.gold_catalog_entries (game, server, package_name);
 
-delete from public.service_catalog_entries where service_type in ('p2p','streaming') and entry_type in ('category','price');
-delete from public.service_catalog_entries where service_type = 'giftcards' and category_name in ('Discord Nitro','Gemini');
+delete from public.service_catalog_entries where service_type in ('p2p','streaming') and entry_type = 'price';
+delete from public.service_catalog_entries where service_type = 'streaming' and entry_type = 'category' and category_name in ('Discord Nitro','Gemini');
+delete from public.service_catalog_entries where service_type = 'giftcards' and entry_type = 'price' and category_name in ('Discord Nitro','Gemini');
 
 insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order) values
 ('p2p','category','ZINLI','ZINLI','', '', 1),
