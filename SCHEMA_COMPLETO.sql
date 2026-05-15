@@ -14,6 +14,8 @@ create table if not exists public.user_profiles (
   discord text default '',
   phone text default '',
   is_admin boolean not null default false,
+  is_online boolean not null default false,
+  last_seen timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -52,6 +54,9 @@ create table if not exists public.service_catalog_entries (
   sort_order int not null default 0,
   created_at timestamptz not null default now()
 );
+alter table public.user_profiles add column if not exists is_online boolean not null default false;
+alter table public.user_profiles add column if not exists last_seen timestamptz;
+
 alter table public.service_catalog_entries add column if not exists account_type text not null default '';
 alter table public.service_catalog_entries add column if not exists billing_period text not null default '';
 alter table public.service_catalog_entries add column if not exists amount_label text not null default '';
@@ -81,16 +86,38 @@ create table if not exists public.gold_catalog_entries (
 );
 
 -- =========================
+-- 4.1) RESEÑAS Y OPCIONES DE ORO
+-- =========================
+create table if not exists public.user_reviews (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete set null,
+  author_name text not null default 'Cliente TradeHud',
+  review_text text not null,
+  is_visible boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.gold_game_options (
+  game text primary key,
+  faction_disabled boolean not null default false,
+  faction_options text[] not null default array['Alianza','Horda','Neutral'],
+  updated_at timestamptz not null default now()
+);
+
+-- =========================
 -- RLS
 -- =========================
 alter table public.user_profiles enable row level security;
 alter table public.tickets enable row level security;
 alter table public.service_catalog_entries enable row level security;
 alter table public.gold_catalog_entries enable row level security;
+alter table public.user_reviews enable row level security;
+alter table public.gold_game_options enable row level security;
 
 -- Limpiar políticas previas si existen
 drop policy if exists "user_profiles_select_own" on public.user_profiles;
 drop policy if exists "user_profiles_upsert_own" on public.user_profiles;
+drop policy if exists "user_profiles_presence_read" on public.user_profiles;
 drop policy if exists "tickets_select_own" on public.tickets;
 drop policy if exists "tickets_insert_own" on public.tickets;
 drop policy if exists "tickets_select_admin" on public.tickets;
@@ -100,6 +127,11 @@ drop policy if exists "service_catalog_authenticated_write" on public.service_ca
 drop policy if exists "service_catalog_anon_write" on public.service_catalog_entries;
 drop policy if exists "gold_catalog_public_read" on public.gold_catalog_entries;
 drop policy if exists "gold_catalog_admin_write" on public.gold_catalog_entries;
+drop policy if exists "user_reviews_public_read" on public.user_reviews;
+drop policy if exists "user_reviews_public_insert" on public.user_reviews;
+drop policy if exists "user_reviews_admin_write" on public.user_reviews;
+drop policy if exists "gold_game_options_public_read" on public.gold_game_options;
+drop policy if exists "gold_game_options_admin_write" on public.gold_game_options;
 
 -- perfiles
 create policy "user_profiles_select_own"
@@ -112,6 +144,11 @@ on public.user_profiles
 for all
 using (auth.uid() = id)
 with check (auth.uid() = id);
+
+create policy "user_profiles_presence_read"
+on public.user_profiles
+for select
+using (true);
 
 -- tickets usuario dueño
 create policy "tickets_select_own"
@@ -192,6 +229,43 @@ with check (
     select 1 from public.user_profiles p
     where p.id = auth.uid() and p.is_admin = true
   )
+);
+
+
+create policy "user_reviews_public_read"
+on public.user_reviews
+for select
+using (is_visible = true);
+
+create policy "user_reviews_public_insert"
+on public.user_reviews
+for insert
+to anon, authenticated
+with check (length(trim(review_text)) > 0);
+
+create policy "user_reviews_admin_write"
+on public.user_reviews
+for all
+using (
+  exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true)
+)
+with check (
+  exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true)
+);
+
+create policy "gold_game_options_public_read"
+on public.gold_game_options
+for select
+using (true);
+
+create policy "gold_game_options_admin_write"
+on public.gold_game_options
+for all
+using (
+  exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true)
+)
+with check (
+  exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true)
 );
 
 -- =========================
@@ -388,14 +462,39 @@ insert into public.gold_catalog_entries (game, server, package_name, price_usd, 
 ('WARMANE','Icecrown','20K',280.00,6),
 ('WARMANE','Icecrown','50K',700.00,7),
 ('WARMANE','Icecrown','100K',1400.00,8),
-('Albion Online','SILVER','100M',24.00,1),
-('Albion Online','SILVER','200M',48.00,2),
-('Albion Online','SILVER','300M',72.00,3),
-('Albion Online','SILVER','500M',120.00,4),
-('Albion Online','SILVER','1000M',240.00,5),
-('Albion Online','SILVER','2000M',480.00,6),
-('Albion Online','SILVER','5000M',1200.00,7),
-('Albion Online','SILVER','10000M',2400.00,8),
+('Albion Online','America','100M',24.00,1),
+('Albion Online','America','200M',48.00,2),
+('Albion Online','America','300M',72.00,3),
+('Albion Online','America','500M',120.00,4),
+('Albion Online','America','1000M',240.00,5),
+('Albion Online','America','2000M',480.00,6),
+('Albion Online','America','5000M',1200.00,7),
+('Albion Online','America','10000M',2400.00,8),
+('Albion Online','Asia','100M',24.00,1),
+('Albion Online','Asia','200M',48.00,2),
+('Albion Online','Asia','300M',72.00,3),
+('Albion Online','Asia','500M',120.00,4),
+('Albion Online','Asia','1000M',240.00,5),
+('Albion Online','Asia','2000M',480.00,6),
+('Albion Online','Asia','5000M',1200.00,7),
+('Albion Online','Asia','10000M',2400.00,8),
+('Albion Online','Europa','100M',24.00,1),
+('Albion Online','Europa','200M',48.00,2),
+('Albion Online','Europa','300M',72.00,3),
+('Albion Online','Europa','500M',120.00,4),
+('Albion Online','Europa','1000M',240.00,5),
+('Albion Online','Europa','2000M',480.00,6),
+('Albion Online','Europa','5000M',1200.00,7),
+('Albion Online','Europa','10000M',2400.00,8),
+
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','100G',60.00,1),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','200G',120.00,2),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','300G',180.00,3),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','500G',300.00,4),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','1000G',600.00,5),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','2000G',1200.00,6),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','5000G',3000.00,7),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','10000G',6000.00,8),
 ('AION','EUROAION','100M',2.20,1),
 ('AION','EUROAION','200M',4.40,2),
 ('AION','EUROAION','300M',6.60,3),
@@ -745,6 +844,10 @@ grant select, insert, update, delete on public.games to authenticated;
 
 grant select on public.gold_categories to anon;
 grant select, insert, update, delete on public.gold_categories to authenticated;
+grant select, insert on public.user_reviews to anon;
+grant select, insert, update, delete on public.user_reviews to authenticated;
+grant select on public.gold_game_options to anon;
+grant select, insert, update, delete on public.gold_game_options to authenticated;
 do $$
 begin
   if to_regclass('public.service_catalog_entries_id_seq') is not null then
@@ -762,6 +865,7 @@ insert into public.games (name, icon, description, services) values
 ('World of Warcraft 20th Anniversary TBC','', 'Catálogo TBC anniversary.', array['gold','boosting','accounts']),
 ('World of Warcraft Retail','', 'Catálogo Retail US/EU.', array['gold','boosting','accounts']),
 ('World of Warcraft Project Epoch','', 'Project Epoch gold.', array['gold','boosting','accounts']),
+('World of Warcraft KRONOS 5 VANILLA','', 'KRONOS 5 Vanilla: oro, boosting y profesiones.', array['gold','boosting','accounts']),
 ('World of Warcraft Ascension','', 'Ascension gold.', array['gold','boosting','accounts']),
 ('WARMANE','', 'Onyxia/Lordaeron/Icecrown.', array['gold','boosting','accounts']),
 ('Albion Online','', 'Compra/venta de plata y servicios por encargo.', array['gold']),
@@ -787,9 +891,18 @@ on conflict do nothing;
 
 insert into public.gold_categories (game, name, description) values
 ('WARMANE', 'Warmane Gold', 'Onyxia / Lordaeron / Icecrown.'),
-('Albion Online', 'Albion Silver', 'Compra/venta de plata en Albion Online.')
+('Albion Online', 'Albion Silver', 'Compra/venta de plata en Albion Online.'),
+('World of Warcraft KRONOS 5 VANILLA', 'KRONOS 5', 'Oro y boosting Vanilla 1-60.')
 on conflict (game, name) do update
 set description = excluded.description;
+
+insert into public.gold_game_options (game, faction_disabled, faction_options) values
+('Albion Online', true, array[]::text[]),
+('World of Warcraft KRONOS 5 VANILLA', false, array['Alianza','Horda','Neutral'])
+on conflict (game) do update set
+  faction_disabled = excluded.faction_disabled,
+  faction_options = excluded.faction_options,
+  updated_at = now();
 
 -- =========================
 -- 8) SEED COMERCIAL

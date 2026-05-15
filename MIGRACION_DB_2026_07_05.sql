@@ -4,6 +4,48 @@
 
 begin;
 
+alter table if exists public.user_profiles add column if not exists is_online boolean not null default false;
+alter table if exists public.user_profiles add column if not exists last_seen timestamptz;
+drop policy if exists "user_profiles_presence_read" on public.user_profiles;
+create policy "user_profiles_presence_read" on public.user_profiles for select using (true);
+
+create table if not exists public.user_reviews (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete set null,
+  author_name text not null default 'Cliente TradeHud',
+  review_text text not null,
+  is_visible boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.gold_game_options (
+  game text primary key,
+  faction_disabled boolean not null default false,
+  faction_options text[] not null default array['Alianza','Horda','Neutral'],
+  updated_at timestamptz not null default now()
+);
+
+
+alter table public.user_reviews enable row level security;
+alter table public.gold_game_options enable row level security;
+
+drop policy if exists "user_reviews_public_read" on public.user_reviews;
+drop policy if exists "user_reviews_public_insert" on public.user_reviews;
+drop policy if exists "user_reviews_admin_write" on public.user_reviews;
+drop policy if exists "gold_game_options_public_read" on public.gold_game_options;
+drop policy if exists "gold_game_options_admin_write" on public.gold_game_options;
+
+create policy "user_reviews_public_read" on public.user_reviews for select using (is_visible = true);
+create policy "user_reviews_public_insert" on public.user_reviews for insert to anon, authenticated with check (length(trim(review_text)) > 0);
+create policy "user_reviews_admin_write" on public.user_reviews for all using (exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true)) with check (exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true));
+create policy "gold_game_options_public_read" on public.gold_game_options for select using (true);
+create policy "gold_game_options_admin_write" on public.gold_game_options for all using (exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true)) with check (exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true));
+
+grant select, insert on public.user_reviews to anon;
+grant select, insert, update, delete on public.user_reviews to authenticated;
+grant select on public.gold_game_options to anon;
+grant select, insert, update, delete on public.gold_game_options to authenticated;
+
 alter table if exists public.service_catalog_entries add column if not exists account_type text not null default '';
 alter table if exists public.service_catalog_entries add column if not exists billing_period text not null default '';
 alter table if exists public.service_catalog_entries add column if not exists amount_label text not null default '';
@@ -200,14 +242,39 @@ insert into public.gold_catalog_entries (game, server, package_name, price_usd, 
 ('WARMANE','Icecrown','20K',280.00,6),
 ('WARMANE','Icecrown','50K',700.00,7),
 ('WARMANE','Icecrown','100K',1400.00,8),
-('Albion Online','SILVER','100M',24.00,1),
-('Albion Online','SILVER','200M',48.00,2),
-('Albion Online','SILVER','300M',72.00,3),
-('Albion Online','SILVER','500M',120.00,4),
-('Albion Online','SILVER','1000M',240.00,5),
-('Albion Online','SILVER','2000M',480.00,6),
-('Albion Online','SILVER','5000M',1200.00,7),
-('Albion Online','SILVER','10000M',2400.00,8),
+('Albion Online','America','100M',24.00,1),
+('Albion Online','America','200M',48.00,2),
+('Albion Online','America','300M',72.00,3),
+('Albion Online','America','500M',120.00,4),
+('Albion Online','America','1000M',240.00,5),
+('Albion Online','America','2000M',480.00,6),
+('Albion Online','America','5000M',1200.00,7),
+('Albion Online','America','10000M',2400.00,8),
+('Albion Online','Asia','100M',24.00,1),
+('Albion Online','Asia','200M',48.00,2),
+('Albion Online','Asia','300M',72.00,3),
+('Albion Online','Asia','500M',120.00,4),
+('Albion Online','Asia','1000M',240.00,5),
+('Albion Online','Asia','2000M',480.00,6),
+('Albion Online','Asia','5000M',1200.00,7),
+('Albion Online','Asia','10000M',2400.00,8),
+('Albion Online','Europa','100M',24.00,1),
+('Albion Online','Europa','200M',48.00,2),
+('Albion Online','Europa','300M',72.00,3),
+('Albion Online','Europa','500M',120.00,4),
+('Albion Online','Europa','1000M',240.00,5),
+('Albion Online','Europa','2000M',480.00,6),
+('Albion Online','Europa','5000M',1200.00,7),
+('Albion Online','Europa','10000M',2400.00,8),
+
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','100G',60.00,1),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','200G',120.00,2),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','300G',180.00,3),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','500G',300.00,4),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','1000G',600.00,5),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','2000G',1200.00,6),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','5000G',3000.00,7),
+('World of Warcraft KRONOS 5 VANILLA','KRONOS 5','10000G',6000.00,8),
 ('AION','EUROAION','100M',2.20,1),
 ('AION','EUROAION','200M',4.40,2),
 ('AION','EUROAION','300M',6.60,3),
@@ -441,7 +508,14 @@ on conflict (game, server, package_name) do update set
 
 
 insert into public.games (name, icon, description, services) values
-('Lineage 2 (Reborn)','', 'ORIGIN / ETERNAL servers.', array['gold'])
+('Lineage 2 (Reborn)','', 'ORIGIN / ETERNAL servers.', array['gold']),
+('World of Warcraft KRONOS 5 VANILLA','', 'KRONOS 5 Vanilla: oro, boosting y profesiones.', array['gold','boosting','accounts'])
 on conflict (name) do update set description = excluded.description, services = excluded.services;
+
+
+insert into public.gold_game_options (game, faction_disabled, faction_options) values
+('Albion Online', true, array[]::text[]),
+('World of Warcraft KRONOS 5 VANILLA', false, array['Alianza','Horda','Neutral'])
+on conflict (game) do update set faction_disabled = excluded.faction_disabled, faction_options = excluded.faction_options, updated_at = now();
 
 commit;
