@@ -1705,6 +1705,21 @@
       .startup-captcha-check{display:flex;gap:.65rem;align-items:center;padding:.75rem;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:#0b1d38;color:#ecf4ff}
       .startup-captcha-check input{width:20px;height:20px;accent-color:#ffd670}
       .startup-captcha-btn{margin-top:.9rem;width:100%}
+
+      .startup-captcha-title{margin:.45rem 0 .35rem;font-size:1.25rem;color:#ffffff}
+      .language-picker{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0}
+      .language-btn,.language-mini{background:#000000;border:1px solid #ffffff;color:#ffffff;border-radius:999px;cursor:pointer}
+      .language-btn{padding:.7rem .8rem;font-weight:800}
+      .language-btn.active,.language-mini.active{box-shadow:0 0 0 2px #ffffff inset}
+      .language-switch{display:inline-flex;gap:.25rem;border:1px solid #ffffff;border-radius:999px;padding:.18rem;background:#000000}
+      .language-mini{padding:.25rem .45rem;font-size:.74rem;font-weight:800}
+      .real-captcha-box{border:1px solid #ffffff;border-radius:12px;padding:.8rem;margin-top:.75rem;background:#000000;color:#ffffff}
+      .real-captcha-box label{display:block;font-weight:800;margin-bottom:.45rem;color:#ffffff}
+      .captcha-row{display:flex;align-items:center;gap:.55rem;margin-bottom:.55rem}
+      .captcha-row strong{flex:1;border:1px solid #ffffff;border-radius:10px;padding:.62rem .75rem;background:#000000;color:#ffffff;font-size:1.05rem;letter-spacing:.06em}
+      .captcha-answer{width:100%;background:#000000;border:1px solid #ffffff;border-radius:10px;color:#ffffff;padding:.65rem .75rem}
+      .captcha-feedback{min-height:1.1rem;margin:.45rem 0 0;color:#ffffff;font-size:.85rem}
+
       .streaming-hero-info{margin:.7rem 0 .9rem;padding:.8rem;border:1px solid #345799;border-radius:12px;background:#0b1b34}
       .streaming-hero-top{display:flex;align-items:center;gap:.8rem;margin-bottom:.55rem}
       .streaming-hero-top img{width:54px;height:54px;border-radius:14px;object-fit:cover;border:1px solid #4a6fb6;background:#0a162b}
@@ -1879,18 +1894,28 @@
   </head>
     <body class="preload">
     <div id="startupCaptchaOverlay" class="startup-captcha-overlay" aria-hidden="false">
-      <div class="startup-captcha-card">
+      <div class="startup-captcha-card" role="dialog" aria-modal="true" aria-labelledby="startupCaptchaTitle">
         <div class="startup-captcha-logo">TradeHub</div>
-        <p class="startup-captcha-sub">Verificación de carga segura</p>
-        <label class="startup-captcha-check">
-          <input id="startupCaptchaCheck" type="checkbox" />
-          <span>No soy un robot</span>
-        </label>
-        <button id="startupCaptchaEnterBtn" class="panel-btn startup-captcha-btn" type="button" disabled>Entrar a TradeHub</button>
+        <h2 id="startupCaptchaTitle" class="startup-captcha-title" data-i18n="startupTitle">Selecciona idioma y verifica acceso</h2>
+        <p class="startup-captcha-sub" data-i18n="startupSub">Elige Español o Inglés y resuelve el captcha real para entrar.</p>
+        <div class="language-picker" aria-label="Language selector">
+          <button id="langEsBtn" class="language-btn active" type="button" data-lang-option="es">Español</button>
+          <button id="langEnBtn" class="language-btn" type="button" data-lang-option="en">English</button>
+        </div>
+        <div class="real-captcha-box">
+          <label id="captchaQuestionLabel" for="startupCaptchaAnswer" data-i18n="captchaLabel">Captcha de seguridad</label>
+          <div class="captcha-row">
+            <strong id="captchaQuestion">0 + 0 = ?</strong>
+            <button id="captchaRefreshBtn" class="mini-btn" type="button" aria-label="Refrescar captcha">↻</button>
+          </div>
+          <input id="startupCaptchaAnswer" class="captcha-answer" type="number" inputmode="numeric" autocomplete="off" placeholder="Respuesta" data-i18n-placeholder="captchaPlaceholder" />
+          <p id="captchaFeedback" class="captcha-feedback" aria-live="polite"></p>
+        </div>
+        <button id="startupCaptchaEnterBtn" class="panel-btn startup-captcha-btn" type="button" disabled data-i18n="enterTradeHub">Entrar a TradeHub</button>
       </div>
     </div>
-    <div id="pageLoader" class="page-loader" aria-hidden="true"><span>Cargando sección...</span></div>
-    <div id="dbStatus" class="db-status">Base de datos: verificando...</div>
+    <div id="pageLoader" class="page-loader" aria-hidden="true"><span data-i18n="loadingSection">Cargando sección...</span></div>
+    <div id="dbStatus" class="db-status" data-i18n="dbChecking">Base de datos: verificando...</div>
     <header>
       <div class="container nav">
         <div class="logo">
@@ -1899,22 +1924,26 @@
           </a>
         </div>
         <nav>
-          <a href="#inicio" data-page-link data-page="inicio">Inicio</a>
-          <a href="#oro" data-page-link data-page="oro">Marketplace</a>
-          <a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a>
+          <a href="#inicio" data-page-link data-page="inicio" data-i18n="navHome">Inicio</a>
+          <a href="#oro" data-page-link data-page="oro" data-i18n="navMarketplace">Marketplace</a>
+          <a href="#vender" data-page-link data-page="vendemos-oro" data-i18n="navSellGold">Vender tu oro</a>
               <a href="#streaming" data-page-link data-page="streaming">Streaming</a>
               <a href="#giftcards" data-page-link data-page="giftcards">GiftCards</a>
               <a href="#p2p" data-page-link data-page="p2p">P2P</a>
         </nav>
         <div class="nav-actions">
-          <button id="openRegister" class="auth-btn" type="button">Registrarse</button>
-          <button id="openLogin" class="auth-btn" type="button">Ingresar</button>
-          <button id="openProfile" class="auth-btn" type="button" style="display:none;">Perfil</button>
+          <div class="language-switch" aria-label="Language switch">
+            <button class="language-mini active" type="button" data-lang-option="es">ES</button>
+            <button class="language-mini" type="button" data-lang-option="en">EN</button>
+          </div>
+          <button id="openRegister" class="auth-btn" type="button" data-i18n="register">Registrarse</button>
+          <button id="openLogin" class="auth-btn" type="button" data-i18n="login">Ingresar</button>
+          <button id="openProfile" class="auth-btn" type="button" style="display:none;" data-i18n="profile">Perfil</button>
           <a class="discord-nav-btn" href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">
             <img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />
             Discord
           </a>
-          <button id="openAdmin" class="admin-open">Acceso Admin</button>
+          <button id="openAdmin" class="admin-open" data-i18n="adminAccess">Acceso Admin</button>
         </div>
       </div>
     </header>
@@ -1929,13 +1958,13 @@
               <span class="rune r1">arcane • valor • horda</span>
               <span class="rune r2">alliance • mythic • gold</span>
             </div>
-            <h1>TradeHub: compra, venta y servicios para gamers</h1>
+            <h1 data-i18n="heroTitle">TradeHub: compra, venta y servicios para gamers</h1>
             <p class="lead">
-              Plataforma enfocada en personas, con navegación simple, procesos claros y atención directa para cada pedido.
+              <span data-i18n="heroLead">Plataforma enfocada en personas, con navegación simple, procesos claros y atención directa para cada pedido.</span>
             </p>
             <div class="cta-row">
-              <a class="btn" href="#oro">Marketplace</a>
-              <a class="btn alt" href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a>
+              <a class="btn" href="#oro" data-i18n="navMarketplace">Marketplace</a>
+              <a class="btn alt" href="#vender" data-page-link data-page="vendemos-oro" data-i18n="navSellGold">Vender tu oro</a>
             </div>
           </article>
           <aside class="hero-right">
@@ -2116,7 +2145,7 @@
 
       <section id="oro" class="page-section" data-page="oro">
         <div class="container">
-          <h2 class="section-title">Sección de <span>Marketplace</span></h2>
+          <h2 class="section-title" data-i18n="marketTitle">Sección de <span>Marketplace</span></h2>
           <article class="oro-panel">
             <div class="catalog-info-hero">
               <div class="catalog-info-main">
@@ -2499,7 +2528,7 @@
 
       <section id="p2p" class="page-section" data-page="p2p">
         <div class="container">
-          <h2 class="section-title">Sección <span>P2P</span></h2>
+          <h2 class="section-title" data-i18n="p2pTitle">Sección <span>P2P</span></h2>
           <article class="glass">
             <p class="lead">Aquí se gestionan operaciones P2P entre comprador y proveedor con validación por ticket.</p>
             <div class="server-head" style="margin-top:.6rem;">
@@ -2559,9 +2588,9 @@
         <div class="footer-box">
           <h4>Enlaces importantes</h4>
           <ul>
-            <li><a href="#inicio" data-page-link data-page="inicio">Inicio</a></li>
-            <li><a href="#oro" data-page-link data-page="oro">Marketplace</a></li>
-            <li><a href="#vender" data-page-link data-page="vendemos-oro">Vender tu oro</a></li>
+            <li><a href="#inicio" data-page-link data-page="inicio" data-i18n="navHome">Inicio</a></li>
+            <li><a href="#oro" data-page-link data-page="oro" data-i18n="navMarketplace">Marketplace</a></li>
+            <li><a href="#vender" data-page-link data-page="vendemos-oro" data-i18n="navSellGold">Vender tu oro</a></li>
             <li><a href="#streaming" data-page-link data-page="streaming">Streaming</a></li>
             <li><a href="#giftcards" data-page-link data-page="giftcards">GiftCards</a></li>
             <li><a href="#p2p" data-page-link data-page="p2p">P2P</a></li>
@@ -7118,15 +7147,110 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         }, 450);
       });
 
-      const startupCaptchaOverlay = document.getElementById('startupCaptchaOverlay');
-      const startupCaptchaCheck = document.getElementById('startupCaptchaCheck');
-      const startupCaptchaEnterBtn = document.getElementById('startupCaptchaEnterBtn');
-      if (startupCaptchaOverlay && startupCaptchaCheck && startupCaptchaEnterBtn) {
-        startupCaptchaCheck.addEventListener('change', () => {
-          startupCaptchaEnterBtn.disabled = !startupCaptchaCheck.checked;
+      const i18nMessages = {
+        es: {
+          startupTitle: 'Selecciona idioma y verifica acceso',
+          startupSub: 'Elige Español o Inglés y resuelve el captcha real para entrar.',
+          captchaLabel: 'Captcha de seguridad',
+          captchaPlaceholder: 'Respuesta',
+          captchaOk: 'Captcha correcto. Ya puedes entrar.',
+          captchaBad: 'Respuesta incorrecta. Intenta otra vez.',
+          enterTradeHub: 'Entrar a TradeHub',
+          navHome: 'Inicio',
+          navMarketplace: 'Marketplace',
+          navSellGold: 'Vender tu oro',
+          register: 'Registrarse',
+          login: 'Ingresar',
+          profile: 'Perfil',
+          adminAccess: 'Acceso Admin',
+          heroTitle: 'TradeHub: compra, venta y servicios para gamers',
+          heroLead: 'Plataforma enfocada en personas, con navegación simple, procesos claros y atención directa para cada pedido.',
+          marketTitle: 'Sección de Marketplace',
+          p2pTitle: 'Sección P2P',
+          loadingSection: 'Cargando sección...',
+          dbChecking: 'Base de datos: verificando...'
+        },
+        en: {
+          startupTitle: 'Choose language and verify access',
+          startupSub: 'Choose Spanish or English and solve the real captcha to enter.',
+          captchaLabel: 'Security captcha',
+          captchaPlaceholder: 'Answer',
+          captchaOk: 'Captcha solved. You can enter now.',
+          captchaBad: 'Wrong answer. Try again.',
+          enterTradeHub: 'Enter TradeHub',
+          navHome: 'Home',
+          navMarketplace: 'Marketplace',
+          navSellGold: 'Sell your gold',
+          register: 'Sign up',
+          login: 'Log in',
+          profile: 'Profile',
+          adminAccess: 'Admin Access',
+          heroTitle: 'TradeHub: buying, selling, and services for gamers',
+          heroLead: 'A people-focused platform with simple navigation, clear processes, and direct support for every order.',
+          marketTitle: 'Marketplace Section',
+          p2pTitle: 'P2P Section',
+          loadingSection: 'Loading section...',
+          dbChecking: 'Database: checking...'
+        }
+      };
+      let currentLanguage = localStorage.getItem('tradehud_language') || 'es';
+      function applyLanguage(lang = 'es') {
+        currentLanguage = i18nMessages[lang] ? lang : 'es';
+        localStorage.setItem('tradehud_language', currentLanguage);
+        document.documentElement.lang = currentLanguage;
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+          const key = el.dataset.i18n;
+          const value = i18nMessages[currentLanguage]?.[key];
+          if (!value) return;
+          if (key === 'marketTitle') el.innerHTML = currentLanguage === 'es' ? 'Sección de <span>Marketplace</span>' : 'Marketplace <span>Section</span>';
+          else if (key === 'p2pTitle') el.innerHTML = currentLanguage === 'es' ? 'Sección <span>P2P</span>' : '<span>P2P</span> Section';
+          else el.textContent = value;
         });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+          const key = el.dataset.i18nPlaceholder;
+          const value = i18nMessages[currentLanguage]?.[key];
+          if (value) el.setAttribute('placeholder', value);
+        });
+        document.querySelectorAll('[data-lang-option]').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.langOption === currentLanguage);
+        });
+      }
+      document.querySelectorAll('[data-lang-option]').forEach((btn) => {
+        btn.addEventListener('click', () => applyLanguage(btn.dataset.langOption || 'es'));
+      });
+      applyLanguage(currentLanguage);
+
+      const startupCaptchaOverlay = document.getElementById('startupCaptchaOverlay');
+      const startupCaptchaAnswer = document.getElementById('startupCaptchaAnswer');
+      const startupCaptchaEnterBtn = document.getElementById('startupCaptchaEnterBtn');
+      const captchaQuestion = document.getElementById('captchaQuestion');
+      const captchaRefreshBtn = document.getElementById('captchaRefreshBtn');
+      const captchaFeedback = document.getElementById('captchaFeedback');
+      let captchaExpectedAnswer = null;
+      function generateStartupCaptcha() {
+        const a = Math.floor(Math.random() * 9) + 2;
+        const b = Math.floor(Math.random() * 9) + 2;
+        captchaExpectedAnswer = a + b;
+        if (captchaQuestion) captchaQuestion.textContent = `${a} + ${b} = ?`;
+        if (startupCaptchaAnswer) startupCaptchaAnswer.value = '';
+        if (startupCaptchaEnterBtn) startupCaptchaEnterBtn.disabled = true;
+        if (captchaFeedback) captchaFeedback.textContent = '';
+      }
+      function validateStartupCaptcha() {
+        const answer = Number(startupCaptchaAnswer?.value || NaN);
+        const solved = Number.isFinite(answer) && answer === captchaExpectedAnswer;
+        if (startupCaptchaEnterBtn) startupCaptchaEnterBtn.disabled = !solved;
+        if (captchaFeedback) captchaFeedback.textContent = solved
+          ? i18nMessages[currentLanguage].captchaOk
+          : (startupCaptchaAnswer?.value ? i18nMessages[currentLanguage].captchaBad : '');
+        return solved;
+      }
+      if (startupCaptchaOverlay && startupCaptchaAnswer && startupCaptchaEnterBtn) {
+        generateStartupCaptcha();
+        startupCaptchaAnswer.addEventListener('input', validateStartupCaptcha);
+        captchaRefreshBtn?.addEventListener('click', generateStartupCaptcha);
         startupCaptchaEnterBtn.addEventListener('click', () => {
-          if (!startupCaptchaCheck.checked) return;
+          if (!validateStartupCaptcha()) return;
           startupCaptchaOverlay.classList.add('hidden');
           startupCaptchaOverlay.setAttribute('aria-hidden', 'true');
         });
