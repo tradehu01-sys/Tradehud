@@ -4608,6 +4608,17 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let currentUser = null;
       let currentProfile = null;
       let recoveryMode = false;
+      function isAuthReturnUrl() {
+        const params = new URLSearchParams(window.location.search || '');
+        const hash = window.location.hash || '';
+        return params.has('auth') || params.has('code') || hash.includes('type=recovery') || hash.includes('access_token=') || hash.includes('error=') || hash.includes('error_code=');
+      }
+      function hideStartupLanguageForAuth() {
+        const overlay = document.getElementById('startupLanguageOverlay');
+        if (!overlay) return;
+        overlay.classList.add('hidden');
+        overlay.setAttribute('aria-hidden', 'true');
+      }
       let activeMarketType = 'streaming';
       let selectedMarketCategory = '';
       let dbConnectionNoticeShown = false;
@@ -6186,6 +6197,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         toggleCustomServiceFields();
         const rawHash = window.location.hash || '';
         const searchParams = new URLSearchParams(window.location.search || '');
+        if (searchParams.get('auth') === 'recovery' || searchParams.has('code') || rawHash.includes('type=recovery')) {
+          hideStartupLanguageForAuth();
+        }
         try {
           if (rawHash.includes('error=') || rawHash.includes('error_code=')) {
             const hashParams = new URLSearchParams(rawHash.replace(/^#/, ''));
@@ -6442,13 +6456,24 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             last_seen: new Date().toISOString()
           });
         }
-        await supabaseClient.auth.resend({
-          type: 'signup',
-          email,
-          options: { emailRedirectTo: getAuthRedirectUrl('signup') }
-        }).catch(() => null);
+        const confirmationEnabled = !data.session;
+        let resendError = null;
+        if (confirmationEnabled) {
+          const resendResult = await supabaseClient.auth.resend({
+            type: 'signup',
+            email,
+            options: { emailRedirectTo: getAuthRedirectUrl('signup') }
+          });
+          resendError = resendResult.error;
+        }
         openLoginAfterRegister(email);
-        showAuthNotice('✅ Cuenta creada. Te enviamos el correo de confirmación de TradeHub. Revisa bandeja principal y spam.');
+        if (resendError) {
+          showAuthNotice(`Cuenta creada, pero no pudimos reenviar el correo: ${friendlyError(resendError.message)}. Verifica el correo/SMTP del panel de autenticación para que salga como TradeHub.`, 'warn');
+        } else if (!confirmationEnabled) {
+          showAuthNotice('✅ Cuenta creada. La confirmación por correo está desactivada en el panel de autenticación; actívala en Authentication → Providers → Email para enviar correo TradeHub.', 'warn');
+        } else {
+          showAuthNotice('✅ Cuenta creada. Te enviamos el correo de confirmación de TradeHub. Revisa bandeja principal y spam.');
+        }
       });
 
       resendVerificationBtn.addEventListener('click', async () => {
@@ -7924,6 +7949,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
 
       const startupLanguageOverlay = document.getElementById('startupLanguageOverlay');
       const startupLanguageEnterBtn = document.getElementById('startupLanguageEnterBtn');
+      if (startupLanguageOverlay && isAuthReturnUrl()) {
+        hideStartupLanguageForAuth();
+      }
       if (startupLanguageOverlay && startupLanguageEnterBtn) {
         startupLanguageEnterBtn.addEventListener('click', () => {
           applyGoogleTranslate(currentLanguage);

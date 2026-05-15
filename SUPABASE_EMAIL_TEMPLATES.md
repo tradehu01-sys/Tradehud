@@ -1,11 +1,11 @@
-# Plantillas de correo TradeHub para Supabase Auth
+# Plantillas de correo TradeHub para autenticación
 
-Supabase Auth usa plantillas y remitente configurados en el panel del proyecto. Para que Gmail no muestre textos genéricos de Supabase, configura lo siguiente en **Authentication → Email Templates** y en **Project Settings → Auth / SMTP**.
+Los correos reales de autenticación se cambian desde el panel del proveedor de auth. Para que Gmail no muestre textos genéricos ni asuntos como “Recovery Password”, configura lo siguiente en **Authentication → Email Templates** y en **Project Settings → Auth / SMTP**.
 
 ## Ajustes obligatorios
-- En **Authentication → Providers → Email**, activa **Confirm email** para que Supabase envíe confirmación al registrarse.
+- En **Authentication → Providers → Email**, activa **Confirm email** para que se envíe confirmación al registrarse. Si está apagado, la cuenta se crea sin correo.
 - En **Authentication → URL Configuration**, agrega la URL pública de TradeHub en **Site URL** y **Redirect URLs**.
-- Si quieres que Gmail deje de mostrar remitente de Supabase, configura SMTP propio con un dominio/correo verificado.
+- Para que Gmail muestre TradeHub como remitente y no el proveedor genérico, configura SMTP propio con un dominio/correo verificado.
 
 ## Remitente recomendado
 - **Sender name:** TradeHub MMORPG
@@ -23,8 +23,10 @@ Supabase Auth usa plantillas y remitente configurados en el panel del proyecto. 
 <p>Equipo TradeHub MMORPG</p>
 ```
 
-## Reset password / Recuperar contraseña
+## Recuperar contraseña
 **Subject:** Restablece tu contraseña de TradeHub MMORPG
+
+> Importante: reemplaza el asunto predeterminado “Recovery Password” por el asunto anterior.
 
 ```html
 <h2>Restablece tu contraseña de TradeHub MMORPG</h2>
@@ -34,4 +36,4 @@ Supabase Auth usa plantillas y remitente configurados en el panel del proyecto. 
 <p>Equipo TradeHub MMORPG</p>
 ```
 
-> Nota: estas plantillas no se pueden cambiar desde JavaScript del navegador; deben configurarse en Supabase para que el correo real salga con marca TradeHub.
+> Nota: estas plantillas y asuntos no se pueden cambiar desde JavaScript del navegador; deben configurarse en el panel de autenticación para que el correo real salga con marca TradeHub.
