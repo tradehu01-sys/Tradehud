@@ -1255,8 +1255,11 @@
       .config-modal.show { display: grid; }
 
       .config-card {
-        width: min(820px, 96vw);
+        width: min(980px, 96vw);
         min-height: 520px;
+        max-height: 90vh;
+        overflow-y: auto;
+        overscroll-behavior: contain;
         background: linear-gradient(165deg, #162e57, #0f1a30);
         border: 1px solid #3f66b5;
         border-radius: 16px;
@@ -1898,6 +1901,30 @@
         border-color: #56636d !important;
         box-shadow: none !important;
       }
+
+      .game-window-grid,
+      .game-window-side,
+      .game-contacts a,
+      .gold-order-grid select,
+      .gold-order-grid input,
+      .accounts-panel,
+      #boostLevelForm,
+      #boostLevelForm select,
+      #boostLevelForm input,
+      .boost-calculator-wrap,
+      .boost-summary-card,
+      .boost-price-list,
+      .gold-order-badge,
+      .gold-order-note-item,
+      .gold-summary-card {
+        background: #222e37 !important;
+        background-image: none !important;
+        border-color: #56636d !important;
+        color: #f7f7f7 !important;
+        box-shadow: none !important;
+      }
+      .game-window-grid { scroll-margin-top: 96px; }
+
       input::placeholder,
       textarea::placeholder {
         color: #cfcfcf !important;
@@ -4924,14 +4951,17 @@ Atención al cliente: WhatsApp · Telegram · Discord`
               openGoldOrderPanel(game);
               closeAccountsPanel();
               closeBoostingOptionsPanel();
+              requestAnimationFrame(() => goldOrderPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
             } else if (serviceKey === 'accounts') {
               closeGoldOrderPanel();
               openAccountsPanel(game);
               closeBoostingOptionsPanel();
+              requestAnimationFrame(() => accountsPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
             } else if (serviceKey === 'boosting') {
               closeGoldOrderPanel();
               closeAccountsPanel();
               openBoostingOptionsPanel();
+              requestAnimationFrame(() => boostingOptionsPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
             } else {
               closeGoldOrderPanel();
               closeAccountsPanel();
@@ -4985,6 +5015,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         closeBoostingOptionsPanel();
         gameWindowModal.classList.add('show');
         gameWindowModal.setAttribute('aria-hidden', 'false');
+        gameWindowModal.scrollTop = 0;
+        gameWindow.scrollTop = 0;
       }
 
       function setActivePage(page) {
@@ -4993,7 +5025,17 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         });
       }
 
-      function showPage(page) {
+      function scrollToPageTop(behavior = 'smooth') {
+        window.scrollTo({ top: 0, left: 0, behavior });
+      }
+
+      function scrollToElementTop(targetId, behavior = 'smooth') {
+        const target = document.getElementById(targetId);
+        if (!target) return scrollToPageTop(behavior);
+        target.scrollIntoView({ behavior, block: 'start' });
+      }
+
+      function showPage(page, targetId = '') {
         pageLoader.classList.add('show');
         pageLoader.setAttribute('aria-hidden', 'false');
         clearTimeout(pageSwitchTimer);
@@ -5001,6 +5043,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           setActivePage(page);
           pageLoader.classList.remove('show');
           pageLoader.setAttribute('aria-hidden', 'true');
+          requestAnimationFrame(() => {
+            if (targetId) scrollToElementTop(targetId);
+            else scrollToPageTop();
+          });
         }, 220);
       }
 
@@ -5908,24 +5954,26 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       pageLinks.forEach((link) => {
         link.addEventListener('click', (e) => {
           e.preventDefault();
-          showPage(link.dataset.page);
-          const targetId = link.dataset.target;
-          if (targetId) {
-            setTimeout(() => {
-              document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 40);
-          }
+          showPage(link.dataset.page, link.dataset.target || '');
         });
       });
 
       document.querySelectorAll('a[href="#oro"]').forEach((link) => {
-        link.addEventListener('click', () => showPage('oro'));
+        if (link.matches('[data-page-link]')) return;
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          showPage('oro');
+        });
       });
 
       const backToCatalogsBtn = document.getElementById('backToCatalogsBtn');
       backToCatalogsBtn?.addEventListener('click', () => {
         gameWindowModal.classList.remove('show');
         gameWindowModal.setAttribute('aria-hidden', 'true');
+        closeGoldOrderPanel();
+        closeAccountsPanel();
+        closeBoostingOptionsPanel();
+        showPage('oro');
       });
 
       closeGameWindow.addEventListener('click', () => {
@@ -6215,8 +6263,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
 
       adminModal.addEventListener('click', (e) => {
         if (e.target === adminModal) {
-          adminModal.classList.remove('show');
-          adminModal.setAttribute('aria-hidden', 'true');
+          e.stopPropagation();
         }
       });
 
@@ -6244,8 +6291,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
 
       configModal.addEventListener('click', (e) => {
         if (e.target === configModal) {
-          configModal.classList.remove('show');
-          configModal.setAttribute('aria-hidden', 'true');
+          e.stopPropagation();
         }
       });
 
@@ -6345,6 +6391,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         streamingCategoryModal?.classList.remove('show');
         streamingCategoryModal?.setAttribute('aria-hidden', 'true');
       };
+      streamingCategoryModal?.addEventListener('click', (e) => {
+        if (e.target === streamingCategoryModal) closeStreamingCategoryModalFn();
+      });
       closeStreamingCategoryModal?.addEventListener('click', closeStreamingCategoryModalFn);
       cancelStreamingCategoryModal?.addEventListener('click', closeStreamingCategoryModalFn);
       cancelStreamingCategoryFormBtn?.addEventListener('click', closeStreamingCategoryModalFn);
@@ -6481,6 +6530,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         streamingPriceModal?.classList.remove('show');
         streamingPriceModal?.setAttribute('aria-hidden', 'true');
       };
+      streamingPriceModal?.addEventListener('click', (e) => {
+        if (e.target === streamingPriceModal) closeStreamingPriceModalFn();
+      });
       closeStreamingPriceModal?.addEventListener('click', closeStreamingPriceModalFn);
       cancelStreamingPriceModal?.addEventListener('click', closeStreamingPriceModalFn);
       saveStreamingPriceModalBtn?.addEventListener('click', async () => {
@@ -6617,6 +6669,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         }
         addPriceModal?.classList.add('show');
         addPriceModal?.setAttribute('aria-hidden', 'false');
+      });
+      addPriceModal?.addEventListener('click', (e) => {
+        if (e.target === addPriceModal) closeAddPriceModalFn();
       });
       closeAddPriceModal?.addEventListener('click', closeAddPriceModalFn);
       cancelAddPriceModal?.addEventListener('click', closeAddPriceModalFn);
@@ -6914,9 +6969,13 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       streamingSearch?.addEventListener('input', renderStreamingSection);
       giftcardsSearch?.addEventListener('input', renderGiftcardsSection);
       p2pSearch?.addEventListener('input', renderP2PSection);
-      closeStreamingModal?.addEventListener('click', () => {
+      function closeStreamingOrderModal() {
         streamingModal?.classList.remove('show');
         streamingModal?.setAttribute('aria-hidden', 'true');
+      }
+      closeStreamingModal?.addEventListener('click', closeStreamingOrderModal);
+      streamingModal?.addEventListener('click', (e) => {
+        if (e.target === streamingModal) closeStreamingOrderModal();
       });
       streamingModalTicketBtn?.addEventListener('click', async () => {
         const category = streamingModalTicketBtn.dataset.category || 'Streaming';
