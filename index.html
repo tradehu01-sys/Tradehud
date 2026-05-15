@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TradeHud | Compra y Venta de Oro MMORPG</title>
+    <meta name="tradehud-turnstile-site-key" content="1x00000000000000000000AA" />
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
     <style>
       :root {
         --bg: #050505;
@@ -1780,28 +1782,34 @@
       @media (max-width: 980px){.streaming-modal-layout{grid-template-columns:1fr}.streaming-modal-badges{grid-template-columns:1fr 1fr}.streaming-order-window{min-height:auto}}
       @media (max-width: 640px){.streaming-modal-badges{grid-template-columns:1fr}}
 
-      /* Monochrome theme override: toda la UI queda negra/blanca sin azul ni amarillo. */
+      /* Graphite monochrome theme: sin campos azules ni amarillos, estilo oscuro como referencia. */
       :root {
-        --bg: #000000 !important;
-        --panel: #000000 !important;
-        --panel-2: #000000 !important;
-        --line: #ffffff !important;
-        --text: #ffffff !important;
-        --muted: #ffffff !important;
-        --primary: #000000 !important;
+        --bg: #111820 !important;
+        --panel: #1b252d !important;
+        --panel-2: #222e37 !important;
+        --line: #44505a !important;
+        --text: #f7f7f7 !important;
+        --muted: #d6d6d6 !important;
+        --primary: #2b343c !important;
         --accent: #ffffff !important;
         --hot: #ffffff !important;
         --gold: #ffffff !important;
       }
       html,
-      body,
+      body {
+        background: #111820 !important;
+        background-image: none !important;
+        color: #f7f7f7 !important;
+      }
       header,
-      main,
       footer,
-      section,
-      aside,
       .page-loader,
-      .container,
+      .startup-captcha-overlay {
+        background: #0d1217 !important;
+        background-image: none !important;
+        border-color: #303941 !important;
+        box-shadow: none !important;
+      }
       .glass,
       .mini,
       .oro-panel,
@@ -1839,19 +1847,25 @@
       .order-card,
       .ticket-card,
       .mmorpg-info-box,
+      .startup-captcha-card,
+      .real-captcha-box,
       .db-status,
       .db-status.ok,
       .db-status.warn {
-        background: #000000 !important;
+        background: #222e37 !important;
         background-image: none !important;
-        color: #ffffff !important;
-        border-color: #ffffff !important;
-        box-shadow: none !important;
+        color: #f7f7f7 !important;
+        border-color: #44505a !important;
+        box-shadow: 0 10px 26px rgba(0,0,0,.22) !important;
+      }
+      .server,
+      .account-card {
+        background: #26323b !important;
       }
       *,
       *::before,
       *::after {
-        color: #ffffff !important;
+        color: #f7f7f7 !important;
         text-shadow: none !important;
       }
       input,
@@ -1867,18 +1881,23 @@
       .mini-btn,
       .game-option,
       .streaming-search,
-      .oro-search {
-        background: #000000 !important;
+      .oro-search,
+      .language-btn,
+      .language-mini,
+      .captcha-answer {
+        background: #1a2229 !important;
         background-image: none !important;
         color: #ffffff !important;
-        border-color: #ffffff !important;
+        border-color: #56636d !important;
         box-shadow: none !important;
       }
       input::placeholder,
       textarea::placeholder {
-        color: #ffffff !important;
-        opacity: .75 !important;
+        color: #cfcfcf !important;
+        opacity: .85 !important;
       }
+      .language-btn.active,
+      .language-mini.active,
       .server.active,
       button:hover,
       a:hover,
@@ -1897,18 +1916,14 @@
       <div class="startup-captcha-card" role="dialog" aria-modal="true" aria-labelledby="startupCaptchaTitle">
         <div class="startup-captcha-logo">TradeHub</div>
         <h2 id="startupCaptchaTitle" class="startup-captcha-title" data-i18n="startupTitle">Selecciona idioma y verifica acceso</h2>
-        <p class="startup-captcha-sub" data-i18n="startupSub">Elige Español o Inglés y resuelve el captcha real para entrar.</p>
+        <p class="startup-captcha-sub" data-i18n="startupSub">Elige Español o Inglés y completa el captcha real de Cloudflare para entrar.</p>
         <div class="language-picker" aria-label="Language selector">
           <button id="langEsBtn" class="language-btn active" type="button" data-lang-option="es">Español</button>
           <button id="langEnBtn" class="language-btn" type="button" data-lang-option="en">English</button>
         </div>
         <div class="real-captcha-box">
-          <label id="captchaQuestionLabel" for="startupCaptchaAnswer" data-i18n="captchaLabel">Captcha de seguridad</label>
-          <div class="captcha-row">
-            <strong id="captchaQuestion">0 + 0 = ?</strong>
-            <button id="captchaRefreshBtn" class="mini-btn" type="button" aria-label="Refrescar captcha">↻</button>
-          </div>
-          <input id="startupCaptchaAnswer" class="captcha-answer" type="number" inputmode="numeric" autocomplete="off" placeholder="Respuesta" data-i18n-placeholder="captchaPlaceholder" />
+          <label id="captchaQuestionLabel" data-i18n="captchaLabel">Captcha de seguridad</label>
+          <div id="turnstileWidget" class="turnstile-widget" aria-label="Cloudflare Turnstile captcha"></div>
           <p id="captchaFeedback" class="captcha-feedback" aria-live="polite"></p>
         </div>
         <button id="startupCaptchaEnterBtn" class="panel-btn startup-captcha-btn" type="button" disabled data-i18n="enterTradeHub">Entrar a TradeHub</button>
@@ -7150,11 +7165,12 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       const i18nMessages = {
         es: {
           startupTitle: 'Selecciona idioma y verifica acceso',
-          startupSub: 'Elige Español o Inglés y resuelve el captcha real para entrar.',
-          captchaLabel: 'Captcha de seguridad',
+          startupSub: 'Elige Español o Inglés y completa el captcha real de Cloudflare para entrar.',
+          captchaLabel: 'Captcha real de seguridad',
           captchaPlaceholder: 'Respuesta',
-          captchaOk: 'Captcha correcto. Ya puedes entrar.',
-          captchaBad: 'Respuesta incorrecta. Intenta otra vez.',
+          captchaOk: 'Captcha verificado. Ya puedes entrar.',
+          captchaBad: 'Completa el captcha para continuar.',
+          captchaMissing: 'Configura la clave real de Cloudflare Turnstile.',
           enterTradeHub: 'Entrar a TradeHub',
           navHome: 'Inicio',
           navMarketplace: 'Marketplace',
@@ -7172,11 +7188,12 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         },
         en: {
           startupTitle: 'Choose language and verify access',
-          startupSub: 'Choose Spanish or English and solve the real captcha to enter.',
-          captchaLabel: 'Security captcha',
+          startupSub: 'Choose Spanish or English and complete the real Cloudflare captcha to enter.',
+          captchaLabel: 'Real security captcha',
           captchaPlaceholder: 'Answer',
-          captchaOk: 'Captcha solved. You can enter now.',
-          captchaBad: 'Wrong answer. Try again.',
+          captchaOk: 'Captcha verified. You can enter now.',
+          captchaBad: 'Complete the captcha to continue.',
+          captchaMissing: 'Configure the real Cloudflare Turnstile site key.',
           enterTradeHub: 'Enter TradeHub',
           navHome: 'Home',
           navMarketplace: 'Marketplace',
@@ -7221,36 +7238,48 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       applyLanguage(currentLanguage);
 
       const startupCaptchaOverlay = document.getElementById('startupCaptchaOverlay');
-      const startupCaptchaAnswer = document.getElementById('startupCaptchaAnswer');
       const startupCaptchaEnterBtn = document.getElementById('startupCaptchaEnterBtn');
-      const captchaQuestion = document.getElementById('captchaQuestion');
-      const captchaRefreshBtn = document.getElementById('captchaRefreshBtn');
+      const turnstileWidget = document.getElementById('turnstileWidget');
       const captchaFeedback = document.getElementById('captchaFeedback');
-      let captchaExpectedAnswer = null;
-      function generateStartupCaptcha() {
-        const a = Math.floor(Math.random() * 9) + 2;
-        const b = Math.floor(Math.random() * 9) + 2;
-        captchaExpectedAnswer = a + b;
-        if (captchaQuestion) captchaQuestion.textContent = `${a} + ${b} = ?`;
-        if (startupCaptchaAnswer) startupCaptchaAnswer.value = '';
-        if (startupCaptchaEnterBtn) startupCaptchaEnterBtn.disabled = true;
-        if (captchaFeedback) captchaFeedback.textContent = '';
-      }
-      function validateStartupCaptcha() {
-        const answer = Number(startupCaptchaAnswer?.value || NaN);
-        const solved = Number.isFinite(answer) && answer === captchaExpectedAnswer;
-        if (startupCaptchaEnterBtn) startupCaptchaEnterBtn.disabled = !solved;
-        if (captchaFeedback) captchaFeedback.textContent = solved
+      const turnstileSiteKey = document.querySelector('meta[name="tradehud-turnstile-site-key"]')?.content?.trim() || '';
+      let turnstileToken = '';
+      function setCaptchaVerified(token = '') {
+        turnstileToken = token;
+        if (startupCaptchaEnterBtn) startupCaptchaEnterBtn.disabled = !turnstileToken;
+        if (captchaFeedback) captchaFeedback.textContent = turnstileToken
           ? i18nMessages[currentLanguage].captchaOk
-          : (startupCaptchaAnswer?.value ? i18nMessages[currentLanguage].captchaBad : '');
-        return solved;
+          : i18nMessages[currentLanguage].captchaBad;
       }
-      if (startupCaptchaOverlay && startupCaptchaAnswer && startupCaptchaEnterBtn) {
-        generateStartupCaptcha();
-        startupCaptchaAnswer.addEventListener('input', validateStartupCaptcha);
-        captchaRefreshBtn?.addEventListener('click', generateStartupCaptcha);
+      function renderRealCaptcha() {
+        if (!startupCaptchaOverlay || !startupCaptchaEnterBtn || !turnstileWidget) return;
+        startupCaptchaEnterBtn.disabled = true;
+        const invalidKey = !turnstileSiteKey || turnstileSiteKey.includes('REPLACE_WITH');
+        if (invalidKey) {
+          if (captchaFeedback) captchaFeedback.textContent = i18nMessages[currentLanguage].captchaMissing;
+          return;
+        }
+        if (!window.turnstile?.render) {
+          setTimeout(renderRealCaptcha, 250);
+          return;
+        }
+        if (turnstileWidget.dataset.rendered === 'true') return;
+        window.turnstile.render(turnstileWidget, {
+          sitekey: turnstileSiteKey,
+          theme: 'dark',
+          callback: (token) => setCaptchaVerified(token),
+          'expired-callback': () => setCaptchaVerified(''),
+          'error-callback': () => setCaptchaVerified('')
+        });
+        turnstileWidget.dataset.rendered = 'true';
+      }
+      if (startupCaptchaOverlay && startupCaptchaEnterBtn) {
+        window.addEventListener('load', renderRealCaptcha);
+        renderRealCaptcha();
         startupCaptchaEnterBtn.addEventListener('click', () => {
-          if (!validateStartupCaptcha()) return;
+          if (!turnstileToken) {
+            setCaptchaVerified('');
+            return;
+          }
           startupCaptchaOverlay.classList.add('hidden');
           startupCaptchaOverlay.setAttribute('aria-hidden', 'true');
         });
