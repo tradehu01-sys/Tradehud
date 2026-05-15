@@ -1,6 +1,6 @@
 -- Ejecuta este script DIRECTAMENTE en Supabase SQL Editor.
 -- Fecha: 2026-05-13
--- Propósito: actualizar base con todos los precios/servidores enviados y mover Gemini/Discord Nitro a GiftCards.
+-- Propósito: actualizar base con todos los precios/servidores enviados y mantener Discord Nitro en GiftCards y mover Gemini a Streaming.
 
 begin;
 
@@ -61,8 +61,10 @@ create unique index if not exists gold_catalog_entries_unique_key
 on public.gold_catalog_entries (game, server, package_name);
 
 delete from public.service_catalog_entries where service_type in ('p2p','streaming') and entry_type = 'price';
-delete from public.service_catalog_entries where service_type = 'streaming' and entry_type = 'category' and category_name in ('Discord Nitro','Gemini');
+delete from public.service_catalog_entries where service_type = 'streaming' and entry_type = 'category' and category_name in ('Discord Nitro');
 delete from public.service_catalog_entries where service_type = 'giftcards' and entry_type = 'price' and category_name in ('Discord Nitro','Gemini');
+delete from public.service_catalog_entries where service_type = 'giftcards' and entry_type = 'category' and category_name = 'Gemini';
+delete from public.service_catalog_entries where service_type = 'streaming' and entry_type = 'price' and category_name = 'Gemini';
 
 insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order) values
 ('p2p','category','ZINLI','ZINLI','', '', 1),
@@ -78,7 +80,8 @@ insert into public.service_catalog_entries (service_type, entry_type, category_n
 ('streaming','category','CapCut Pro','CapCut Pro','https://upload.wikimedia.org/wikipedia/commons/a/a9/CapCut_logo.svg','',8),
 ('streaming','category','Paramount','Paramount','https://upload.wikimedia.org/wikipedia/commons/9/94/Paramount%2B_logo.svg','',9),
 ('streaming','category','Apple TV','Apple TV','https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg','',10),
-('streaming','category','CAMVA EDU PRO','CAMVA EDU PRO','https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg','',11),
+('streaming','category','Gemini','Gemini','https://upload.wikimedia.org/wikipedia/commons/8/8f/Google-gemini-icon.svg','',11),
+('streaming','category','CAMVA EDU PRO','CAMVA EDU PRO','https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg','',12),
 ('giftcards','category','Battle Net Gift Card','Battle Net Gift Card','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',101),
 ('giftcards','category','Amazon Gift Card','Amazon Gift Card','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',102),
 ('giftcards','category','Roblox Gift Cards','Roblox Gift Cards','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',103),
@@ -90,7 +93,6 @@ insert into public.service_catalog_entries (service_type, entry_type, category_n
 ('giftcards','category','Garena Free Fire Gift Cards','Garena Free Fire Gift Cards','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',109),
 ('giftcards','category','Google Play Gift Cards','Google Play Gift Cards','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',110),
 ('giftcards','category','Discord Nitro','Discord Nitro','https://cdn.simpleicons.org/discord/5865F2','',111),
-('giftcards','category','Gemini','Gemini','https://upload.wikimedia.org/wikipedia/commons/8/8f/Google-gemini-icon.svg','',112),
 ('p2p','price','ZINLI','Zinli 1$','','ZINLI - Zinli 1$ - 1.30$',101),
 ('p2p','price','ZINLI','Zinli 2$','','ZINLI - Zinli 2$ - 2.60$',102),
 ('p2p','price','ZINLI','Zinli 5$','','ZINLI - Zinli 5$ - 6.50$',103),
@@ -123,13 +125,13 @@ insert into public.service_catalog_entries (service_type, entry_type, category_n
 ('streaming','price','CapCut Pro','1 PERFIL 3$ (MES)','','CapCut Pro - 1 PERFIL 3$ (MES)',211),
 ('streaming','price','Paramount','1 PERFIL 2.50$ (MES)','','Paramount - 1 PERFIL 2.50$ (MES)',212),
 ('streaming','price','Apple TV','1 PERFIL 3$ (MES)','','Apple TV - 1 PERFIL 3$ (MES)',213),
-('streaming','price','CAMVA EDU PRO','1 AÑO 3$','','CAMVA EDU PRO - 1 AÑO 3$',214),
+('streaming','price','Gemini','1 PERFIL 2.50$ (MES)','','Gemini - 1 PERFIL 2.50$ (MES)',214),
+('streaming','price','Gemini','CUENTA COMPLETA 7$ (AÑO)','','Gemini - CUENTA COMPLETA 7$ (AÑO)',215),
+('streaming','price','CAMVA EDU PRO','1 AÑO 3$','','CAMVA EDU PRO - 1 AÑO 3$',216),
 ('giftcards','price','Discord Nitro','BASIC MES 4.49$','','Discord Nitro - BASIC MES 4.49$',301),
 ('giftcards','price','Discord Nitro','BASIC AÑO 44.99$','','Discord Nitro - BASIC AÑO 44.99$',302),
 ('giftcards','price','Discord Nitro','NITRO MES 11.99$','','Discord Nitro - NITRO MES 11.99$',303),
-('giftcards','price','Discord Nitro','NITRO AÑO 119.99$','','Discord Nitro - NITRO AÑO 119.99$',304),
-('giftcards','price','Gemini','1 MES 2.50$','','Gemini - 1 MES 2.50$',305),
-('giftcards','price','Gemini','1 AÑO 7$','','Gemini - 1 AÑO 7$',306)
+('giftcards','price','Discord Nitro','NITRO AÑO 119.99$','','Discord Nitro - NITRO AÑO 119.99$',304)
 on conflict do nothing;
 
 -- =========================

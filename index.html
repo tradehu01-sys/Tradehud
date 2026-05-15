@@ -555,6 +555,7 @@
       }
       nav a,
       .admin-open,
+      .auth-btn,
       .discord-nav-btn,
       .btn,
       .btn.alt,
@@ -1642,18 +1643,22 @@
       }
 
       .auth-btn {
-        border: 1px solid #365c9f;
-        background: #111d36;
+        border: 1px solid #56636d;
+        background: #1a2229;
+        background-image: none;
         color: #fff;
         border-radius: 999px;
         padding: 0.4rem 0.8rem;
         cursor: pointer;
+        box-shadow: none;
       }
+      .auth-btn:hover { border-color: #ffffff; }
       .auth-modal { z-index: 160; }
       .auth-modal .juego-form-card {
         width: min(560px, 94vw);
-        background: linear-gradient(165deg, #112647, #0a162a);
-        border: 1px solid #c9972c;
+        background: #222e37;
+        background-image: none;
+        border: 1px solid #56636d;
       }
       .auth-tabs {
         display: grid;
@@ -1662,17 +1667,17 @@
         margin-bottom: 0.8rem;
       }
       .auth-tab {
-        border: 1px solid #355b9f;
-        background: #0d1b35;
-        color: #dce8ff;
+        border: 1px solid #56636d;
+        background: #1a2229;
+        color: #ffffff;
         border-radius: 8px;
         padding: 0.5rem;
         cursor: pointer;
       }
-      .auth-tab.active { border-color: var(--gold); color: #fff; }
+      .auth-tab.active { border-color: var(--gold); background:#2e3439; color: #fff; }
       .auth-pane.hidden { display:none; }
       .auth-mini-logo { width: 70px; height: 70px; object-fit: cover; border-radius: 14px; border: 1px solid #3a5b9a; display:block; margin: 0 auto .7rem; box-shadow: 0 0 16px rgba(0,0,0,.25); }
-      .auth-hint { color: #9cb6e9; font-size: .8rem; margin-top: .2rem; }
+      .auth-hint { color: #d2d8de; font-size: .8rem; margin-top: .2rem; }
       .auth-pane label,
       .profile-pane label {
         display: block;
@@ -1687,9 +1692,9 @@
         width: 100%;
         display: block;
         height: 40px;
-        background: #0a1222 !important;
+        background: #1a2229 !important;
         color: #ffffff !important;
-        border: 1px solid #355692 !important;
+        border: 1px solid #56636d !important;
         border-radius: 8px;
         padding: 0 0.7rem;
         outline: none;
@@ -1709,16 +1714,20 @@
       }
       .auth-notice {
         position: fixed;
-        right: 16px;
-        bottom: 16px;
-        max-width: min(420px, 90vw);
-        background: #101d37;
-        border: 1px solid #3f61a3;
-        color: #e8f0ff;
-        border-radius: 10px;
-        padding: 0.75rem 0.9rem;
-        z-index: 180;
-        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: min(460px, 90vw);
+        max-width: min(460px, 90vw);
+        background: #222e37;
+        border: 1px solid #ffffff;
+        color: #ffffff;
+        border-radius: 14px;
+        padding: 1rem 1.1rem;
+        z-index: 240;
+        box-shadow: 0 18px 54px rgba(0, 0, 0, 0.55);
+        text-align: center;
+        line-height: 1.45;
         display: none;
       }
       .auth-notice.show { display: block; }
@@ -1982,6 +1991,7 @@
       .btn,
       .btn.alt,
       .admin-open,
+      .auth-btn,
       .discord-nav-btn,
       nav a,
       .panel-btn,
@@ -2108,7 +2118,7 @@
         </a>
         <a class="promo-banner" href="#giftcards" data-page-link data-page="giftcards">
           <span class="promo-icon" aria-hidden="true">🎁</span>
-          <span class="promo-copy"><strong>GiftCards listas para pedir</strong><span>Amazon, Steam, Discord Nitro, Gemini y más opciones digitales.</span></span>
+          <span class="promo-copy"><strong>GiftCards listas para pedir</strong><span>Amazon, Steam, Roblox, PlayStation y más giftcards digitales.</span></span>
           <span class="promo-cta">Comprar</span>
         </a>
         <a class="promo-banner" href="#p2p" data-page-link data-page="p2p">
@@ -2133,7 +2143,7 @@
         </a>
         <a class="promo-banner" href="#giftcards" data-page-link data-page="giftcards" aria-hidden="true" tabindex="-1">
           <span class="promo-icon" aria-hidden="true">🎁</span>
-          <span class="promo-copy"><strong>GiftCards listas para pedir</strong><span>Amazon, Steam, Discord Nitro, Gemini y más opciones digitales.</span></span>
+          <span class="promo-copy"><strong>GiftCards listas para pedir</strong><span>Amazon, Steam, Roblox, PlayStation y más giftcards digitales.</span></span>
           <span class="promo-cta">Comprar</span>
         </a>
         <a class="promo-banner" href="#p2p" data-page-link data-page="p2p" aria-hidden="true" tabindex="-1">
@@ -2873,7 +2883,7 @@
           <input id="authRegPassword2" type="password" placeholder="Repite la clave" />
           <button id="authRegisterBtn" class="panel-btn" type="button" style="margin-top:.65rem;">Registrar</button>
           <button id="resendVerificationBtn" class="mini-btn" type="button" style="margin-top:.45rem;width:100%;">Reenviar correo de verificación</button>
-          <p class="auth-hint">Se guardará tu perfil para usarlo en pedidos y órdenes.</p>
+          <p class="auth-hint">Al registrarte te enviaremos un correo de confirmación de TradeHub. Si no llega, revisa spam o usa reenviar.</p>
         </div>
         <div id="authMsg" class="admin-msg"></div>
       </div>
@@ -3929,6 +3939,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             { name: 'CapCut Pro', image: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/CapCut_logo.svg' },
             { name: 'Paramount', image: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Paramount%2B_logo.svg' },
             { name: 'Apple TV', image: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg' },
+            { name: 'Gemini', image: 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Google-gemini-icon.svg' },
             { name: 'CAMVA EDU PRO', image: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg' }
           ],
           prices: [
@@ -3945,6 +3956,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             'CapCut Pro - 1 PERFIL 3$ (MES)',
             'Paramount - 1 PERFIL 2.50$ (MES)',
             'Apple TV - 1 PERFIL 3$ (MES)',
+            'Gemini - 1 PERFIL 2.50$ (MES)',
+            'Gemini - CUENTA COMPLETA 7$ (AÑO)',
             'CAMVA EDU PRO - 1 AÑO 3$'
           ]
         },
@@ -3961,8 +3974,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             { name: 'Valorant Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
             { name: 'Garena Free Fire Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
             { name: 'Google Play Gift Cards', image: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&' },
-            { name: 'Discord Nitro', image: 'https://cdn.simpleicons.org/discord/5865F2' },
-            { name: 'Gemini', image: 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Google-gemini-icon.svg' }
+            { name: 'Discord Nitro', image: 'https://cdn.simpleicons.org/discord/5865F2' }
           ],
           prices: [
             'Battle Net Gift Card - 10$ (USD)',
@@ -3978,9 +3990,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             'Discord Nitro - BASIC MES 4.49$',
             'Discord Nitro - BASIC AÑO 44.99$',
             'Discord Nitro - NITRO MES 11.99$',
-            'Discord Nitro - NITRO AÑO 119.99$',
-            'Gemini - 1 MES 2.50$',
-            'Gemini - 1 AÑO 7$'
+            'Discord Nitro - NITRO AÑO 119.99$'
           ]
         }
       };
@@ -4024,7 +4034,20 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const cleanPrices = marketCatalog.p2p.prices.filter((price) => getP2PAllowedKey(price));
         marketCatalog.p2p.prices = cleanPrices.length ? [...new Set(cleanPrices)] : [...p2pOfficialPrices];
       }
+      function normalizeGeminiCatalogPlacement() {
+        const geminiImage = 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Google-gemini-icon.svg';
+        marketCatalog.giftcards.categories = marketCatalog.giftcards.categories.filter((cat) => (cat.name || '').toLowerCase() !== 'gemini');
+        marketCatalog.giftcards.prices = marketCatalog.giftcards.prices.filter((price) => !String(price || '').toLowerCase().startsWith('gemini'));
+        if (!marketCatalog.streaming.categories.some((cat) => (cat.name || '').toLowerCase() === 'gemini')) {
+          marketCatalog.streaming.categories.push({ name: 'Gemini', image: geminiImage });
+        }
+        const existingGeminiPrices = marketCatalog.streaming.prices.some((price) => String(price || '').toLowerCase().startsWith('gemini'));
+        if (!existingGeminiPrices) {
+          marketCatalog.streaming.prices.push('Gemini - 1 PERFIL 2.50$ (MES)', 'Gemini - CUENTA COMPLETA 7$ (AÑO)');
+        }
+      }
       sanitizeP2PCatalog();
+      normalizeGeminiCatalogPlacement();
 
       const gameServers = [
         { game: 'World of Warcraft 20th Anniversary TBC', servers: ['(US) NIGHTLASYER', '(US) DREAMSCYTHE', '(EU) SPINESHATTER', '(EU) THUNDERSTRIKE', '(EU) SOULSEEKER'] },
@@ -4684,6 +4707,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           marketCatalog[key].prices = [...new Set(marketCatalog[key].prices.map((p) => p.trim()).filter(Boolean))];
         });
         sanitizeP2PCatalog();
+        normalizeGeminiCatalogPlacement();
         renderStreamingSection();
         renderGiftcardsSection();
         renderP2PSection();
@@ -4958,6 +4982,22 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         authModal.setAttribute('aria-hidden', 'true');
       }
 
+      function getAuthRedirectUrl(flow = 'login') {
+        const url = new URL(`${window.location.origin}${window.location.pathname}`);
+        url.searchParams.set('auth', flow);
+        return url.toString();
+      }
+
+      function openLoginAfterRegister(email = '') {
+        setAuthView('login');
+        authLoginEmail.value = email;
+        authLoginPassword.value = '';
+        authMsg.textContent = 'Cuenta creada. Confirma tu correo de TradeHub y luego inicia sesión aquí.';
+        authMsg.style.color = '#9affcc';
+        authModal.classList.add('show');
+        authModal.setAttribute('aria-hidden', 'false');
+      }
+
       function showAuthNotice(message, kind = 'info') {
         authNotice.textContent = message;
         authNotice.classList.add('show');
@@ -4965,7 +5005,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         clearTimeout(showAuthNotice._timer);
         showAuthNotice._timer = setTimeout(() => {
           authNotice.classList.remove('show');
-        }, 5200);
+        }, 7200);
       }
 
       function friendlyError(message = '') {
@@ -5439,8 +5479,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const categories = bucket.categories.filter((cat) => (cat.name || '').toLowerCase().includes(term));
         const giftAmountMap = { '10$':'13$', '20$':'26$', '30$':'39$', '40$':'52$', '50$':'65$', '100$':'130$' };
         const giftcardSpecialPriceMaps = {
-          'Discord Nitro': { 'BASIC MES':'4.49$', 'BASIC AÑO':'44.99$', 'NITRO MES':'11.99$', 'NITRO AÑO':'119.99$' },
-          Gemini: { '1 MES':'2.50$', '1 AÑO':'7$' }
+          'Discord Nitro': { 'BASIC MES':'4.49$', 'BASIC AÑO':'44.99$', 'NITRO MES':'11.99$', 'NITRO AÑO':'119.99$' }
         };
         const giftAmountPreview = Object.keys(giftAmountMap).slice(0, 4);
         categories.forEach((cat) => {
@@ -5529,7 +5568,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           btn.type = 'button';
           btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.p2p}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">💱 P2P</span><span class="market-card-chip">🛡️ Moderado</span></div>`;
           btn.addEventListener('click', () => {
-            const related = bucket.prices.filter((p) => p.toLowerCase().includes(cat.name.toLowerCase()));
+            const p2pKey = getP2PAllowedKey(cat.name);
+            const related = bucket.prices.filter((p) => getP2PAllowedKey(p) === p2pKey);
             const detail = related.length ? related.join('\n') : 'Sin precios cargados para esta categoría.';
             const accountTypeLabel = document.querySelector('label[for="streamingAccountType"]');
             const durationLabel = document.querySelector('label[for="streamingDuration"]');
@@ -6032,6 +6072,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         setDbStatus('verificando conexión...', 'info');
         toggleCustomServiceFields();
         const rawHash = window.location.hash || '';
+        const searchParams = new URLSearchParams(window.location.search || '');
         try {
           if (rawHash.includes('error=') || rawHash.includes('error_code=')) {
             const hashParams = new URLSearchParams(rawHash.replace(/^#/, ''));
@@ -6043,12 +6084,16 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
               showAuthNotice(errorDescription, 'warn');
             }
             history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
-          } else if (rawHash.includes('type=recovery')) {
+          } else if (rawHash.includes('type=recovery') || searchParams.get('auth') === 'recovery') {
             recoveryMode = true;
             setAuthView('login');
             openAuth('login');
             showAuthNotice('Ahora define tu nueva contraseña para recuperar la cuenta.');
-            history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+            if (!searchParams.get('code')) history.replaceState({}, document.title, window.location.pathname);
+          } else if (searchParams.get('auth') === 'signup') {
+            openAuth('login');
+            showAuthNotice('Correo confirmado. Ya puedes iniciar sesión en TradeHub.');
+            if (!searchParams.get('code')) history.replaceState({}, document.title, window.location.pathname);
           }
           try { await syncFromSupabase(); } catch (e) { console.warn('syncFromSupabase failed', e); }
           try { await loadAppAssetsFromSupabase(); } catch (e) { console.warn('loadAppAssetsFromSupabase failed', e); }
@@ -6074,6 +6119,11 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
               const hadUser = Boolean(currentUser);
               currentUser = session?.user || null;
+              if (event === 'PASSWORD_RECOVERY') {
+                recoveryMode = true;
+                openAuth('login');
+                showAuthNotice('Ahora define tu nueva contraseña para recuperar la cuenta.');
+              }
               if (currentUser) {
                 profileNameTop.textContent = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil';
                 profileEmailTop.textContent = currentUser.email || '';
@@ -6219,20 +6269,38 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       authRegisterBtn.addEventListener('click', async () => {
-        if (!supabaseClient) return;
+        if (!supabaseClient) {
+          authMsg.textContent = 'La conexión de TradeHub no está disponible. Intenta nuevamente.';
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        const email = authRegEmail.value.trim();
+        if (!email || !authRegPassword.value) {
+          authMsg.textContent = 'Completa correo y clave para crear tu cuenta.';
+          authMsg.style.color = '#ffd39a';
+          return;
+        }
         if (authRegPassword.value !== authRegPassword2.value) {
           authMsg.textContent = 'Las claves no coinciden.';
           authMsg.style.color = '#ffb6b6';
           return;
         }
+        authRegisterBtn.disabled = true;
+        authRegisterBtn.textContent = 'Creando cuenta...';
         const { data, error } = await supabaseClient.auth.signUp({
-          email: authRegEmail.value.trim(),
+          email,
           password: authRegPassword.value,
           options: {
-            data: { name: authRegName.value.trim() },
-            emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+            data: {
+              name: authRegName.value.trim(),
+              app_name: 'TradeHub MMORPG',
+              brand: 'TradeHub'
+            },
+            emailRedirectTo: getAuthRedirectUrl('signup')
           }
         });
+        authRegisterBtn.disabled = false;
+        authRegisterBtn.textContent = 'Registrar';
         if (error) {
           authMsg.textContent = friendlyError(error.message);
           authMsg.style.color = '#ffb6b6';
@@ -6245,17 +6313,21 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           await supabaseClient.from('user_profiles').upsert({
             id: data.user.id,
             name: authRegName.value.trim() || 'Usuario',
-            email: authRegEmail.value.trim(),
+            email,
             discord: authRegDiscord.value.trim(),
             phone: '',
-            is_admin: authRegEmail.value.trim() === 'admin@tradehud.com',
+            is_admin: email === 'admin@tradehud.com',
             is_online: true,
             last_seen: new Date().toISOString()
           });
         }
-        authMsg.textContent = 'Registro creado correctamente.';
-        authMsg.style.color = '#9affcc';
-        showAuthNotice('✅ Revisa tu correo para confirmar tu cuenta y luego inicia sesión.');
+        await supabaseClient.auth.resend({
+          type: 'signup',
+          email,
+          options: { emailRedirectTo: getAuthRedirectUrl('signup') }
+        }).catch(() => null);
+        openLoginAfterRegister(email);
+        showAuthNotice('✅ Cuenta creada. Te enviamos el correo de confirmación de TradeHub. Revisa bandeja principal y spam.');
       });
 
       resendVerificationBtn.addEventListener('click', async () => {
@@ -6270,7 +6342,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           type: 'signup',
           email,
           options: {
-            emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+            emailRedirectTo: getAuthRedirectUrl('signup')
           }
         });
         if (error) {
@@ -6280,7 +6352,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         }
         authMsg.textContent = 'Correo reenviado. Revisa tu bandeja y spam.';
         authMsg.style.color = '#9affcc';
-        showAuthNotice('📩 Te reenviamos el correo de confirmación.');
+        showAuthNotice('📩 Te reenviamos el correo de confirmación de TradeHub. Revisa bandeja principal y spam.');
       });
 
       authLoginBtn.addEventListener('click', async () => {
@@ -6301,24 +6373,36 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       forgotPasswordBtn.addEventListener('click', async () => {
-        if (!supabaseClient) return;
-        const email = authLoginEmail.value.trim();
+        if (!supabaseClient) {
+          authMsg.textContent = 'La conexión de TradeHub no está disponible. Intenta nuevamente.';
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        let email = authLoginEmail.value.trim() || authRegEmail.value.trim();
+        if (!email) {
+          email = window.prompt('Escribe el correo de tu cuenta TradeHub para restablecer contraseña:')?.trim() || '';
+        }
         if (!email) {
           authMsg.textContent = 'Escribe tu correo para recuperar contraseña.';
           authMsg.style.color = '#ffd39a';
           return;
         }
+        authLoginEmail.value = email;
+        forgotPasswordBtn.disabled = true;
+        forgotPasswordBtn.textContent = 'Enviando correo...';
         const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}${window.location.pathname}`
+          redirectTo: getAuthRedirectUrl('recovery')
         });
+        forgotPasswordBtn.disabled = false;
+        forgotPasswordBtn.textContent = '¿Olvidó su contraseña?';
         if (error) {
           authMsg.textContent = friendlyError(error.message);
           authMsg.style.color = '#ffb6b6';
           return;
         }
-        authMsg.textContent = 'Te enviamos un correo para recuperar tu contraseña.';
+        authMsg.textContent = 'Te enviamos un correo de TradeHub para recuperar tu contraseña.';
         authMsg.style.color = '#9affcc';
-        showAuthNotice('📩 Revisa tu correo para cambiar tu contraseña.');
+        showAuthNotice('📩 Correo de recuperación enviado. Revisa tu Gmail/bandeja principal y spam.');
       });
 
       saveRecoveredPasswordBtn.addEventListener('click', async () => {
@@ -6368,7 +6452,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           await supabaseClient.auth.updateUser({
             data: { name: nextName, discord: nextDiscord, phone: nextPhone }
           });
-          profileMsg.textContent = 'Guardado local en sesión. Revisa políticas de Supabase para persistir en tabla.';
+          profileMsg.textContent = 'Guardado local en sesión. Revisa las políticas de la base de datos TradeHub para persistir en tabla.';
           profileMsg.style.color = '#ffd39a';
         } else {
           profileMsg.textContent = 'Información actualizada.';
@@ -6905,6 +6989,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           streamingPriceModalCatalog.value = catalog || streamingPriceModalCatalog.value;
           streamingPriceModalType.onchange = null;
           streamingPriceModalTime.onchange = null;
+          streamingPriceModalCatalog.onchange = null;
           if (activeMarketType === 'giftcards') {
             if (typeLabel) typeLabel.textContent = 'Tipo de tarjeta';
             if (timeLabel) timeLabel.textContent = 'Monto';
@@ -6917,18 +7002,37 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             streamingPriceModalTime.value = selectedAmount;
             streamingPriceModalAmount.value = selectedTotal;
           } else if (activeMarketType === 'p2p') {
-            if (typeLabel) typeLabel.textContent = 'Precio';
+            if (typeLabel) typeLabel.textContent = 'Monto a recibir';
             if (timeLabel) timeLabel.textContent = 'Tipo de operación';
-            if (amountLabel) amountLabel.textContent = 'Precio a pagar ($)';
-            const p2pMatch = detail.match(/(\d+(?:[.,]\d+)?\$)\s*-\s*(\d+(?:[.,]\d+)?)\$/i);
-            const selectedAmount = p2pMatch ? p2pMatch[1] : '10$';
-            const selectedPayable = p2pMatch ? p2pMatch[2].replace(',', '.') : (getP2PPayableMap(catalog)[selectedAmount] || '12');
-            streamingPriceModalType.innerHTML = getP2PAmountOptionsHtml(catalog);
-            streamingPriceModalType.value = selectedAmount;
-            streamingPriceModalTime.innerHTML = '<option value="P2P">P2P</option>';
-            streamingPriceModalAmount.value = selectedPayable;
-            streamingPriceModalType.onchange = () => { streamingPriceModalAmount.value = getP2PPayableMap(streamingPriceModalCatalog.value)[streamingPriceModalType.value] || streamingPriceModalAmount.value || '12'; };
-            streamingPriceModalTime.onchange = null;
+            if (amountLabel) amountLabel.textContent = 'Monto a pagar / tasa';
+            const configureEditP2PFields = () => {
+              const selectedCatalog = streamingPriceModalCatalog.value || catalog || 'ZINLI';
+              const key = getP2PAllowedKey(selectedCatalog);
+              const payableMap = getP2PPayableMap(selectedCatalog);
+              streamingPriceModalType.innerHTML = Object.keys(payableMap).map((amount) => `<option value="${amount}">${amount}</option>`).join('');
+              streamingPriceModalTime.innerHTML = key === 'exchange'
+                ? '<option value="BS x USDT">BS x USDT</option><option value="USDT x BS">USDT x BS</option>'
+                : '<option value="P2P">P2P</option>';
+              const syncP2PEditPrice = () => {
+                streamingPriceModalAmount.value = payableMap[streamingPriceModalType.value] || streamingPriceModalAmount.value || '';
+              };
+              streamingPriceModalType.onchange = syncP2PEditPrice;
+              syncP2PEditPrice();
+            };
+            configureEditP2PFields();
+            const editKey = getP2PAllowedKey(catalog);
+            if (editKey === 'exchange') {
+              const exchangeMatch = detail.match(/(BS x USDT|USDT x BS)\s*-\s*(.+)$/i);
+              streamingPriceModalTime.value = exchangeMatch?.[1] || streamingPriceModalTime.value;
+              streamingPriceModalType.value = streamingPriceModalTime.value;
+              streamingPriceModalAmount.value = exchangeMatch?.[2] || getP2PPayableMap(catalog)[streamingPriceModalTime.value] || streamingPriceModalAmount.value;
+            } else {
+              const p2pMatch = detail.match(/(\d+(?:[.,]\d+)?\$)\s*-\s*(\d+(?:[.,]\d+)?)\$/i);
+              const selectedAmount = p2pMatch ? p2pMatch[1] : (streamingPriceModalType.value || '10$');
+              streamingPriceModalType.value = selectedAmount;
+              streamingPriceModalAmount.value = p2pMatch ? p2pMatch[2].replace(',', '.') : (getP2PPayableMap(catalog)[selectedAmount] || streamingPriceModalAmount.value || '12');
+            }
+            streamingPriceModalCatalog.onchange = configureEditP2PFields;
           } else {
             if (typeLabel) typeLabel.textContent = 'Tipo';
             if (timeLabel) timeLabel.textContent = 'Tiempo';
