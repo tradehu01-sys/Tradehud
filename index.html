@@ -115,6 +115,102 @@
         height: 16px;
       }
 
+
+
+      .top-banner-cascade {
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid #303941;
+        background: linear-gradient(180deg, rgba(13, 18, 23, 0.98), rgba(17, 24, 32, 0.96));
+        padding: 0.8rem 0;
+        box-shadow: inset 0 -1px 0 rgba(255,255,255,.03);
+      }
+      .top-banner-cascade::before,
+      .top-banner-cascade::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: min(12vw, 120px);
+        z-index: 2;
+        pointer-events: none;
+      }
+      .top-banner-cascade::before { left: 0; background: linear-gradient(90deg, #0d1217, transparent); }
+      .top-banner-cascade::after { right: 0; background: linear-gradient(270deg, #0d1217, transparent); }
+      .banner-marquee {
+        display: flex;
+        width: max-content;
+        gap: 0.8rem;
+        animation: bannerCascade 30s linear infinite;
+      }
+      .top-banner-cascade:hover .banner-marquee { animation-play-state: paused; }
+      .promo-banner {
+        width: min(520px, 86vw);
+        min-height: 92px;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        border: 1px solid #56636d;
+        border-radius: 18px;
+        padding: 0.75rem 0.9rem;
+        background:
+          radial-gradient(circle at 18% 0%, rgba(255, 179, 71, .22), transparent 36%),
+          linear-gradient(135deg, #252f38, #151d24 58%, #222e37);
+        box-shadow: 0 14px 36px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05);
+      }
+      .promo-banner:nth-child(2n) {
+        background:
+          radial-gradient(circle at 80% 8%, rgba(95, 255, 183, .16), transparent 34%),
+          linear-gradient(135deg, #242c32, #12191f 60%, #26343c);
+      }
+      .promo-banner:nth-child(3n) {
+        background:
+          radial-gradient(circle at 12% 10%, rgba(255, 255, 255, .14), transparent 30%),
+          linear-gradient(135deg, #2a2721, #171717 62%, #2d3338);
+      }
+      .promo-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(255,255,255,.18);
+        background: rgba(255,255,255,.07);
+        font-size: 1.65rem;
+      }
+      .promo-copy strong {
+        display: block;
+        font-size: 1rem;
+        letter-spacing: .02em;
+        margin-bottom: .18rem;
+      }
+      .promo-copy span {
+        display: block;
+        color: #d6d6d6 !important;
+        font-size: .83rem;
+        line-height: 1.35;
+      }
+      .promo-cta {
+        border: 1px solid rgba(255,255,255,.32);
+        border-radius: 999px;
+        padding: .38rem .62rem;
+        font-size: .78rem;
+        font-weight: 800;
+        white-space: nowrap;
+        background: #1a2229;
+      }
+      @keyframes bannerCascade {
+        from { transform: translateX(0); }
+        to { transform: translateX(calc(-50% - .4rem)); }
+      }
+      @media (max-width: 760px) {
+        .top-banner-cascade { padding: .65rem 0; }
+        .promo-banner { width: 86vw; grid-template-columns: auto 1fr; }
+        .promo-cta { grid-column: 1 / -1; text-align: center; }
+      }
+
       .hero { padding: 4.5rem 0 2.5rem; }
       .wow-ambient { display: none; }
       .page-section { display: none; }
@@ -1992,6 +2088,61 @@
         </div>
       </div>
     </header>
+
+    <section class="top-banner-cascade" aria-label="Promociones destacadas TradeHud">
+      <div class="banner-marquee">
+        <a class="promo-banner" href="#oro" data-page-link data-page="oro">
+          <span class="promo-icon" aria-hidden="true">⚔️</span>
+          <span class="promo-copy"><strong>Marketplace MMORPG activo</strong><span>Oro, cuentas y servicios con tickets seguros y atención directa.</span></span>
+          <span class="promo-cta">Ver juegos</span>
+        </a>
+        <a class="promo-banner" href="#vender" data-page-link data-page="vendemos-oro">
+          <span class="promo-icon" aria-hidden="true">💰</span>
+          <span class="promo-copy"><strong>Vende tu oro rápido</strong><span>Conecta con soporte, confirma stock y recibe pago por método acordado.</span></span>
+          <span class="promo-cta">Vender ahora</span>
+        </a>
+        <a class="promo-banner" href="#streaming" data-page-link data-page="streaming">
+          <span class="promo-icon" aria-hidden="true">🎬</span>
+          <span class="promo-copy"><strong>Streaming y cuentas digitales</strong><span>Planes claros, precios visibles y entrega guiada por ticket.</span></span>
+          <span class="promo-cta">Explorar</span>
+        </a>
+        <a class="promo-banner" href="#giftcards" data-page-link data-page="giftcards">
+          <span class="promo-icon" aria-hidden="true">🎁</span>
+          <span class="promo-copy"><strong>GiftCards listas para pedir</strong><span>Amazon, Steam, Discord Nitro, Gemini y más opciones digitales.</span></span>
+          <span class="promo-cta">Comprar</span>
+        </a>
+        <a class="promo-banner" href="#p2p" data-page-link data-page="p2p">
+          <span class="promo-icon" aria-hidden="true">🔁</span>
+          <span class="promo-copy"><strong>P2P con moderación TradeHud</strong><span>Zinli, PayPal y cambios BS/USDT con datos guardados en ticket.</span></span>
+          <span class="promo-cta">Abrir P2P</span>
+        </a>
+        <a class="promo-banner" href="#oro" data-page-link data-page="oro" aria-hidden="true" tabindex="-1">
+          <span class="promo-icon" aria-hidden="true">⚔️</span>
+          <span class="promo-copy"><strong>Marketplace MMORPG activo</strong><span>Oro, cuentas y servicios con tickets seguros y atención directa.</span></span>
+          <span class="promo-cta">Ver juegos</span>
+        </a>
+        <a class="promo-banner" href="#vender" data-page-link data-page="vendemos-oro" aria-hidden="true" tabindex="-1">
+          <span class="promo-icon" aria-hidden="true">💰</span>
+          <span class="promo-copy"><strong>Vende tu oro rápido</strong><span>Conecta con soporte, confirma stock y recibe pago por método acordado.</span></span>
+          <span class="promo-cta">Vender ahora</span>
+        </a>
+        <a class="promo-banner" href="#streaming" data-page-link data-page="streaming" aria-hidden="true" tabindex="-1">
+          <span class="promo-icon" aria-hidden="true">🎬</span>
+          <span class="promo-copy"><strong>Streaming y cuentas digitales</strong><span>Planes claros, precios visibles y entrega guiada por ticket.</span></span>
+          <span class="promo-cta">Explorar</span>
+        </a>
+        <a class="promo-banner" href="#giftcards" data-page-link data-page="giftcards" aria-hidden="true" tabindex="-1">
+          <span class="promo-icon" aria-hidden="true">🎁</span>
+          <span class="promo-copy"><strong>GiftCards listas para pedir</strong><span>Amazon, Steam, Discord Nitro, Gemini y más opciones digitales.</span></span>
+          <span class="promo-cta">Comprar</span>
+        </a>
+        <a class="promo-banner" href="#p2p" data-page-link data-page="p2p" aria-hidden="true" tabindex="-1">
+          <span class="promo-icon" aria-hidden="true">🔁</span>
+          <span class="promo-copy"><strong>P2P con moderación TradeHud</strong><span>Zinli, PayPal y cambios BS/USDT con datos guardados en ticket.</span></span>
+          <span class="promo-cta">Abrir P2P</span>
+        </a>
+      </div>
+    </section>
 
     <main>
       <section class="hero page-section" id="inicio" data-page="inicio">
