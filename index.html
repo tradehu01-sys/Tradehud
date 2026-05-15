@@ -632,6 +632,32 @@
       .game-window-side ul { margin:0; padding-left:1.05rem; color:#c8d5ef; line-height:1.5; }
       .game-contacts { margin-top:.75rem; display:grid; gap:.45rem; }
       .game-contacts a { text-decoration:none; color:#d9e8ff; border:1px solid #3b5ea5; border-radius:10px; padding:.45rem .6rem; background:#0f2243; }
+      .purchase-contact-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.5rem;
+        width: 100%;
+        margin-top: 0.7rem;
+      }
+      .purchase-contact-actions a {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.35rem;
+        min-height: 42px;
+        border: 1px solid #3b5ea5;
+        border-radius: 999px;
+        background: #0f2243;
+        color: #f1f6ff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 0.84rem;
+        padding: 0.55rem 0.7rem;
+      }
+      .purchase-contact-actions a:hover { border-color: var(--gold); color: #fff4c4; }
+      @media (max-width: 640px) {
+        .purchase-contact-actions { grid-template-columns: 1fr; }
+      }
       .game-back-btn { width:100%; margin-top:.75rem; }
       @media (max-width: 980px) {
         .game-window-layout { grid-template-columns: 1fr; }
@@ -2418,10 +2444,10 @@
                 <li>Entrega adaptada al MMORPG y servidor seleccionado.</li>
                 <li>Soporte humano antes, durante y después de la compra.</li>
               </ul>
-              <div class="game-contacts">
-                <a href="https://wa.me/" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-                <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">Discord</a>
-                <a href="https://t.me/" target="_blank" rel="noopener noreferrer">Telegram</a>
+              <div class="game-contacts purchase-contact-actions">
+                <a href="https://wa.me/qr/VB4PMPDPRU4QG1" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+                <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Telegram</a>
+                <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">🎮 Discord</a>
               </div>
               <button id="backToCatalogsBtn" class="panel-btn game-back-btn" type="button">⬅ Volver a catálogos</button>
             </aside>
@@ -2477,6 +2503,11 @@
                     <button id="goldOrderTicketBtn" class="ticket-btn" type="button">Abrir ticket</button>
                   </div>
                 </div>
+                <div class="purchase-contact-actions" aria-label="Contactos rápidos para comprar oro">
+                  <a href="https://wa.me/qr/VB4PMPDPRU4QG1" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
+                  <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
+                  <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
+                </div>
                 <p class="gold-order-note">Al cambiar el servidor se recargan automáticamente los productos disponibles.</p>
               </div>
               <aside class="gold-trust-panel">
@@ -2496,7 +2527,12 @@
           </div>
           <div id="accountsPanel" class="accounts-panel hidden">
             <strong style="display:block;margin-bottom:.55rem;">Cuentas disponibles por juego</strong>
-            <div id="accountsPanelList" class="accounts-grid"></div>
+            <div class="purchase-contact-actions" aria-label="Contactos rápidos para comprar cuentas">
+              <a href="https://wa.me/qr/VB4PMPDPRU4QG1" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
+              <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
+              <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
+            </div>
+            <div id="accountsPanelList" class="accounts-grid" style="margin-top:.75rem;"></div>
           </div>
           <div id="boostingOptionsPanel" class="boosting-options-panel hidden">
             <strong style="display:block;margin-bottom:.55rem;">Opciones de boosting</strong>
@@ -2558,6 +2594,11 @@
               </div>
               <p class="auth-hint">La calculadora usa precios exactos, suma tramos disponibles y en profesiones calcula rangos parciales dentro del máximo configurado. Si no hay cobertura, abre ticket para cotización manual.</p>
               <button id="boostCreateTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
+              <div class="purchase-contact-actions" aria-label="Contactos rápidos para boosting">
+                <a href="https://wa.me/qr/VB4PMPDPRU4QG1" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
+                <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
+                <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
+              </div>
             </div>
           </div>
         </div>
@@ -2659,10 +2700,10 @@
               <div class="streaming-support-item"><strong>🛰️ Telegram</strong>Soporte y seguimiento</div>
               <div class="streaming-support-item"><strong>🎮 Discord</strong>Canal comunitario</div>
             </div>
-            <div class="admin-panel-actions" style="margin-top:.6rem;">
-              <button class="panel-btn" type="button">Ir a WhatsApp</button>
-              <button class="panel-btn secondary" type="button">Ir a Telegram</button>
-              <button class="panel-btn secondary" type="button">Abrir Discord</button>
+            <div class="purchase-contact-actions" aria-label="Contactos rápidos para servicios digitales">
+              <a href="https://wa.me/qr/VB4PMPDPRU4QG1" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
+              <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
+              <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
             </div>
           </div>
           <div class="streaming-modal-layout">
@@ -2701,9 +2742,14 @@
                 <strong>Resumen del pedido</strong>
                 El precio se actualiza automáticamente al seleccionar tipo y tiempo. Abre el ticket para confirmar disponibilidad antes de pagar.
               </div>
-              <div class="admin-panel-actions" style="margin-top:.7rem;">
+              <div class="admin-panel-actions" style="margin-top:.7rem;flex-wrap:wrap;">
                 <div class="mmorpg-info-box" style="width:100%;margin-bottom:.65rem;">Este formulario abre ticket de compra con datos del juego/servicio seleccionado para atención rápida y segura.</div>
                 <button id="streamingModalTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
+                <div class="purchase-contact-actions" aria-label="Contactos rápidos para finalizar compra">
+                  <a href="https://wa.me/qr/VB4PMPDPRU4QG1" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
+                  <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
+                  <a href="https://discord.gg/DKd9HxK8" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
+                </div>
               </div>
             </div>
             <aside class="streaming-detail-panel">
