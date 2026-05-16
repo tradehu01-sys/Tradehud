@@ -2,6 +2,8 @@
 
 Los correos reales de autenticación se cambian desde el panel del proveedor de auth. Para que Gmail muestre la marca TradeHub y no textos genéricos, configura lo siguiente en **Authentication → Email Templates** y en **Project Settings → Auth / SMTP**.
 
+Para una guía paso a paso según los nombres del panel en español, revisa `CONFIGURAR_CORREOS_SUPABASE.md`.
+
 ## Ajustes obligatorios
 - En **Authentication → Providers → Email**, activa **Confirm email** para que se envíe confirmación al registrarse. Si está apagado, la cuenta se crea sin correo.
 - En **Authentication → URL Configuration**, agrega la URL pública de TradeHub en **Site URL** y **Redirect URLs**. Incluye también las URLs con `?auth=signup` y `?auth=recovery` si tu panel exige coincidencias exactas.
