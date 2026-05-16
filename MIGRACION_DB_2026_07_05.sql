@@ -12,7 +12,7 @@ create policy "user_profiles_presence_read" on public.user_profiles for select u
 create table if not exists public.ticket_messages (
   id uuid primary key default gen_random_uuid(),
   ticket_id uuid not null references public.tickets(id) on delete cascade,
-  sender_id uuid not null references auth.users(id) on delete cascade,
+  sender_id uuid references auth.users(id) on delete set null,
   sender_role text not null default 'user' check (sender_role in ('user','admin')),
   message text not null,
   created_at timestamptz not null default now()
@@ -21,18 +21,29 @@ create table if not exists public.ticket_messages (
 create index if not exists ticket_messages_ticket_created_idx
   on public.ticket_messages (ticket_id, created_at);
 
+alter table public.ticket_messages alter column sender_id drop not null;
 alter table public.ticket_messages enable row level security;
 
 drop policy if exists "ticket_messages_select_own" on public.ticket_messages;
 drop policy if exists "ticket_messages_insert_own" on public.ticket_messages;
 drop policy if exists "ticket_messages_select_admin" on public.ticket_messages;
 drop policy if exists "ticket_messages_insert_admin" on public.ticket_messages;
+drop policy if exists "tickets_select_admin_panel" on public.tickets;
+drop policy if exists "ticket_messages_select_admin_panel" on public.ticket_messages;
+drop policy if exists "ticket_messages_insert_admin_panel" on public.ticket_messages;
 
 create policy "ticket_messages_select_own" on public.ticket_messages for select using (exists (select 1 from public.tickets t where t.id = ticket_id and t.user_id = auth.uid()));
 create policy "ticket_messages_insert_own" on public.ticket_messages for insert with check (sender_id = auth.uid() and sender_role = 'user' and exists (select 1 from public.tickets t where t.id = ticket_id and t.user_id = auth.uid()));
 create policy "ticket_messages_select_admin" on public.ticket_messages for select using (exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true));
 create policy "ticket_messages_insert_admin" on public.ticket_messages for insert with check (sender_id = auth.uid() and sender_role = 'admin' and exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true));
 
+-- Compatibilidad con el panel admin de la landing (login propio admin/admin123).
+create policy "tickets_select_admin_panel" on public.tickets for select to anon using (true);
+create policy "ticket_messages_select_admin_panel" on public.ticket_messages for select to anon using (true);
+create policy "ticket_messages_insert_admin_panel" on public.ticket_messages for insert to anon with check (sender_id is null and sender_role = 'admin' and length(trim(message)) > 0);
+
+grant select on public.tickets to anon;
+grant select, insert on public.ticket_messages to anon;
 grant select, insert on public.tickets to authenticated;
 grant select, insert on public.ticket_messages to authenticated;
 

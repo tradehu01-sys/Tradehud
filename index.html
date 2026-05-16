@@ -4274,6 +4274,18 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       const supabaseClient = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
         ? (isServiceRoleKey ? null : window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY))
         : null;
+      let adminAnonClient = null;
+      function getTicketClient(preferAdminAnon = false) {
+        if (preferAdminAnon && window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY && !isServiceRoleKey) {
+          if (!adminAnonClient) {
+            adminAnonClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+              auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+            });
+          }
+          return adminAnonClient;
+        }
+        return supabaseClient;
+      }
       const ADMIN_EMAILS = ['admin@tradehud.com'];
       const ASSET_BUCKET = 'tradehud-assets';
 
@@ -4984,6 +4996,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let activeOrderGame = null;
       let currentUser = null;
       let currentProfile = null;
+      let adminPanelUnlocked = false;
       let recoveryMode = false;
       function isAuthReturnUrl() {
         const params = new URLSearchParams(window.location.search || '');
@@ -5108,7 +5121,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           return;
         }
         const { data } = await supabaseClient.from('user_reviews').select('id,author_name,review_text,created_at').order('created_at', { ascending: false });
-        (data || []).forEach((item) => {
+        tickets.forEach((item) => {
           const row = document.createElement('article');
           row.className = 'order-card';
           row.innerHTML = `<strong>${item.author_name || 'Usuario'}</strong><p class="admin-game-desc">${item.review_text || ''}</p><div class="admin-game-actions"><button class="mini-btn danger" type="button" data-delete-review="${item.id}">Eliminar</button></div>`;
@@ -5649,42 +5662,95 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         return `<div class="ticket-message ${role}"><span class="ticket-message-meta">${label} · ${escapeHtml(created)}</span><div class="ticket-message-body">${escapeHtml(message.message || '')}</div></div>`;
       }
 
+      const LOCAL_TICKETS_KEY = 'tradehud_ticket_mirror';
+      const LOCAL_TICKET_MESSAGES_KEY = 'tradehud_ticket_message_mirror';
+
+      function readLocalJson(key, fallback) {
+        try { return JSON.parse(localStorage.getItem(key) || '') || fallback; } catch { return fallback; }
+      }
+
+      function writeLocalJson(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
+      }
+
+      function getLocalTickets() {
+        return readLocalJson(LOCAL_TICKETS_KEY, []);
+      }
+
+      function saveLocalTicket(ticket = {}) {
+        if (!ticket.id) return;
+        const tickets = getLocalTickets().filter((item) => item.id !== ticket.id);
+        tickets.unshift(ticket);
+        writeLocalJson(LOCAL_TICKETS_KEY, tickets.slice(0, 200));
+      }
+
+      function getLocalTicketMessages(ticketId) {
+        const messages = readLocalJson(LOCAL_TICKET_MESSAGES_KEY, {});
+        return messages[ticketId] || [];
+      }
+
+      function saveLocalTicketMessage(ticketId, message = {}) {
+        if (!ticketId || !message.message) return;
+        const messages = readLocalJson(LOCAL_TICKET_MESSAGES_KEY, {});
+        messages[ticketId] = [...(messages[ticketId] || []), {
+          id: message.id || `local-${Date.now()}`,
+          ticket_id: ticketId,
+          sender_role: message.sender_role || 'user',
+          message: message.message,
+          created_at: message.created_at || new Date().toISOString()
+        }];
+        writeLocalJson(LOCAL_TICKET_MESSAGES_KEY, messages);
+      }
+
+      function mergeTicketMessages(remote = [], local = []) {
+        const byKey = new Map();
+        [...remote, ...local].forEach((message) => {
+          const key = message.id || `${message.ticket_id}-${message.created_at}-${message.message}`;
+          byKey.set(key, message);
+        });
+        return [...byKey.values()].sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+      }
+
+      function isAdminSession() {
+        return adminPanelUnlocked || isAdminUser(currentUser, currentProfile);
+      }
+
       function ticketChatHtml(ticketId, mode = 'user') {
         const placeholder = mode === 'admin' ? 'Responder al cliente desde el panel admin...' : 'Escribe aquí para hablar con administración...';
         return `<div class="ticket-chat" data-ticket-chat="${escapeHtml(ticketId)}" data-ticket-mode="${mode}"><div class="ticket-chat-head"><span>💬 Chat del ticket</span><button class="mini-btn" type="button" data-ticket-refresh="${escapeHtml(ticketId)}">Actualizar</button></div><div class="ticket-messages" data-ticket-messages="${escapeHtml(ticketId)}"><p class="auth-hint">Cargando mensajes...</p></div><div class="ticket-compose"><textarea data-ticket-input="${escapeHtml(ticketId)}" placeholder="${placeholder}"></textarea><button class="panel-btn" type="button" data-ticket-send="${escapeHtml(ticketId)}">Enviar</button></div></div>`;
       }
 
       async function fetchTicketMessages(ticketId) {
-        if (!supabaseClient || !ticketId) return { data: [], error: null };
-        return supabaseClient
+        if (!ticketId) return { data: [], error: null, localOnly: true };
+        const local = getLocalTicketMessages(ticketId);
+        const ticketClient = getTicketClient(adminPanelUnlocked);
+        if (!ticketClient) return { data: local, error: null, localOnly: true };
+        const { data, error } = await ticketClient
           .from('ticket_messages')
           .select('id,ticket_id,sender_role,message,created_at')
           .eq('ticket_id', ticketId)
           .order('created_at', { ascending: true });
+        if (error) return { data: local, error, localOnly: true };
+        return { data: mergeTicketMessages(data || [], local), error: null, localOnly: false };
       }
 
       async function renderTicketMessages(ticketId, root = document) {
         const wrap = root.querySelector(`[data-ticket-messages="${cssEscapeValue(ticketId)}"]`);
         if (!wrap) return;
-        const { data, error } = await fetchTicketMessages(ticketId);
-        if (error) {
-          wrap.innerHTML = '<p class="auth-hint">El chat todavía no está disponible. Aplica la migración de ticket_messages en Supabase.</p>';
-          return;
-        }
+        const { data, localOnly } = await fetchTicketMessages(ticketId);
+        const localNotice = localOnly ? '<p class="auth-hint">Chat temporal activo. Si no aparece en otro equipo, ejecuta la migración SQL para activar el chat global.</p>' : '';
         wrap.innerHTML = (data || []).length
           ? data.map(ticketMessageHtml).join('')
-          : '<p class="auth-hint">Aún no hay mensajes. Escribe el primero para comunicarte con administración.</p>';
+          : `${localNotice}<p class="auth-hint">Aún no hay mensajes. Escribe el primero para comunicarte con administración.</p>`;
+        if ((data || []).length && localOnly) wrap.insertAdjacentHTML('afterbegin', localNotice);
         wrap.scrollTop = wrap.scrollHeight;
       }
 
       async function sendTicketMessage(ticketId, mode = 'user', root = document) {
-        if (!currentUser) {
+        const isAdminMode = mode === 'admin' && isAdminSession();
+        if (!currentUser && !isAdminMode) {
           openAuth('login');
           showAuthNotice('Debes iniciar sesión para usar el chat del ticket.', 'warn');
-          return;
-        }
-        if (!supabaseClient) {
-          showAuthNotice('El chat no está disponible porque Supabase no está conectado.', 'warn');
           return;
         }
         const input = root.querySelector(`[data-ticket-input="${cssEscapeValue(ticketId)}"]`);
@@ -5695,21 +5761,28 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           return;
         }
         if (button) button.disabled = true;
-        const senderRole = mode === 'admin' && isAdminUser(currentUser, currentProfile) ? 'admin' : 'user';
-        const { error } = await supabaseClient.from('ticket_messages').insert({
-          ticket_id: ticketId,
-          sender_id: currentUser.id,
-          sender_role: senderRole,
-          message
-        });
-        if (button) button.disabled = false;
-        if (error) {
-          showAuthNotice(`No se pudo enviar el mensaje: ${friendlyError(error.message)}`, 'warn');
-          return;
+        const senderRole = isAdminMode ? 'admin' : 'user';
+        let error = null;
+        const ticketClient = getTicketClient(isAdminMode && !currentUser);
+        if (ticketClient) {
+          const result = await ticketClient.from('ticket_messages').insert({
+            ticket_id: ticketId,
+            sender_id: currentUser?.id || null,
+            sender_role: senderRole,
+            message
+          });
+          error = result.error;
+        } else {
+          error = new Error('Supabase no conectado');
         }
+        if (error) {
+          saveLocalTicketMessage(ticketId, { sender_role: senderRole, message });
+          showAuthNotice('✅ Mensaje guardado en chat temporal. Ejecuta la migración SQL para sincronizarlo globalmente.', 'warn');
+        }
+        if (button) button.disabled = false;
         input.value = '';
         await renderTicketMessages(ticketId, root);
-        showAuthNotice('✅ Mensaje enviado al chat del ticket.');
+        if (!error) showAuthNotice('✅ Mensaje enviado al chat del ticket.');
       }
 
       async function hydrateTicketChats(root = document) {
@@ -5763,6 +5836,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           showAuthNotice(`No se pudo crear la orden: ${friendlyError(error.message)}`, 'warn');
           return false;
         }
+        if (inserted?.id) {
+          saveLocalTicket({ ...ticketPayload, id: inserted.id, created_at: new Date().toISOString(), user_profiles: currentProfile || null });
+        }
         await renderUserOrders();
         await renderAdminTickets();
         await openProfileDrawer('orders');
@@ -5795,28 +5871,36 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       async function renderAdminTickets() {
         adminTicketsList.innerHTML = '';
-        if (!supabaseClient) return;
-        const { data, error } = await supabaseClient
-          .from('tickets')
-          .select('id,user_id,game,server,product,faction,character,delivery,status,created_at')
-          .order('created_at', { ascending: false });
-        if (error) {
-          adminTicketsList.innerHTML = `<p class="auth-hint">No se pudieron cargar los tickets: ${escapeHtml(friendlyError(error.message))}</p>`;
+        const localTickets = getLocalTickets();
+        let data = [];
+        let error = null;
+        const ticketClient = getTicketClient(adminPanelUnlocked);
+        if (ticketClient) {
+          const result = await ticketClient
+            .from('tickets')
+            .select('id,user_id,game,server,product,faction,character,delivery,status,created_at')
+            .order('created_at', { ascending: false });
+          data = result.data || [];
+          error = result.error;
+        }
+        if (error && !localTickets.length) {
+          adminTicketsList.innerHTML = `<p class="auth-hint">No se pudieron cargar los tickets: ${escapeHtml(friendlyError(error.message))}. Si usas el acceso admin con clave, ejecuta la migración actualizada para permitir lectura del panel admin.</p>`;
           return;
         }
-        const userIds = [...new Set((data || []).map((item) => item.user_id).filter(Boolean))];
+        const tickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))];
+        const userIds = [...new Set(tickets.map((item) => item.user_id).filter(Boolean))];
         let profilesById = new Map();
-        if (userIds.length) {
+        if (userIds.length && supabaseClient) {
           const { data: profiles } = await supabaseClient
             .from('user_profiles')
             .select('id,name,email,discord,phone')
             .in('id', userIds);
           profilesById = new Map((profiles || []).map((profile) => [profile.id, profile]));
         }
-        (data || []).forEach((item) => {
+        tickets.forEach((item) => {
           const row = document.createElement('article');
           row.className = 'order-card';
-          row.innerHTML = `${ticketDetailHtml({ ...item, user_profiles: profilesById.get(item.user_id) }, true)}${ticketChatHtml(item.id, 'admin')}`;
+          row.innerHTML = `${ticketDetailHtml({ ...item, user_profiles: profilesById.get(item.user_id) || item.user_profiles }, true)}${ticketChatHtml(item.id, 'admin')}`;
           adminTicketsList.appendChild(row);
         });
         if (!adminTicketsList.children.length) adminTicketsList.innerHTML = '<p class="auth-hint">Aún no hay tickets.</p>';
@@ -7245,6 +7329,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         const user = document.getElementById('adminUser').value.trim();
         const pass = document.getElementById('adminPass').value.trim();
         if (user === 'admin' && pass === 'admin123') {
+          adminPanelUnlocked = true;
           adminMsg.textContent = '';
           adminMsg.style.color = '#8fffd8';
           adminModal.classList.remove('show');
