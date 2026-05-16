@@ -19,7 +19,11 @@ Ejecuta **SCHEMA_COMPLETO.sql** en Supabase SQL Editor. Ese archivo incluye:
 Después de correr schema:
 1. Confirma que existe tabla `public.games` con columna `services` (`text[]`).
 2. Confirma que existe tabla `public.app_assets`.
-3. Confirma bucket `tradehud-assets` público.
+3. Confirma que existe tabla `public.tickets`.
+4. Confirma que existe tabla `public.ticket_messages`.
+5. Confirma bucket `tradehud-assets` público.
+
+Para revisar solo el flujo de tickets/chat, usa `TICKETS_SUPABASE_SETUP.md`.
 
 ## 4) Cambios de robustez incluidos en este repo
 `index.html` ahora limpia valores pegados con saltos de línea o texto extra (por ejemplo copiar/pegar variables con etiquetas), y detecta automáticamente:

@@ -809,20 +809,20 @@
         font-weight: 700;
       }
       .create-order-btn {
-        border: 2px solid rgba(246,202,99,.96) !important;
-        background: linear-gradient(135deg, rgba(246,202,99,.98), rgba(240,156,34,.96)) !important;
-        color: #170d03 !important;
+        border: 2px solid #ffffff !important;
+        background: linear-gradient(135deg, #0bbf6a, #158dff) !important;
+        color: #ffffff !important;
         border-radius: 999px !important;
         padding: 0.78rem 1.35rem !important;
         min-width: 170px;
-        box-shadow: 0 0 0 3px rgba(246,202,99,.16), 0 12px 30px rgba(240,156,34,.34) !important;
+        box-shadow: 0 0 0 3px rgba(255,255,255,.12), 0 12px 30px rgba(21,141,255,.35) !important;
         font-weight: 950 !important;
         letter-spacing: .055em;
         text-transform: uppercase;
       }
       .create-order-btn:hover {
         transform: translateY(-1px);
-        box-shadow: 0 0 0 4px rgba(246,202,99,.24), 0 16px 36px rgba(240,156,34,.44) !important;
+        box-shadow: 0 0 0 4px rgba(255,255,255,.18), 0 16px 36px rgba(11,191,106,.42) !important;
       }
       .order-bottom-actions {
         display:flex;
@@ -1996,10 +1996,6 @@
       .streaming-field-card:nth-child(4) label::before{content:'💵'}
       .streaming-price-highlight{border:1px solid rgba(255,211,112,.7);background:linear-gradient(135deg,rgba(255,179,71,.15),rgba(25,43,78,.82));border-radius:14px;padding:.85rem;margin:.8rem 0;color:#f6fbff}
       .streaming-price-highlight strong{display:block;color:#ffd670;margin-bottom:.25rem}
-      .streaming-selected-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:.75rem 0}
-      .streaming-selected-summary div{border:1px solid rgba(246,202,99,.42);border-radius:14px;background:rgba(7,14,28,.72);padding:.72rem}
-      .streaming-selected-summary strong{display:block;color:#ffd670;font-size:.8rem;margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.04em}
-      .streaming-selected-summary span{display:block;color:#fff;font-weight:900;word-break:break-word}
       .market-card-meta{display:flex;justify-content:center;gap:.45rem;flex-wrap:wrap;margin-top:.55rem}
       .market-card-chip{border:1px solid #3a5fa7;border-radius:999px;background:#0b1d38;color:#cfe1ff;padding:.24rem .55rem;font-size:.76rem}
       .catalog-info-hero{display:grid;grid-template-columns:1.15fr repeat(3,minmax(0,.75fr));gap:.75rem;margin:.7rem 0 1rem}
@@ -2816,10 +2812,7 @@
         <div id="streamingModalCard" class="window-card streaming-order-window">
           <div class="window-head">
             <div class="window-game"><strong id="streamingModalTitle">Streaming</strong></div>
-            <div class="admin-head-actions">
-              <button id="streamingBackBtn" class="mini-btn" type="button">← Volver</button>
-              <button id="closeStreamingModal" class="close-btn" type="button">✕</button>
-            </div>
+            <button id="closeStreamingModal" class="close-btn" type="button">✕</button>
           </div>
           <div class="gold-order-top">
             <div id="streamingModalIcon" class="gold-order-game-icon"></div>
@@ -2879,10 +2872,6 @@
               <div class="streaming-price-highlight">
                 <strong>Resumen del pedido</strong>
                 El precio se actualiza automáticamente al seleccionar tipo y tiempo. Abre el ticket para confirmar disponibilidad antes de pagar.
-              </div>
-              <div class="streaming-selected-summary" aria-live="polite">
-                <div><strong>Nombre / producto</strong><span id="streamingSelectedName">Selecciona una opción</span></div>
-                <div><strong>Precio / total</strong><span id="streamingSelectedPrice">Pendiente</span></div>
               </div>
               <div class="admin-panel-actions" style="margin-top:.7rem;flex-wrap:wrap;">
                 <div class="mmorpg-info-box" style="width:100%;margin-bottom:.65rem;">Este formulario abre ticket de compra con datos del juego/servicio seleccionado para atención rápida y segura.</div>
@@ -4199,20 +4188,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         streamingServiceDetails.textContent = `${streamingTermsByService[key] || streamingTermsByService.default}${priceLines}`;
       }
 
-      function syncStreamingSummary() {
-        if (!streamingSelectedName || !streamingSelectedPrice) return;
-        const category = streamingModalTicketBtn?.dataset?.category || streamingModalTitle?.textContent || 'Servicio';
-        const option = streamingAccountType?.value || '';
-        const duration = streamingDuration?.value || '';
-        const productParts = [category, option, duration].filter(Boolean);
-        streamingSelectedName.textContent = productParts.join(' · ') || 'Selecciona una opción';
-        streamingSelectedPrice.textContent = streamingPriceResult?.value || streamingModalTicketBtn?.dataset?.priceRaw || 'Pendiente';
-      }
       const closeStreamingModal = document.getElementById('closeStreamingModal');
-      const streamingBackBtn = document.getElementById('streamingBackBtn');
       const streamingBottomBackBtn = document.getElementById('streamingBottomBackBtn');
-      const streamingSelectedName = document.getElementById('streamingSelectedName');
-      const streamingSelectedPrice = document.getElementById('streamingSelectedPrice');
       const streamingCustomerName = document.getElementById('streamingCustomerName');
       const streamingAccountType = document.getElementById('streamingAccountType');
       const streamingDuration = document.getElementById('streamingDuration');
@@ -6280,14 +6257,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
               || parsedPrices[0];
             streamingPriceResult.value = selected ? selected.amount : 'Sin precio disponible';
             streamingModalTicketBtn.dataset.priceRaw = selected?.raw || '';
-            syncStreamingSummary();
           };
           streamingAccountType.onchange = updatePrice;
           streamingDuration.onchange = updatePrice;
           updatePrice();
           streamingModalTicketBtn.dataset.category = name;
           streamingModalTicketBtn.dataset.serviceType = 'streaming';
-          syncStreamingSummary();
           if (streamingHeroInfo) streamingHeroInfo.style.display = '';
           if (streamingServiceDetails) streamingServiceDetails.style.display = '';
           renderStreamingTerms(name, prices);
@@ -6351,8 +6326,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
               const total = amountMap[amount] || '13$';
               streamingPriceResult.value = total;
               streamingModalTicketBtn.dataset.priceRaw = `${cat.name} - ${amount} en ${total}`;
-              syncStreamingSummary();
-            };
+              };
             streamingDuration.onchange = updateGiftPrice;
             streamingAccountType.onchange = updateGiftPrice;
             updateGiftPrice();
@@ -6378,7 +6352,6 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             ].join('\n');
             streamingModalTicketBtn.dataset.category = cat.name;
             streamingModalTicketBtn.dataset.serviceType = 'giftcards';
-            syncStreamingSummary();
             if (streamingHeroInfo) streamingHeroInfo.style.display = '';
             if (streamingServiceDetails) {
               streamingServiceDetails.style.display = '';
@@ -6426,8 +6399,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
                 const selected = exchangeRates.find((x) => x.type === streamingAccountType.value) || exchangeRates[0];
                 streamingPriceResult.value = selected.rate;
                 streamingModalTicketBtn.dataset.priceRaw = selected.raw;
-                syncStreamingSummary();
-              };
+                  };
               streamingAccountType.onchange = updateExchangePrice;
               streamingDuration.onchange = updateExchangePrice;
               updateExchangePrice();
@@ -6454,7 +6426,6 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
               if (streamingServiceDetails) streamingServiceDetails.style.display = '';
               streamingModalTicketBtn.dataset.category = cat.name;
               streamingModalTicketBtn.dataset.serviceType = 'p2p';
-              syncStreamingSummary();
               streamingModal.classList.add('show');
               streamingModal.setAttribute('aria-hidden', 'false');
               return;
@@ -6472,8 +6443,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
               const selected = parsed.find((x) => x.amount === streamingDuration.value) || parsed[0];
               streamingPriceResult.value = selected?.total || 'Sin precio';
               streamingModalTicketBtn.dataset.priceRaw = selected?.raw || detail;
-              syncStreamingSummary();
-            };
+              };
             streamingDuration.onchange = updateP2PPrice;
             streamingAccountType.onchange = updateP2PPrice;
             updateP2PPrice();
@@ -6487,7 +6457,6 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             if (streamingServiceDetails) streamingServiceDetails.style.display = '';
             streamingModalTicketBtn.dataset.category = cat.name;
             streamingModalTicketBtn.dataset.serviceType = 'p2p';
-            syncStreamingSummary();
             streamingModal.classList.add('show');
             streamingModal.setAttribute('aria-hidden', 'false');
           });
@@ -8087,21 +8056,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       streamingSearch?.addEventListener('input', renderStreamingSection);
       giftcardsSearch?.addEventListener('input', renderGiftcardsSection);
       p2pSearch?.addEventListener('input', renderP2PSection);
-      function closeStreamingOrderModal(returnToSection = false) {
-        const rawType = streamingModalTicketBtn?.dataset?.serviceType || 'streaming';
+      function closeStreamingOrderModal() {
         streamingModal?.classList.remove('show');
         streamingModal?.setAttribute('aria-hidden', 'true');
-        if (returnToSection) {
-          const targetPage = rawType === 'giftcards' ? 'giftcards' : rawType === 'p2p' ? 'p2p' : 'streaming';
-          showPage(targetPage);
-          document.getElementById(targetPage)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
       }
-      closeStreamingModal?.addEventListener('click', () => closeStreamingOrderModal(false));
-      streamingBackBtn?.addEventListener('click', () => closeStreamingOrderModal(true));
-      streamingBottomBackBtn?.addEventListener('click', () => closeStreamingOrderModal(true));
+      closeStreamingModal?.addEventListener('click', closeStreamingOrderModal);
+      streamingBottomBackBtn?.addEventListener('click', closeStreamingOrderModal);
       streamingModal?.addEventListener('click', (e) => {
-        if (e.target === streamingModal) closeStreamingOrderModal(false);
+        if (e.target === streamingModal) closeStreamingOrderModal();
       });
       streamingModalTicketBtn?.addEventListener('click', async () => {
         const category = streamingModalTicketBtn.dataset.category || 'Streaming';
