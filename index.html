@@ -2158,6 +2158,19 @@
         box-shadow: none !important;
       }
 
+
+      .create-order-btn,
+      button.create-order-btn,
+      .panel-btn.create-order-btn,
+      .ticket-btn.create-order-btn,
+      .streaming-order-window .create-order-btn {
+        border: 2px solid #ffffff !important;
+        background: linear-gradient(135deg, #0bbf6a, #158dff) !important;
+        background-image: linear-gradient(135deg, #0bbf6a, #158dff) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 3px rgba(255,255,255,.12), 0 12px 30px rgba(21,141,255,.35) !important;
+      }
+
       .game-window-grid,
       .game-window-side,
       .game-contacts a,
@@ -2331,6 +2344,29 @@
         </div>
       </section>
 
+      <section id="juegos-populares" class="page-section" data-page="inicio">
+        <div class="container">
+          <h2 class="section-title">Juegos <span>populares</span></h2>
+          <article class="home-block popular-grid" id="popularCascadeGrid">
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop" alt="World of Warcraft" />
+              <h3>World of Warcraft</h3>
+              <p>Oro, boosts y soporte rápido para retail, classic y temporadas.</p>
+            </div>
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?q=80&w=1200&auto=format&fit=crop" alt="Albion Online" />
+              <h3>Albion Online</h3>
+              <p>Compra y venta segura de silver con atención personalizada.</p>
+            </div>
+            <div class="home-item">
+              <img src="https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?q=80&w=1200&auto=format&fit=crop" alt="Lineage 2 Reborn" />
+              <h3>Lineage 2 Reborn</h3>
+              <p>Adena e ítems premium con validación y seguimiento en cada trato.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section id="quienes-somos" class="page-section" data-page="inicio">
         <div class="container">
           <h2 class="section-title">¿Quiénes <span>somos?</span></h2>
@@ -2363,29 +2399,6 @@
               </div>
             </article>
           </div>
-        </div>
-      </section>
-
-      <section id="juegos-populares" class="page-section" data-page="inicio" style="display:none;">
-        <div class="container">
-          <h2 class="section-title">Juegos <span>populares</span></h2>
-          <article class="home-block popular-grid">
-            <div class="home-item">
-              <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop" alt="World of Warcraft" />
-              <h3>World of Warcraft</h3>
-              <p>Oro, boosts y soporte rápido para retail, classic y temporadas.</p>
-            </div>
-            <div class="home-item">
-              <img src="https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?q=80&w=1200&auto=format&fit=crop" alt="Albion Online" />
-              <h3>Albion Online</h3>
-              <p>Compra y venta segura de silver con atención personalizada.</p>
-            </div>
-            <div class="home-item">
-              <img src="https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?q=80&w=1200&auto=format&fit=crop" alt="Lineage 2 Reborn" />
-              <h3>Lineage 2 Reborn</h3>
-              <p>Adena e ítems premium con validación y seguimiento en cada trato.</p>
-            </div>
-          </article>
         </div>
       </section>
 
@@ -5251,6 +5264,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         if (!game) return;
         activeOrderGame = game;
         goldOrderPanel.classList.remove('hidden');
+        if (!history.state?.tradehudGoldOpen) history.pushState({ tradehudGoldOpen: true }, '', '#oro-compra');
         gameWindow.classList.add('gold-focus');
         goldOrderGameIcon.innerHTML = `<img src="${game.icon}" alt="${game.name}" />`;
         goldOrderGameName.textContent = game.name;
@@ -5830,6 +5844,48 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         return true;
       }
 
+      const POPULAR_ORDERS_KEY = 'tradehud_popular_orders';
+
+      function normalizePopularName(item = {}) {
+        const raw = [item.game, item.server, item.product].filter(Boolean).join(' ');
+        const text = raw.toLowerCase();
+        if (text.includes('wow retail') || text.includes('world of warcraft retail')) return 'WoW Retail';
+        if (text.includes('world of warcraft')) return item.game || 'World of Warcraft';
+        if (text.includes('gift')) return item.server || item.game || 'GiftCards';
+        if (text.includes('p2p') || text.includes('zinli') || text.includes('paypal') || text.includes('usdt')) return item.server || 'P2P';
+        if (text.includes('streaming')) return item.server || 'Streaming';
+        return item.server || item.game || item.product || 'TradeHud';
+      }
+
+      function readPopularOrders() {
+        return readLocalJson(POPULAR_ORDERS_KEY, {});
+      }
+
+      function trackPopularOrder(ticket = {}) {
+        const name = normalizePopularName(ticket);
+        const popular = readPopularOrders();
+        const current = popular[name] || { name, count: 0, type: ticket.game || 'Orden' };
+        popular[name] = { ...current, name, count: Number(current.count || 0) + 1, type: ticket.game || current.type || 'Orden' };
+        writeLocalJson(POPULAR_ORDERS_KEY, popular);
+        renderPopularCascade();
+      }
+
+      function renderPopularCascade() {
+        const grid = document.getElementById('popularCascadeGrid');
+        if (!grid) return;
+        const defaults = [
+          { name: 'WoW Retail', type: 'Oro MMORPG', count: 3 },
+          { name: 'Zinli / PayPal P2P', type: 'P2P', count: 2 },
+          { name: 'Netflix', type: 'Streaming', count: 2 },
+          { name: 'Discord Nitro', type: 'GiftCards', count: 1 }
+        ];
+        const dynamic = Object.values(readPopularOrders());
+        const merged = new Map(defaults.map((item) => [item.name, item]));
+        dynamic.forEach((item) => merged.set(item.name, { ...item, count: Number(item.count || 0) + Number(merged.get(item.name)?.count || 0) }));
+        const items = [...merged.values()].sort((a, b) => Number(b.count || 0) - Number(a.count || 0)).slice(0, 4);
+        grid.innerHTML = items.map((item, index) => `<div class="home-item popular-cascade-card"><span class="popular-rank">${index + 1}</span><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.type || 'Categoría popular')} se posiciona según las órdenes e interacciones recientes.</p><span class="popular-count">${Number(item.count || 0)} interacciones</span></div>`).join('');
+      }
+
       async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
         if (!currentUser) {
           openAuth('login');
@@ -5840,7 +5896,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           showAuthNotice('No se pudo crear la orden porque Supabase no está conectado.', 'warn');
           return false;
         }
+        const ticketId = window.crypto?.randomUUID?.() || `ticket-${Date.now()}-${Math.random().toString(16).slice(2)}`;
         const ticketPayload = {
+          id: ticketId,
           user_id: currentUser.id,
           game: payload.game || 'Orden TradeHub',
           server: payload.server || '',
@@ -5850,18 +5908,17 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           delivery: payload.delivery || '',
           status: 'pendiente'
         };
-        const { data: inserted, error } = await supabaseClient.from('tickets').insert(ticketPayload).select('id').maybeSingle();
+        const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
         if (error) {
           showAuthNotice(`No se pudo crear la orden: ${friendlyError(error.message)}`, 'warn');
           return false;
         }
-        if (inserted?.id) {
-          saveLocalTicket({ ...ticketPayload, id: inserted.id, created_at: new Date().toISOString(), user_profiles: currentProfile || null });
-        }
+        trackPopularOrder(ticketPayload);
+        saveLocalTicket({ ...ticketPayload, created_at: new Date().toISOString(), user_profiles: currentProfile || null });
+        await openProfileDrawer('orders');
         await renderUserOrders();
         await renderAdminTickets();
-        await openProfileDrawer('orders');
-        if (inserted?.id) await renderTicketMessages(inserted.id, profileDrawer);
+        await renderTicketMessages(ticketId, profileDrawer);
         showAuthNotice(successMessage);
         return true;
       }
@@ -6966,6 +7023,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           try { await loadGoldGameOptionsFromSupabase(); } catch (e) { console.warn('loadGoldGameOptionsFromSupabase failed', e); }
           try { renderStreamingSection(); } catch (e) { console.warn('renderStreamingSection failed', e); }
           try { renderGiftcardsSection(); } catch (e) { console.warn('renderGiftcardsSection failed', e); }
+          try { renderPopularCascade(); } catch (e) { console.warn('renderPopularCascade failed', e); }
           if (marketDetailsWrap) marketDetailsWrap.classList.add('hidden');
           if (supabaseClient) {
             const { data: authData } = await supabaseClient.auth.getSession();
@@ -7053,6 +7111,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           closeAccountsPanel();
           closeBoostingOptionsPanel();
         }
+      });
+
+      window.addEventListener('popstate', () => {
+        if (!goldOrderPanel.classList.contains('hidden')) {
+          closeGoldOrderPanel();
+          return;
+        }
+        if (streamingModal?.classList.contains('show')) closeStreamingOrderModal();
       });
 
       openRegister.addEventListener('click', () => openAuth('register'));

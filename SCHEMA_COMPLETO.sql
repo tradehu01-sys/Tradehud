@@ -989,10 +989,7 @@ set description = excluded.description;
 insert into public.gold_game_options (game, faction_disabled, faction_options) values
 ('Albion Online', true, array[]::text[]),
 ('World of Warcraft KRONOS 5 VANILLA', false, array['Alianza','Horda','Neutral'])
-on conflict (game) do update set
-  faction_disabled = excluded.faction_disabled,
-  faction_options = excluded.faction_options,
-  updated_at = now();
+on conflict (game) do nothing;
 
 -- =========================
 -- 8) SEED COMERCIAL
