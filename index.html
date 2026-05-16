@@ -1865,7 +1865,7 @@
         height: 100vh;
         background: linear-gradient(160deg, #101b32, #0b1222);
         border-left: 1px solid #2f467e;
-        z-index: 165;
+        z-index: 260;
         transform: translateX(105%);
         transition: transform .22s ease;
         padding: 1rem;
@@ -1901,6 +1901,16 @@
       .profile-pane[data-section="orders"] { border-color:rgba(122,76,255,.82); box-shadow:0 0 0 1px rgba(255,255,255,.08), 0 0 22px rgba(122,76,255,.28); }
       .profile-pane.hidden { display:none; }
       .order-card { border:1px solid #334f88; border-radius:10px; padding:.65rem; margin-bottom:.55rem; background:#0e1930; }
+      .ticket-chat { margin-top:.7rem; border-top:1px solid rgba(246,202,99,.22); padding-top:.65rem; }
+      .ticket-chat-head { display:flex; justify-content:space-between; align-items:center; gap:.6rem; color:#fff3c9; font-weight:900; margin-bottom:.45rem; }
+      .ticket-messages { display:flex; flex-direction:column; gap:.45rem; max-height:210px; overflow-y:auto; padding:.55rem; border:1px solid rgba(255,255,255,.1); border-radius:12px; background:rgba(4,8,16,.42); }
+      .ticket-message { border:1px solid #334f88; border-radius:12px; padding:.5rem .6rem; background:#101d36; color:#f7fbff; }
+      .ticket-message.admin { border-color:rgba(246,202,99,.7); background:rgba(246,202,99,.12); }
+      .ticket-message.user { border-color:rgba(122,178,255,.55); }
+      .ticket-message-meta { display:block; color:#aac1ea; font-size:.76rem; font-weight:800; margin-bottom:.25rem; }
+      .ticket-message-body { white-space:pre-wrap; word-break:break-word; }
+      .ticket-compose { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.45rem; margin-top:.5rem; align-items:end; }
+      .ticket-compose textarea { min-height:72px; resize:vertical; }
       #logoutBtn {
         width: 100%;
         margin-top: .75rem;
@@ -3082,7 +3092,7 @@
         <button id="logoutBtn" class="mini-btn danger" type="button">Cerrar sesión</button>
       </div>
       <div id="profileOrdersPane" class="profile-pane hidden" data-section="orders">
-        <p class="auth-hint">Tus tickets aparecerán aquí.</p>
+        <p class="auth-hint">Tus tickets aparecerán aquí. Abre cada chat para hablar con el panel admin sin salir de tu perfil.</p>
         <div id="userOrdersList"></div>
       </div>
       <div id="profileMsg" class="admin-msg"></div>
@@ -5602,6 +5612,19 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         profilePhoneInput.value = currentProfile.phone || '';
       }
 
+      function escapeHtml(value = '') {
+        return String(value ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function cssEscapeValue(value = '') {
+        return window.CSS?.escape ? CSS.escape(String(value)) : String(value).replace(/[\\"]/g, '\\$&');
+      }
+
       function ticketDetailHtml(item = {}, includeContact = false) {
         const created = item.created_at ? new Date(item.created_at).toLocaleString('es-ES') : 'Fecha pendiente';
         const owner = item.user_profiles?.name || item.user_profiles?.email || 'Usuario';
@@ -5610,9 +5633,105 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const phone = item.user_profiles?.phone || '';
         const phoneDigits = phone.replace(/\D/g, '');
         const contact = includeContact
-          ? `<p class="admin-game-desc">Perfil: ${owner}</p><p class="admin-game-desc">Correo: ${email || 'No definido'} · Discord: ${discord || 'No definido'} · Número: ${phone || 'No definido'}</p><div class="admin-game-actions"><a class="mini-btn icon-btn" href="${email ? `mailto:${email}` : '#'}" ${email ? '' : 'aria-disabled="true"'}><span class="btn-icon">✉️</span>Email</a><a class="mini-btn icon-btn" href="${phoneDigits ? `https://wa.me/${phoneDigits}` : '#'}" target="_blank" rel="noopener noreferrer" ${phoneDigits ? '' : 'aria-disabled="true"'}><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a></div>`
+          ? `<p class="admin-game-desc">Perfil: ${escapeHtml(owner)}</p><p class="admin-game-desc">Correo: ${escapeHtml(email || 'No definido')} · Discord: ${escapeHtml(discord || 'No definido')} · Número: ${escapeHtml(phone || 'No definido')}</p><div class="admin-game-actions"><a class="mini-btn icon-btn" href="${email ? `mailto:${encodeURIComponent(email)}` : '#'}" ${email ? '' : 'aria-disabled="true"'}><span class="btn-icon">✉️</span>Email</a><a class="mini-btn icon-btn" href="${phoneDigits ? `https://wa.me/${phoneDigits}` : '#'}" target="_blank" rel="noopener noreferrer" ${phoneDigits ? '' : 'aria-disabled="true"'}><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a></div>`
           : '';
-        return `<strong>${item.game || 'Orden'} · ${item.product || 'Producto'}</strong><p class="admin-game-desc">Servidor/Categoría: ${item.server || '-'}</p><p class="admin-game-desc">Facción/Tipo: ${item.faction || '-'} · Personaje/Cliente: ${item.character || '-'}</p><p class="admin-game-desc">Entrega/Detalle: ${item.delivery || '-'}</p><p class="admin-game-desc">Estado: ${item.status || 'pendiente'} · Creado: ${created}</p>${contact}`;
+        return `<strong>${escapeHtml(item.game || 'Orden')} · ${escapeHtml(item.product || 'Producto')}</strong><p class="admin-game-desc">Servidor/Categoría: ${escapeHtml(item.server || '-')}</p><p class="admin-game-desc">Facción/Tipo: ${escapeHtml(item.faction || '-')} · Personaje/Cliente: ${escapeHtml(item.character || '-')}</p><p class="admin-game-desc">Entrega/Detalle: ${escapeHtml(item.delivery || '-')}</p><p class="admin-game-desc">Estado: ${escapeHtml(item.status || 'pendiente')} · Creado: ${escapeHtml(created)}</p>${contact}`;
+      }
+
+      function ticketMessageHtml(message = {}) {
+        const created = message.created_at ? new Date(message.created_at).toLocaleString('es-ES') : 'Ahora';
+        const role = message.sender_role === 'admin' ? 'admin' : 'user';
+        const label = role === 'admin' ? 'Admin TradeHub' : 'Cliente';
+        return `<div class="ticket-message ${role}"><span class="ticket-message-meta">${label} · ${escapeHtml(created)}</span><div class="ticket-message-body">${escapeHtml(message.message || '')}</div></div>`;
+      }
+
+      function ticketChatHtml(ticketId, mode = 'user') {
+        const placeholder = mode === 'admin' ? 'Responder al cliente desde el panel admin...' : 'Escribe aquí para hablar con administración...';
+        return `<div class="ticket-chat" data-ticket-chat="${escapeHtml(ticketId)}" data-ticket-mode="${mode}"><div class="ticket-chat-head"><span>💬 Chat del ticket</span><button class="mini-btn" type="button" data-ticket-refresh="${escapeHtml(ticketId)}">Actualizar</button></div><div class="ticket-messages" data-ticket-messages="${escapeHtml(ticketId)}"><p class="auth-hint">Cargando mensajes...</p></div><div class="ticket-compose"><textarea data-ticket-input="${escapeHtml(ticketId)}" placeholder="${placeholder}"></textarea><button class="panel-btn" type="button" data-ticket-send="${escapeHtml(ticketId)}">Enviar</button></div></div>`;
+      }
+
+      async function fetchTicketMessages(ticketId) {
+        if (!supabaseClient || !ticketId) return { data: [], error: null };
+        return supabaseClient
+          .from('ticket_messages')
+          .select('id,ticket_id,sender_role,message,created_at')
+          .eq('ticket_id', ticketId)
+          .order('created_at', { ascending: true });
+      }
+
+      async function renderTicketMessages(ticketId, root = document) {
+        const wrap = root.querySelector(`[data-ticket-messages="${cssEscapeValue(ticketId)}"]`);
+        if (!wrap) return;
+        const { data, error } = await fetchTicketMessages(ticketId);
+        if (error) {
+          wrap.innerHTML = '<p class="auth-hint">El chat todavía no está disponible. Aplica la migración de ticket_messages en Supabase.</p>';
+          return;
+        }
+        wrap.innerHTML = (data || []).length
+          ? data.map(ticketMessageHtml).join('')
+          : '<p class="auth-hint">Aún no hay mensajes. Escribe el primero para comunicarte con administración.</p>';
+        wrap.scrollTop = wrap.scrollHeight;
+      }
+
+      async function sendTicketMessage(ticketId, mode = 'user', root = document) {
+        if (!currentUser) {
+          openAuth('login');
+          showAuthNotice('Debes iniciar sesión para usar el chat del ticket.', 'warn');
+          return;
+        }
+        if (!supabaseClient) {
+          showAuthNotice('El chat no está disponible porque Supabase no está conectado.', 'warn');
+          return;
+        }
+        const input = root.querySelector(`[data-ticket-input="${cssEscapeValue(ticketId)}"]`);
+        const button = root.querySelector(`[data-ticket-send="${cssEscapeValue(ticketId)}"]`);
+        const message = input?.value?.trim() || '';
+        if (!message) {
+          showAuthNotice('Escribe un mensaje antes de enviarlo.', 'warn');
+          return;
+        }
+        if (button) button.disabled = true;
+        const senderRole = mode === 'admin' && isAdminUser(currentUser, currentProfile) ? 'admin' : 'user';
+        const { error } = await supabaseClient.from('ticket_messages').insert({
+          ticket_id: ticketId,
+          sender_id: currentUser.id,
+          sender_role: senderRole,
+          message
+        });
+        if (button) button.disabled = false;
+        if (error) {
+          showAuthNotice(`No se pudo enviar el mensaje: ${friendlyError(error.message)}`, 'warn');
+          return;
+        }
+        input.value = '';
+        await renderTicketMessages(ticketId, root);
+        showAuthNotice('✅ Mensaje enviado al chat del ticket.');
+      }
+
+      async function hydrateTicketChats(root = document) {
+        const chats = [...root.querySelectorAll('[data-ticket-chat]')];
+        await Promise.all(chats.map((chat) => renderTicketMessages(chat.dataset.ticketChat, root)));
+      }
+
+      function closeOverlaysBeforeProfile() {
+        [gameWindowModal, streamingModal, authModal, resetPasswordModal].filter(Boolean).forEach((modal) => {
+          modal.classList.remove('show');
+          modal.setAttribute('aria-hidden', 'true');
+        });
+      }
+
+      async function openProfileDrawer(section = 'info') {
+        if (!currentUser) {
+          openAuth('login');
+          return false;
+        }
+        closeOverlaysBeforeProfile();
+        profileDrawer.classList.add('show');
+        profileDrawer.setAttribute('aria-hidden', 'false');
+        setProfileSection(section);
+        await loadUserProfile();
+        if (section === 'orders') await renderUserOrders();
+        return true;
       }
 
       async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
@@ -5635,14 +5754,15 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           delivery: payload.delivery || '',
           status: 'pendiente'
         };
-        const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
+        const { data: inserted, error } = await supabaseClient.from('tickets').insert(ticketPayload).select('id').maybeSingle();
         if (error) {
           showAuthNotice(`No se pudo crear la orden: ${friendlyError(error.message)}`, 'warn');
           return false;
         }
         await renderUserOrders();
         await renderAdminTickets();
-        setProfileSection('orders');
+        await openProfileDrawer('orders');
+        if (inserted?.id) await renderTicketMessages(inserted.id, profileDrawer);
         showAuthNotice(successMessage);
         return true;
       }
@@ -5650,33 +5770,53 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       async function renderUserOrders() {
         userOrdersList.innerHTML = '';
         if (!currentUser || !supabaseClient) return;
-        const { data } = await supabaseClient
+        const { data, error } = await supabaseClient
           .from('tickets')
           .select('id,game,server,product,faction,character,delivery,status,created_at')
           .eq('user_id', currentUser.id)
           .order('created_at', { ascending: false });
+        if (error) {
+          userOrdersList.innerHTML = `<p class="auth-hint">No se pudieron cargar tus órdenes: ${escapeHtml(friendlyError(error.message))}</p>`;
+          return;
+        }
         (data || []).forEach((item) => {
           const card = document.createElement('article');
           card.className = 'order-card';
-          card.innerHTML = ticketDetailHtml(item);
+          card.innerHTML = `${ticketDetailHtml(item)}${ticketChatHtml(item.id, 'user')}`;
           userOrdersList.appendChild(card);
         });
         if (!userOrdersList.children.length) userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes.</p>';
+        await hydrateTicketChats(userOrdersList);
       }
 
       async function renderAdminTickets() {
         adminTicketsList.innerHTML = '';
         if (!supabaseClient) return;
-        const { data } = await supabaseClient
+        const { data, error } = await supabaseClient
           .from('tickets')
-          .select('id,game,server,product,faction,character,delivery,status,created_at,user_profiles(name,email,discord,phone)')
+          .select('id,user_id,game,server,product,faction,character,delivery,status,created_at')
           .order('created_at', { ascending: false });
+        if (error) {
+          adminTicketsList.innerHTML = `<p class="auth-hint">No se pudieron cargar los tickets: ${escapeHtml(friendlyError(error.message))}</p>`;
+          return;
+        }
+        const userIds = [...new Set((data || []).map((item) => item.user_id).filter(Boolean))];
+        let profilesById = new Map();
+        if (userIds.length) {
+          const { data: profiles } = await supabaseClient
+            .from('user_profiles')
+            .select('id,name,email,discord,phone')
+            .in('id', userIds);
+          profilesById = new Map((profiles || []).map((profile) => [profile.id, profile]));
+        }
         (data || []).forEach((item) => {
           const row = document.createElement('article');
           row.className = 'order-card';
-          row.innerHTML = ticketDetailHtml(item, true);
+          row.innerHTML = `${ticketDetailHtml({ ...item, user_profiles: profilesById.get(item.user_id) }, true)}${ticketChatHtml(item.id, 'admin')}`;
           adminTicketsList.appendChild(row);
         });
+        if (!adminTicketsList.children.length) adminTicketsList.innerHTML = '<p class="auth-hint">Aún no hay tickets.</p>';
+        await hydrateTicketChats(adminTicketsList);
       }
 
       function openGamePage(index) {
@@ -6817,11 +6957,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       tabAuthLogin.addEventListener('click', () => setAuthView('login'));
       tabAuthRegister.addEventListener('click', () => setAuthView('register'));
       openProfile.addEventListener('click', async () => {
-        if (!currentUser) return openAuth('login');
-        await loadUserProfile();
-        await renderUserOrders();
-        profileDrawer.classList.add('show');
-        profileDrawer.setAttribute('aria-hidden', 'false');
+        await openProfileDrawer(profileOrdersPane.classList.contains('hidden') ? 'info' : 'orders');
       });
       closeProfileDrawer.addEventListener('click', () => {
         profileDrawer.classList.remove('show');
@@ -6845,6 +6981,20 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       tabProfileOrders.addEventListener('click', async () => {
         setProfileSection('orders');
         await renderUserOrders();
+      });
+
+      userOrdersList.addEventListener('click', async (e) => {
+        const sendBtn = e.target.closest('[data-ticket-send]');
+        const refreshBtn = e.target.closest('[data-ticket-refresh]');
+        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'user', userOrdersList);
+        if (refreshBtn) await renderTicketMessages(refreshBtn.dataset.ticketRefresh, userOrdersList);
+      });
+
+      adminTicketsList.addEventListener('click', async (e) => {
+        const sendBtn = e.target.closest('[data-ticket-send]');
+        const refreshBtn = e.target.closest('[data-ticket-refresh]');
+        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'admin', adminTicketsList);
+        if (refreshBtn) await renderTicketMessages(refreshBtn.dataset.ticketRefresh, adminTicketsList);
       });
 
       goldOrderServer.addEventListener('change', renderGoldOrderProducts);

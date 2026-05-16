@@ -9,6 +9,33 @@ alter table if exists public.user_profiles add column if not exists last_seen ti
 drop policy if exists "user_profiles_presence_read" on public.user_profiles;
 create policy "user_profiles_presence_read" on public.user_profiles for select using (true);
 
+create table if not exists public.ticket_messages (
+  id uuid primary key default gen_random_uuid(),
+  ticket_id uuid not null references public.tickets(id) on delete cascade,
+  sender_id uuid not null references auth.users(id) on delete cascade,
+  sender_role text not null default 'user' check (sender_role in ('user','admin')),
+  message text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists ticket_messages_ticket_created_idx
+  on public.ticket_messages (ticket_id, created_at);
+
+alter table public.ticket_messages enable row level security;
+
+drop policy if exists "ticket_messages_select_own" on public.ticket_messages;
+drop policy if exists "ticket_messages_insert_own" on public.ticket_messages;
+drop policy if exists "ticket_messages_select_admin" on public.ticket_messages;
+drop policy if exists "ticket_messages_insert_admin" on public.ticket_messages;
+
+create policy "ticket_messages_select_own" on public.ticket_messages for select using (exists (select 1 from public.tickets t where t.id = ticket_id and t.user_id = auth.uid()));
+create policy "ticket_messages_insert_own" on public.ticket_messages for insert with check (sender_id = auth.uid() and sender_role = 'user' and exists (select 1 from public.tickets t where t.id = ticket_id and t.user_id = auth.uid()));
+create policy "ticket_messages_select_admin" on public.ticket_messages for select using (exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true));
+create policy "ticket_messages_insert_admin" on public.ticket_messages for insert with check (sender_id = auth.uid() and sender_role = 'admin' and exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true));
+
+grant select, insert on public.tickets to authenticated;
+grant select, insert on public.ticket_messages to authenticated;
+
 create table if not exists public.user_reviews (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references auth.users(id) on delete set null,

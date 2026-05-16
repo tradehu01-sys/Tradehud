@@ -36,6 +36,18 @@ create table if not exists public.tickets (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.ticket_messages (
+  id uuid primary key default gen_random_uuid(),
+  ticket_id uuid not null references public.tickets(id) on delete cascade,
+  sender_id uuid not null references auth.users(id) on delete cascade,
+  sender_role text not null default 'user' check (sender_role in ('user','admin')),
+  message text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists ticket_messages_ticket_created_idx
+  on public.ticket_messages (ticket_id, created_at);
+
 -- =========================
 -- 3) CATÁLOGO DE SERVICIOS
 -- =========================
@@ -109,6 +121,7 @@ create table if not exists public.gold_game_options (
 -- =========================
 alter table public.user_profiles enable row level security;
 alter table public.tickets enable row level security;
+alter table public.ticket_messages enable row level security;
 alter table public.service_catalog_entries enable row level security;
 alter table public.gold_catalog_entries enable row level security;
 alter table public.user_reviews enable row level security;
@@ -121,6 +134,10 @@ drop policy if exists "user_profiles_presence_read" on public.user_profiles;
 drop policy if exists "tickets_select_own" on public.tickets;
 drop policy if exists "tickets_insert_own" on public.tickets;
 drop policy if exists "tickets_select_admin" on public.tickets;
+drop policy if exists "ticket_messages_select_own" on public.ticket_messages;
+drop policy if exists "ticket_messages_insert_own" on public.ticket_messages;
+drop policy if exists "ticket_messages_select_admin" on public.ticket_messages;
+drop policy if exists "ticket_messages_insert_admin" on public.ticket_messages;
 drop policy if exists "service_catalog_public_read" on public.service_catalog_entries;
 drop policy if exists "service_catalog_admin_write" on public.service_catalog_entries;
 drop policy if exists "service_catalog_authenticated_write" on public.service_catalog_entries;
@@ -171,6 +188,45 @@ using (
     from public.user_profiles p
     where p.id = auth.uid() and p.is_admin = true
   )
+);
+
+-- chat de tickets: dueño y admin
+create policy "ticket_messages_select_own"
+on public.ticket_messages
+for select
+using (
+  exists (
+    select 1 from public.tickets t
+    where t.id = ticket_id and t.user_id = auth.uid()
+  )
+);
+
+create policy "ticket_messages_insert_own"
+on public.ticket_messages
+for insert
+with check (
+  sender_id = auth.uid()
+  and sender_role = 'user'
+  and exists (
+    select 1 from public.tickets t
+    where t.id = ticket_id and t.user_id = auth.uid()
+  )
+);
+
+create policy "ticket_messages_select_admin"
+on public.ticket_messages
+for select
+using (
+  exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true)
+);
+
+create policy "ticket_messages_insert_admin"
+on public.ticket_messages
+for insert
+with check (
+  sender_id = auth.uid()
+  and sender_role = 'admin'
+  and exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true)
 );
 
 -- catálogo lectura pública
@@ -850,6 +906,8 @@ grant select, insert on public.user_reviews to anon;
 grant select, insert, update, delete on public.user_reviews to authenticated;
 grant select on public.gold_game_options to anon;
 grant select, insert, update, delete on public.gold_game_options to authenticated;
+grant select, insert on public.tickets to authenticated;
+grant select, insert on public.ticket_messages to authenticated;
 do $$
 begin
   if to_regclass('public.service_catalog_entries_id_seq') is not null then
