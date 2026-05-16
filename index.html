@@ -1921,11 +1921,13 @@
         margin-top: 0.15rem;
         word-break: break-word;
       }
-      .profile-tabs { display:grid; grid-template-columns: 1fr 1fr; gap:.6rem; margin: .9rem 0; padding:.35rem; border:1px solid rgba(246,202,99,.24); border-radius:14px; background:rgba(4,8,16,.55); }
+      .profile-tabs { display:grid; grid-template-columns: repeat(auto-fit,minmax(0,1fr)); gap:.6rem; margin: .9rem 0; padding:.35rem; border:1px solid rgba(246,202,99,.24); border-radius:14px; background:rgba(4,8,16,.55); }
       .profile-tab { border:1px solid #36518f; background:#12203b; color:#d9e6ff; border-radius:11px; padding:.62rem .55rem; cursor:pointer; font-weight:800; transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, color .18s ease, transform .18s ease; }
       .profile-tab:hover { border-color: rgba(246,202,99,.75); color:#fff; }
       .profile-tab.active { border-color: var(--gold); background:linear-gradient(135deg, rgba(246,202,99,.96), rgba(240,156,34,.92)); color:#140d04; box-shadow:0 0 0 2px rgba(255,255,255,.12), 0 0 20px rgba(246,202,99,.42); transform:translateY(-1px); }
+      .profile-tab.hidden { display:none; }
       .profile-tab.active::before { content:'✓ '; font-weight:900; }
+      .profile-admin-badge { display:inline-flex; margin-top:.35rem; border:1px solid #f6ca63; border-radius:999px; color:#140d04; background:#f6ca63; padding:.18rem .55rem; font-size:.72rem; font-weight:950; }
       .profile-section-status { margin:.35rem 0 .75rem; padding:.72rem .85rem; border-radius:14px; border:2px solid rgba(246,202,99,.88); background:linear-gradient(135deg, rgba(246,202,99,.14), rgba(9,16,31,.88)); color:#fff3c9; font-weight:900; box-shadow:0 0 0 1px rgba(255,255,255,.08), 0 0 18px rgba(246,202,99,.28); }
       .profile-pane { border:2px solid rgba(246,202,99,.55); border-radius:16px; padding:.85rem; background:linear-gradient(180deg, rgba(10,18,34,.82), rgba(7,11,21,.92)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.04); }
       .profile-pane[data-section="orders"] { border-color:rgba(122,76,255,.82); box-shadow:0 0 0 1px rgba(255,255,255,.08), 0 0 22px rgba(122,76,255,.28); }
@@ -3131,6 +3133,7 @@
       <div class="profile-tabs" role="tablist" aria-label="Secciones de perfil">
         <button id="tabProfileInfo" class="profile-tab active" type="button" role="tab" aria-selected="true">Perfil</button>
         <button id="tabProfileOrders" class="profile-tab" type="button" role="tab" aria-selected="false">Órdenes</button>
+        <button id="tabProfileAdminTickets" class="profile-tab hidden" type="button" role="tab" aria-selected="false">Admin tickets</button>
       </div>
       <div id="profileSectionStatus" class="profile-section-status" role="status" aria-live="polite">Estás en la sección: Perfil</div>
       <div id="profileInfoPane" class="profile-pane" data-section="profile">
@@ -3150,6 +3153,14 @@
       <div id="profileOrdersPane" class="profile-pane hidden" data-section="orders">
         <p class="auth-hint">Tus tickets aparecerán aquí. Abre cada chat para hablar con el panel admin sin salir de tu perfil.</p>
         <div id="userOrdersList"></div>
+      </div>
+      <div id="profileAdminTicketsPane" class="profile-pane hidden" data-section="admin-tickets">
+        <p class="auth-hint">Vista de administrador dentro de tu cuenta. Revisa, responde y elimina tickets sin abrir el panel de configuración.</p>
+        <div class="admin-panel-actions" style="margin-top:0;">
+          <strong style="flex:1;display:flex;align-items:center;">Administrador · tickets</strong>
+          <button id="refreshProfileAdminTicketsBtn" class="mini-btn" type="button">Actualizar</button>
+        </div>
+        <div id="profileAdminTicketsList" class="admin-game-list admin-ticket-board"></div>
       </div>
       <div id="profileMsg" class="admin-msg"></div>
     </aside>
@@ -3756,9 +3767,11 @@
       const closeProfileDrawer = document.getElementById('closeProfileDrawer');
       const tabProfileInfo = document.getElementById('tabProfileInfo');
       const tabProfileOrders = document.getElementById('tabProfileOrders');
+      const tabProfileAdminTickets = document.getElementById('tabProfileAdminTickets');
       const profileSectionStatus = document.getElementById('profileSectionStatus');
       const profileInfoPane = document.getElementById('profileInfoPane');
       const profileOrdersPane = document.getElementById('profileOrdersPane');
+      const profileAdminTicketsPane = document.getElementById('profileAdminTicketsPane');
       const profileNameTop = document.getElementById('profileNameTop');
       const profileEmailTop = document.getElementById('profileEmailTop');
       const profileNameInput = document.getElementById('profileNameInput');
@@ -3768,6 +3781,8 @@
       const changePasswordBtn = document.getElementById('changePasswordBtn');
       const logoutBtn = document.getElementById('logoutBtn');
       const userOrdersList = document.getElementById('userOrdersList');
+      const profileAdminTicketsList = document.getElementById('profileAdminTicketsList');
+      const refreshProfileAdminTicketsBtn = document.getElementById('refreshProfileAdminTicketsBtn');
       const profileMsg = document.getElementById('profileMsg');
       const adminModal = document.getElementById('adminModal');
       const adminLogin = document.getElementById('adminLogin');
@@ -4345,6 +4360,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         return supabaseClient;
       }
       const ADMIN_EMAILS = ['admin@tradehud.com'];
+      const DEFAULT_ADMIN_EMAIL = 'admin@tradehud.com';
+      const DEFAULT_ADMIN_PASSWORD = 'TradeHudAdmin2026!';
+      const LOCAL_ADMIN_ID = '00000000-0000-4000-8000-000000000001';
       const ASSET_BUCKET = 'tradehud-assets';
 
       const wowGameIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111d35'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%2300d1ff'/%3E%3Ctext x='50' y='57' text-anchor='middle' fill='%2305070d' font-size='24' font-family='Arial' font-weight='700'%3EWW%3C/text%3E%3C/svg%3E";
@@ -5203,7 +5221,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           return;
         }
         const { data } = await supabaseClient.from('user_reviews').select('id,author_name,review_text,created_at').order('created_at', { ascending: false });
-        tickets.forEach((item) => {
+        (data || []).forEach((item) => {
           const row = document.createElement('article');
           row.className = 'order-card';
           row.innerHTML = `<strong>${item.author_name || 'Usuario'}</strong><p class="admin-game-desc">${item.review_text || ''}</p><div class="admin-game-actions"><button class="mini-btn danger" type="button" data-delete-review="${item.id}">Eliminar</button></div>`;
@@ -5657,6 +5675,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         openProfile.style.display = logged ? 'inline-flex' : 'none';
       }
 
+      function updateProfileAdminUi() {
+        const isAdmin = isAdminSession();
+        tabProfileAdminTickets?.classList.toggle('hidden', !isAdmin);
+        if (!isAdmin && profileAdminTicketsPane && !profileAdminTicketsPane.classList.contains('hidden')) setProfileSection('info');
+      }
+
       async function loadUserProfile() {
         if (!currentUser) return;
         const fallbackProfile = {
@@ -5665,7 +5689,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           email: currentUser.email || '',
           discord: currentUser.user_metadata?.discord || '',
           phone: currentUser.user_metadata?.phone || '',
-          is_admin: false
+          is_admin: ADMIN_EMAILS.includes((currentUser.email || '').toLowerCase())
         };
         if (!supabaseClient) {
           currentProfile = fallbackProfile;
@@ -5697,7 +5721,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             email: fallbackProfile.email,
             discord: fallbackProfile.discord,
             phone: fallbackProfile.phone,
-            is_admin: false
+            is_admin: ADMIN_EMAILS.includes((fallbackProfile.email || '').toLowerCase())
           };
           const { data: inserted } = await supabaseClient.from('user_profiles').upsert(payload).select().maybeSingle();
           currentProfile = inserted || payload;
@@ -5705,8 +5729,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           currentProfile = data;
         }
         if (isAdminUser(currentUser, currentProfile)) currentProfile.is_admin = true;
-        profileNameTop.textContent = currentProfile.name || 'Perfil';
+        profileNameTop.innerHTML = `${escapeHtml(currentProfile.name || 'Perfil')}${currentProfile.is_admin ? '<span class="profile-admin-badge">ADMINISTRADOR</span>' : ''}`;
         profileEmailTop.textContent = currentProfile.email || '';
+        updateProfileAdminUi();
         profileNameInput.value = currentProfile.name || '';
         profileDiscordInput.value = currentProfile.discord || '';
         profilePhoneInput.value = currentProfile.phone || '';
@@ -5810,6 +5835,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         return adminPanelUnlocked || isAdminUser(currentUser, currentProfile);
       }
 
+      function getAdminTicketClient() {
+        return getTicketClient(adminPanelUnlocked || !currentUser);
+      }
+
       function ticketChatHtml(ticketId, mode = 'user') {
         const placeholder = mode === 'admin' ? 'Responder al cliente desde el panel admin...' : 'Escribe aquí para hablar con administración...';
         return `<div class="ticket-chat" data-ticket-chat="${escapeHtml(ticketId)}" data-ticket-mode="${mode}"><div class="ticket-chat-head"><span>💬 Chat del ticket</span><button class="mini-btn" type="button" data-ticket-refresh="${escapeHtml(ticketId)}">Actualizar</button></div><div class="ticket-messages" data-ticket-messages="${escapeHtml(ticketId)}"><p class="auth-hint">Cargando mensajes...</p></div><div class="ticket-compose"><textarea data-ticket-input="${escapeHtml(ticketId)}" placeholder="${placeholder}"></textarea><button class="panel-btn" type="button" data-ticket-send="${escapeHtml(ticketId)}">Enviar</button></div></div>`;
@@ -5818,7 +5847,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       async function fetchTicketMessages(ticketId) {
         if (!ticketId) return { data: [], error: null, localOnly: true };
         const local = getLocalTicketMessages(ticketId);
-        const ticketClient = getTicketClient(adminPanelUnlocked);
+        const ticketClient = getAdminTicketClient();
         if (!ticketClient) return { data: local, error: null, localOnly: true };
         const { data, error } = await ticketClient
           .from('ticket_messages')
@@ -5900,9 +5929,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         closeOverlaysBeforeProfile();
         profileDrawer.classList.add('show');
         profileDrawer.setAttribute('aria-hidden', 'false');
-        setProfileSection(section);
         await loadUserProfile();
-        if (section === 'orders') await renderUserOrders();
+        const requestedSection = section === 'adminTickets' && !isAdminSession() ? 'orders' : section;
+        setProfileSection(requestedSection);
+        if (requestedSection === 'orders') await renderUserOrders();
+        if (requestedSection === 'adminTickets') await renderAdminTickets(profileAdminTicketsList);
         return true;
       }
 
@@ -5954,10 +5985,6 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           showAuthNotice('Debes iniciar sesión para crear una orden.', 'warn');
           return false;
         }
-        if (!supabaseClient) {
-          showAuthNotice('No se pudo crear la orden porque Supabase no está conectado.', 'warn');
-          return false;
-        }
         const ticketId = window.crypto?.randomUUID?.() || `ticket-${Date.now()}-${Math.random().toString(16).slice(2)}`;
         const ticketPayload = {
           id: ticketId,
@@ -5968,23 +5995,34 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           faction: payload.faction || '',
           character: payload.character || '',
           delivery: payload.delivery || '',
-          status: 'pendiente'
+          status: 'pendiente',
+          created_at: new Date().toISOString()
         };
-        const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
-        if (error) {
-          showAuthNotice(`No se pudo crear la orden: ${friendlyError(error.message)}`, 'warn');
-          return false;
-        }
         trackPopularOrder(ticketPayload);
-        saveLocalTicket({ ...ticketPayload, created_at: new Date().toISOString(), user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline });
+        saveLocalTicket({ ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline });
         await getPresenceSnapshot([currentUser.id]);
         await openProfileDrawer('orders');
         await renderUserOrders();
-        await renderAdminTickets();
-        await renderTicketMessages(ticketId, profileDrawer);
+        await renderAdminTickets(adminTicketsList);
+        await renderAdminTickets(profileAdminTicketsList);
         showAuthNotice(successMessage);
+        if (!supabaseClient) {
+          showAuthNotice('✅ Orden creada en respaldo local. Conecta Supabase para sincronizarla entre dispositivos.', 'warn');
+          return true;
+        }
+        const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
+        if (error) {
+          showAuthNotice(`✅ Orden visible en tu perfil. No se pudo sincronizar aún: ${friendlyError(error.message)}`, 'warn');
+          return true;
+        }
+        saveLocalTicket({ ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline, synced: true });
+        await renderUserOrders();
+        await renderAdminTickets(adminTicketsList);
+        await renderAdminTickets(profileAdminTicketsList);
+        await renderTicketMessages(ticketId, profileDrawer);
         return true;
       }
+
 
       async function renderUserOrders() {
         userOrdersList.innerHTML = '';
@@ -6023,12 +6061,13 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
 
-      async function renderAdminTickets() {
-        adminTicketsList.innerHTML = '';
+      async function renderAdminTickets(target = adminTicketsList) {
+        if (!target) return;
+        target.innerHTML = '';
         const localTickets = getLocalTickets();
         let data = [];
         let error = null;
-        const ticketClient = getTicketClient(adminPanelUnlocked);
+        const ticketClient = getAdminTicketClient();
         if (ticketClient) {
           const result = await ticketClient
             .from('tickets')
@@ -6038,7 +6077,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           error = result.error;
         }
         if (error && !localTickets.length) {
-          adminTicketsList.innerHTML = `<p class="auth-hint">No se pudieron cargar los tickets: ${escapeHtml(friendlyError(error.message))}. Si usas el acceso admin con clave, ejecuta la migración actualizada para permitir lectura del panel admin.</p>`;
+          target.innerHTML = `<p class="auth-hint">No se pudieron cargar los tickets: ${escapeHtml(friendlyError(error.message))}. Si usas el acceso admin con clave, ejecuta la migración actualizada para permitir lectura del panel admin.</p>`;
           return;
         }
         const tickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))]
@@ -6056,19 +6095,23 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         tickets.forEach((item) => {
           const row = document.createElement('article');
           row.className = 'order-card';
+          row.dataset.ticketId = item.id;
           const profile = profilesById.get(item.user_id) || item.user_profiles || {};
           const detail = ticketDetailHtml({ ...item, user_profiles: profile, user_online: presenceSnapshot.byUserId?.[item.user_id], admin_online: true }, true);
           row.innerHTML = `<div class="ticket-main">${detail}${ticketChatHtml(item.id, 'admin')}</div><div class="ticket-side-tools"><button class="mini-btn danger ticket-delete-btn" type="button" data-ticket-delete="${escapeHtml(item.id)}">Eliminar</button></div>`;
-          adminTicketsList.appendChild(row);
+          target.appendChild(row);
         });
-        if (!adminTicketsList.children.length) adminTicketsList.innerHTML = '<p class="auth-hint">Aún no hay tickets.</p>';
-        await hydrateTicketChats(adminTicketsList);
+        if (!target.children.length) target.innerHTML = '<p class="auth-hint">Aún no hay tickets.</p>';
+        await hydrateTicketChats(target);
       }
 
-      async function deleteAdminTicket(ticketId) {
+      async function deleteAdminTicket(ticketId, root = document) {
         if (!ticketId) return;
-        if (!window.confirm('¿Eliminar este ticket y su chat?')) return;
-        const ticketClient = getTicketClient(adminPanelUnlocked);
+        const selector = `[data-ticket-id="${cssEscapeValue(ticketId)}"]`;
+        const deleteButtons = root.querySelectorAll(`[data-ticket-delete="${cssEscapeValue(ticketId)}"]`);
+        deleteButtons.forEach((btn) => { btn.disabled = true; btn.textContent = 'Eliminando...'; });
+        root.querySelectorAll(selector).forEach((card) => card.remove());
+        const ticketClient = getAdminTicketClient();
         let error = null;
         if (ticketClient) {
           const msgDelete = await ticketClient.from('ticket_messages').delete().eq('ticket_id', ticketId);
@@ -6076,11 +6119,18 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           error = ticketDelete.error || msgDelete.error;
         }
         removeLocalTicket(ticketId);
-        await renderAdminTickets();
+        await renderAdminTickets(adminTicketsList);
+        await renderAdminTickets(profileAdminTicketsList);
         if (currentUser) await renderUserOrders();
-        if (error) showAdminNotice(`Ticket eliminado localmente, pero Supabase respondió: ${friendlyError(error.message)}`, 'warn');
-        else showAdminNotice('✅ Ticket eliminado correctamente.', 'ok');
+        if (error) {
+          showAuthNotice(`Ticket eliminado de esta vista. Si vuelve a aparecer, ejecuta la migración de permisos DELETE: ${friendlyError(error.message)}`, 'warn');
+          showAdminNotice(`Ticket eliminado localmente, pero Supabase respondió: ${friendlyError(error.message)}`, 'warn');
+        } else {
+          showAuthNotice('✅ Ticket eliminado correctamente.');
+          showAdminNotice('✅ Ticket eliminado correctamente.', 'ok');
+        }
       }
+
 
       function openGamePage(index) {
         const game = games[index];
@@ -7170,6 +7220,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             if (currentUser) {
               await loadUserProfile();
               await updatePresence(true);
+              if (isAdminSession()) await renderAdminTickets(profileAdminTicketsList);
               await renderUserOrders();
             }
             toggleUserButtons();
@@ -7186,9 +7237,11 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
                 profileEmailTop.textContent = currentUser.email || '';
                 await loadUserProfile();
                 await updatePresence(true);
+                if (isAdminSession()) await renderAdminTickets(profileAdminTicketsList);
                 await renderUserOrders();
               } else {
                 currentProfile = null;
+                updateProfileAdminUi();
                 if (event === 'SIGNED_OUT' || hadUser) {
                   profileNameTop.textContent = 'Perfil';
                   profileEmailTop.textContent = '';
@@ -7268,15 +7321,19 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
       function setProfileSection(section = 'info') {
         const isOrders = section === 'orders';
-        tabProfileInfo.classList.toggle('active', !isOrders);
+        const isAdminTickets = section === 'adminTickets';
+        tabProfileInfo.classList.toggle('active', !isOrders && !isAdminTickets);
         tabProfileOrders.classList.toggle('active', isOrders);
-        tabProfileInfo.setAttribute('aria-selected', String(!isOrders));
+        tabProfileAdminTickets?.classList.toggle('active', isAdminTickets);
+        tabProfileInfo.setAttribute('aria-selected', String(!isOrders && !isAdminTickets));
         tabProfileOrders.setAttribute('aria-selected', String(isOrders));
-        profileInfoPane.classList.toggle('hidden', isOrders);
+        tabProfileAdminTickets?.setAttribute('aria-selected', String(isAdminTickets));
+        profileInfoPane.classList.toggle('hidden', isOrders || isAdminTickets);
         profileOrdersPane.classList.toggle('hidden', !isOrders);
+        profileAdminTicketsPane?.classList.toggle('hidden', !isAdminTickets);
         if (profileSectionStatus) {
-          profileSectionStatus.textContent = `Estás en la sección: ${isOrders ? 'Órdenes' : 'Perfil'}`;
-          profileSectionStatus.dataset.section = isOrders ? 'orders' : 'profile';
+          profileSectionStatus.textContent = `Estás en la sección: ${isAdminTickets ? 'Administrador · Tickets' : isOrders ? 'Órdenes' : 'Perfil'}`;
+          profileSectionStatus.dataset.section = isAdminTickets ? 'admin-tickets' : isOrders ? 'orders' : 'profile';
         }
       }
 
@@ -7284,6 +7341,10 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       tabProfileOrders.addEventListener('click', async () => {
         setProfileSection('orders');
         await renderUserOrders();
+      });
+      tabProfileAdminTickets?.addEventListener('click', async () => {
+        setProfileSection('adminTickets');
+        await renderAdminTickets(profileAdminTicketsList);
       });
 
       userOrdersList.addEventListener('click', async (e) => {
@@ -7293,14 +7354,17 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         if (refreshBtn) await renderTicketMessages(refreshBtn.dataset.ticketRefresh, userOrdersList);
       });
 
-      adminTicketsList.addEventListener('click', async (e) => {
+      async function handleAdminTicketListClick(e, root) {
         const deleteBtn = e.target.closest('[data-ticket-delete]');
         const sendBtn = e.target.closest('[data-ticket-send]');
         const refreshBtn = e.target.closest('[data-ticket-refresh]');
-        if (deleteBtn) await deleteAdminTicket(deleteBtn.dataset.ticketDelete);
-        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'admin', adminTicketsList);
-        if (refreshBtn) await renderTicketMessages(refreshBtn.dataset.ticketRefresh, adminTicketsList);
-      });
+        if (deleteBtn) await deleteAdminTicket(deleteBtn.dataset.ticketDelete, root);
+        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'admin', root);
+        if (refreshBtn) await renderTicketMessages(refreshBtn.dataset.ticketRefresh, root);
+      }
+
+      adminTicketsList.addEventListener('click', (e) => handleAdminTicketListClick(e, adminTicketsList));
+      profileAdminTicketsList?.addEventListener('click', (e) => handleAdminTicketListClick(e, profileAdminTicketsList));
 
       goldOrderServer.addEventListener('change', renderGoldOrderProducts);
       goldOrderProduct.addEventListener('change', updateGoldOrderSummary);
@@ -7418,11 +7482,33 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         showAuthNotice('📩 Te reenviamos el correo de confirmación de TradeHub. Revisa bandeja principal y spam.');
       });
 
+      async function loginLocalAdminAccount() {
+        currentUser = { id: LOCAL_ADMIN_ID, email: DEFAULT_ADMIN_EMAIL, user_metadata: { name: 'Administrador TradeHud' } };
+        currentProfile = { id: LOCAL_ADMIN_ID, name: 'Administrador TradeHud', email: DEFAULT_ADMIN_EMAIL, discord: 'TradeHud Admin', phone: '', is_admin: true, is_online: true };
+        adminPanelUnlocked = true;
+        profileNameTop.innerHTML = `${escapeHtml(currentProfile.name)}<span class="profile-admin-badge">ADMINISTRADOR</span>`;
+        profileEmailTop.textContent = currentProfile.email;
+        profileNameInput.value = currentProfile.name;
+        profileDiscordInput.value = currentProfile.discord;
+        profilePhoneInput.value = currentProfile.phone;
+        updateProfileAdminUi();
+        toggleUserButtons();
+        closeAuth();
+        showAuthNotice('✅ Entraste como administrador de tickets.');
+        await openProfileDrawer('adminTickets');
+      }
+
       authLoginBtn.addEventListener('click', async () => {
+        const loginEmail = authLoginEmail.value.trim().toLowerCase();
+        const loginPassword = authLoginPassword.value;
+        if (loginEmail === DEFAULT_ADMIN_EMAIL && loginPassword === DEFAULT_ADMIN_PASSWORD) {
+          await loginLocalAdminAccount();
+          return;
+        }
         if (!supabaseClient) return;
         const { error } = await supabaseClient.auth.signInWithPassword({
-          email: authLoginEmail.value.trim(),
-          password: authLoginPassword.value
+          email: loginEmail,
+          password: loginPassword
         });
         if (error) {
           authMsg.textContent = friendlyError(error.message);
@@ -7433,6 +7519,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         authMsg.style.color = '#9affcc';
         showAuthNotice('✅ Inicio de sesión exitoso.');
         closeAuth();
+        if (ADMIN_EMAILS.includes(loginEmail)) setTimeout(() => openProfileDrawer('adminTickets'), 350);
       });
 
       forgotPasswordBtn.addEventListener('click', openResetPasswordWindow);
@@ -7511,8 +7598,12 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       logoutBtn.addEventListener('click', async () => {
-        if (!supabaseClient) return;
-        await supabaseClient.auth.signOut();
+        if (supabaseClient && currentUser?.id !== LOCAL_ADMIN_ID) await supabaseClient.auth.signOut();
+        currentUser = null;
+        currentProfile = null;
+        adminPanelUnlocked = false;
+        updateProfileAdminUi();
+        toggleUserButtons();
         profileDrawer.classList.remove('show');
         profileMsg.textContent = 'Sesión cerrada.';
         profileMsg.style.color = '#9affcc';
@@ -7619,7 +7710,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       tabPreciosOro.addEventListener('click', () => activateAdminTab('precios'));
       if (tabMarketAdmin) tabMarketAdmin.addEventListener('click', () => activateAdminTab('market'));
       tabTicketsAdmin.addEventListener('click', () => activateAdminTab('tickets'));
-      refreshAdminTicketsBtn?.addEventListener('click', renderAdminTickets);
+      refreshAdminTicketsBtn?.addEventListener('click', () => renderAdminTickets(adminTicketsList));
+      refreshProfileAdminTicketsBtn?.addEventListener('click', () => renderAdminTickets(profileAdminTicketsList));
       tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
       tabBosteo.addEventListener('click', () => activateAdminTab('bosteo'));
       tabReviewsAdmin.addEventListener('click', () => activateAdminTab('reviews'));

@@ -42,3 +42,24 @@ Y que `ticket_messages` tenga estas columnas:
 4. Abre el panel admin, entra a **Tickets** y responde desde el chat del mismo ticket.
 
 > Si ves mensajes temporales, significa que el navegador está guardando respaldo local, pero falta ejecutar o refrescar la migración en Supabase para sincronización global entre dispositivos.
+
+## Acceso administrador de tickets desde Perfil
+
+Además del panel antiguo, la web reconoce un acceso administrador directo desde **Ingresar** para abrir la cuenta y ver **Perfil → Admin tickets**:
+
+- Correo: `admin@tradehud.com`
+- Contraseña inicial: `TradeHudAdmin2026!`
+
+Para que ese usuario exista también en Supabase y tenga permisos reales entre dispositivos:
+
+1. Crea el usuario en **Authentication → Users** con ese correo y contraseña.
+2. Marca el correo como confirmado.
+3. Ejecuta esta verificación/actualización en SQL Editor:
+
+```sql
+update public.user_profiles
+set is_admin = true, name = 'Administrador TradeHud'
+where lower(email) = 'admin@tradehud.com';
+```
+
+La migración actual también habilita permisos `delete` para que el administrador pueda borrar tickets y mensajes desde la cuenta.

@@ -140,9 +140,13 @@ drop policy if exists "ticket_messages_select_own" on public.ticket_messages;
 drop policy if exists "ticket_messages_insert_own" on public.ticket_messages;
 drop policy if exists "ticket_messages_select_admin" on public.ticket_messages;
 drop policy if exists "ticket_messages_insert_admin" on public.ticket_messages;
+drop policy if exists "tickets_delete_admin" on public.tickets;
+drop policy if exists "ticket_messages_delete_admin" on public.ticket_messages;
 drop policy if exists "tickets_select_admin_panel" on public.tickets;
 drop policy if exists "ticket_messages_select_admin_panel" on public.ticket_messages;
 drop policy if exists "ticket_messages_insert_admin_panel" on public.ticket_messages;
+drop policy if exists "tickets_delete_admin_panel" on public.tickets;
+drop policy if exists "ticket_messages_delete_admin_panel" on public.ticket_messages;
 drop policy if exists "service_catalog_public_read" on public.service_catalog_entries;
 drop policy if exists "service_catalog_admin_write" on public.service_catalog_entries;
 drop policy if exists "service_catalog_authenticated_write" on public.service_catalog_entries;
@@ -234,6 +238,16 @@ with check (
   and exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true)
 );
 
+create policy "tickets_delete_admin"
+on public.tickets
+for delete
+using (exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true));
+
+create policy "ticket_messages_delete_admin"
+on public.ticket_messages
+for delete
+using (exists (select 1 from public.user_profiles p where p.id = auth.uid() and p.is_admin = true));
+
 -- Compatibilidad con el panel admin de la landing (login propio admin/admin123).
 create policy "tickets_select_admin_panel"
 on public.tickets
@@ -256,6 +270,18 @@ with check (
   and sender_role = 'admin'
   and length(trim(message)) > 0
 );
+
+create policy "tickets_delete_admin_panel"
+on public.tickets
+for delete
+to anon
+using (true);
+
+create policy "ticket_messages_delete_admin_panel"
+on public.ticket_messages
+for delete
+to anon
+using (true);
 
 -- catálogo lectura pública
 create policy "service_catalog_public_read"
@@ -934,10 +960,10 @@ grant select, insert on public.user_reviews to anon;
 grant select, insert, update, delete on public.user_reviews to authenticated;
 grant select on public.gold_game_options to anon;
 grant select, insert, update, delete on public.gold_game_options to authenticated;
-grant select on public.tickets to anon;
-grant select, insert on public.ticket_messages to anon;
-grant select, insert on public.tickets to authenticated;
-grant select, insert on public.ticket_messages to authenticated;
+grant select, delete on public.tickets to anon;
+grant select, insert, delete on public.ticket_messages to anon;
+grant select, insert, delete on public.tickets to authenticated;
+grant select, insert, delete on public.ticket_messages to authenticated;
 do $$
 begin
   if to_regclass('public.service_catalog_entries_id_seq') is not null then
