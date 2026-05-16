@@ -5185,7 +5185,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       function friendlyError(message = '') {
         const raw = String(message || '').toLowerCase();
-        if (raw.includes('email rate limit exceeded') || raw.includes('rate limit') || raw.includes('too many requests')) return 'Se alcanzó el límite de correos por ahora. Espera unos minutos y vuelve a intentarlo.';
+        if (raw.includes('email rate limit exceeded') || raw.includes('rate limit') || raw.includes('too many requests')) return 'Supabase bloqueó el envío por demasiados correos seguidos. Espera unos minutos antes de pedir otro correo.';
         if (raw.includes('invalid email') || raw.includes('email address is invalid') || raw.includes('unable to validate email address') || raw.includes('invalid format')) return 'El correo no es válido. Revisa que esté bien escrito, por ejemplo nombre@dominio.com.';
         if (raw.includes('invalid login credentials')) return 'Credenciales inválidas. Revisa correo y contraseña.';
         if (raw.includes('email not confirmed')) return 'Debes confirmar tu correo antes de iniciar sesión.';
@@ -6556,24 +6556,13 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           });
         }
         const confirmationEnabled = !data.session;
-        let resendError = null;
-        if (confirmationEnabled && !accountAlreadyExists) {
-          const resendResult = await supabaseClient.auth.resend({
-            type: 'signup',
-            email,
-            options: { emailRedirectTo: getAuthRedirectUrl('signup') }
-          });
-          resendError = resendResult.error;
-        }
         openLoginAfterRegister(email);
         if (accountAlreadyExists) {
           showAuthNotice('Ese correo ya existe en TradeHub. Por seguridad no se envía otro registro; usa “¿Olvidó su contraseña?” para recibir el correo de recuperación.', 'warn');
-        } else if (resendError) {
-          showAuthNotice(`Cuenta creada, pero el reenvío de confirmación falló: ${friendlyError(resendError.message)}. Revisa el correo/SMTP del panel de autenticación para que llegue como TradeHub.`, 'warn');
         } else if (!confirmationEnabled) {
-          showAuthNotice('✅ Cuenta creada. La confirmación por correo está desactivada en el panel de autenticación; actívala en Authentication → Providers → Email para enviar correo TradeHub.', 'warn');
+          showAuthNotice('✅ Cuenta creada. La confirmación por correo está desactivada; ya puedes iniciar sesión en TradeHub.', 'warn');
         } else {
-          showAuthNotice('✅ Cuenta creada. Solicitamos el correo de confirmación de TradeHub. Revisa principal y spam; si no llega, verifica SMTP/plantillas en el panel de autenticación.');
+          showAuthNotice('✅ Cuenta creada. Te enviamos el correo de confirmación de TradeHub. Revisa tu bandeja principal y spam.');
         }
       });
 
