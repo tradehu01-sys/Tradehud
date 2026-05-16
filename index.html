@@ -5185,12 +5185,20 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       function friendlyError(message = '') {
         const raw = String(message || '').toLowerCase();
+        if (raw.includes('email rate limit exceeded') || raw.includes('rate limit') || raw.includes('too many requests')) return 'Se alcanzó el límite de correos por ahora. Espera unos minutos y vuelve a intentarlo.';
+        if (raw.includes('invalid email') || raw.includes('email address is invalid') || raw.includes('unable to validate email address') || raw.includes('invalid format')) return 'El correo no es válido. Revisa que esté bien escrito, por ejemplo nombre@dominio.com.';
         if (raw.includes('invalid login credentials')) return 'Credenciales inválidas. Revisa correo y contraseña.';
         if (raw.includes('email not confirmed')) return 'Debes confirmar tu correo antes de iniciar sesión.';
-        if (raw.includes('already registered')) return 'Este correo ya está registrado.';
-        if (raw.includes('password should be at least')) return 'La contraseña debe tener al menos 6 caracteres.';
-        if (raw.includes('network')) return 'Error de red. Verifica tu conexión e intenta nuevamente.';
-        return message || 'Ocurrió un error inesperado.';
+        if (raw.includes('already registered') || raw.includes('user already registered')) return 'Este correo ya está registrado.';
+        if (raw.includes('signup is disabled')) return 'El registro está desactivado temporalmente. Intenta más tarde.';
+        if (raw.includes('password should be at least') || raw.includes('weak password')) return 'La contraseña debe tener al menos 6 caracteres.';
+        if (raw.includes('same password')) return 'La nueva contraseña debe ser diferente a la anterior.';
+        if (raw.includes('session') && (raw.includes('expired') || raw.includes('missing'))) return 'La sesión o el enlace expiró. Solicita un nuevo correo e inténtalo otra vez.';
+        if (raw.includes('token') && (raw.includes('expired') || raw.includes('invalid'))) return 'El enlace ya expiró o no es válido. Solicita un nuevo correo de TradeHub.';
+        if (raw.includes('otp') && raw.includes('expired')) return 'El código del correo expiró. Solicita un nuevo correo de TradeHub.';
+        if (raw.includes('network') || raw.includes('failed to fetch')) return 'Error de red. Verifica tu conexión e intenta nuevamente.';
+        if (raw.includes('database') || raw.includes('permission denied') || raw.includes('row-level security')) return 'No se pudo completar por configuración de la base de datos. Contacta al soporte de TradeHub.';
+        return message ? `No se pudo completar la acción: ${message}` : 'Ocurrió un error inesperado.';
       }
 
       function toggleUserButtons() {
