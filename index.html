@@ -1730,6 +1730,28 @@
         box-shadow: none;
       }
       .auth-btn:hover { border-color: #ffffff; }
+      #openProfile.auth-btn {
+        position: relative;
+        border: 1px solid rgba(246, 202, 99, 0.95) !important;
+        background: linear-gradient(135deg, #ffd86b, #f09c22 48%, #7a4cff) !important;
+        color: #120d05 !important;
+        font-weight: 900;
+        letter-spacing: .02em;
+        box-shadow: 0 0 0 1px rgba(255,255,255,.18), 0 0 18px rgba(246,202,99,.55), 0 8px 22px rgba(0,0,0,.38);
+        transform: translateZ(0);
+      }
+      #openProfile.auth-btn::before {
+        content: '●';
+        color: #35ff96;
+        margin-right: .35rem;
+        text-shadow: 0 0 8px rgba(53,255,150,.9);
+      }
+      #openProfile.auth-btn:hover,
+      #openProfile.auth-btn:focus-visible {
+        border-color: #ffffff !important;
+        filter: brightness(1.08);
+        box-shadow: 0 0 0 2px rgba(255,255,255,.24), 0 0 24px rgba(246,202,99,.72), 0 10px 26px rgba(0,0,0,.45);
+      }
       .auth-modal { z-index: 160; }
       .auth-modal .juego-form-card {
         width: min(460px, 92vw);
@@ -1846,9 +1868,11 @@
         margin-top: 0.15rem;
         word-break: break-word;
       }
-      .profile-tabs { display:grid; grid-template-columns: 1fr 1fr; gap:.5rem; margin: .8rem 0; }
-      .profile-tab { border:1px solid #36518f; background:#12203b; color:#fff; border-radius:8px; padding:.45rem; cursor:pointer; }
-      .profile-tab.active { border-color: var(--gold); }
+      .profile-tabs { display:grid; grid-template-columns: 1fr 1fr; gap:.6rem; margin: .9rem 0; padding:.35rem; border:1px solid rgba(246,202,99,.24); border-radius:14px; background:rgba(4,8,16,.55); }
+      .profile-tab { border:1px solid #36518f; background:#12203b; color:#d9e6ff; border-radius:11px; padding:.62rem .55rem; cursor:pointer; font-weight:800; transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, color .18s ease, transform .18s ease; }
+      .profile-tab:hover { border-color: rgba(246,202,99,.75); color:#fff; }
+      .profile-tab.active { border-color: var(--gold); background:linear-gradient(135deg, rgba(246,202,99,.96), rgba(240,156,34,.92)); color:#140d04; box-shadow:0 0 0 2px rgba(255,255,255,.12), 0 0 20px rgba(246,202,99,.42); transform:translateY(-1px); }
+      .profile-tab.active::before { content:'✓ '; font-weight:900; }
       .profile-pane.hidden { display:none; }
       .order-card { border:1px solid #334f88; border-radius:10px; padding:.65rem; margin-bottom:.55rem; background:#0e1930; }
       #logoutBtn {
@@ -3011,9 +3035,9 @@
         <strong id="profileNameTop">Perfil</strong>
         <small id="profileEmailTop"></small>
       </div>
-      <div class="profile-tabs">
-        <button id="tabProfileInfo" class="profile-tab active" type="button">Perfil</button>
-        <button id="tabProfileOrders" class="profile-tab" type="button">Órdenes</button>
+      <div class="profile-tabs" role="tablist" aria-label="Secciones de perfil">
+        <button id="tabProfileInfo" class="profile-tab active" type="button" role="tab" aria-selected="true">Perfil</button>
+        <button id="tabProfileOrders" class="profile-tab" type="button" role="tab" aria-selected="false">Órdenes</button>
       </div>
       <div id="profileInfoPane" class="profile-pane">
         <label for="profileNameInput">Nombre</label>
@@ -6451,17 +6475,19 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         profileDrawer.classList.remove('show');
         profileDrawer.setAttribute('aria-hidden', 'true');
       });
-      tabProfileInfo.addEventListener('click', () => {
-        tabProfileInfo.classList.add('active');
-        tabProfileOrders.classList.remove('active');
-        profileInfoPane.classList.remove('hidden');
-        profileOrdersPane.classList.add('hidden');
-      });
+      function setProfileSection(section = 'info') {
+        const isOrders = section === 'orders';
+        tabProfileInfo.classList.toggle('active', !isOrders);
+        tabProfileOrders.classList.toggle('active', isOrders);
+        tabProfileInfo.setAttribute('aria-selected', String(!isOrders));
+        tabProfileOrders.setAttribute('aria-selected', String(isOrders));
+        profileInfoPane.classList.toggle('hidden', isOrders);
+        profileOrdersPane.classList.toggle('hidden', !isOrders);
+      }
+
+      tabProfileInfo.addEventListener('click', () => setProfileSection('info'));
       tabProfileOrders.addEventListener('click', async () => {
-        tabProfileOrders.classList.add('active');
-        tabProfileInfo.classList.remove('active');
-        profileOrdersPane.classList.remove('hidden');
-        profileInfoPane.classList.add('hidden');
+        setProfileSection('orders');
         await renderUserOrders();
       });
 
