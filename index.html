@@ -5150,11 +5150,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           resetPasswordMsg.style.color = '#ffb6b6';
           return;
         }
-        resetPasswordMsg.textContent = 'Listo. Solicitamos el correo de recuperación TradeHub. Si no llega en unos minutos, revisa spam y confirma que ese correo esté registrado; el envío real depende del correo/SMTP configurado en el panel de autenticación.';
+        resetPasswordMsg.textContent = 'Listo. Te enviamos el correo de recuperación de TradeHub. Revisa tu bandeja principal y spam; si no aparece en unos minutos, confirma que escribiste el correo registrado.';
         resetPasswordMsg.style.color = '#9affcc';
         authMsg.textContent = 'Revisa tu correo: el mensaje de recuperación te traerá de vuelta a TradeHub para crear la nueva contraseña.';
         authMsg.style.color = '#9affcc';
-        showAuthNotice('📩 Recuperación solicitada. Revisa principal/spam; si no llega, verifica SMTP y plantilla TradeHub en el panel de autenticación.');
+        showAuthNotice('📩 Correo de recuperación enviado por TradeHub. Revisa tu bandeja principal y spam para crear tu nueva contraseña.');
       }
 
       function getAuthRedirectUrl(flow = 'login') {

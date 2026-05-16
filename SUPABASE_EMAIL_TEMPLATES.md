@@ -26,17 +26,17 @@ Los correos reales de autenticación se cambian desde el panel del proveedor de 
 ```
 
 ## Recuperar contraseña
-**Plantilla:** Recuperación de contraseña
+**Plantilla del panel:** Recovery / Recovery password
 
 **Subject:** Restablece tu contraseña de TradeHub MMORPG
 
-> Importante: cambia el asunto genérico del proveedor por el asunto anterior para que el usuario vea TradeHub en Gmail.
+> Importante: si el correo llega con el asunto **Recovery password**, falta cambiar el **Subject** de esta plantilla en el panel. Copia el asunto anterior exactamente para que Gmail muestre TradeHub desde el título del mensaje.
 
 ```html
 <div style="font-family:Arial,sans-serif;background:#0d1217;color:#f7f7f7;padding:22px;border-radius:14px;">
   <h2 style="color:#f6ca63;margin-top:0;">Recupera tu acceso a TradeHub MMORPG</h2>
-  <p>Recibimos una solicitud para crear una contraseña nueva en tu cuenta TradeHub.</p>
-  <p>Presiona el botón para volver a la página oficial y confirmar tu nueva contraseña:</p>
+  <p>Hola, solicitaste restablecer la contraseña de tu cuenta TradeHub.</p>
+  <p>Presiona el botón para volver a la página oficial y crear una nueva contraseña de forma segura:</p>
   <p><a href="{{ .ConfirmationURL }}" style="background:#1a2229;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;display:inline-block;border:1px solid #f6ca63;">Crear nueva contraseña TradeHub</a></p>
   <p>Si no solicitaste este cambio, ignora este mensaje. Tu cuenta seguirá protegida.</p>
   <p>Equipo TradeHub MMORPG</p>
