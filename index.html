@@ -809,21 +809,31 @@
         font-weight: 700;
       }
       .create-order-btn {
-        border: 2px solid #ffffff !important;
-        background: linear-gradient(135deg, #0bbf6a, #158dff) !important;
-        color: #ffffff !important;
+        border: 2px solid rgba(246,202,99,.96) !important;
+        background: linear-gradient(135deg, rgba(246,202,99,.98), rgba(240,156,34,.96)) !important;
+        color: #170d03 !important;
         border-radius: 999px !important;
         padding: 0.78rem 1.35rem !important;
         min-width: 170px;
-        box-shadow: 0 0 0 3px rgba(255,255,255,.12), 0 12px 30px rgba(21,141,255,.35) !important;
+        box-shadow: 0 0 0 3px rgba(246,202,99,.16), 0 12px 30px rgba(240,156,34,.34) !important;
         font-weight: 950 !important;
         letter-spacing: .055em;
         text-transform: uppercase;
       }
       .create-order-btn:hover {
         transform: translateY(-1px);
-        box-shadow: 0 0 0 4px rgba(255,255,255,.18), 0 16px 36px rgba(11,191,106,.42) !important;
+        box-shadow: 0 0 0 4px rgba(246,202,99,.24), 0 16px 36px rgba(240,156,34,.44) !important;
       }
+      .order-bottom-actions {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:.75rem;
+        margin-top:.9rem;
+        width:100%;
+      }
+      .order-bottom-actions .back-to-services-btn { min-width:150px; }
+      .order-bottom-actions .create-order-btn { margin-left:auto; }
       .gold-order-note {
         margin-top: 0.55rem;
         color: #9fb6e8;
@@ -1986,6 +1996,10 @@
       .streaming-field-card:nth-child(4) label::before{content:'💵'}
       .streaming-price-highlight{border:1px solid rgba(255,211,112,.7);background:linear-gradient(135deg,rgba(255,179,71,.15),rgba(25,43,78,.82));border-radius:14px;padding:.85rem;margin:.8rem 0;color:#f6fbff}
       .streaming-price-highlight strong{display:block;color:#ffd670;margin-bottom:.25rem}
+      .streaming-selected-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:.75rem 0}
+      .streaming-selected-summary div{border:1px solid rgba(246,202,99,.42);border-radius:14px;background:rgba(7,14,28,.72);padding:.72rem}
+      .streaming-selected-summary strong{display:block;color:#ffd670;font-size:.8rem;margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.04em}
+      .streaming-selected-summary span{display:block;color:#fff;font-weight:900;word-break:break-word}
       .market-card-meta{display:flex;justify-content:center;gap:.45rem;flex-wrap:wrap;margin-top:.55rem}
       .market-card-chip{border:1px solid #3a5fa7;border-radius:999px;background:#0b1d38;color:#cfe1ff;padding:.24rem .55rem;font-size:.76rem}
       .catalog-info-hero{display:grid;grid-template-columns:1.15fr repeat(3,minmax(0,.75fr));gap:.75rem;margin:.7rem 0 1rem}
@@ -2210,7 +2224,7 @@
     <header>
       <div class="container nav">
         <div class="logo">
-          <a href="#inicio" data-page-link data-page="inicio" aria-label="Ir al inicio">
+          <a href="#inicio" data-page-link data-page="inicio" aria-label="Inicio">
             <img id="mainLogoImg" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 420%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 x2=%221%22%3E%3Cstop stop-color=%22%23110f0a%22/%3E%3Cstop offset=%221%22 stop-color=%22%231f1608%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22900%22 height=%22420%22 fill=%22%23070b15%22/%3E%3Crect x=%2226%22 y=%2226%22 width=%22848%22 height=%22368%22 rx=%2244%22 fill=%22url(%23g)%22 stroke=%22%23d8a83c%22 stroke-width=%226%22/%3E%3Ctext x=%22450%22 y=%22210%22 text-anchor=%22middle%22 fill=%22%23f6ca63%22 font-size=%22104%22 font-family=%22Arial%22 font-weight=%22800%22%3ETRADEHUB%3C/text%3E%3Ctext x=%22450%22 y=%22285%22 text-anchor=%22middle%22 fill=%22%23ececec%22 font-size=%2260%22 font-family=%22Arial%22 font-weight=%22700%22%3EMMORPG%3C/text%3E%3C/svg%3E" alt="TradeHud" onerror="this.onerror=null;this.src='https://i.imgur.com/yHA321T.png';" />
           </a>
         </div>
@@ -2264,7 +2278,7 @@
         <a class="promo-banner" href="#p2p" data-page-link data-page="p2p">
           <span class="promo-icon" aria-hidden="true">🔁</span>
           <span class="promo-copy"><strong>P2P con moderación TradeHud</strong><span>Zinli, PayPal y cambios BS/USDT con datos guardados en ticket.</span></span>
-          <span class="promo-cta">Abrir P2P</span>
+          <span class="promo-cta">P2P</span>
         </a>
         <a class="promo-banner" href="#oro" data-page-link data-page="oro" aria-hidden="true" tabindex="-1">
           <span class="promo-icon" aria-hidden="true">⚔️</span>
@@ -2289,7 +2303,7 @@
         <a class="promo-banner" href="#p2p" data-page-link data-page="p2p" aria-hidden="true" tabindex="-1">
           <span class="promo-icon" aria-hidden="true">🔁</span>
           <span class="promo-copy"><strong>P2P con moderación TradeHud</strong><span>Zinli, PayPal y cambios BS/USDT con datos guardados en ticket.</span></span>
-          <span class="promo-cta">Abrir P2P</span>
+          <span class="promo-cta">P2P</span>
         </a>
       </div>
     </section>
@@ -2633,8 +2647,8 @@
                 </div>
                 <div class="purchase-contact-actions" aria-label="Contactos rápidos para comprar oro">
                   <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
-                  <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Ir a Telegram</a>
-                  <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Abrir Discord</a>
+                  <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
+                  <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Discord</a>
                 </div>
               </aside>
             </div>
@@ -2643,10 +2657,13 @@
             <strong style="display:block;margin-bottom:.55rem;">Cuentas disponibles por juego</strong>
             <div class="purchase-contact-actions" aria-label="Contactos rápidos para comprar cuentas">
               <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
-              <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Ir a Telegram</a>
-              <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Abrir Discord</a>
+              <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
+              <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Discord</a>
             </div>
-            <button id="accountCreateTicketBtn" class="panel-btn create-order-btn icon-btn" type="button" style="width:100%;margin-top:.75rem;"><span class="btn-icon">🧾</span>CREAR ORDEN DE CUENTA</button>
+            <div class="order-bottom-actions">
+              <button id="accountsBackBottomBtn" class="back-to-services-btn" type="button">← Volver</button>
+              <button id="accountCreateTicketBtn" class="panel-btn create-order-btn icon-btn" type="button"><span class="btn-icon">🧾</span>CREAR ORDEN DE CUENTA</button>
+            </div>
             <div id="accountsPanelList" class="accounts-grid" style="margin-top:.75rem;"></div>
           </div>
           <div id="boostingOptionsPanel" class="boosting-options-panel hidden">
@@ -2708,11 +2725,14 @@
                 <div id="boostPriceList" class="boost-price-list"></div>
               </div>
               <p class="auth-hint">La calculadora usa precios exactos, suma tramos disponibles y en profesiones calcula rangos parciales dentro del máximo configurado. Si no hay cobertura, abre ticket para cotización manual.</p>
-              <button id="boostCreateTicketBtn" class="panel-btn create-order-btn icon-btn" type="button"><span class="btn-icon">🧾</span>CREAR ORDEN</button>
+              <div class="order-bottom-actions">
+                <button id="boostFormBackBottomBtn" class="back-to-services-btn" type="button">← Volver</button>
+                <button id="boostCreateTicketBtn" class="panel-btn create-order-btn icon-btn" type="button"><span class="btn-icon">🧾</span>CREAR ORDEN</button>
+              </div>
               <div class="purchase-contact-actions" aria-label="Contactos rápidos para boosting">
                 <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
-                <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Ir a Telegram</a>
-                <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Abrir Discord</a>
+                <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
+                <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Discord</a>
               </div>
             </div>
           </div>
@@ -2771,7 +2791,7 @@
                   src="https://i.imgur.com/ODy7Rqb.png"
                   alt="Recibe tu pago TradeHud"
                 />
-                <a class="discord-sell-btn" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer">Ir al Discord de venta</a>
+                <a class="discord-sell-btn" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer">Discord</a>
                 <p class="sell-note">🛡️ <strong>Transacción moderada y protegida por TradeHud.</strong></p>
                 <p class="sell-note"><strong>FAQ breve:</strong> ¿Qué pasa si me intentan estafar? El equipo de TradeHud modera y congela la transacción hasta resolver.</p>
                 <p class="sell-note">⚠️ TradeHud no está afiliado oficialmente con los desarrolladores de los juegos.</p>
@@ -2820,8 +2840,8 @@
             </div>
             <div class="purchase-contact-actions" aria-label="Contactos rápidos para servicios digitales">
               <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
-              <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Ir a Telegram</a>
-              <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Abrir Discord</a>
+              <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
+              <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Discord</a>
             </div>
           </div>
           <div class="streaming-modal-layout">
@@ -2860,9 +2880,16 @@
                 <strong>Resumen del pedido</strong>
                 El precio se actualiza automáticamente al seleccionar tipo y tiempo. Abre el ticket para confirmar disponibilidad antes de pagar.
               </div>
+              <div class="streaming-selected-summary" aria-live="polite">
+                <div><strong>Nombre / producto</strong><span id="streamingSelectedName">Selecciona una opción</span></div>
+                <div><strong>Precio / total</strong><span id="streamingSelectedPrice">Pendiente</span></div>
+              </div>
               <div class="admin-panel-actions" style="margin-top:.7rem;flex-wrap:wrap;">
                 <div class="mmorpg-info-box" style="width:100%;margin-bottom:.65rem;">Este formulario abre ticket de compra con datos del juego/servicio seleccionado para atención rápida y segura.</div>
-                <button id="streamingModalTicketBtn" class="panel-btn create-order-btn icon-btn" type="button"><span class="btn-icon">🧾</span>CREAR ORDEN</button>
+                <div class="order-bottom-actions">
+                  <button id="streamingBottomBackBtn" class="back-to-services-btn" type="button">← Volver</button>
+                  <button id="streamingModalTicketBtn" class="panel-btn create-order-btn icon-btn" type="button"><span class="btn-icon">🧾</span>CREAR ORDEN</button>
+                </div>
               </div>
             </div>
             <aside class="streaming-detail-panel">
@@ -3636,6 +3663,8 @@
       const boostProfBtn = document.getElementById('boostProfBtn');
       const boostLevelBtn = document.getElementById('boostLevelBtn');
       const boostBackBtn = document.getElementById('boostBackBtn');
+      const boostFormBackBottomBtn = document.getElementById('boostFormBackBottomBtn');
+      const accountsBackBottomBtn = document.getElementById('accountsBackBottomBtn');
       const boostLevelForm = document.getElementById('boostLevelForm');
       const boostCreateTicketBtn = document.getElementById('boostCreateTicketBtn');
       const boostLevelGameTitle = document.getElementById('boostLevelGameTitle');
@@ -4169,8 +4198,21 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const priceLines = prices.length ? `\n\nPRECIOS DISPONIBLES\n${prices.map((item) => `• ${item}`).join('\n')}` : '';
         streamingServiceDetails.textContent = `${streamingTermsByService[key] || streamingTermsByService.default}${priceLines}`;
       }
+
+      function syncStreamingSummary() {
+        if (!streamingSelectedName || !streamingSelectedPrice) return;
+        const category = streamingModalTicketBtn?.dataset?.category || streamingModalTitle?.textContent || 'Servicio';
+        const option = streamingAccountType?.value || '';
+        const duration = streamingDuration?.value || '';
+        const productParts = [category, option, duration].filter(Boolean);
+        streamingSelectedName.textContent = productParts.join(' · ') || 'Selecciona una opción';
+        streamingSelectedPrice.textContent = streamingPriceResult?.value || streamingModalTicketBtn?.dataset?.priceRaw || 'Pendiente';
+      }
       const closeStreamingModal = document.getElementById('closeStreamingModal');
       const streamingBackBtn = document.getElementById('streamingBackBtn');
+      const streamingBottomBackBtn = document.getElementById('streamingBottomBackBtn');
+      const streamingSelectedName = document.getElementById('streamingSelectedName');
+      const streamingSelectedPrice = document.getElementById('streamingSelectedPrice');
       const streamingCustomerName = document.getElementById('streamingCustomerName');
       const streamingAccountType = document.getElementById('streamingAccountType');
       const streamingDuration = document.getElementById('streamingDuration');
@@ -6238,12 +6280,14 @@ Atención al cliente: WhatsApp · Telegram · Discord`
               || parsedPrices[0];
             streamingPriceResult.value = selected ? selected.amount : 'Sin precio disponible';
             streamingModalTicketBtn.dataset.priceRaw = selected?.raw || '';
+            syncStreamingSummary();
           };
           streamingAccountType.onchange = updatePrice;
           streamingDuration.onchange = updatePrice;
           updatePrice();
           streamingModalTicketBtn.dataset.category = name;
           streamingModalTicketBtn.dataset.serviceType = 'streaming';
+          syncStreamingSummary();
           if (streamingHeroInfo) streamingHeroInfo.style.display = '';
           if (streamingServiceDetails) streamingServiceDetails.style.display = '';
           renderStreamingTerms(name, prices);
@@ -6307,6 +6351,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
               const total = amountMap[amount] || '13$';
               streamingPriceResult.value = total;
               streamingModalTicketBtn.dataset.priceRaw = `${cat.name} - ${amount} en ${total}`;
+              syncStreamingSummary();
             };
             streamingDuration.onchange = updateGiftPrice;
             streamingAccountType.onchange = updateGiftPrice;
@@ -6333,6 +6378,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             ].join('\n');
             streamingModalTicketBtn.dataset.category = cat.name;
             streamingModalTicketBtn.dataset.serviceType = 'giftcards';
+            syncStreamingSummary();
             if (streamingHeroInfo) streamingHeroInfo.style.display = '';
             if (streamingServiceDetails) {
               streamingServiceDetails.style.display = '';
@@ -6380,6 +6426,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
                 const selected = exchangeRates.find((x) => x.type === streamingAccountType.value) || exchangeRates[0];
                 streamingPriceResult.value = selected.rate;
                 streamingModalTicketBtn.dataset.priceRaw = selected.raw;
+                syncStreamingSummary();
               };
               streamingAccountType.onchange = updateExchangePrice;
               streamingDuration.onchange = updateExchangePrice;
@@ -6407,6 +6454,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
               if (streamingServiceDetails) streamingServiceDetails.style.display = '';
               streamingModalTicketBtn.dataset.category = cat.name;
               streamingModalTicketBtn.dataset.serviceType = 'p2p';
+              syncStreamingSummary();
               streamingModal.classList.add('show');
               streamingModal.setAttribute('aria-hidden', 'false');
               return;
@@ -6424,6 +6472,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
               const selected = parsed.find((x) => x.amount === streamingDuration.value) || parsed[0];
               streamingPriceResult.value = selected?.total || 'Sin precio';
               streamingModalTicketBtn.dataset.priceRaw = selected?.raw || detail;
+              syncStreamingSummary();
             };
             streamingDuration.onchange = updateP2PPrice;
             streamingAccountType.onchange = updateP2PPrice;
@@ -6438,6 +6487,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             if (streamingServiceDetails) streamingServiceDetails.style.display = '';
             streamingModalTicketBtn.dataset.category = cat.name;
             streamingModalTicketBtn.dataset.serviceType = 'p2p';
+            syncStreamingSummary();
             streamingModal.classList.add('show');
             streamingModal.setAttribute('aria-hidden', 'false');
           });
@@ -7997,10 +8047,13 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Profesiones · ${activeOrderGame?.name || 'Juego seleccionado'}`;
         populateBoostCalculator('profession');
       });
-      boostBackBtn?.addEventListener('click', () => {
+      function backToBoostOptions() {
         if (boostingButtonsView) boostingButtonsView.style.display = 'flex';
         if (boostLevelForm) boostLevelForm.classList.add('hidden');
-      });
+      }
+      boostBackBtn?.addEventListener('click', backToBoostOptions);
+      boostFormBackBottomBtn?.addEventListener('click', backToBoostOptions);
+      accountsBackBottomBtn?.addEventListener('click', closeAccountsPanel);
       boostServer?.addEventListener('change', () => { renderBoostPriceList(); updateBoostCalculation(); });
       boostProfessionSelect?.addEventListener('change', () => {
         const config = getBoostConfig(boostGame?.value || activeOrderGame?.name || '');
@@ -8034,14 +8087,21 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       streamingSearch?.addEventListener('input', renderStreamingSection);
       giftcardsSearch?.addEventListener('input', renderGiftcardsSection);
       p2pSearch?.addEventListener('input', renderP2PSection);
-      function closeStreamingOrderModal() {
+      function closeStreamingOrderModal(returnToSection = false) {
+        const rawType = streamingModalTicketBtn?.dataset?.serviceType || 'streaming';
         streamingModal?.classList.remove('show');
         streamingModal?.setAttribute('aria-hidden', 'true');
+        if (returnToSection) {
+          const targetPage = rawType === 'giftcards' ? 'giftcards' : rawType === 'p2p' ? 'p2p' : 'streaming';
+          showPage(targetPage);
+          document.getElementById(targetPage)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
-      closeStreamingModal?.addEventListener('click', closeStreamingOrderModal);
-      streamingBackBtn?.addEventListener('click', closeStreamingOrderModal);
+      closeStreamingModal?.addEventListener('click', () => closeStreamingOrderModal(false));
+      streamingBackBtn?.addEventListener('click', () => closeStreamingOrderModal(true));
+      streamingBottomBackBtn?.addEventListener('click', () => closeStreamingOrderModal(true));
       streamingModal?.addEventListener('click', (e) => {
-        if (e.target === streamingModal) closeStreamingOrderModal();
+        if (e.target === streamingModal) closeStreamingOrderModal(false);
       });
       streamingModalTicketBtn?.addEventListener('click', async () => {
         const category = streamingModalTicketBtn.dataset.category || 'Streaming';
