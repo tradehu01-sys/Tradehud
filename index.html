@@ -1447,7 +1447,7 @@
       .config-modal.show { display: grid; }
 
       .config-card {
-        width: min(980px, 96vw);
+        width: min(1280px, 98vw);
         min-height: 520px;
         max-height: 90vh;
         overflow-y: auto;
@@ -1931,6 +1931,15 @@
       .profile-pane[data-section="orders"] { border-color:rgba(122,76,255,.82); box-shadow:0 0 0 1px rgba(255,255,255,.08), 0 0 22px rgba(122,76,255,.28); }
       .profile-pane.hidden { display:none; }
       .order-card { border:1px solid #334f88; border-radius:10px; padding:.65rem; margin-bottom:.55rem; background:#0e1930; }
+      .admin-ticket-board { min-height:62vh; max-height:72vh; overflow:auto; display:grid; gap:.85rem; padding:.45rem; }
+      .admin-ticket-board .order-card { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.75rem; align-items:start; border-color:rgba(122,178,255,.55); }
+      .ticket-main { min-width:0; }
+      .ticket-side-tools { display:flex; flex-direction:column; gap:.45rem; min-width:120px; }
+      .presence-row { display:flex; flex-wrap:wrap; gap:.45rem; margin:.45rem 0; }
+      .presence-pill { display:inline-flex; align-items:center; gap:.32rem; border:1px solid #59333a; border-radius:999px; background:#2a1318; color:#ffc5c5; padding:.22rem .55rem; font-size:.78rem; font-weight:900; }
+      .presence-pill.on { border-color:#2f8f62; background:#0f2a20; color:#9affcc; }
+      .ticket-delete-btn { border-color:#8f3440; background:#3a1017; color:#ffd4d8; }
+      @media (max-width: 720px){ .admin-ticket-board .order-card { grid-template-columns:1fr; } .ticket-side-tools { flex-direction:row; min-width:0; } }
       .ticket-chat { margin-top:.7rem; border-top:1px solid rgba(246,202,99,.22); padding-top:.65rem; }
       .ticket-chat-head { display:flex; justify-content:space-between; align-items:center; gap:.6rem; color:#fff3c9; font-weight:900; margin-bottom:.45rem; }
       .ticket-messages { display:flex; flex-direction:column; gap:.45rem; max-height:210px; overflow-y:auto; padding:.55rem; border:1px solid rgba(255,255,255,.1); border-radius:12px; background:rgba(4,8,16,.42); }
@@ -2772,12 +2781,7 @@
         <div class="container">
           <h2 class="section-title">Vende tu oro al <span>mejor precio</span></h2>
           <article class="sell-wrap">
-            <span id="sellActiveBadge" class="sell-badge"><span class="status-dot" aria-hidden="true"></span> Vendedores activos: calculando...</span>
-            <div class="sell-status-grid">
-              <div class="sell-status-card"><strong><span id="ticketReceiverDot" class="status-dot"></span>Tickets</strong><span id="ticketReceiverStatus">Verificando receptor...</span></div>
-              <div class="sell-status-card"><strong><span id="goldReceiverDot" class="status-dot"></span>Receptor de oro</strong><span id="goldReceiverStatus">Verificando conexión...</span></div>
-              <div class="sell-status-card"><strong>Usuarios conectados</strong><span id="onlineUsersCount">0</span></div>
-            </div>
+            <span id="sellActiveBadge" class="sell-badge"><span class="status-dot online" aria-hidden="true"></span> Atención activa por tickets</span>
             <p class="lead" style="margin:.1rem 0 .9rem;">
               En TradeHud MMORPG vendes tu oro con un flujo <strong>rápido, seguro y con atención personalizada</strong> por Discord.
               Nuestro equipo revisa cada operación y acompaña el proceso hasta que recibes tu pago.
@@ -3302,9 +3306,10 @@
         </div>
         <div id="editorTicketsAdmin" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Tickets de usuarios</strong>
+            <strong style="flex:1;display:flex;align-items:center;">Tickets admin · pantalla grande</strong>
+            <button id="refreshAdminTicketsBtn" class="mini-btn" type="button">Actualizar</button>
           </div>
-          <div id="adminTicketsList" class="admin-game-list"></div>
+          <div id="adminTicketsList" class="admin-game-list admin-ticket-board"></div>
         </div>
         <div id="editorReviewsAdmin" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -3821,6 +3826,7 @@
       const editorBosteo = document.getElementById('editorBosteo');
       const editorReviewsAdmin = document.getElementById('editorReviewsAdmin');
       const adminTicketsList = document.getElementById('adminTicketsList');
+      const refreshAdminTicketsBtn = document.getElementById('refreshAdminTicketsBtn');
       const adminReviewsList = document.getElementById('adminReviewsList');
       const testimonialsGrid = document.getElementById('testimonialsGrid');
       const reviewForm = document.getElementById('reviewForm');
@@ -5046,6 +5052,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
       let activeOrderGame = null;
+      let presenceSnapshot = { onlineCount: 0, adminOnline: false, byUserId: {} };
       let activeDetailParentPage = 'oro';
       let detailHistoryOpen = false;
       let digitalHistoryOpen = false;
@@ -5112,6 +5119,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       async function updatePresence(isOnline = true) {
         if (!supabaseClient || !currentUser) return;
+        if (currentProfile) currentProfile.is_online = isOnline;
         await supabaseClient.from('user_profiles').upsert({
           id: currentUser.id,
           name: currentProfile?.name || currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Usuario',
@@ -5130,24 +5138,43 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         if (label) label.textContent = text;
       }
 
-      async function renderActiveSellersStatus() {
-        const accountCount = gameAccounts.length;
+      function isProfileOnline(profile = {}) {
+        if (profile.is_online) return true;
+        const lastSeen = profile.last_seen ? new Date(profile.last_seen).getTime() : 0;
+        return Boolean(lastSeen && Date.now() - lastSeen < 2 * 60 * 1000);
+      }
+
+      function presencePill(label, online) {
+        return `<span class="presence-pill${online ? ' on' : ''}"><span class="status-dot${online ? ' online' : ''}" aria-hidden="true"></span>${escapeHtml(label)} ${online ? 'ON' : 'OFF'}</span>`;
+      }
+
+      async function getPresenceSnapshot(userIds = []) {
+        const byUserId = {};
+        if (currentUser?.id) byUserId[currentUser.id] = true;
         let onlineCount = currentUser ? 1 : 0;
-        let adminOnline = Boolean(currentProfile?.is_admin);
+        let adminOnline = Boolean(adminPanelUnlocked || currentProfile?.is_admin);
         if (supabaseClient) {
           const { data } = await supabaseClient
             .from('user_profiles')
-            .select('email,is_admin,is_online,last_seen')
-            .eq('is_online', true);
+            .select('id,email,is_admin,is_online,last_seen')
+            .limit(300);
           if (Array.isArray(data)) {
-            onlineCount = data.length;
-            adminOnline = data.some((profile) => profile.is_admin || ADMIN_EMAILS.includes(String(profile.email || '').toLowerCase()));
+            onlineCount = data.filter(isProfileOnline).length;
+            data.forEach((profile) => { byUserId[profile.id] = isProfileOnline(profile); });
+            adminOnline = adminOnline || data.some((profile) => isProfileOnline(profile) && (profile.is_admin || ADMIN_EMAILS.includes(String(profile.email || '').toLowerCase())));
           }
         }
-        if (sellActiveBadge) sellActiveBadge.innerHTML = `<span class="status-dot online" aria-hidden="true"></span> Vendedores activos: ${Math.max(accountCount, onlineCount)}`;
-        if (onlineUsersCount) onlineUsersCount.textContent = String(onlineCount);
-        setStatusDot(ticketReceiverDot, ticketReceiverStatus, adminOnline, adminOnline ? 'Receptor online' : 'Receptor offline');
-        setStatusDot(goldReceiverDot, goldReceiverStatus, onlineCount > 0, onlineCount > 0 ? 'Cuenta conectada' : 'Sin conexión activa');
+        userIds.forEach((id) => { if (id && currentUser?.id === id) byUserId[id] = true; });
+        presenceSnapshot = { onlineCount, adminOnline, byUserId };
+        return presenceSnapshot;
+      }
+
+      async function renderActiveSellersStatus() {
+        const snapshot = await getPresenceSnapshot();
+        if (sellActiveBadge) sellActiveBadge.innerHTML = `<span class="status-dot${snapshot.adminOnline ? ' online' : ''}" aria-hidden="true"></span> Tickets admin: ${snapshot.adminOnline ? 'ON' : 'OFF'} · Usuarios activos: ${snapshot.onlineCount}`;
+        if (onlineUsersCount) onlineUsersCount.textContent = String(snapshot.onlineCount);
+        setStatusDot(ticketReceiverDot, ticketReceiverStatus, snapshot.adminOnline, snapshot.adminOnline ? 'Admin ON' : 'Admin OFF');
+        setStatusDot(goldReceiverDot, goldReceiverStatus, snapshot.onlineCount > 0, snapshot.onlineCount > 0 ? 'Cuenta ON' : 'Cuenta OFF');
       }
 
       function makeReviewCard(item) {
@@ -5705,10 +5732,15 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const discord = item.user_profiles?.discord || '';
         const phone = item.user_profiles?.phone || '';
         const phoneDigits = phone.replace(/\D/g, '');
+        const userOnline = Boolean(item.user_online ?? presenceSnapshot.byUserId?.[item.user_id] ?? (currentUser?.id && item.user_id === currentUser.id));
+        const adminOnline = Boolean(item.admin_online ?? presenceSnapshot.adminOnline ?? adminPanelUnlocked);
+        const presence = includeContact
+          ? `<div class="presence-row">${presencePill('Comprador', userOnline)}${presencePill('Admin', adminOnline)}</div>`
+          : `<div class="presence-row">${presencePill('Tu cuenta', userOnline)}${presencePill('Admin', adminOnline)}</div>`;
         const contact = includeContact
           ? `<p class="admin-game-desc">Perfil: ${escapeHtml(owner)}</p><p class="admin-game-desc">Correo: ${escapeHtml(email || 'No definido')} · Discord: ${escapeHtml(discord || 'No definido')} · Número: ${escapeHtml(phone || 'No definido')}</p><div class="admin-game-actions"><a class="mini-btn icon-btn" href="${email ? `mailto:${encodeURIComponent(email)}` : '#'}" ${email ? '' : 'aria-disabled="true"'}><span class="btn-icon">✉️</span>Email</a><a class="mini-btn icon-btn" href="${phoneDigits ? `https://wa.me/${phoneDigits}` : '#'}" target="_blank" rel="noopener noreferrer" ${phoneDigits ? '' : 'aria-disabled="true"'}><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a></div>`
           : '';
-        return `<strong>${escapeHtml(item.game || 'Orden')} · ${escapeHtml(item.product || 'Producto')}</strong><p class="admin-game-desc">Servidor/Categoría: ${escapeHtml(item.server || '-')}</p><p class="admin-game-desc">Facción/Tipo: ${escapeHtml(item.faction || '-')} · Personaje/Cliente: ${escapeHtml(item.character || '-')}</p><p class="admin-game-desc">Entrega/Detalle: ${escapeHtml(item.delivery || '-')}</p><p class="admin-game-desc">Estado: ${escapeHtml(item.status || 'pendiente')} · Creado: ${escapeHtml(created)}</p>${contact}`;
+        return `<strong>${escapeHtml(item.game || 'Orden')} · ${escapeHtml(item.product || 'Producto')}</strong>${presence}<p class="admin-game-desc">Servidor/Categoría: ${escapeHtml(item.server || '-')}</p><p class="admin-game-desc">Facción/Tipo: ${escapeHtml(item.faction || '-')} · Personaje/Cliente: ${escapeHtml(item.character || '-')}</p><p class="admin-game-desc">Entrega/Detalle: ${escapeHtml(item.delivery || '-')}</p><p class="admin-game-desc">Estado: ${escapeHtml(item.status || 'pendiente')} · Creado: ${escapeHtml(created)}</p>${contact}`;
       }
 
       function ticketMessageHtml(message = {}) {
@@ -5738,6 +5770,13 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const tickets = getLocalTickets().filter((item) => item.id !== ticket.id);
         tickets.unshift(ticket);
         writeLocalJson(LOCAL_TICKETS_KEY, tickets.slice(0, 200));
+      }
+
+      function removeLocalTicket(ticketId) {
+        writeLocalJson(LOCAL_TICKETS_KEY, getLocalTickets().filter((item) => item.id !== ticketId));
+        const messages = readLocalJson(LOCAL_TICKET_MESSAGES_KEY, {});
+        delete messages[ticketId];
+        writeLocalJson(LOCAL_TICKET_MESSAGES_KEY, messages);
       }
 
       function getLocalTicketMessages(ticketId) {
@@ -5937,7 +5976,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           return false;
         }
         trackPopularOrder(ticketPayload);
-        saveLocalTicket({ ...ticketPayload, created_at: new Date().toISOString(), user_profiles: currentProfile || null });
+        saveLocalTicket({ ...ticketPayload, created_at: new Date().toISOString(), user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline });
+        await getPresenceSnapshot([currentUser.id]);
         await openProfileDrawer('orders');
         await renderUserOrders();
         await renderAdminTickets();
@@ -5948,25 +5988,40 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       async function renderUserOrders() {
         userOrdersList.innerHTML = '';
-        if (!currentUser || !supabaseClient) return;
-        const { data, error } = await supabaseClient
-          .from('tickets')
-          .select('id,game,server,product,faction,character,delivery,status,created_at')
-          .eq('user_id', currentUser.id)
-          .order('created_at', { ascending: false });
-        if (error) {
+        if (!currentUser) return;
+        await getPresenceSnapshot([currentUser.id]);
+        if (profileSectionStatus) {
+          profileSectionStatus.textContent = `Estás viendo tickets: Tu cuenta ON · Admin ${presenceSnapshot.adminOnline ? 'ON' : 'OFF'}`;
+          profileSectionStatus.dataset.section = 'orders';
+        }
+        const localTickets = getLocalTickets().filter((item) => item.user_id === currentUser.id);
+        let data = [];
+        let error = null;
+        if (supabaseClient) {
+          const result = await supabaseClient
+            .from('tickets')
+            .select('id,user_id,game,server,product,faction,character,delivery,status,created_at')
+            .eq('user_id', currentUser.id)
+            .order('created_at', { ascending: false });
+          data = result.data || [];
+          error = result.error;
+        }
+        if (error && !localTickets.length) {
           userOrdersList.innerHTML = `<p class="auth-hint">No se pudieron cargar tus órdenes: ${escapeHtml(friendlyError(error.message))}</p>`;
           return;
         }
-        (data || []).forEach((item) => {
+        const tickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))]
+          .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        tickets.forEach((item) => {
           const card = document.createElement('article');
           card.className = 'order-card';
-          card.innerHTML = `${ticketDetailHtml(item)}${ticketChatHtml(item.id, 'user')}`;
+          card.innerHTML = `${ticketDetailHtml({ ...item, user_online: true, admin_online: presenceSnapshot.adminOnline })}${ticketChatHtml(item.id, 'user')}`;
           userOrdersList.appendChild(card);
         });
         if (!userOrdersList.children.length) userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes.</p>';
         await hydrateTicketChats(userOrdersList);
       }
+
 
       async function renderAdminTickets() {
         adminTicketsList.innerHTML = '';
@@ -5986,24 +6041,45 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           adminTicketsList.innerHTML = `<p class="auth-hint">No se pudieron cargar los tickets: ${escapeHtml(friendlyError(error.message))}. Si usas el acceso admin con clave, ejecuta la migración actualizada para permitir lectura del panel admin.</p>`;
           return;
         }
-        const tickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))];
+        const tickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))]
+          .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
         const userIds = [...new Set(tickets.map((item) => item.user_id).filter(Boolean))];
+        await getPresenceSnapshot(userIds);
         let profilesById = new Map();
         if (userIds.length && supabaseClient) {
           const { data: profiles } = await supabaseClient
             .from('user_profiles')
-            .select('id,name,email,discord,phone')
+            .select('id,name,email,discord,phone,is_online,last_seen')
             .in('id', userIds);
           profilesById = new Map((profiles || []).map((profile) => [profile.id, profile]));
         }
         tickets.forEach((item) => {
           const row = document.createElement('article');
           row.className = 'order-card';
-          row.innerHTML = `${ticketDetailHtml({ ...item, user_profiles: profilesById.get(item.user_id) || item.user_profiles }, true)}${ticketChatHtml(item.id, 'admin')}`;
+          const profile = profilesById.get(item.user_id) || item.user_profiles || {};
+          const detail = ticketDetailHtml({ ...item, user_profiles: profile, user_online: presenceSnapshot.byUserId?.[item.user_id], admin_online: true }, true);
+          row.innerHTML = `<div class="ticket-main">${detail}${ticketChatHtml(item.id, 'admin')}</div><div class="ticket-side-tools"><button class="mini-btn danger ticket-delete-btn" type="button" data-ticket-delete="${escapeHtml(item.id)}">Eliminar</button></div>`;
           adminTicketsList.appendChild(row);
         });
         if (!adminTicketsList.children.length) adminTicketsList.innerHTML = '<p class="auth-hint">Aún no hay tickets.</p>';
         await hydrateTicketChats(adminTicketsList);
+      }
+
+      async function deleteAdminTicket(ticketId) {
+        if (!ticketId) return;
+        if (!window.confirm('¿Eliminar este ticket y su chat?')) return;
+        const ticketClient = getTicketClient(adminPanelUnlocked);
+        let error = null;
+        if (ticketClient) {
+          const msgDelete = await ticketClient.from('ticket_messages').delete().eq('ticket_id', ticketId);
+          const ticketDelete = await ticketClient.from('tickets').delete().eq('id', ticketId);
+          error = ticketDelete.error || msgDelete.error;
+        }
+        removeLocalTicket(ticketId);
+        await renderAdminTickets();
+        if (currentUser) await renderUserOrders();
+        if (error) showAdminNotice(`Ticket eliminado localmente, pero Supabase respondió: ${friendlyError(error.message)}`, 'warn');
+        else showAdminNotice('✅ Ticket eliminado correctamente.', 'ok');
       }
 
       function openGamePage(index) {
@@ -7218,8 +7294,10 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       adminTicketsList.addEventListener('click', async (e) => {
+        const deleteBtn = e.target.closest('[data-ticket-delete]');
         const sendBtn = e.target.closest('[data-ticket-send]');
         const refreshBtn = e.target.closest('[data-ticket-refresh]');
+        if (deleteBtn) await deleteAdminTicket(deleteBtn.dataset.ticketDelete);
         if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'admin', adminTicketsList);
         if (refreshBtn) await renderTicketMessages(refreshBtn.dataset.ticketRefresh, adminTicketsList);
       });
@@ -7446,7 +7524,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           adminMsg.textContent = '';
           configModal.classList.add('show');
           configModal.setAttribute('aria-hidden', 'false');
-          renderAdminTickets();
+          activateAdminTab('tickets');
           return;
         }
         adminModal.classList.add('show');
@@ -7475,7 +7553,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           adminModal.setAttribute('aria-hidden', 'true');
           configModal.classList.add('show');
           configModal.setAttribute('aria-hidden', 'false');
-          renderAdminTickets();
+          activateAdminTab('tickets');
         } else {
           adminMsg.textContent = 'Credenciales incorrectas.';
           adminMsg.style.color = '#ff9ea7';
@@ -7541,6 +7619,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       tabPreciosOro.addEventListener('click', () => activateAdminTab('precios'));
       if (tabMarketAdmin) tabMarketAdmin.addEventListener('click', () => activateAdminTab('market'));
       tabTicketsAdmin.addEventListener('click', () => activateAdminTab('tickets'));
+      refreshAdminTicketsBtn?.addEventListener('click', renderAdminTickets);
       tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
       tabBosteo.addEventListener('click', () => activateAdminTab('bosteo'));
       tabReviewsAdmin.addEventListener('click', () => activateAdminTab('reviews'));
