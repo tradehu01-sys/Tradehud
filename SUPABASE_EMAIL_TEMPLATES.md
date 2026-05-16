@@ -1,6 +1,6 @@
 # Plantillas de correo TradeHub para autenticación
 
-Los correos reales de autenticación se cambian desde el panel del proveedor de auth. Para que Gmail no muestre textos genéricos ni asuntos como “Recovery Password”, configura lo siguiente en **Authentication → Email Templates** y en **Project Settings → Auth / SMTP**.
+Los correos reales de autenticación se cambian desde el panel del proveedor de auth. Para que Gmail muestre la marca TradeHub y no textos genéricos, configura lo siguiente en **Authentication → Email Templates** y en **Project Settings → Auth / SMTP**.
 
 ## Ajustes obligatorios
 - En **Authentication → Providers → Email**, activa **Confirm email** para que se envíe confirmación al registrarse. Si está apagado, la cuenta se crea sin correo.
@@ -24,16 +24,21 @@ Los correos reales de autenticación se cambian desde el panel del proveedor de 
 ```
 
 ## Recuperar contraseña
+**Plantilla:** Recuperación de contraseña
+
 **Subject:** Restablece tu contraseña de TradeHub MMORPG
 
-> Importante: reemplaza el asunto predeterminado “Recovery Password” por el asunto anterior.
+> Importante: cambia el asunto genérico del proveedor por el asunto anterior para que el usuario vea TradeHub en Gmail.
 
 ```html
-<h2>Restablece tu contraseña de TradeHub MMORPG</h2>
-<p>Recibimos una solicitud para cambiar la contraseña de tu cuenta TradeHub.</p>
-<p><a href="{{ .ConfirmationURL }}" style="background:#1a2229;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;display:inline-block;">Crear nueva contraseña</a></p>
-<p>Si no solicitaste este cambio, ignora este mensaje.</p>
-<p>Equipo TradeHub MMORPG</p>
+<div style="font-family:Arial,sans-serif;background:#0d1217;color:#f7f7f7;padding:22px;border-radius:14px;">
+  <h2 style="color:#f6ca63;margin-top:0;">Recupera tu acceso a TradeHub MMORPG</h2>
+  <p>Recibimos una solicitud para crear una contraseña nueva en tu cuenta TradeHub.</p>
+  <p>Presiona el botón para volver a la página oficial y confirmar tu nueva contraseña:</p>
+  <p><a href="{{ .ConfirmationURL }}" style="background:#1a2229;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;display:inline-block;border:1px solid #f6ca63;">Crear nueva contraseña TradeHub</a></p>
+  <p>Si no solicitaste este cambio, ignora este mensaje. Tu cuenta seguirá protegida.</p>
+  <p>Equipo TradeHub MMORPG</p>
+</div>
 ```
 
-> Nota: estas plantillas y asuntos no se pueden cambiar desde JavaScript del navegador; deben configurarse en el panel de autenticación para que el correo real salga con marca TradeHub.
+> Nota: estas plantillas, asuntos y remitente no se pueden cambiar desde JavaScript del navegador; deben configurarse en el panel de autenticación/SMTP para que el correo real llegue y salga con marca TradeHub.

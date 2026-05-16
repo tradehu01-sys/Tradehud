@@ -2988,14 +2988,14 @@
     <div id="resetPasswordModal" class="juego-form-modal auth-modal" aria-hidden="true">
       <div class="juego-form-card" style="max-width:460px;">
         <div class="admin-head">
-          <strong>Restablecer contraseña</strong>
+          <strong>Recuperar acceso TradeHub</strong>
           <button id="closeResetPasswordModal" class="close-btn" type="button">✕</button>
         </div>
         <div class="auth-pane">
-          <p class="auth-hint" style="margin-bottom:.65rem;">Escribe tu correo y te enviaremos un enlace de TradeHub para abrir la página de confirmación y crear una contraseña nueva.</p>
+          <p class="auth-hint" style="margin-bottom:.65rem;">Escribe tu correo y te enviaremos un mensaje de recuperación de TradeHub MMORPG con un botón para crear una contraseña nueva.</p>
           <label for="resetPasswordEmail">Correo de tu cuenta</label>
           <input id="resetPasswordEmail" type="email" placeholder="tu@email.com" />
-          <button id="sendResetPasswordEmailBtn" class="panel-btn" type="button" style="margin-top:.65rem;width:100%;">Enviar enlace de restablecimiento</button>
+          <button id="sendResetPasswordEmailBtn" class="panel-btn" type="button" style="margin-top:.65rem;width:100%;">Enviar correo de recuperación TradeHub</button>
           <div id="resetPasswordMsg" class="admin-msg" style="margin-top:.55rem;"></div>
         </div>
       </div>
@@ -5133,28 +5133,28 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
         const email = resetPasswordEmail.value.trim();
         if (!email) {
-          resetPasswordMsg.textContent = 'Escribe tu correo para enviar el enlace de restablecimiento.';
+          resetPasswordMsg.textContent = 'Escribe tu correo para enviar el mensaje de recuperación de TradeHub.';
           resetPasswordMsg.style.color = '#ffd39a';
           return;
         }
         authLoginEmail.value = email;
         sendResetPasswordEmailBtn.disabled = true;
-        sendResetPasswordEmailBtn.textContent = 'Enviando enlace...';
+        sendResetPasswordEmailBtn.textContent = 'Enviando correo TradeHub...';
         const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
           redirectTo: getAuthRedirectUrl('recovery')
         });
         sendResetPasswordEmailBtn.disabled = false;
-        sendResetPasswordEmailBtn.textContent = 'Enviar enlace de restablecimiento';
+        sendResetPasswordEmailBtn.textContent = 'Enviar correo de recuperación TradeHub';
         if (error) {
           resetPasswordMsg.textContent = friendlyError(error.message);
           resetPasswordMsg.style.color = '#ffb6b6';
           return;
         }
-        resetPasswordMsg.textContent = 'Listo. Enviamos a tu correo un link de TradeHub para abrir la página de confirmación y crear tu contraseña nueva.';
+        resetPasswordMsg.textContent = 'Listo. Enviamos a tu correo un mensaje de recuperación de TradeHub MMORPG. Ábrelo y pulsa el botón para crear tu contraseña nueva.';
         resetPasswordMsg.style.color = '#9affcc';
-        authMsg.textContent = 'Revisa tu correo: el enlace te traerá de vuelta a TradeHub para crear la nueva contraseña.';
+        authMsg.textContent = 'Revisa tu correo: el mensaje de recuperación te traerá de vuelta a TradeHub para crear la nueva contraseña.';
         authMsg.style.color = '#9affcc';
-        showAuthNotice('📩 Enlace enviado. Abre el correo y vuelve a TradeHub para confirmar tu nueva contraseña.');
+        showAuthNotice('📩 Mensaje de recuperación enviado. Revisa principal y spam; el botón debe decir TradeHub.');
       }
 
       function getAuthRedirectUrl(flow = 'login') {
