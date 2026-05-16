@@ -601,6 +601,26 @@
 
       .game-modal.show { display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 1rem 0.75rem; }
       .game-modal { z-index: 220; }
+      .game-modal.page-section,
+      .window-modal.page-section {
+        position: static;
+        inset: auto;
+        background: transparent;
+        z-index: auto;
+        padding: 2rem 0;
+      }
+      .game-modal.page-section.show,
+      .window-modal.page-section.show { display: none; }
+      .game-modal.page-section.active-page,
+      .window-modal.page-section.active-page { display: block; }
+      .game-modal.page-section .game-window,
+      .window-modal.page-section .window-card {
+        width: min(1480px, calc(100% - 2rem));
+        margin: 0 auto;
+        max-height: none;
+      }
+      .game-modal.page-section .close-btn,
+      .window-modal.page-section .close-btn { display: none !important; }
       .window-modal {
         position: fixed;
         inset: 0;
@@ -2535,7 +2555,7 @@
               <div class="catalog-info-card"><strong>🚚 Entrega guiada</strong><p>Coordinamos servidor, facción, personaje y método dentro del juego.</p></div>
             </div>
             <div class="gold-helper-strip" aria-label="Guía rápida para comprar oro">
-              <div class="gold-helper-item"><strong>🔎 1. Busca el juego</strong>Filtra por nombre y abre la ventana del marketplace.</div>
+              <div class="gold-helper-item"><strong>🔎 1. Busca el juego</strong>Filtra por nombre y abre la página de compra del marketplace.</div>
               <div class="gold-helper-item"><strong>🪙 2. Compra oro</strong>Elige servidor, paquete, facción y personaje.</div>
               <div class="gold-helper-item"><strong>🎫 3. Ticket seguro</strong>Soporte confirma stock, precio y ruta de entrega.</div>
             </div>
@@ -2554,7 +2574,7 @@
         </div>
       </section>
 
-      <div id="gameWindowModal" class="game-modal" aria-hidden="true">
+      <section id="gameWindowModal" class="game-modal page-section" data-page="game-detail" aria-hidden="true">
         <div id="gameWindow" class="game-window">
           <div class="game-window-head">
             <div class="game-window-title-wrap">
@@ -2564,7 +2584,7 @@
                 <small id="gameWindowDesc" style="color:#b9c6e6;"></small>
               </div>
             </div>
-            <button id="closeGameWindow" class="close-btn">✕</button>
+            <button id="closeGameWindow" class="close-btn" type="button" hidden aria-hidden="true">✕</button>
           </div>
           <div class="game-window-layout">
             <div>
@@ -2746,7 +2766,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <section id="vender" class="page-section" data-page="vendemos-oro">
         <div class="container">
@@ -2821,11 +2841,11 @@
           </article>
         </div>
       </section>
-      <div id="streamingModal" class="window-modal" aria-hidden="true">
+      <section id="streamingModal" class="window-modal page-section" data-page="digital-order" aria-hidden="true">
         <div id="streamingModalCard" class="window-card streaming-order-window">
           <div class="window-head">
             <div class="window-game"><strong id="streamingModalTitle">Streaming</strong></div>
-            <button id="closeStreamingModal" class="close-btn" type="button">✕</button>
+            <button id="closeStreamingModal" class="close-btn" type="button" hidden aria-hidden="true">✕</button>
           </div>
           <div class="gold-order-top">
             <div id="streamingModalIcon" class="gold-order-game-icon"></div>
@@ -2900,7 +2920,7 @@
             </aside>
           </div>
         </div>
-      </div>
+      </section>
 
       <section id="giftcards" class="page-section" data-page="giftcards">
         <div class="container">
@@ -2917,7 +2937,7 @@
             </div>
             <div class="giftcard-guide-grid" aria-label="Información para comprar giftcards">
               <div class="giftcard-guide-card"><strong>🌎 Región correcta</strong><p>Confirma país, moneda y plataforma antes de pedir el código para evitar errores de canje.</p></div>
-              <div class="giftcard-guide-card"><strong>💵 Precios visibles</strong><p>En cada ventana verás el monto de tarjeta y el total a pagar antes del ticket.</p></div>
+              <div class="giftcard-guide-card"><strong>💵 Precios visibles</strong><p>En la página de pedido verás el monto de tarjeta y el total a pagar antes del ticket.</p></div>
               <div class="giftcard-guide-card"><strong>📩 Entrega privada</strong><p>El código se comparte solo por el canal acordado y queda registrado en soporte.</p></div>
             </div>
             <div class="server-head" style="margin-top:.6rem;">
@@ -5026,6 +5046,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
       let activeOrderGame = null;
+      let activeDetailParentPage = 'oro';
+      let detailHistoryOpen = false;
+      let digitalHistoryOpen = false;
       let currentUser = null;
       let currentProfile = null;
       let adminPanelUnlocked = false;
@@ -6072,8 +6095,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         closeGoldOrderPanel();
         closeAccountsPanel();
         closeBoostingOptionsPanel();
+        activeDetailParentPage = 'oro';
         gameWindowModal.classList.add('show');
         gameWindowModal.setAttribute('aria-hidden', 'false');
+        pushDetailHistory('game', 'oro');
+        showPage('game-detail');
         gameWindowModal.scrollTop = 0;
         gameWindow.scrollTop = 0;
       }
@@ -6095,6 +6121,14 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function showPage(page, targetId = '') {
+        if (page !== 'game-detail') {
+          gameWindowModal?.classList.remove('show');
+          gameWindowModal?.setAttribute('aria-hidden', 'true');
+        }
+        if (page !== 'digital-order') {
+          streamingModal?.classList.remove('show');
+          streamingModal?.setAttribute('aria-hidden', 'true');
+        }
         pageLoader.classList.add('show');
         pageLoader.setAttribute('aria-hidden', 'false');
         clearTimeout(pageSwitchTimer);
@@ -6107,6 +6141,39 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             else scrollToPageTop();
           });
         }, 220);
+      }
+
+      function pushDetailHistory(kind, parentPage) {
+        const hash = kind === 'game' ? '#oro-detalle' : `#${parentPage}-pedido`;
+        history.pushState({ tradehudDetail: kind, parentPage }, '', hash);
+        if (kind === 'game') detailHistoryOpen = true;
+        if (kind === 'digital') digitalHistoryOpen = true;
+      }
+
+      function returnToParentPage(parentPage = 'oro') {
+        closeGoldOrderPanel();
+        closeAccountsPanel();
+        closeBoostingOptionsPanel();
+        gameWindowModal?.classList.remove('show');
+        gameWindowModal?.setAttribute('aria-hidden', 'true');
+        streamingModal?.classList.remove('show');
+        streamingModal?.setAttribute('aria-hidden', 'true');
+        detailHistoryOpen = false;
+        digitalHistoryOpen = false;
+        showPage(parentPage);
+      }
+
+      function navigateBackToCategories(parentPage = activeDetailParentPage || 'oro') {
+        if (history.state?.tradehudDetail) history.back();
+        else returnToParentPage(parentPage);
+      }
+
+      function openDigitalOrderPage(parentPage = activeMarketType || 'streaming') {
+        activeDetailParentPage = parentPage;
+        streamingModal?.classList.add('show');
+        streamingModal?.setAttribute('aria-hidden', 'false');
+        pushDetailHistory('digital', parentPage);
+        showPage('digital-order');
       }
 
       function renderGameList() {
@@ -6323,8 +6390,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           if (streamingHeroInfo) streamingHeroInfo.style.display = '';
           if (streamingServiceDetails) streamingServiceDetails.style.display = '';
           renderStreamingTerms(name, prices);
-          streamingModal.classList.add('show');
-          streamingModal.setAttribute('aria-hidden', 'false');
+          openDigitalOrderPage('streaming');
         };
         categories.forEach((cat, index) => {
           const btn = document.createElement('button');
@@ -6414,8 +6480,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
               streamingServiceDetails.style.display = '';
               streamingServiceDetails.textContent = giftDetails;
             }
-            streamingModal.classList.add('show');
-            streamingModal.setAttribute('aria-hidden', 'false');
+            openDigitalOrderPage('giftcards');
             activeMarketType = currentType;
           });
           giftcardsCategoryGrid.appendChild(btn);
@@ -6483,8 +6548,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
               if (streamingServiceDetails) streamingServiceDetails.style.display = '';
               streamingModalTicketBtn.dataset.category = cat.name;
               streamingModalTicketBtn.dataset.serviceType = 'p2p';
-              streamingModal.classList.add('show');
-              streamingModal.setAttribute('aria-hidden', 'false');
+              openDigitalOrderPage('p2p');
               return;
             }
             if (accountTypeLabel) accountTypeLabel.textContent = 'Tipo de P2P';
@@ -6514,8 +6578,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             if (streamingServiceDetails) streamingServiceDetails.style.display = '';
             streamingModalTicketBtn.dataset.category = cat.name;
             streamingModalTicketBtn.dataset.serviceType = 'p2p';
-            streamingModal.classList.add('show');
-            streamingModal.setAttribute('aria-hidden', 'false');
+            openDigitalOrderPage('p2p');
           });
           p2pCategoryGrid.appendChild(btn);
         });
@@ -7086,39 +7149,30 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       const backToCatalogsBtn = document.getElementById('backToCatalogsBtn');
-      backToCatalogsBtn?.addEventListener('click', () => {
-        gameWindowModal.classList.remove('show');
-        gameWindowModal.setAttribute('aria-hidden', 'true');
-        closeGoldOrderPanel();
-        closeAccountsPanel();
-        closeBoostingOptionsPanel();
-        showPage('oro');
-      });
+      backToCatalogsBtn?.addEventListener('click', () => navigateBackToCategories('oro'));
 
-      closeGameWindow.addEventListener('click', () => {
-        gameWindowModal.classList.remove('show');
-        gameWindowModal.setAttribute('aria-hidden', 'true');
-        closeGoldOrderPanel();
-        closeAccountsPanel();
-        closeBoostingOptionsPanel();
-      });
+      closeGameWindow?.addEventListener('click', () => navigateBackToCategories('oro'));
 
-      gameWindowModal.addEventListener('click', (e) => {
-        if (e.target === gameWindowModal) {
-          gameWindowModal.classList.remove('show');
-          gameWindowModal.setAttribute('aria-hidden', 'true');
-          closeGoldOrderPanel();
-          closeAccountsPanel();
-          closeBoostingOptionsPanel();
-        }
-      });
+      gameWindowModal?.addEventListener('click', () => {});
 
-      window.addEventListener('popstate', () => {
-        if (!goldOrderPanel.classList.contains('hidden')) {
-          closeGoldOrderPanel();
+      window.addEventListener('popstate', (event) => {
+        if (event.state?.tradehudDetail === 'game') {
+          showPage('game-detail');
           return;
         }
-        if (streamingModal?.classList.contains('show')) closeStreamingOrderModal();
+        if (event.state?.tradehudDetail === 'digital') {
+          showPage('digital-order');
+          return;
+        }
+        if (gameWindowModal?.classList.contains('show') || detailHistoryOpen) {
+          returnToParentPage('oro');
+          return;
+        }
+        if (streamingModal?.classList.contains('show') || digitalHistoryOpen) {
+          returnToParentPage(activeDetailParentPage || activeMarketType || 'streaming');
+          return;
+        }
+        if (!goldOrderPanel.classList.contains('hidden')) closeGoldOrderPanel();
       });
 
       openRegister.addEventListener('click', () => openAuth('register'));
@@ -8123,14 +8177,11 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       giftcardsSearch?.addEventListener('input', renderGiftcardsSection);
       p2pSearch?.addEventListener('input', renderP2PSection);
       function closeStreamingOrderModal() {
-        streamingModal?.classList.remove('show');
-        streamingModal?.setAttribute('aria-hidden', 'true');
+        navigateBackToCategories(activeDetailParentPage || activeMarketType || 'streaming');
       }
       closeStreamingModal?.addEventListener('click', closeStreamingOrderModal);
       streamingBottomBackBtn?.addEventListener('click', closeStreamingOrderModal);
-      streamingModal?.addEventListener('click', (e) => {
-        if (e.target === streamingModal) closeStreamingOrderModal();
-      });
+      streamingModal?.addEventListener('click', () => {});
       streamingModalTicketBtn?.addEventListener('click', async () => {
         const category = streamingModalTicketBtn.dataset.category || 'Streaming';
         const customer = streamingCustomerName?.value?.trim() || 'Sin nombre';
