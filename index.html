@@ -786,6 +786,22 @@
         cursor: pointer;
         font-weight: 700;
       }
+      .create-order-btn {
+        border: 2px solid #ffffff !important;
+        background: linear-gradient(135deg, #0bbf6a, #158dff) !important;
+        color: #ffffff !important;
+        border-radius: 999px !important;
+        padding: 0.78rem 1.35rem !important;
+        min-width: 170px;
+        box-shadow: 0 0 0 3px rgba(255,255,255,.12), 0 12px 30px rgba(21,141,255,.35) !important;
+        font-weight: 950 !important;
+        letter-spacing: .055em;
+        text-transform: uppercase;
+      }
+      .create-order-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 0 4px rgba(255,255,255,.18), 0 16px 36px rgba(11,191,106,.42) !important;
+      }
       .gold-order-note {
         margin-top: 0.55rem;
         color: #9fb6e8;
@@ -2500,13 +2516,8 @@
                 <div class="gold-order-actions">
                   <button id="volverOpcionesBtn" class="back-to-services-btn" type="button">Volver</button>
                   <div class="ticket-side-actions">
-                    <button id="goldOrderTicketBtn" class="ticket-btn" type="button">Abrir ticket</button>
+                    <button id="goldOrderTicketBtn" class="ticket-btn create-order-btn" type="button">CREAR ORDEN</button>
                   </div>
-                </div>
-                <div class="purchase-contact-actions" aria-label="Contactos rápidos para comprar oro">
-                  <a href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
-                  <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
-                  <a href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
                 </div>
                 <p class="gold-order-note">Al cambiar el servidor se recargan automáticamente los productos disponibles.</p>
               </div>
@@ -2521,6 +2532,11 @@
                 <div class="gold-order-note-list">
                   <div class="gold-order-note-item">💬 Soporte por Discord, WhatsApp y Telegram.</div>
                   <div class="gold-order-note-item">✅ Seguimiento hasta confirmar recepción.</div>
+                </div>
+                <div class="purchase-contact-actions" aria-label="Contactos rápidos para comprar oro">
+                  <a href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
+                  <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
+                  <a href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
                 </div>
               </aside>
             </div>
@@ -2593,7 +2609,7 @@
                 <div id="boostPriceList" class="boost-price-list"></div>
               </div>
               <p class="auth-hint">La calculadora usa precios exactos, suma tramos disponibles y en profesiones calcula rangos parciales dentro del máximo configurado. Si no hay cobertura, abre ticket para cotización manual.</p>
-              <button id="boostCreateTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
+              <button id="boostCreateTicketBtn" class="panel-btn create-order-btn" type="button">CREAR ORDEN</button>
               <div class="purchase-contact-actions" aria-label="Contactos rápidos para boosting">
                 <a href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
                 <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
@@ -2744,12 +2760,7 @@
               </div>
               <div class="admin-panel-actions" style="margin-top:.7rem;flex-wrap:wrap;">
                 <div class="mmorpg-info-box" style="width:100%;margin-bottom:.65rem;">Este formulario abre ticket de compra con datos del juego/servicio seleccionado para atención rápida y segura.</div>
-                <button id="streamingModalTicketBtn" class="panel-btn" type="button">Abrir ticket</button>
-                <div class="purchase-contact-actions" aria-label="Contactos rápidos para finalizar compra">
-                  <a href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
-                  <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
-                  <a href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
-                </div>
+                <button id="streamingModalTicketBtn" class="panel-btn create-order-btn" type="button">CREAR ORDEN</button>
               </div>
             </div>
             <aside class="streaming-detail-panel">
