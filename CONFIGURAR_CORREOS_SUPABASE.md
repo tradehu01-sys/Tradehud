@@ -2,6 +2,17 @@
 
 En **Supabase → Authentication → Email Templates** aparecen varias opciones. Para arreglar el correo que ahora llega como **Reset Password** / **reset password**, debes configurar la opción **Restablecer contraseña**.
 
+## Datos exactos de esta página
+
+Usa estos valores para TradeHub:
+
+- **Dominio público de la página:** `https://tradehud.vercel.app`
+- **Página de inicio visible:** `https://tradehud.vercel.app/#inicio`
+- **Supabase Project Ref:** `lveocmzvfndvzjdqknnf`
+- **Supabase URL:** `https://lveocmzvfndvzjdqknnf.supabase.co`
+
+> Importante: en Supabase Auth usa `https://tradehud.vercel.app` y las URLs con `?auth=...`. No pongas `#inicio` como URL de redirección de Auth, porque el `#inicio` es solo una sección visual del navegador y el flujo de recuperación usa parámetros como `?auth=recovery`.
+
 ## Opciones y cuáles usa TradeHub
 
 | Opción del panel | ¿Configurar para TradeHub? | Para qué sirve |
@@ -73,24 +84,38 @@ Confirma tu cuenta de TradeHub MMORPG
 
 ## 3. Configura las URLs de redirección
 
-En **Authentication → URL Configuration** configura:
+En **Authentication → URL Configuration** configura exactamente esto para TradeHub:
 
-- **Site URL:** la URL pública de tu página TradeHub.
-- **Redirect URLs:** agrega la misma URL pública y, si Supabase te pide coincidencia exacta, también agrega:
-  - `https://TU-DOMINIO.com/?auth=signup`
-  - `https://TU-DOMINIO.com/?auth=recovery`
+### Site URL
 
-Cambia `https://TU-DOMINIO.com` por el dominio real donde publicaste `index.html`.
+```text
+https://tradehud.vercel.app
+```
+
+### Redirect URLs / Additional Redirect URLs
+
+Agrega estas URLs:
+
+```text
+https://tradehud.vercel.app
+https://tradehud.vercel.app/
+https://tradehud.vercel.app/?auth=signup
+https://tradehud.vercel.app/?auth=recovery
+```
+
+No uses `https://tradehud.vercel.app/#inicio` aquí. La página puede abrir en `#inicio`, pero Supabase debe volver a las URLs anteriores para que el JavaScript detecte `?auth=signup` o `?auth=recovery`.
 
 ## 4. Si quieres aplicarlo automático
 
 Este repo también trae un script para hacerlo por API sin pegar manualmente:
 
 ```bash
-export SUPABASE_ACCESS_TOKEN="tu-access-token"
-export PROJECT_REF="tu-project-ref"
+export SUPABASE_ACCESS_TOKEN="PEGA_AQUI_TU_ACCESS_TOKEN_DE_SUPABASE"
+export PROJECT_REF="lveocmzvfndvzjdqknnf"
 node scripts/apply-supabase-auth-email-templates.mjs
 ```
+
+El `PROJECT_REF` ya queda listo para este proyecto. El `SUPABASE_ACCESS_TOKEN` es secreto y debes copiarlo desde **Supabase Dashboard → Account → Access Tokens**; no lo pegues en `index.html` ni lo subas público al repo.
 
 Si solo quieres revisar lo que va a enviar:
 
