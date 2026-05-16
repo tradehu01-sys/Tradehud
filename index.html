@@ -5269,21 +5269,14 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const product = account
           ? `${account.name || 'Cuenta'} · Level ${account.levelRange || '-'} · ${account.role || '-'} · ${account.budget || 'Cotizar'}`
           : `Cotización de cuenta · ${gameName}`;
-        const summary = `Cuenta | ${gameName} | ${product}`;
-        if (supabaseClient) {
-          await supabaseClient.from('tickets').insert({
-            user_id: currentUser.id,
-            game: 'Cuentas',
-            server: gameName,
-            product,
-            character: account?.faction || '',
-            delivery: account?.description || 'Cotización personalizada',
-            status: 'pendiente'
-          });
-          await renderUserOrders();
-          await renderAdminTickets();
-        }
-        window.open(`https://discord.gg/jSSPHhGWv2?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
+        await saveTicketToProfile({
+          game: 'Cuentas',
+          server: gameName,
+          product,
+          faction: account?.faction || '',
+          character: account?.name || '',
+          delivery: account?.description || 'Cotización personalizada'
+        }, '✅ Orden de cuenta creada. Está enlazada a tu Perfil → Órdenes y al panel admin.');
       }
 
       function closeAccountsPanel() {
@@ -5609,6 +5602,51 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         profilePhoneInput.value = currentProfile.phone || '';
       }
 
+      function ticketDetailHtml(item = {}, includeContact = false) {
+        const created = item.created_at ? new Date(item.created_at).toLocaleString('es-ES') : 'Fecha pendiente';
+        const owner = item.user_profiles?.name || item.user_profiles?.email || 'Usuario';
+        const email = item.user_profiles?.email || '';
+        const discord = item.user_profiles?.discord || '';
+        const phone = item.user_profiles?.phone || '';
+        const phoneDigits = phone.replace(/\D/g, '');
+        const contact = includeContact
+          ? `<p class="admin-game-desc">Perfil: ${owner}</p><p class="admin-game-desc">Correo: ${email || 'No definido'} · Discord: ${discord || 'No definido'} · Número: ${phone || 'No definido'}</p><div class="admin-game-actions"><a class="mini-btn icon-btn" href="${email ? `mailto:${email}` : '#'}" ${email ? '' : 'aria-disabled="true"'}><span class="btn-icon">✉️</span>Email</a><a class="mini-btn icon-btn" href="${phoneDigits ? `https://wa.me/${phoneDigits}` : '#'}" target="_blank" rel="noopener noreferrer" ${phoneDigits ? '' : 'aria-disabled="true"'}><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a></div>`
+          : '';
+        return `<strong>${item.game || 'Orden'} · ${item.product || 'Producto'}</strong><p class="admin-game-desc">Servidor/Categoría: ${item.server || '-'}</p><p class="admin-game-desc">Facción/Tipo: ${item.faction || '-'} · Personaje/Cliente: ${item.character || '-'}</p><p class="admin-game-desc">Entrega/Detalle: ${item.delivery || '-'}</p><p class="admin-game-desc">Estado: ${item.status || 'pendiente'} · Creado: ${created}</p>${contact}`;
+      }
+
+      async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
+        if (!currentUser) {
+          openAuth('login');
+          showAuthNotice('Debes iniciar sesión para crear una orden.', 'warn');
+          return false;
+        }
+        if (!supabaseClient) {
+          showAuthNotice('No se pudo crear la orden porque Supabase no está conectado.', 'warn');
+          return false;
+        }
+        const ticketPayload = {
+          user_id: currentUser.id,
+          game: payload.game || 'Orden TradeHub',
+          server: payload.server || '',
+          product: payload.product || '',
+          faction: payload.faction || '',
+          character: payload.character || '',
+          delivery: payload.delivery || '',
+          status: 'pendiente'
+        };
+        const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
+        if (error) {
+          showAuthNotice(`No se pudo crear la orden: ${friendlyError(error.message)}`, 'warn');
+          return false;
+        }
+        await renderUserOrders();
+        await renderAdminTickets();
+        setProfileSection('orders');
+        showAuthNotice(successMessage);
+        return true;
+      }
+
       async function renderUserOrders() {
         userOrdersList.innerHTML = '';
         if (!currentUser || !supabaseClient) return;
@@ -5620,7 +5658,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         (data || []).forEach((item) => {
           const card = document.createElement('article');
           card.className = 'order-card';
-          card.innerHTML = `<strong>${item.game} · ${item.product || 'Producto'}</strong><p class="admin-game-desc">Servidor: ${item.server || '-'}</p><p class="admin-game-desc">Estado: ${item.status || 'pendiente'}</p>`;
+          card.innerHTML = ticketDetailHtml(item);
           userOrdersList.appendChild(card);
         });
         if (!userOrdersList.children.length) userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes.</p>';
@@ -5631,17 +5669,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         if (!supabaseClient) return;
         const { data } = await supabaseClient
           .from('tickets')
-          .select('id,game,server,product,status,created_at,user_profiles(name,email,discord,phone)')
+          .select('id,game,server,product,faction,character,delivery,status,created_at,user_profiles(name,email,discord,phone)')
           .order('created_at', { ascending: false });
         (data || []).forEach((item) => {
           const row = document.createElement('article');
           row.className = 'order-card';
-          const owner = item.user_profiles?.name || item.user_profiles?.email || 'Usuario';
-          const email = item.user_profiles?.email || '';
-          const discord = item.user_profiles?.discord || '';
-          const phone = item.user_profiles?.phone || '';
-          const phoneDigits = phone.replace(/\D/g, '');
-          row.innerHTML = `<strong>${owner}</strong><p class="admin-game-desc">${item.game} / ${item.server || '-'}</p><p class="admin-game-desc">Producto: ${item.product || '-'} · Estado: ${item.status || 'pendiente'}</p><p class="admin-game-desc">Correo: ${email || 'No definido'}</p><p class="admin-game-desc">Discord: ${discord || 'No definido'}</p><p class="admin-game-desc">Número: ${phone || 'No definido'}</p><div class="admin-game-actions"><a class="mini-btn icon-btn" href="${email ? `mailto:${email}` : '#'}" ${email ? '' : 'aria-disabled="true"'}><span class="btn-icon">✉️</span>Email</a><a class="mini-btn icon-btn" href="${phoneDigits ? `https://wa.me/${phoneDigits}` : '#'}" target="_blank" rel="noopener noreferrer" ${phoneDigits ? '' : 'aria-disabled="true"'}><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a></div>`;
+          row.innerHTML = ticketDetailHtml(item, true);
           adminTicketsList.appendChild(row);
         });
       }
@@ -6829,29 +6862,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           return;
         }
         const goldProductInfo = getSelectedGoldProductInfo();
-        const msg = [
-          `Juego: ${activeOrderGame.name}`,
-          `Servidor: ${goldOrderServer.value || 'No definido'}`,
-          `Producto: ${goldProductInfo.label || goldOrderProduct.value || 'No definido'}`,
-          `Facción: ${goldOrderFaction.value || 'No definida'}`,
-          `Personaje: ${goldOrderCharacter.value.trim() || 'No definido'}`,
-          `Preferencia de entrega: ${goldOrderDelivery.value.trim() || 'No definida'}`
-        ].join('\n');
-        if (supabaseClient) {
-          await supabaseClient.from('tickets').insert({
-            user_id: currentUser.id,
-            game: activeOrderGame.name,
-            server: goldOrderServer.value || '',
-            product: goldProductInfo.label || goldOrderProduct.value || '',
-            faction: goldOrderFaction.value || '',
-            character: goldOrderCharacter.value.trim() || '',
-            delivery: goldOrderDelivery.value.trim() || '',
-            status: 'pendiente'
-          });
-          await renderUserOrders();
-          await renderAdminTickets();
-        }
-        window.open(`https://discord.gg/jSSPHhGWv2?ticket=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+        await saveTicketToProfile({
+          game: activeOrderGame.name,
+          server: goldOrderServer.value || '',
+          product: goldProductInfo.label || goldOrderProduct.value || '',
+          faction: goldOrderFaction.value || '',
+          character: goldOrderCharacter.value.trim() || '',
+          delivery: goldOrderDelivery.value.trim() || ''
+        }, '✅ Orden de oro creada. Está enlazada a tu Perfil → Órdenes y al panel admin.');
       });
 
       authRegisterBtn.addEventListener('click', async () => {
@@ -7642,20 +7660,12 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           showAuthNotice('Debes iniciar sesión para abrir ticket.');
           return;
         }
-        const summary = `${marketSelectedService.value} | ${marketSelectedCategory.value} | ${marketItemType.value} | ${marketPaymentMethod.value} | ${marketAmountToPay.value}`;
-        if (supabaseClient) {
-          await supabaseClient.from('tickets').insert({
-            user_id: currentUser.id,
-            game: marketSelectedService.value || 'Servicios',
-            server: marketSelectedCategory.value || '',
-            product: marketItemType.value || '',
-            delivery: `${marketPaymentMethod.value} - ${marketAmountToPay.value}`,
-            status: 'pendiente'
-          });
-          await renderUserOrders();
-          await renderAdminTickets();
-        }
-        window.open(`https://discord.gg/jSSPHhGWv2?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
+        await saveTicketToProfile({
+          game: marketSelectedService.value || 'Servicios',
+          server: marketSelectedCategory.value || '',
+          product: marketItemType.value || '',
+          delivery: `${marketPaymentMethod.value} - ${marketAmountToPay.value}`
+        }, '✅ Orden creada. Está enlazada a tu Perfil → Órdenes y al panel admin.');
       });
 
       abrirFormularioJuego.addEventListener('click', () => {
@@ -7772,21 +7782,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         const range = `${boostLevelFrom?.value || ''}-${boostLevelTo?.value || ''}`;
         const price = boostCalculatedPrice?.value || 'Sin precio exacto';
         const payment = boostPaymentMethod?.value || 'No definido';
-        const summary = `Boosting | ${serviceName} | ${boostGame?.value || ''} | ${boostServer?.value || ''} | ${boostCharacter?.value || ''} | ${range} | ${price} | Pago: ${payment} | ${boostExtra?.value || ''}`;
-        if (supabaseClient) {
-          await supabaseClient.from('tickets').insert({
-            user_id: currentUser.id,
-            game: boostGame?.value || 'Boosting',
-            server: boostServer?.value || '',
-            product: `${serviceName} ${range} · ${price}`,
-            character: boostCharacter?.value || '',
-            delivery: `Pago: ${payment} · ${boostExtra?.value || ''}`,
-            status: 'pendiente'
-          });
-          await renderUserOrders();
-          await renderAdminTickets();
-        }
-        window.open(`https://discord.gg/jSSPHhGWv2?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
+        await saveTicketToProfile({
+          game: boostGame?.value || 'Boosting',
+          server: boostServer?.value || '',
+          product: `${serviceName} ${range} · ${price}`,
+          faction: activeBoostMode === 'profession' ? 'Profesión' : 'Leveleo',
+          character: boostCharacter?.value || '',
+          delivery: `Pago: ${payment} · ${boostExtra?.value || ''}`
+        }, '✅ Orden de boosting creada. Está enlazada a tu Perfil → Órdenes y al panel admin.');
       });
       oroSearch.addEventListener('input', renderGameList);
       streamingSearch?.addEventListener('input', renderStreamingSection);
@@ -7813,21 +7816,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         }
         const rawType = streamingModalTicketBtn.dataset.serviceType || 'streaming';
         const serviceType = rawType === 'giftcards' ? 'GiftCards' : rawType === 'p2p' ? 'P2P' : 'Streaming';
-        const summary = `${serviceType} | ${category} | ${customer} | ${accType} | ${duration} | ${streamingModalTicketBtn.dataset.priceRaw || price}`;
-        if (supabaseClient) {
-          await supabaseClient.from('tickets').insert({
-            user_id: currentUser.id,
-            game: serviceType,
-            server: category,
-            product: `${accType} - ${duration}`,
-            character: customer,
-            delivery: price,
-            status: 'pendiente'
-          });
-          await renderUserOrders();
-          await renderAdminTickets();
-        }
-        window.open(`https://discord.gg/jSSPHhGWv2?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
+        await saveTicketToProfile({
+          game: serviceType,
+          server: category,
+          product: `${accType} - ${duration}`,
+          faction: rawType,
+          character: customer,
+          delivery: streamingModalTicketBtn.dataset.priceRaw || price
+        }, `✅ Orden de ${serviceType} creada. Está enlazada a tu Perfil → Órdenes y al panel admin.`);
       });
 
       function openCategoriaModal(type = 'oro') {
