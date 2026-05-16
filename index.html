@@ -5150,11 +5150,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           resetPasswordMsg.style.color = '#ffb6b6';
           return;
         }
-        resetPasswordMsg.textContent = 'Listo. Enviamos a tu correo un mensaje de recuperación de TradeHub MMORPG. Ábrelo y pulsa el botón para crear tu contraseña nueva.';
+        resetPasswordMsg.textContent = 'Listo. Solicitamos el correo de recuperación TradeHub. Si no llega en unos minutos, revisa spam y confirma que ese correo esté registrado; el envío real depende del correo/SMTP configurado en el panel de autenticación.';
         resetPasswordMsg.style.color = '#9affcc';
         authMsg.textContent = 'Revisa tu correo: el mensaje de recuperación te traerá de vuelta a TradeHub para crear la nueva contraseña.';
         authMsg.style.color = '#9affcc';
-        showAuthNotice('📩 Mensaje de recuperación enviado. Revisa principal y spam; el botón debe decir TradeHub.');
+        showAuthNotice('📩 Recuperación solicitada. Revisa principal/spam; si no llega, verifica SMTP y plantilla TradeHub en el panel de autenticación.');
       }
 
       function getAuthRedirectUrl(flow = 'login') {
@@ -6533,7 +6533,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           }
           return;
         }
-        if (data.user) {
+        const userIdentities = Array.isArray(data.user?.identities) ? data.user.identities : [];
+        const accountAlreadyExists = Boolean(data.user && userIdentities.length === 0);
+        if (data.user && !accountAlreadyExists) {
           await supabaseClient.from('user_profiles').upsert({
             id: data.user.id,
             name: authRegName.value.trim() || 'Usuario',
@@ -6547,7 +6549,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         }
         const confirmationEnabled = !data.session;
         let resendError = null;
-        if (confirmationEnabled) {
+        if (confirmationEnabled && !accountAlreadyExists) {
           const resendResult = await supabaseClient.auth.resend({
             type: 'signup',
             email,
@@ -6556,12 +6558,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           resendError = resendResult.error;
         }
         openLoginAfterRegister(email);
-        if (resendError) {
-          showAuthNotice(`Cuenta creada, pero no pudimos reenviar el correo: ${friendlyError(resendError.message)}. Verifica el correo/SMTP del panel de autenticación para que salga como TradeHub.`, 'warn');
+        if (accountAlreadyExists) {
+          showAuthNotice('Ese correo ya existe en TradeHub. Por seguridad no se envía otro registro; usa “¿Olvidó su contraseña?” para recibir el correo de recuperación.', 'warn');
+        } else if (resendError) {
+          showAuthNotice(`Cuenta creada, pero el reenvío de confirmación falló: ${friendlyError(resendError.message)}. Revisa el correo/SMTP del panel de autenticación para que llegue como TradeHub.`, 'warn');
         } else if (!confirmationEnabled) {
           showAuthNotice('✅ Cuenta creada. La confirmación por correo está desactivada en el panel de autenticación; actívala en Authentication → Providers → Email para enviar correo TradeHub.', 'warn');
         } else {
-          showAuthNotice('✅ Cuenta creada. Te enviamos el correo de confirmación de TradeHub. Revisa bandeja principal y spam.');
+          showAuthNotice('✅ Cuenta creada. Solicitamos el correo de confirmación de TradeHub. Revisa principal y spam; si no llega, verifica SMTP/plantillas en el panel de autenticación.');
         }
       });
 

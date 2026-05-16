@@ -4,8 +4,10 @@ Los correos reales de autenticación se cambian desde el panel del proveedor de 
 
 ## Ajustes obligatorios
 - En **Authentication → Providers → Email**, activa **Confirm email** para que se envíe confirmación al registrarse. Si está apagado, la cuenta se crea sin correo.
-- En **Authentication → URL Configuration**, agrega la URL pública de TradeHub en **Site URL** y **Redirect URLs**.
+- En **Authentication → URL Configuration**, agrega la URL pública de TradeHub en **Site URL** y **Redirect URLs**. Incluye también las URLs con `?auth=signup` y `?auth=recovery` si tu panel exige coincidencias exactas.
 - Para que Gmail muestre TradeHub como remitente y no el proveedor genérico, configura SMTP propio con un dominio/correo verificado.
+- Revisa límites/rate limits del proveedor: si se excede el límite de correos, el navegador puede solicitar el email pero el proveedor no lo entregará.
+- Si un correo ya está registrado, normalmente no se envía otro email de registro; usa recuperación de contraseña para ese correo.
 
 ## Remitente recomendado
 - **Sender name:** TradeHub MMORPG
@@ -40,5 +42,12 @@ Los correos reales de autenticación se cambian desde el panel del proveedor de 
   <p>Equipo TradeHub MMORPG</p>
 </div>
 ```
+
+## Si no llega ningún correo
+1. Verifica que **Confirm email** esté activado para registros.
+2. Configura **SMTP propio** y valida el remitente/dominio.
+3. Confirma que **Site URL** y **Redirect URLs** coincidan con el dominio publicado de TradeHub.
+4. Revisa spam/promociones y los límites de envío del proveedor.
+5. Prueba con un correo nuevo; si el correo ya existe, usa recuperación de contraseña.
 
 > Nota: estas plantillas, asuntos y remitente no se pueden cambiar desde JavaScript del navegador; deben configurarse en el panel de autenticación/SMTP para que el correo real llegue y salga con marca TradeHub.
