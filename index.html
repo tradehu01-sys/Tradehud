@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TradeHud | Compra y Venta de Oro MMORPG</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%23070b15'/%3E%3Crect x='9' y='9' width='110' height='110' rx='22' fill='%23110f0a' stroke='%23f6ca63' stroke-width='6'/%3E%3Ctext x='64' y='58' text-anchor='middle' fill='%23f6ca63' font-family='Arial,sans-serif' font-size='34' font-weight='900'%3ETH%3C/text%3E%3Ctext x='64' y='86' text-anchor='middle' fill='%23ffffff' font-family='Arial,sans-serif' font-size='18' font-weight='800'%3EMMO%3C/text%3E%3C/svg%3E" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%23070b15'/%3E%3Crect x='13' y='13' width='154' height='154' rx='30' fill='%23110f0a' stroke='%23f6ca63' stroke-width='8'/%3E%3Ctext x='90' y='82' text-anchor='middle' fill='%23f6ca63' font-family='Arial,sans-serif' font-size='48' font-weight='900'%3ETH%3C/text%3E%3Ctext x='90' y='121' text-anchor='middle' fill='%23ffffff' font-family='Arial,sans-serif' font-size='25' font-weight='800'%3EMMO%3C/text%3E%3C/svg%3E" />
+    <script>
+      (function seedTradeHubTranslateCookie(){
+        var lang = 'es';
+        try { lang = localStorage.getItem('tradehud_language') || 'es'; } catch (e) {}
+        var value = lang === 'en' ? '/es/en' : '/es/es';
+        document.cookie = 'googtrans=' + value + ';path=/';
+        if (location.hostname) document.cookie = 'googtrans=' + value + ';path=/;domain=' + location.hostname;
+      })();
+    </script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
     <style>
       :root {
@@ -8309,7 +8320,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           marketTitle: 'Sección de Marketplace',
           p2pTitle: 'Sección P2P',
           loadingSection: 'Cargando sección...',
-          dbChecking: 'Base de datos: verificando...'
+          dbChecking: 'Base de datos: verificando...',
+          pageTitle: 'TradeHud | Compra y Venta de Oro MMORPG'
         },
         en: {
           startupTitle: 'Choose language',
@@ -8327,7 +8339,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           marketTitle: 'Marketplace Section',
           p2pTitle: 'P2P Section',
           loadingSection: 'Loading section...',
-          dbChecking: 'Database: checking...'
+          dbChecking: 'Database: checking...',
+          pageTitle: 'TradeHud | MMORPG Gold Buying and Selling'
         }
       };
       let currentLanguage = localStorage.getItem('tradehud_language') || 'es';
@@ -8335,6 +8348,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         currentLanguage = i18nMessages[lang] ? lang : 'es';
         localStorage.setItem('tradehud_language', currentLanguage);
         document.documentElement.lang = currentLanguage;
+        document.title = i18nMessages[currentLanguage]?.pageTitle || i18nMessages.es.pageTitle;
         document.querySelectorAll('[data-i18n]').forEach((el) => {
           const key = el.dataset.i18n;
           const value = i18nMessages[currentLanguage]?.[key];
@@ -8355,31 +8369,61 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       document.querySelectorAll('[data-lang-option]').forEach((btn) => {
         btn.addEventListener('click', () => {
           applyLanguage(btn.dataset.langOption || 'es');
-          if (document.getElementById('startupLanguageOverlay')?.classList.contains('hidden')) {
-            applyGoogleTranslate(currentLanguage);
-          }
+          applyGoogleTranslate(currentLanguage);
         });
       });
       applyLanguage(currentLanguage);
+
+      let googleTranslateRetryTimer = null;
+      let googleTranslateMutationTimer = null;
+
+      function setGoogleTranslateCookie(lang = 'es') {
+        const value = lang === 'en' ? '/es/en' : '/es/es';
+        document.cookie = `googtrans=${value};path=/`;
+        if (location.hostname) document.cookie = `googtrans=${value};path=/;domain=${location.hostname}`;
+      }
 
       window.googleTranslateElementInit = function googleTranslateElementInit() {
         if (!window.google?.translate?.TranslateElement) return;
         new window.google.translate.TranslateElement({
           pageLanguage: 'es',
           includedLanguages: 'es,en',
-          autoDisplay: false
+          autoDisplay: false,
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
         }, 'googleTranslateElement');
+        applyGoogleTranslate(currentLanguage);
       };
 
-      function applyGoogleTranslate(lang = 'es') {
+      function applyGoogleTranslate(lang = 'es', attempt = 0) {
+        setGoogleTranslateCookie(lang);
         const combo = document.querySelector('.goog-te-combo');
         if (!combo) {
-          setTimeout(() => applyGoogleTranslate(lang), 250);
+          if (attempt < 30) {
+            clearTimeout(googleTranslateRetryTimer);
+            googleTranslateRetryTimer = setTimeout(() => applyGoogleTranslate(lang, attempt + 1), 300);
+          }
           return;
         }
-        combo.value = lang === 'en' ? 'en' : 'es';
-        combo.dispatchEvent(new Event('change'));
+        const target = lang === 'en' ? 'en' : 'es';
+        if (combo.value !== target) combo.value = target;
+        combo.dispatchEvent(new Event('change', { bubbles: true }));
+        combo.dispatchEvent(new Event('input', { bubbles: true }));
+        document.body.classList.toggle('tradehub-translated-en', target === 'en');
       }
+
+      function scheduleFullPageTranslation() {
+        if (currentLanguage !== 'en') return;
+        clearTimeout(googleTranslateMutationTimer);
+        googleTranslateMutationTimer = setTimeout(() => applyGoogleTranslate('en'), 650);
+      }
+
+      const fullTranslationObserver = new MutationObserver((mutations) => {
+        if (currentLanguage !== 'en') return;
+        if (mutations.some((mutation) => [...mutation.addedNodes].some((node) => node.nodeType === 1 && !node.classList?.contains('goog-te-menu-frame')))) {
+          scheduleFullPageTranslation();
+        }
+      });
+      fullTranslationObserver.observe(document.body, { childList: true, subtree: true });
 
       const startupLanguageOverlay = document.getElementById('startupLanguageOverlay');
       const startupLanguageEnterBtn = document.getElementById('startupLanguageEnterBtn');
