@@ -4659,6 +4659,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let currentUser = null;
       let currentProfile = null;
       let recoveryMode = false;
+      const PASSWORD_RESET_COOLDOWN_MS = 90 * 1000;
       function isAuthReturnUrl() {
         const params = new URLSearchParams(window.location.search || '');
         const hash = window.location.hash || '';
@@ -5125,6 +5126,20 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         resetPasswordModal.setAttribute('aria-hidden', 'true');
       }
 
+      function passwordResetCooldownKey(email) {
+        return `tradehud_reset_email_${String(email || '').trim().toLowerCase()}`;
+      }
+
+      function secondsUntilNextPasswordResetEmail(email) {
+        const lastRequest = Number(localStorage.getItem(passwordResetCooldownKey(email)) || 0);
+        const remainingMs = PASSWORD_RESET_COOLDOWN_MS - (Date.now() - lastRequest);
+        return remainingMs > 0 ? Math.ceil(remainingMs / 1000) : 0;
+      }
+
+      function rememberPasswordResetEmailRequest(email) {
+        localStorage.setItem(passwordResetCooldownKey(email), String(Date.now()));
+      }
+
       async function sendPasswordResetEmail() {
         if (!supabaseClient) {
           resetPasswordMsg.textContent = 'La conexión de TradeHub no está disponible. Intenta nuevamente.';
@@ -5137,6 +5152,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           resetPasswordMsg.style.color = '#ffd39a';
           return;
         }
+        const waitSeconds = secondsUntilNextPasswordResetEmail(email);
+        if (waitSeconds > 0) {
+          resetPasswordMsg.textContent = `Ya pediste un correo de recuperación hace poco. Revisa los correos que ya llegaron y espera ${waitSeconds}s para solicitar otro.`;
+          resetPasswordMsg.style.color = '#ffd39a';
+          return;
+        }
         authLoginEmail.value = email;
         sendResetPasswordEmailBtn.disabled = true;
         sendResetPasswordEmailBtn.textContent = 'Enviando correo TradeHub...';
@@ -5146,10 +5167,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         sendResetPasswordEmailBtn.disabled = false;
         sendResetPasswordEmailBtn.textContent = 'Enviar correo de recuperación TradeHub';
         if (error) {
+          if (isEmailRateLimitError(error.message)) rememberPasswordResetEmailRequest(email);
           resetPasswordMsg.textContent = friendlyError(error.message);
           resetPasswordMsg.style.color = '#ffb6b6';
           return;
         }
+        rememberPasswordResetEmailRequest(email);
         resetPasswordMsg.textContent = 'Listo. Te enviamos el correo de recuperación de TradeHub. Revisa tu bandeja principal y spam; si no aparece en unos minutos, confirma que escribiste el correo registrado.';
         resetPasswordMsg.style.color = '#9affcc';
         authMsg.textContent = 'Revisa tu correo: el mensaje de recuperación te traerá de vuelta a TradeHub para crear la nueva contraseña.';
@@ -5183,9 +5206,14 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }, 7200);
       }
 
+      function isEmailRateLimitError(message = '') {
+        const raw = String(message || '').toLowerCase();
+        return raw.includes('email rate limit exceeded') || raw.includes('rate limit') || raw.includes('too many requests');
+      }
+
       function friendlyError(message = '') {
         const raw = String(message || '').toLowerCase();
-        if (raw.includes('email rate limit exceeded') || raw.includes('rate limit') || raw.includes('too many requests')) return 'Supabase bloqueó el envío por demasiados correos seguidos. Espera unos minutos antes de pedir otro correo.';
+        if (isEmailRateLimitError(raw)) return 'Ya se pidió un correo hace poco. Revisa los correos que te llegaron y espera unos minutos antes de solicitar otro.';
         if (raw.includes('invalid email') || raw.includes('email address is invalid') || raw.includes('unable to validate email address') || raw.includes('invalid format')) return 'El correo no es válido. Revisa que esté bien escrito, por ejemplo nombre@dominio.com.';
         if (raw.includes('invalid login credentials')) return 'Credenciales inválidas. Revisa correo y contraseña.';
         if (raw.includes('email not confirmed')) return 'Debes confirmar tu correo antes de iniciar sesión.';
