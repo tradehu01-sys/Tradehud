@@ -110,9 +110,20 @@
         align-items: center;
         gap: 0.4rem;
       }
-      .discord-nav-btn img {
-        width: 16px;
-        height: 16px;
+      .discord-nav-btn img,
+      .contact-icon,
+      .btn-icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        flex: 0 0 auto;
+      }
+      .contact-link,
+      .icon-btn {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: .42rem;
       }
 
 
@@ -922,6 +933,7 @@
         place-items: center;
         cursor: pointer;
         overflow: hidden;
+        position: relative;
         transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
       }
 
@@ -934,6 +946,24 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+      }
+      .service-order-chip {
+        position: absolute;
+        left: 50%;
+        bottom: 10px;
+        transform: translateX(-50%);
+        width: max-content;
+        max-width: 128px;
+        border: 1px solid rgba(255,255,255,.9);
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(11,191,106,.96), rgba(21,141,255,.96));
+        color: #fff;
+        padding: .28rem .52rem;
+        font-size: .68rem;
+        font-weight: 950;
+        text-transform: uppercase;
+        box-shadow: 0 0 16px rgba(21,141,255,.45);
+        pointer-events: none;
       }
 
       @keyframes floatIcon {
@@ -2526,9 +2556,9 @@
                 <li>Soporte humano antes, durante y después de la compra.</li>
               </ul>
               <div class="game-contacts purchase-contact-actions">
-                <a href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
-                <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Telegram</a>
-                <a href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer">🎮 Discord</a>
+                <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
+                <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
+                <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Discord</a>
               </div>
               <button id="backToCatalogsBtn" class="panel-btn game-back-btn" type="button">⬅ Volver a catálogos</button>
             </aside>
@@ -2581,7 +2611,7 @@
                 <div class="gold-order-actions">
                   <button id="volverOpcionesBtn" class="back-to-services-btn" type="button">Volver</button>
                   <div class="ticket-side-actions">
-                    <button id="goldOrderTicketBtn" class="ticket-btn create-order-btn" type="button">CREAR ORDEN</button>
+                    <button id="goldOrderTicketBtn" class="ticket-btn create-order-btn icon-btn" type="button"><span class="btn-icon">🧾</span>CREAR ORDEN</button>
                   </div>
                 </div>
                 <p class="gold-order-note">Al cambiar el servidor se recargan automáticamente los productos disponibles.</p>
@@ -2599,9 +2629,9 @@
                   <div class="gold-order-note-item">✅ Seguimiento hasta confirmar recepción.</div>
                 </div>
                 <div class="purchase-contact-actions" aria-label="Contactos rápidos para comprar oro">
-                  <a href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
-                  <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
-                  <a href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
+                  <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />Ir a WhatsApp</a>
+                  <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Ir a Telegram</a>
+                  <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Abrir Discord</a>
                 </div>
               </aside>
             </div>
@@ -2609,10 +2639,11 @@
           <div id="accountsPanel" class="accounts-panel hidden">
             <strong style="display:block;margin-bottom:.55rem;">Cuentas disponibles por juego</strong>
             <div class="purchase-contact-actions" aria-label="Contactos rápidos para comprar cuentas">
-              <a href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
-              <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
-              <a href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
+              <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />Ir a WhatsApp</a>
+              <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Ir a Telegram</a>
+              <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Abrir Discord</a>
             </div>
+            <button id="accountCreateTicketBtn" class="panel-btn create-order-btn icon-btn" type="button" style="width:100%;margin-top:.75rem;"><span class="btn-icon">🧾</span>CREAR ORDEN DE CUENTA</button>
             <div id="accountsPanelList" class="accounts-grid" style="margin-top:.75rem;"></div>
           </div>
           <div id="boostingOptionsPanel" class="boosting-options-panel hidden">
@@ -2674,11 +2705,11 @@
                 <div id="boostPriceList" class="boost-price-list"></div>
               </div>
               <p class="auth-hint">La calculadora usa precios exactos, suma tramos disponibles y en profesiones calcula rangos parciales dentro del máximo configurado. Si no hay cobertura, abre ticket para cotización manual.</p>
-              <button id="boostCreateTicketBtn" class="panel-btn create-order-btn" type="button">CREAR ORDEN</button>
+              <button id="boostCreateTicketBtn" class="panel-btn create-order-btn icon-btn" type="button"><span class="btn-icon">🧾</span>CREAR ORDEN</button>
               <div class="purchase-contact-actions" aria-label="Contactos rápidos para boosting">
-                <a href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
-                <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
-                <a href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
+                <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />Ir a WhatsApp</a>
+                <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Ir a Telegram</a>
+                <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Abrir Discord</a>
               </div>
             </div>
           </div>
@@ -2782,9 +2813,9 @@
               <div class="streaming-support-item"><strong>🎮 Discord</strong>Canal comunitario</div>
             </div>
             <div class="purchase-contact-actions" aria-label="Contactos rápidos para servicios digitales">
-              <a href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer">💬 Ir a WhatsApp</a>
-              <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer">🛰️ Ir a Telegram</a>
-              <a href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer">🎮 Abrir Discord</a>
+              <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />Ir a WhatsApp</a>
+              <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Ir a Telegram</a>
+              <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Abrir Discord</a>
             </div>
           </div>
           <div class="streaming-modal-layout">
@@ -2825,7 +2856,7 @@
               </div>
               <div class="admin-panel-actions" style="margin-top:.7rem;flex-wrap:wrap;">
                 <div class="mmorpg-info-box" style="width:100%;margin-bottom:.65rem;">Este formulario abre ticket de compra con datos del juego/servicio seleccionado para atención rápida y segura.</div>
-                <button id="streamingModalTicketBtn" class="panel-btn create-order-btn" type="button">CREAR ORDEN</button>
+                <button id="streamingModalTicketBtn" class="panel-btn create-order-btn icon-btn" type="button"><span class="btn-icon">🧾</span>CREAR ORDEN</button>
               </div>
             </div>
             <aside class="streaming-detail-panel">
@@ -3593,6 +3624,7 @@
       const volverOpcionesBtn = document.getElementById('volverOpcionesBtn');
       const accountsPanel = document.getElementById('accountsPanel');
       const accountsPanelList = document.getElementById('accountsPanelList');
+      const accountCreateTicketBtn = document.getElementById('accountCreateTicketBtn');
       const boostingOptionsPanel = document.getElementById('boostingOptionsPanel');
       const boostingButtonsView = document.getElementById('boostingButtonsView');
       const boostProfBtn = document.getElementById('boostProfBtn');
@@ -4920,16 +4952,19 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
       };
       const defaultBoostConfig = {
+        servers: ['Cotización general'],
         leveling: [
           { from: 1, to: 20, price: 30 }, { from: 20, to: 40, price: 45 },
           { from: 40, to: 60, price: 60 }, { from: 60, to: 80, price: 80 },
-          { from: 1, to: 60, price: 120 }, { from: 1, to: 80, price: 180 }
+          { from: 80, to: 100, price: 90 }, { from: 1, to: 60, price: 120 },
+          { from: 1, to: 80, price: 180 }, { from: 1, to: 100, price: 250 }
         ],
         professions: [
           ['Herbalism', 1, 300, 50], ['Skinning', 1, 300, 50], ['Mining', 1, 300, 50],
           ['Cooking', 1, 300, 50], ['Fishing', 1, 300, 50], ['Alchemy', 1, 300, 70],
           ['Blacksmithing', 1, 300, 120], ['Enchanting', 1, 300, 120], ['Engineering', 1, 300, 120],
-          ['Tailoring', 1, 300, 120], ['Leatherworking', 1, 300, 120], ['Jewelcrafting', 1, 300, 120]
+          ['Tailoring', 1, 300, 120], ['Leatherworking', 1, 300, 120], ['Jewelcrafting', 1, 300, 120],
+          ['Profesión especial', 1, 450, 150]
         ]
       };
       let activeBoostMode = 'leveling';
@@ -5219,15 +5254,43 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         accountsPanelList.innerHTML = '';
         const filtered = gameAccounts.filter((account) => account.game === game.name);
         if (!filtered.length) {
-          accountsPanelList.innerHTML = '<p class="auth-hint">No hay cuentas cargadas para este juego.</p>';
+          accountsPanelList.innerHTML = '<p class="auth-hint">No hay cuentas cargadas para este juego. Usa el botón CREAR ORDEN DE CUENTA para pedir una cotización personalizada.</p>';
           return;
         }
-        filtered.forEach((account) => {
+        filtered.forEach((account, index) => {
           const card = document.createElement('article');
           card.className = 'account-card';
-          card.innerHTML = `<img src="${account.image}" alt="${account.name}" /><strong>${account.name}</strong><p class="admin-game-desc">Level: ${account.levelRange || '-'}</p><p class="admin-game-desc">Clase/Rol: ${account.role || '-'}</p><p class="admin-game-desc">Facción: ${account.faction || '-'}</p><p class="admin-game-desc">Presupuesto: ${account.budget || '-'}</p><p class="admin-game-desc">${account.description || ''}</p>`;
+          card.innerHTML = `<img src="${account.image}" alt="${account.name}" /><strong>${account.name}</strong><p class="admin-game-desc">Level: ${account.levelRange || '-'}</p><p class="admin-game-desc">Clase/Rol: ${account.role || '-'}</p><p class="admin-game-desc">Facción: ${account.faction || '-'}</p><p class="admin-game-desc">Presupuesto: ${account.budget || '-'}</p><p class="admin-game-desc">${account.description || ''}</p><button class="panel-btn create-order-btn icon-btn" type="button" data-account-order-index="${index}"><span class="btn-icon">🧾</span>CREAR ORDEN</button>`;
+          card.querySelector('[data-account-order-index]')?.addEventListener('click', () => createAccountOrder(account));
           accountsPanelList.appendChild(card);
         });
+      }
+
+      async function createAccountOrder(account = null) {
+        if (!currentUser) {
+          openAuth('login');
+          showAuthNotice('Debes iniciar sesión para crear una orden de cuenta.');
+          return;
+        }
+        const gameName = activeOrderGame?.name || account?.game || 'Cuenta MMORPG';
+        const product = account
+          ? `${account.name || 'Cuenta'} · Level ${account.levelRange || '-'} · ${account.role || '-'} · ${account.budget || 'Cotizar'}`
+          : `Cotización de cuenta · ${gameName}`;
+        const summary = `Cuenta | ${gameName} | ${product}`;
+        if (supabaseClient) {
+          await supabaseClient.from('tickets').insert({
+            user_id: currentUser.id,
+            game: 'Cuentas',
+            server: gameName,
+            product,
+            character: account?.faction || '',
+            delivery: account?.description || 'Cotización personalizada',
+            status: 'pendiente'
+          });
+          await renderUserOrders();
+          await renderAdminTickets();
+        }
+        window.open(`https://discord.gg/jSSPHhGWv2?ticket=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
       }
 
       function closeAccountsPanel() {
@@ -5243,9 +5306,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const servers = gameServers.find((entry) => entry.game === gameName)?.servers || [];
         if (!gameName) return null;
         return {
-          servers,
+          servers: servers.length ? servers : defaultBoostConfig.servers,
           leveling: defaultBoostConfig.leveling,
-          professions: defaultBoostConfig.professions
+          professions: defaultBoostConfig.professions,
+          isDefault: true
         };
       }
 
@@ -5333,8 +5397,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         if (boostModeLabel) boostModeLabel.textContent = mode === 'profession' ? 'Calculadora de profesiones' : 'Calculadora de leveleo';
         if (boostProfessionWrap) boostProfessionWrap.classList.toggle('hidden', mode !== 'profession');
         if (boostServer) {
-          const servers = config?.servers || gameServers.find((entry) => entry.game === gameName)?.servers || [];
-          boostServer.innerHTML = servers.map((server) => `<option value="${server}">${server}</option>`).join('') || '<option value="">Sin servidores configurados</option>';
+          const servers = config?.servers?.length ? config.servers : defaultBoostConfig.servers;
+          boostServer.innerHTML = servers.map((server) => `<option value="${server}">${server}</option>`).join('');
         }
         if (boostProfessionSelect) {
           boostProfessionSelect.innerHTML = (config?.professions || []).map(([name, from, to, price], index) => `<option value="${index}">${name} ${from}-${to} · ${price}$</option>`).join('') || '<option value="">Sin profesiones configuradas</option>';
@@ -5584,7 +5648,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const discord = item.user_profiles?.discord || '';
           const phone = item.user_profiles?.phone || '';
           const phoneDigits = phone.replace(/\D/g, '');
-          row.innerHTML = `<strong>${owner}</strong><p class="admin-game-desc">${item.game} / ${item.server || '-'}</p><p class="admin-game-desc">Producto: ${item.product || '-'} · Estado: ${item.status || 'pendiente'}</p><p class="admin-game-desc">Correo: ${email || 'No definido'}</p><p class="admin-game-desc">Discord: ${discord || 'No definido'}</p><p class="admin-game-desc">Número: ${phone || 'No definido'}</p><div class="admin-game-actions"><a class="mini-btn" href="${email ? `mailto:${email}` : '#'}" ${email ? '' : 'aria-disabled="true"'}>Email</a><a class="mini-btn" href="${phoneDigits ? `https://wa.me/${phoneDigits}` : '#'}" target="_blank" rel="noopener noreferrer" ${phoneDigits ? '' : 'aria-disabled="true"'}>WhatsApp</a></div>`;
+          row.innerHTML = `<strong>${owner}</strong><p class="admin-game-desc">${item.game} / ${item.server || '-'}</p><p class="admin-game-desc">Producto: ${item.product || '-'} · Estado: ${item.status || 'pendiente'}</p><p class="admin-game-desc">Correo: ${email || 'No definido'}</p><p class="admin-game-desc">Discord: ${discord || 'No definido'}</p><p class="admin-game-desc">Número: ${phone || 'No definido'}</p><div class="admin-game-actions"><a class="mini-btn icon-btn" href="${email ? `mailto:${email}` : '#'}" ${email ? '' : 'aria-disabled="true"'}><span class="btn-icon">✉️</span>Email</a><a class="mini-btn icon-btn" href="${phoneDigits ? `https://wa.me/${phoneDigits}` : '#'}" target="_blank" rel="noopener noreferrer" ${phoneDigits ? '' : 'aria-disabled="true"'}><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a></div>`;
           adminTicketsList.appendChild(row);
         });
       }
@@ -5608,7 +5672,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           button.className = `game-option ${config.className}`;
           button.type = 'button';
           button.dataset.service = serviceKey;
-          button.innerHTML = `<img src="${config.image}" alt="${config.title}" loading="lazy" referrerpolicy="no-referrer" />`;
+          button.innerHTML = `<img src="${config.image}" alt="${config.title}" loading="lazy" referrerpolicy="no-referrer" /><span class="service-order-chip">🧾 Crear orden</span>`;
           button.addEventListener('click', () => {
             if (serviceKey === 'gold') {
               openGoldOrderPanel(game);
@@ -5645,7 +5709,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             button.type = 'button';
             button.dataset.service = serviceKey;
             const onlyImage = Boolean(customMeta?.hideName);
-            button.innerHTML = `<img src="${customMeta?.image || 'https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1200&auto=format&fit=crop'}" alt="${serviceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${serviceKey}</span>`}`;
+            button.innerHTML = `<img src="${customMeta?.image || 'https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1200&auto=format&fit=crop'}" alt="${serviceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${serviceKey}</span>`}<span class="service-order-chip">🧾 Crear orden</span>`;
             button.addEventListener('click', () => {
               closeGoldOrderPanel();
               closeAccountsPanel();
@@ -5660,7 +5724,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             const button = document.createElement('button');
             button.className = 'game-option gold';
             button.type = 'button';
-            button.innerHTML = `<img src="${customMeta?.image || serviceCatalog.gold.image}" alt="${customServiceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${customServiceKey}</span>`}`;
+            button.innerHTML = `<img src="${customMeta?.image || serviceCatalog.gold.image}" alt="${customServiceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${customServiceKey}</span>`}<span class="service-order-chip">🧾 Crear orden</span>`;
             button.addEventListener('click', () => {
               openGoldOrderPanel(game);
               closeAccountsPanel();
@@ -5934,7 +5998,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const btn = document.createElement('button');
           btn.className = 'server';
           btn.type = 'button';
-          btn.innerHTML = `<div class="server-icon"><img src="${cat.image}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎬 Streaming</span><span class="market-card-chip">⚡ Rápido</span></div>`;
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎬 Streaming</span><span class="market-card-chip">⚡ Rápido</span><span class="market-card-chip">🧾 Crear orden</span></div>`;
           btn.addEventListener('click', () => {
             openStreamingModal(cat.name);
           });
@@ -5961,7 +6025,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const specialMap = giftcardSpecialPriceMaps[cat.name];
           const previewMap = specialMap || giftAmountMap;
           const previewKeys = Object.keys(previewMap).slice(0, 4);
-          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎁 GiftCard</span><span class="market-card-chip">💳 Digital</span></div><div class="giftcard-price-ribbon">${previewKeys.map((amount) => `<span>${amount}→${previewMap[amount]}</span>`).join('')}</div>`;
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎁 GiftCard</span><span class="market-card-chip">💳 Digital</span><span class="market-card-chip">🧾 Crear orden</span></div><div class="giftcard-price-ribbon">${previewKeys.map((amount) => `<span>${amount}→${previewMap[amount]}</span>`).join('')}</div>`;
           btn.addEventListener('click', () => {
             const currentType = activeMarketType;
             activeMarketType = 'giftcards';
@@ -6038,7 +6102,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const btn = document.createElement('button');
           btn.className = 'server';
           btn.type = 'button';
-          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.p2p}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">💱 P2P</span><span class="market-card-chip">🛡️ Moderado</span></div>`;
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.p2p}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">💱 P2P</span><span class="market-card-chip">🛡️ Moderado</span><span class="market-card-chip">🧾 Crear orden</span></div>`;
           btn.addEventListener('click', () => {
             const p2pKey = getP2PAllowedKey(cat.name);
             const related = bucket.prices.filter((p) => getP2PAllowedKey(p) === p2pKey);
@@ -7682,6 +7746,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         if (boostLevelGameTitle) boostLevelGameTitle.textContent = `Leveleo de cuentas · ${activeOrderGame?.name || 'Juego seleccionado'}`;
         populateBoostCalculator('leveling');
       });
+      accountCreateTicketBtn?.addEventListener('click', () => createAccountOrder());
       boostProfBtn?.addEventListener('click', () => {
         if (boostingButtonsView) boostingButtonsView.style.display = 'none';
         if (boostLevelForm) boostLevelForm.classList.remove('hidden');
