@@ -9,6 +9,24 @@ Los correos reales de autenticación se cambian desde el panel del proveedor de 
 - Revisa límites/rate limits del proveedor: si se excede el límite de correos, el navegador puede solicitar el email pero el proveedor no lo entregará.
 - Si un correo ya está registrado, normalmente no se envía otro email de registro; usa recuperación de contraseña para ese correo.
 
+
+## Aplicar automáticamente en Supabase
+No se puede cambiar el asunto **Recovery password** con un schema SQL normal, porque las plantillas de Auth no viven en tablas públicas de Postgres. Para hacerlo automático, usa el script del repo que actualiza Supabase Auth con la Management API:
+
+```bash
+export SUPABASE_ACCESS_TOKEN="tu-access-token"
+export PROJECT_REF="tu-project-ref"
+node scripts/apply-supabase-auth-email-templates.mjs
+```
+
+Para revisar exactamente qué enviará antes de aplicarlo:
+
+```bash
+node scripts/apply-supabase-auth-email-templates.mjs --dry-run
+```
+
+El script aplica los HTML de `supabase/templates/confirmation.html` y `supabase/templates/recovery.html`, y cambia el asunto de recuperación a **Restablece tu contraseña de TradeHub MMORPG**.
+
 ## Remitente recomendado
 - **Sender name:** TradeHub MMORPG
 - **Sender email:** soporte@tradehubmmorpg.com (o el correo oficial verificado del dominio)
