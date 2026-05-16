@@ -947,24 +947,6 @@
         height: 100%;
         object-fit: cover;
       }
-      .service-order-chip {
-        position: absolute;
-        left: 50%;
-        bottom: 10px;
-        transform: translateX(-50%);
-        width: max-content;
-        max-width: 128px;
-        border: 1px solid rgba(255,255,255,.9);
-        border-radius: 999px;
-        background: linear-gradient(135deg, rgba(11,191,106,.96), rgba(21,141,255,.96));
-        color: #fff;
-        padding: .28rem .52rem;
-        font-size: .68rem;
-        font-weight: 950;
-        text-transform: uppercase;
-        box-shadow: 0 0 16px rgba(21,141,255,.45);
-        pointer-events: none;
-      }
 
       @keyframes floatIcon {
         0%,100%{transform:translateY(0)}
@@ -5656,6 +5638,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       function openGamePage(index) {
         const game = games[index];
         if (!game) return;
+        activeOrderGame = game;
+        if (boostGame) boostGame.value = game.name;
         const rawServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
         const gameServices = [...new Set(rawServices.map((item) => String(item || '').toLowerCase().trim()).filter(Boolean))];
         const customMeta = customServiceMetaByGame[game.name] || null;
@@ -5672,7 +5656,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           button.className = `game-option ${config.className}`;
           button.type = 'button';
           button.dataset.service = serviceKey;
-          button.innerHTML = `<img src="${config.image}" alt="${config.title}" loading="lazy" referrerpolicy="no-referrer" /><span class="service-order-chip">🧾 Crear orden</span>`;
+          button.innerHTML = `<img src="${config.image}" alt="${config.title}" loading="lazy" referrerpolicy="no-referrer" />`;
           button.addEventListener('click', () => {
             if (serviceKey === 'gold') {
               openGoldOrderPanel(game);
@@ -5709,7 +5693,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             button.type = 'button';
             button.dataset.service = serviceKey;
             const onlyImage = Boolean(customMeta?.hideName);
-            button.innerHTML = `<img src="${customMeta?.image || 'https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1200&auto=format&fit=crop'}" alt="${serviceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${serviceKey}</span>`}<span class="service-order-chip">🧾 Crear orden</span>`;
+            button.innerHTML = `<img src="${customMeta?.image || 'https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1200&auto=format&fit=crop'}" alt="${serviceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${serviceKey}</span>`}`;
             button.addEventListener('click', () => {
               closeGoldOrderPanel();
               closeAccountsPanel();
@@ -5724,7 +5708,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             const button = document.createElement('button');
             button.className = 'game-option gold';
             button.type = 'button';
-            button.innerHTML = `<img src="${customMeta?.image || serviceCatalog.gold.image}" alt="${customServiceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${customServiceKey}</span>`}<span class="service-order-chip">🧾 Crear orden</span>`;
+            button.innerHTML = `<img src="${customMeta?.image || serviceCatalog.gold.image}" alt="${customServiceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${customServiceKey}</span>`}`;
             button.addEventListener('click', () => {
               openGoldOrderPanel(game);
               closeAccountsPanel();
@@ -5998,7 +5982,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const btn = document.createElement('button');
           btn.className = 'server';
           btn.type = 'button';
-          btn.innerHTML = `<div class="server-icon"><img src="${cat.image}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎬 Streaming</span><span class="market-card-chip">⚡ Rápido</span><span class="market-card-chip">🧾 Crear orden</span></div>`;
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎬 Streaming</span><span class="market-card-chip">⚡ Rápido</span></div>`;
           btn.addEventListener('click', () => {
             openStreamingModal(cat.name);
           });
@@ -6025,7 +6009,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const specialMap = giftcardSpecialPriceMaps[cat.name];
           const previewMap = specialMap || giftAmountMap;
           const previewKeys = Object.keys(previewMap).slice(0, 4);
-          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎁 GiftCard</span><span class="market-card-chip">💳 Digital</span><span class="market-card-chip">🧾 Crear orden</span></div><div class="giftcard-price-ribbon">${previewKeys.map((amount) => `<span>${amount}→${previewMap[amount]}</span>`).join('')}</div>`;
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.giftcards}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎁 GiftCard</span><span class="market-card-chip">💳 Digital</span></div><div class="giftcard-price-ribbon">${previewKeys.map((amount) => `<span>${amount}→${previewMap[amount]}</span>`).join('')}</div>`;
           btn.addEventListener('click', () => {
             const currentType = activeMarketType;
             activeMarketType = 'giftcards';
@@ -6102,7 +6086,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const btn = document.createElement('button');
           btn.className = 'server';
           btn.type = 'button';
-          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.p2p}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">💱 P2P</span><span class="market-card-chip">🛡️ Moderado</span><span class="market-card-chip">🧾 Crear orden</span></div>`;
+          btn.innerHTML = `<div class="server-icon"><img src="${cat.image || marketDefaultImages.p2p}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">💱 P2P</span><span class="market-card-chip">🛡️ Moderado</span></div>`;
           btn.addEventListener('click', () => {
             const p2pKey = getP2PAllowedKey(cat.name);
             const related = bucket.prices.filter((p) => getP2PAllowedKey(p) === p2pKey);
