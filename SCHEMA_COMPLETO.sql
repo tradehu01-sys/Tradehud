@@ -145,6 +145,7 @@ drop policy if exists "ticket_messages_delete_admin" on public.ticket_messages;
 drop policy if exists "tickets_select_admin_panel" on public.tickets;
 drop policy if exists "ticket_messages_select_admin_panel" on public.ticket_messages;
 drop policy if exists "ticket_messages_insert_admin_panel" on public.ticket_messages;
+drop policy if exists "ticket_messages_insert_user_panel" on public.ticket_messages;
 drop policy if exists "tickets_delete_admin_panel" on public.tickets;
 drop policy if exists "ticket_messages_delete_admin_panel" on public.ticket_messages;
 drop policy if exists "service_catalog_public_read" on public.service_catalog_entries;
@@ -268,6 +269,16 @@ to anon
 with check (
   sender_id is null
   and sender_role = 'admin'
+  and length(trim(message)) > 0
+);
+
+create policy "ticket_messages_insert_user_panel"
+on public.ticket_messages
+for insert
+to anon
+with check (
+  sender_id is null
+  and sender_role = 'user'
   and length(trim(message)) > 0
 );
 

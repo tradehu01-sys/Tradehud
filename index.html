@@ -5836,7 +5836,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function getAdminTicketClient() {
-        return getTicketClient(adminPanelUnlocked || !currentUser);
+        return isAdminSession() ? getTicketClient(true) : getTicketClient(false);
       }
 
       function ticketChatHtml(ticketId, mode = 'user') {
@@ -5887,26 +5887,38 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         if (button) button.disabled = true;
         const senderRole = isAdminMode ? 'admin' : 'user';
         let error = null;
-        const ticketClient = getTicketClient(isAdminMode && !currentUser);
-        if (ticketClient) {
-          const result = await ticketClient.from('ticket_messages').insert({
-            ticket_id: ticketId,
-            sender_id: currentUser?.id || null,
-            sender_role: senderRole,
-            message
-          });
+        const primaryClient = isAdminMode ? getAdminTicketClient() : getTicketClient(false);
+        const primaryPayload = {
+          ticket_id: ticketId,
+          sender_id: isAdminMode && primaryClient === adminAnonClient ? null : currentUser?.id || null,
+          sender_role: senderRole,
+          message
+        };
+        if (primaryClient) {
+          const result = await primaryClient.from('ticket_messages').insert(primaryPayload);
           error = result.error;
         } else {
           error = new Error('Supabase no conectado');
         }
+        if (error && window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY && !isServiceRoleKey) {
+          const fallbackClient = getTicketClient(true);
+          const retry = await fallbackClient.from('ticket_messages').insert({
+            ticket_id: ticketId,
+            sender_id: null,
+            sender_role: senderRole,
+            message
+          });
+          if (!retry.error) error = null;
+          else error = retry.error;
+        }
         if (error) {
           saveLocalTicketMessage(ticketId, { sender_role: senderRole, message });
-          showAuthNotice('✅ Mensaje guardado en chat temporal. Ejecuta la migración SQL para sincronizarlo globalmente.', 'warn');
+          showAuthNotice(`Mensaje guardado solo en este navegador. No se pudo sincronizar con Supabase: ${friendlyError(error.message)}`, 'warn');
         }
         if (button) button.disabled = false;
         input.value = '';
         await renderTicketMessages(ticketId, root);
-        if (!error) showAuthNotice('✅ Mensaje enviado al chat del ticket.');
+        if (!error) showAuthNotice('✅ Mensaje sincronizado en el chat del ticket.');
       }
 
       async function hydrateTicketChats(root = document) {
@@ -6114,17 +6126,21 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const ticketClient = getAdminTicketClient();
         let error = null;
         if (ticketClient) {
-          const msgDelete = await ticketClient.from('ticket_messages').delete().eq('ticket_id', ticketId);
-          const ticketDelete = await ticketClient.from('tickets').delete().eq('id', ticketId);
+          const msgDelete = await ticketClient.from('ticket_messages').delete().eq('ticket_id', ticketId).select('id');
+          const ticketDelete = await ticketClient.from('tickets').delete().eq('id', ticketId).select('id');
           error = ticketDelete.error || msgDelete.error;
+          if (!error) {
+            const verify = await ticketClient.from('tickets').select('id').eq('id', ticketId).maybeSingle();
+            if (verify.data?.id) error = new Error('Supabase no permitió borrar el ticket remoto. Ejecuta la migración actualizada de permisos DELETE.');
+          }
         }
         removeLocalTicket(ticketId);
         await renderAdminTickets(adminTicketsList);
         await renderAdminTickets(profileAdminTicketsList);
         if (currentUser) await renderUserOrders();
         if (error) {
-          showAuthNotice(`Ticket eliminado de esta vista. Si vuelve a aparecer, ejecuta la migración de permisos DELETE: ${friendlyError(error.message)}`, 'warn');
-          showAdminNotice(`Ticket eliminado localmente, pero Supabase respondió: ${friendlyError(error.message)}`, 'warn');
+          showAuthNotice(`No se pudo eliminar el ticket remoto: ${friendlyError(error.message)}`, 'warn');
+          showAdminNotice(`No se pudo eliminar el ticket remoto: ${friendlyError(error.message)}`, 'warn');
         } else {
           showAuthNotice('✅ Ticket eliminado correctamente.');
           showAdminNotice('✅ Ticket eliminado correctamente.', 'ok');
