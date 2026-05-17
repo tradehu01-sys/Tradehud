@@ -9198,6 +9198,134 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         return combo.value === target || target === 'es';
       }
 
+      const fallbackOriginalTextNodes = new WeakMap();
+      const fallbackTextNodeSet = new Set();
+      const fallbackOriginalAttrs = new WeakMap();
+      const fallbackAttrElementSet = new Set();
+      const fallbackTranslationCache = new Map();
+      let fallbackTranslationRun = 0;
+      let fallbackTranslationActive = false;
+      const fallbackTranslateAttrs = ['placeholder', 'title', 'aria-label', 'alt'];
+
+      function shouldSkipFallbackTranslation(node) {
+        const el = node?.nodeType === Node.ELEMENT_NODE ? node : node?.parentElement;
+        if (!el) return true;
+        return Boolean(el.closest('script,style,noscript,svg,canvas,#googleTranslateElement,.goog-te-gadget,.goog-te-menu-frame,.notranslate,[translate="no"],[data-i18n]'));
+      }
+
+      function hasTranslatableText(value = '') {
+        return /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ¿¡]/.test(String(value || '').trim());
+      }
+
+      function rememberOriginalTextNode(node) {
+        if (!fallbackOriginalTextNodes.has(node)) {
+          fallbackOriginalTextNodes.set(node, node.nodeValue);
+          fallbackTextNodeSet.add(node);
+        }
+        return fallbackOriginalTextNodes.get(node) || '';
+      }
+
+      function rememberOriginalAttr(el, attr) {
+        let attrs = fallbackOriginalAttrs.get(el);
+        if (!attrs) {
+          attrs = {};
+          fallbackOriginalAttrs.set(el, attrs);
+          fallbackAttrElementSet.add(el);
+        }
+        if (!(attr in attrs)) attrs[attr] = el.getAttribute(attr) || '';
+        return attrs[attr];
+      }
+
+      function collectFallbackTranslationItems() {
+        const items = [];
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+          acceptNode(node) {
+            if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+            if (shouldSkipFallbackTranslation(node)) return NodeFilter.FILTER_REJECT;
+            return hasTranslatableText(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+          }
+        });
+        while (walker.nextNode() && items.length < 650) {
+          const node = walker.currentNode;
+          items.push({ kind: 'text', node, original: rememberOriginalTextNode(node) });
+        }
+        document.querySelectorAll('[placeholder],[title],[aria-label],img[alt]').forEach((el) => {
+          if (el.matches('[data-i18n-placeholder]')) return;
+          if (items.length >= 800 || shouldSkipFallbackTranslation(el)) return;
+          fallbackTranslateAttrs.forEach((attr) => {
+            if (!el.hasAttribute(attr) || items.length >= 800) return;
+            const original = rememberOriginalAttr(el, attr);
+            if (hasTranslatableText(original)) items.push({ kind: 'attr', el, attr, original });
+          });
+        });
+        return items;
+      }
+
+      function restoreFallbackOriginals() {
+        fallbackTranslationRun += 1;
+        fallbackTranslationActive = true;
+        fallbackTextNodeSet.forEach((node) => {
+          if (node.isConnected && !node.parentElement?.closest('[data-i18n]')) node.nodeValue = fallbackOriginalTextNodes.get(node) || node.nodeValue;
+        });
+        fallbackAttrElementSet.forEach((el) => {
+          if (!el.isConnected || el.matches('[data-i18n-placeholder]')) return;
+          const attrs = fallbackOriginalAttrs.get(el) || {};
+          Object.entries(attrs).forEach(([attr, value]) => el.setAttribute(attr, value));
+        });
+        fallbackTranslationActive = false;
+      }
+
+      async function translateTextFallback(text, target = 'en') {
+        const raw = String(text || '');
+        const leading = raw.match(/^\s*/)?.[0] || '';
+        const trailing = raw.match(/\s*$/)?.[0] || '';
+        const core = raw.trim();
+        if (!core) return raw;
+        const cacheKey = `${target}:${core}`;
+        if (fallbackTranslationCache.has(cacheKey)) return `${leading}${fallbackTranslationCache.get(cacheKey)}${trailing}`;
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=${encodeURIComponent(target)}&dt=t&q=${encodeURIComponent(core)}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Translate HTTP ${response.status}`);
+        const data = await response.json();
+        const translated = Array.isArray(data?.[0]) ? data[0].map((part) => part?.[0] || '').join('') : core;
+        fallbackTranslationCache.set(cacheKey, translated || core);
+        return `${leading}${fallbackTranslationCache.get(cacheKey)}${trailing}`;
+      }
+
+      async function runFallbackFullPageTranslation(target = 'en') {
+        if (target !== 'en') {
+          restoreFallbackOriginals();
+          return;
+        }
+        const runId = ++fallbackTranslationRun;
+        const items = collectFallbackTranslationItems();
+        fallbackTranslationActive = true;
+        let cursor = 0;
+        const workers = Array.from({ length: 4 }, async () => {
+          while (cursor < items.length && runId === fallbackTranslationRun && currentLanguage === 'en') {
+            const item = items[cursor++];
+            try {
+              const translated = await translateTextFallback(item.original, target);
+              if (runId !== fallbackTranslationRun || currentLanguage !== 'en') return;
+              if (item.kind === 'text' && item.node.isConnected) item.node.nodeValue = translated;
+              if (item.kind === 'attr' && item.el.isConnected) item.el.setAttribute(item.attr, translated);
+            } catch (error) {
+              console.warn('Fallback translation skipped:', error);
+            }
+          }
+        });
+        await Promise.all(workers);
+        fallbackTranslationActive = false;
+      }
+
+      function scheduleFallbackFullPageTranslation(target = 'en', delay = 950) {
+        if (target !== 'en') {
+          restoreFallbackOriginals();
+          return;
+        }
+        window.setTimeout(() => runFallbackFullPageTranslation(target), delay);
+      }
+
       window.googleTranslateElementInit = function googleTranslateElementInit() {
         if (!window.google?.translate?.TranslateElement) return;
         new window.google.translate.TranslateElement({
@@ -9215,16 +9343,20 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         document.documentElement.setAttribute('translate', 'yes');
         document.body.setAttribute('translate', 'yes');
         setGoogleTranslateCookie(target);
+        if (target === 'en') collectFallbackTranslationItems();
+        else restoreFallbackOriginals();
         const combo = findGoogleTranslateCombo();
         if (!combo) {
           if (attempt < 40) {
             clearTimeout(googleTranslateRetryTimer);
             googleTranslateRetryTimer = setTimeout(() => applyGoogleTranslate(target, attempt + 1), 300);
           }
+          if (target === 'en') scheduleFallbackFullPageTranslation('en', 900);
           return;
         }
         dispatchTranslateCombo(combo, target);
         document.body.classList.toggle('tradehub-translated-en', target === 'en');
+        if (target === 'en') scheduleFallbackFullPageTranslation('en', attempt < 2 ? 900 : 1500);
         if (target === 'en' && attempt < 6) {
           clearTimeout(googleTranslateRetryTimer);
           googleTranslateRetryTimer = setTimeout(() => applyGoogleTranslate('en', attempt + 1), attempt < 2 ? 450 : 1100);
@@ -9238,7 +9370,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       }
 
       const fullTranslationObserver = new MutationObserver((mutations) => {
-        if (currentLanguage !== 'en') return;
+        if (currentLanguage !== 'en' || fallbackTranslationActive) return;
         const needsTranslation = mutations.some((mutation) => {
           if (mutation.type === 'characterData') return true;
           return [...mutation.addedNodes].some((node) => node.nodeType === 1 && !node.classList?.contains('goog-te-menu-frame'));
