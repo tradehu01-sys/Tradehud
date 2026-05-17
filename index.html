@@ -498,6 +498,68 @@
         padding: 0.85rem;
         overflow: hidden;
       }
+      #popularCascadeGrid {
+        overflow: hidden;
+        padding: .75rem 0;
+        position: relative;
+        border-radius: 18px;
+      }
+      #popularCascadeGrid::before,
+      #popularCascadeGrid::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: min(10vw, 90px);
+        z-index: 2;
+        pointer-events: none;
+      }
+      #popularCascadeGrid::before { left: 0; background: linear-gradient(90deg, #242a30, transparent); }
+      #popularCascadeGrid::after { right: 0; background: linear-gradient(270deg, #242a30, transparent); }
+      .popular-cascade-track {
+        display: flex;
+        width: max-content;
+        gap: .8rem;
+        animation: bannerCascade 26s linear infinite;
+      }
+      #popularCascadeGrid:hover .popular-cascade-track { animation-play-state: paused; }
+      .popular-cascade-card {
+        width: min(520px, 86vw);
+        min-height: 92px;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: .75rem;
+        padding: .75rem .9rem;
+        background: radial-gradient(circle at 15% 0%, rgba(246,202,99,.2), transparent 34%), linear-gradient(135deg,#252f38,#151d24 58%,#222e37);
+        box-shadow: 0 14px 36px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05);
+      }
+      .popular-cascade-card h3 { margin: 0 0 .15rem; color: #fff; font-size: 1rem; }
+      .popular-cascade-card p { margin: 0; color: #d6d6d6; font-size: .83rem; line-height: 1.35; }
+      .popular-rank {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(255,255,255,.18);
+        background: rgba(255,255,255,.07);
+        color: #ffd670;
+        font-size: 1.4rem;
+        font-weight: 950;
+      }
+      .popular-count {
+        border: 1px solid rgba(255,255,255,.32);
+        border-radius: 999px;
+        padding: .38rem .62rem;
+        font-size: .78rem;
+        font-weight: 800;
+        white-space: nowrap;
+        background: #1a2229;
+        color: #f8fbff;
+      }
+      @media (max-width:760px){ .popular-cascade-card{width:86vw;grid-template-columns:auto 1fr}.popular-count{grid-column:1/-1;text-align:center} }
+
 
       .home-item img {
         width: 100%;
@@ -2013,8 +2075,10 @@
       .streaming-support-item{border:1px solid #2f4d87;border-radius:10px;padding:.5rem;background:#0f2445;color:#d8e8ff;font-size:.82rem}
       .streaming-support-item strong{display:block;color:#ffd670;font-size:.8rem}
       .streaming-order-window{width:min(1480px,98vw);min-height:90vh;padding:1.2rem;background:radial-gradient(circle at 12% 0%,rgba(255,211,112,.16),transparent 34%),radial-gradient(circle at 88% 12%,rgba(96,157,255,.18),transparent 38%),#060a13}
-      .streaming-modal-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(360px,.75fr);gap:1rem;align-items:start}
+      .streaming-modal-layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(420px,.95fr);gap:1rem;align-items:stretch}
       .streaming-form-panel,.streaming-detail-panel{border:1px solid rgba(78,116,190,.75);border-radius:16px;background:linear-gradient(180deg,rgba(13,25,50,.96),rgba(6,12,26,.98));padding:1rem;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+      .streaming-detail-panel{display:flex;flex-direction:column;min-height:100%;overflow:hidden}
+      #streamingServiceDetails{flex:1;min-height:420px;max-height:min(64vh,720px);overflow:auto;white-space:pre-line}
       .streaming-modal-badges{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin:.7rem 0 .9rem}
       .streaming-modal-badge{display:flex;align-items:center;gap:.45rem;border:1px solid #31599d;border-radius:12px;background:#0d2344;color:#dbeaff;padding:.62rem .7rem;font-size:.84rem}
       .streaming-modal-badge span{font-size:1.1rem}
@@ -2922,7 +2986,7 @@
             </div>
             <aside class="streaming-detail-panel">
               <strong style="color:#ffd670;display:block;margin-bottom:.55rem;">📌 Información y precios</strong>
-              <div id="streamingServiceDetails" class="mmorpg-info-box" style="margin-top:.8rem;max-height:58vh;overflow:auto;white-space:pre-line;"></div>
+              <div id="streamingServiceDetails" class="mmorpg-info-box" style="margin-top:.8rem;"></div>
             </aside>
           </div>
         </div>
@@ -5170,7 +5234,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const byUserId = {};
         if (currentUser?.id) byUserId[currentUser.id] = true;
         let onlineCount = currentUser ? 1 : 0;
-        let adminOnline = Boolean(adminPanelUnlocked || currentProfile?.is_admin);
+        let adminOnline = true;
         if (supabaseClient) {
           const { data } = await supabaseClient
             .from('user_profiles')
@@ -5841,7 +5905,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       function ticketChatHtml(ticketId, mode = 'user') {
         const placeholder = mode === 'admin' ? 'Responder al cliente desde el panel admin...' : 'Escribe aquí para hablar con administración...';
-        return `<div class="ticket-chat" data-ticket-chat="${escapeHtml(ticketId)}" data-ticket-mode="${mode}"><div class="ticket-chat-head"><span>💬 Chat del ticket</span><button class="mini-btn" type="button" data-ticket-refresh="${escapeHtml(ticketId)}">Actualizar</button></div><div class="ticket-messages" data-ticket-messages="${escapeHtml(ticketId)}"><p class="auth-hint">Cargando mensajes...</p></div><div class="ticket-compose"><textarea data-ticket-input="${escapeHtml(ticketId)}" placeholder="${placeholder}"></textarea><button class="panel-btn" type="button" data-ticket-send="${escapeHtml(ticketId)}">Enviar</button></div></div>`;
+        return `<div class="ticket-chat" data-ticket-chat="${escapeHtml(ticketId)}" data-ticket-mode="${mode}"><div class="ticket-chat-head"><span>💬 Chat del ticket</span><small class="auth-hint">Auto</small></div><div class="ticket-messages" data-ticket-messages="${escapeHtml(ticketId)}"><p class="auth-hint">Cargando mensajes...</p></div><div class="ticket-compose"><textarea data-ticket-input="${escapeHtml(ticketId)}" placeholder="${placeholder}"></textarea><button class="panel-btn" type="button" data-ticket-send="${escapeHtml(ticketId)}">Enviar</button></div></div>`;
       }
 
       async function fetchTicketMessages(ticketId) {
@@ -5926,6 +5990,16 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         await Promise.all(chats.map((chat) => renderTicketMessages(chat.dataset.ticketChat, root)));
       }
 
+      function startTicketAutoRefresh() {
+        if (startTicketAutoRefresh.timer) return;
+        startTicketAutoRefresh.timer = setInterval(() => {
+          [profileDrawer, configModal].filter(Boolean).forEach((root) => {
+            const isOpen = root.classList.contains('show') || root.getAttribute('aria-hidden') === 'false';
+            if (isOpen && root.querySelector('[data-ticket-chat]')) hydrateTicketChats(root);
+          });
+        }, 2500);
+      }
+
       function closeOverlaysBeforeProfile() {
         [gameWindowModal, streamingModal, authModal, resetPasswordModal].filter(Boolean).forEach((modal) => {
           modal.classList.remove('show');
@@ -5987,8 +6061,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const dynamic = Object.values(readPopularOrders());
         const merged = new Map(defaults.map((item) => [item.name, item]));
         dynamic.forEach((item) => merged.set(item.name, { ...item, count: Number(item.count || 0) + Number(merged.get(item.name)?.count || 0) }));
-        const items = [...merged.values()].sort((a, b) => Number(b.count || 0) - Number(a.count || 0)).slice(0, 4);
-        grid.innerHTML = items.map((item, index) => `<div class="home-item popular-cascade-card"><span class="popular-rank">${index + 1}</span><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.type || 'Categoría popular')} se posiciona según las órdenes e interacciones recientes.</p><span class="popular-count">${Number(item.count || 0)} interacciones</span></div>`).join('');
+        const items = [...merged.values()].sort((a, b) => Number(b.count || 0) - Number(a.count || 0)).slice(0, 6);
+        const cards = [...items, ...items].map((item, index) => `<div class="home-item popular-cascade-card" ${index >= items.length ? 'aria-hidden="true"' : ''}><span class="popular-rank">${(index % items.length) + 1}</span><div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.type || 'Categoría popular')} se mueve según órdenes e interacciones recientes.</p></div><span class="popular-count">${Number(item.count || 0)} interacciones</span></div>`).join('');
+        grid.innerHTML = `<div class="popular-cascade-track">${cards}</div>`;
       }
 
       async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
@@ -7277,6 +7352,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         }
       }
       initializeApp();
+      startTicketAutoRefresh();
 
       pageLinks.forEach((link) => {
         link.addEventListener('click', (e) => {
