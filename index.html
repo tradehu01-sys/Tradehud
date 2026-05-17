@@ -5135,6 +5135,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let pageSwitchTimer = null;
       let activeOrderGame = null;
       let presenceSnapshot = { onlineCount: 0, adminOnline: false, byUserId: {} };
+      const PRESENCE_STALE_MS = 35000;
       let activeDetailParentPage = 'oro';
       let detailHistoryOpen = false;
       let digitalHistoryOpen = false;
@@ -5201,7 +5202,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       async function updatePresence(isOnline = true) {
         if (!supabaseClient || !currentUser) return;
-        if (currentProfile) currentProfile.is_online = isOnline;
+        const nowIso = new Date().toISOString();
+        if (currentProfile) {
+          currentProfile.is_online = isOnline;
+          currentProfile.last_seen = nowIso;
+        }
         await supabaseClient.from('user_profiles').upsert({
           id: currentUser.id,
           name: currentProfile?.name || currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Usuario',
@@ -5210,8 +5215,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           phone: currentProfile?.phone || '',
           is_admin: Boolean(currentProfile?.is_admin) || ADMIN_EMAILS.includes((currentUser.email || '').toLowerCase()),
           is_online: isOnline,
-          last_seen: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          last_seen: nowIso,
+          updated_at: nowIso
         });
       }
 
@@ -5221,20 +5226,21 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function isProfileOnline(profile = {}) {
-        if (profile.is_online) return true;
         const lastSeen = profile.last_seen ? new Date(profile.last_seen).getTime() : 0;
-        return Boolean(lastSeen && Date.now() - lastSeen < 2 * 60 * 1000);
+        if (!lastSeen) return Boolean(profile.is_online && profile.id === currentUser?.id);
+        return profile.is_online !== false && Date.now() - lastSeen < PRESENCE_STALE_MS;
       }
 
       function presencePill(label, online) {
-        return `<span class="presence-pill${online ? ' on' : ''}"><span class="status-dot${online ? ' online' : ''}" aria-hidden="true"></span>${escapeHtml(label)} ${online ? 'ON' : 'OFF'}</span>`;
+        const role = String(label || '').toLowerCase().includes('admin') ? 'admin' : 'user';
+        return `<span class="presence-pill${online ? ' on' : ''}" data-presence-role="${role}"><span class="status-dot${online ? ' online' : ''}" aria-hidden="true"></span><span data-presence-text>${escapeHtml(label)} ${online ? 'ON' : 'OFF'}</span></span>`;
       }
 
       async function getPresenceSnapshot(userIds = []) {
         const byUserId = {};
         if (currentUser?.id) byUserId[currentUser.id] = true;
         let onlineCount = currentUser ? 1 : 0;
-        let adminOnline = true;
+        let adminOnline = Boolean(adminPanelUnlocked || (currentProfile?.is_admin && isProfileOnline(currentProfile)));
         if (supabaseClient) {
           const { data } = await supabaseClient
             .from('user_profiles')
@@ -5248,7 +5254,21 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
         userIds.forEach((id) => { if (id && currentUser?.id === id) byUserId[id] = true; });
         presenceSnapshot = { onlineCount, adminOnline, byUserId };
+        updatePresenceIndicators(presenceSnapshot);
         return presenceSnapshot;
+      }
+
+      function updatePresenceIndicators(snapshot = presenceSnapshot) {
+        document.querySelectorAll('[data-presence-role="admin"]').forEach((pill) => {
+          pill.classList.toggle('on', Boolean(snapshot.adminOnline));
+          const dot = pill.querySelector('.status-dot');
+          if (dot) dot.classList.toggle('online', Boolean(snapshot.adminOnline));
+          const text = pill.querySelector('[data-presence-text]');
+          if (text) text.textContent = `Admin ${snapshot.adminOnline ? 'ON' : 'OFF'}`;
+        });
+        if (profileSectionStatus?.dataset.section === 'orders') {
+          profileSectionStatus.textContent = `Estás viendo tickets: Tu cuenta ${currentUser ? 'ON' : 'OFF'} · Admin ${snapshot.adminOnline ? 'ON' : 'OFF'}`;
+        }
       }
 
       async function renderActiveSellersStatus() {
@@ -5998,6 +6018,19 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             if (isOpen && root.querySelector('[data-ticket-chat]')) hydrateTicketChats(root);
           });
         }, 2500);
+      }
+
+      function startPresenceAutoRefresh() {
+        if (startPresenceAutoRefresh.timer) return;
+        startPresenceAutoRefresh.timer = setInterval(async () => {
+          if (currentUser) await updatePresence(true);
+          await renderActiveSellersStatus();
+        }, 5000);
+        if (!startPresenceAutoRefresh.heartbeat) {
+          startPresenceAutoRefresh.heartbeat = setInterval(() => {
+            if (currentUser) updatePresence(true);
+          }, 15000);
+        }
       }
 
       function closeOverlaysBeforeProfile() {
@@ -7332,7 +7365,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
                 await renderUserOrders();
               } else {
                 currentProfile = null;
+                adminPanelUnlocked = false;
                 updateProfileAdminUi();
+                await renderActiveSellersStatus();
                 if (event === 'SIGNED_OUT' || hadUser) {
                   profileNameTop.textContent = 'Perfil';
                   profileEmailTop.textContent = '';
@@ -7690,12 +7725,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       logoutBtn.addEventListener('click', async () => {
+        if (currentUser?.id !== LOCAL_ADMIN_ID) await updatePresence(false);
         if (supabaseClient && currentUser?.id !== LOCAL_ADMIN_ID) await supabaseClient.auth.signOut();
         currentUser = null;
         currentProfile = null;
         adminPanelUnlocked = false;
         updateProfileAdminUi();
         toggleUserButtons();
+        await renderActiveSellersStatus();
         profileDrawer.classList.remove('show');
         profileMsg.textContent = 'Sesión cerrada.';
         profileMsg.style.color = '#9affcc';
@@ -8929,7 +8966,15 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         clearGameForm();
       });
 
-      cerrarSesionAdmin.addEventListener('click', () => {
+      cerrarSesionAdmin.addEventListener('click', async () => {
+        if (currentUser?.id !== LOCAL_ADMIN_ID) await updatePresence(false);
+        if (supabaseClient && currentUser?.id !== LOCAL_ADMIN_ID) await supabaseClient.auth.signOut();
+        currentUser = null;
+        currentProfile = null;
+        adminPanelUnlocked = false;
+        updateProfileAdminUi();
+        toggleUserButtons();
+        await renderActiveSellersStatus();
         showAdminNotice('Sección cerrada ✨ ¡Buen trabajo, admin!', 'ok');
         setTimeout(() => {
           configModal.classList.remove('show');
@@ -9146,7 +9191,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
 
       loadReviews();
       renderActiveSellersStatus();
-      setInterval(renderActiveSellersStatus, 45000);
+      startPresenceAutoRefresh();
       window.addEventListener('beforeunload', () => { updatePresence(false); });
     </script>
   </body>
