@@ -2650,7 +2650,6 @@
               <div class="gold-helper-item"><strong>🎫 3. Ticket seguro</strong>Soporte confirma stock, precio y ruta de entrega.</div>
             </div>
             <div class="oro-toolbar">
-              <button id="verCategoriasOro" class="oro-category-btn" type="button">Ver categorías</button>
               <input id="oroSearch" class="oro-search" type="text" placeholder="Buscar juego..." />
             </div>
             <div id="gameList" class="server-row"></div>
@@ -3282,9 +3281,7 @@
         <div id="adminNotice" class="admin-notice"></div>
         <div class="panel-tabs">
           <button id="tabListaJuegosAdmin" class="panel-tab active" type="button">Lista de juegos</button>
-          <button id="tabCategoriasOro" class="panel-tab" type="button">Categorías de marketplace</button>
           <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
-          <button id="tabOro" class="panel-tab" type="button">Oro</button>
           <button id="tabPreciosOro" class="panel-tab" type="button">Precios</button>
           <button id="tabMarketAdmin" class="panel-tab" type="button">Streaming / Servicios</button>
                     <button id="tabTicketsAdmin" class="panel-tab" type="button">Tickets</button>
@@ -3299,14 +3296,6 @@
           </div>
           <div id="juegoLista" class="admin-game-list"></div>
         </div>
-        <div id="editorCategoriasOro" class="editor-box hidden">
-          <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Categorías de marketplace</strong>
-            <button id="abrirFormularioCategoriaOro" class="panel-btn" type="button">+ Agregar categoría</button>
-            <button id="limpiarCategoriasBtn" class="panel-btn danger" type="button">Limpiar todas</button>
-          </div>
-          <div id="categoriaListaOro"></div>
-        </div>
         <div id="editorServidores" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
             <strong style="flex:1;display:flex;align-items:center;">Lista de servidores (juegos)</strong>
@@ -3319,12 +3308,6 @@
             <button id="guardarServidorJuego" class="panel-btn" type="button">+ Guardar servidor</button>
           </div>
           <div id="serverListWrap" class="admin-game-list" style="max-height:280px;"></div>
-        </div>
-        <div id="editorOro" class="editor-box hidden">
-          <div class="admin-panel-actions" style="margin-top:0;">
-            <strong style="flex:1;display:flex;align-items:center;">Gestión de Oro</strong>
-          </div>
-          <p class="auth-hint">Administra juegos, servidores y categorías de marketplace desde sus pestañas. Los precios ahora tienen su propia pestaña.</p>
         </div>
         <div id="editorPreciosOro" class="editor-box hidden">
           <div class="admin-panel-actions" style="margin-top:0;">
@@ -3900,9 +3883,7 @@
       const cancelarJuegoForm = document.getElementById('cancelarJuegoForm');
       const guardarJuegoForm = document.getElementById('guardarJuegoForm');
       const tabListaJuegosAdmin = document.getElementById('tabListaJuegosAdmin');
-      const tabCategoriasOro = document.getElementById('tabCategoriasOro');
       const tabListaServidoresAdmin = document.getElementById('tabListaServidoresAdmin');
-      const tabOro = document.getElementById('tabOro');
       const tabPreciosOro = document.getElementById('tabPreciosOro');
       const tabMarketAdmin = document.getElementById('tabMarketAdmin');
       const tabTicketsAdmin = document.getElementById('tabTicketsAdmin');
@@ -3910,9 +3891,7 @@
       const tabBosteo = document.getElementById('tabBosteo');
       const tabReviewsAdmin = document.getElementById('tabReviewsAdmin');
       const editorListaJuegos = document.getElementById('editorListaJuegos');
-      const editorCategoriasOro = document.getElementById('editorCategoriasOro');
       const editorServidores = document.getElementById('editorServidores');
-      const editorOro = document.getElementById('editorOro');
       const editorPreciosOro = document.getElementById('editorPreciosOro');
       const editorMarketAdmin = document.getElementById('editorMarketAdmin');
       const editorTicketsAdmin = document.getElementById('editorTicketsAdmin');
@@ -6585,6 +6564,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function renderCategoryList(type, target) {
+        if (!target) return;
         target.innerHTML = '';
         const bucket = getCategoryBucket(type);
         bucket.forEach((category, index) => {
@@ -7922,14 +7902,11 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       function activateAdminTab(tab) {
-        [tabListaJuegosAdmin, tabCategoriasOro, tabListaServidoresAdmin, tabOro, tabPreciosOro, tabMarketAdmin, tabTicketsAdmin, tabCuentas, tabBosteo, tabReviewsAdmin].filter(Boolean).forEach((btn) => btn.classList.remove('active'));
-        [editorListaJuegos, editorCategoriasOro, editorServidores, editorOro, editorPreciosOro, editorMarketAdmin, editorTicketsAdmin, editorCuentas, editorBosteo, editorReviewsAdmin].filter(Boolean).forEach((panel) => panel.classList.add('hidden'));
+        [tabListaJuegosAdmin, tabListaServidoresAdmin, tabPreciosOro, tabMarketAdmin, tabTicketsAdmin, tabCuentas, tabBosteo, tabReviewsAdmin].filter(Boolean).forEach((btn) => btn.classList.remove('active'));
+        [editorListaJuegos, editorServidores, editorPreciosOro, editorMarketAdmin, editorTicketsAdmin, editorCuentas, editorBosteo, editorReviewsAdmin].filter(Boolean).forEach((panel) => panel.classList.add('hidden'));
         if (tab === 'juegos') {
           tabListaJuegosAdmin.classList.add('active');
           editorListaJuegos.classList.remove('hidden');
-        } else if (tab === 'categorias-oro') {
-          tabCategoriasOro.classList.add('active');
-          editorCategoriasOro.classList.remove('hidden');
         } else if (tab === 'servidores') {
           tabListaServidoresAdmin.classList.add('active');
           editorServidores.classList.remove('hidden');
@@ -7957,15 +7934,13 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           editorReviewsAdmin.classList.remove('hidden');
           renderAdminReviews();
         } else {
-          tabOro.classList.add('active');
-          editorOro.classList.remove('hidden');
+          tabListaJuegosAdmin.classList.add('active');
+          editorListaJuegos.classList.remove('hidden');
         }
       }
 
       tabListaJuegosAdmin.addEventListener('click', () => activateAdminTab('juegos'));
-      tabCategoriasOro.addEventListener('click', () => activateAdminTab('categorias-oro'));
       tabListaServidoresAdmin.addEventListener('click', () => activateAdminTab('servidores'));
-      tabOro.addEventListener('click', () => activateAdminTab('oro'));
       tabPreciosOro.addEventListener('click', () => activateAdminTab('precios'));
       if (tabMarketAdmin) tabMarketAdmin.addEventListener('click', () => activateAdminTab('market'));
       tabTicketsAdmin.addEventListener('click', () => activateAdminTab('tickets'));
@@ -8660,7 +8635,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         accountFormModal.setAttribute('aria-hidden', 'true');
       }
 
-      abrirFormularioCategoriaOro.addEventListener('click', () => openCategoriaModal('oro'));
+      abrirFormularioCategoriaOro?.addEventListener('click', () => openCategoriaModal('oro'));
       abrirFormularioCategoriaCuentas.addEventListener('click', () => openCategoriaModal('cuentas'));
       abrirFormularioCategoriaBosteo.addEventListener('click', () => openCategoriaModal('bosteo'));
       openAccountFormModalBtn.addEventListener('click', openAccountModal);
@@ -8807,7 +8782,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         showAdminNotice('Precio eliminado.', 'warn');
       });
 
-      verCategoriasOro.addEventListener('click', () => {
+      verCategoriasOro?.addEventListener('click', () => {
         renderCategoriasVista();
         categoriasVistaModal.classList.add('show');
         categoriasVistaModal.setAttribute('aria-hidden', 'false');
@@ -8947,7 +8922,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         showAdminNotice('Categoría eliminada.', 'warn');
       }
 
-      categoriaListaOro.addEventListener('click', handleRemoveCategory);
+      categoriaListaOro?.addEventListener('click', handleRemoveCategory);
       categoriaListaCuentas.addEventListener('click', handleRemoveCategory);
       categoriaListaBosteo.addEventListener('click', handleRemoveCategory);
       limpiarCategoriasBtn?.addEventListener('click', async () => {
