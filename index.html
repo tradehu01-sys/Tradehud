@@ -548,7 +548,7 @@
         font-size: 1.4rem;
         font-weight: 950;
       }
-      .popular-count {
+      .popular-count, .popular-section-btn {
         border: 1px solid rgba(255,255,255,.32);
         border-radius: 999px;
         padding: .38rem .62rem;
@@ -557,7 +557,9 @@
         white-space: nowrap;
         background: #1a2229;
         color: #f8fbff;
+        text-decoration: none;
       }
+      .popular-section-btn { background: linear-gradient(135deg,#0bbf6a,#158dff); color:#fff; border-color:#fff; }
       @media (max-width:760px){ .popular-cascade-card{width:86vw;grid-template-columns:auto 1fr}.popular-count{grid-column:1/-1;text-align:center} }
 
 
@@ -571,6 +573,14 @@
         background: #1d242b;
         border-radius: 10px;
         display: block;
+      }
+      .benefits-grid .home-item img {
+        height: 118px;
+        width: 118px;
+        padding: 1rem;
+        border-radius: 24px;
+        background: radial-gradient(circle at 30% 10%, rgba(255,211,112,.2), transparent 40%), #101b2f;
+        border: 1px solid rgba(246,202,99,.35);
       }
 
       .home-item h3 {
@@ -2014,6 +2024,11 @@
       .ticket-message-body { white-space:pre-wrap; word-break:break-word; }
       .ticket-compose { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.45rem; margin-top:.5rem; align-items:end; }
       .ticket-compose textarea { min-height:72px; resize:vertical; }
+      .ticket-attach-row { grid-column:1 / -1; display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; color:#b9c9ef; font-size:.82rem; }
+      .ticket-attach-row input[type="file"] { max-width:260px; }
+      .ticket-attachment { margin-top:.45rem; border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:.45rem; background:rgba(0,0,0,.16); }
+      .ticket-attachment img, .ticket-attachment video { display:block; max-width:100%; max-height:280px; border-radius:10px; object-fit:contain; background:#02050a; }
+      .ticket-attachment a { color:#9ed2ff; font-weight:800; }
       #logoutBtn {
         width: 100%;
         margin-top: .75rem;
@@ -2075,10 +2090,10 @@
       .streaming-support-item{border:1px solid #2f4d87;border-radius:10px;padding:.5rem;background:#0f2445;color:#d8e8ff;font-size:.82rem}
       .streaming-support-item strong{display:block;color:#ffd670;font-size:.8rem}
       .streaming-order-window{width:min(1480px,98vw);min-height:90vh;padding:1.2rem;background:radial-gradient(circle at 12% 0%,rgba(255,211,112,.16),transparent 34%),radial-gradient(circle at 88% 12%,rgba(96,157,255,.18),transparent 38%),#060a13}
-      .streaming-modal-layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(420px,.95fr);gap:1rem;align-items:stretch}
+      .streaming-modal-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(360px,.75fr);gap:1rem;align-items:stretch}
       .streaming-form-panel,.streaming-detail-panel{border:1px solid rgba(78,116,190,.75);border-radius:16px;background:linear-gradient(180deg,rgba(13,25,50,.96),rgba(6,12,26,.98));padding:1rem;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
       .streaming-detail-panel{display:flex;flex-direction:column;min-height:100%;overflow:hidden}
-      #streamingServiceDetails{flex:1;min-height:420px;max-height:min(64vh,720px);overflow:auto;white-space:pre-line}
+      #streamingServiceDetails{flex:1;min-height:560px;max-height:min(72vh,820px);overflow:auto;white-space:pre-line}
       .streaming-modal-badges{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin:.7rem 0 .9rem}
       .streaming-modal-badge{display:flex;align-items:center;gap:.45rem;border:1px solid #31599d;border-radius:12px;background:#0d2344;color:#dbeaff;padding:.62rem .7rem;font-size:.84rem}
       .streaming-modal-badge span{font-size:1.1rem}
@@ -2525,17 +2540,17 @@
           <h2 class="section-title">Beneficios / por qué <span>elegirnos</span></h2>
           <article class="home-block benefits-grid">
             <div class="home-item">
-              <img src="https://i.imgur.com/IgUbYQm.png" alt="Atención real" />
+              <img src="https://img.icons8.com/fluency/240/customer-support.png" alt="Atención real" />
               <h3>Atención real</h3>
               <p>No hay bots para resolver tu compra: un agente te guía de inicio a fin con respuesta rápida.</p>
             </div>
             <div class="home-item">
-              <img src="https://i.imgur.com/u0R10zA.png" alt="Proceso transparente" />
+              <img src="https://img.icons8.com/fluency/240/receipt-approved.png" alt="Proceso transparente" />
               <h3>Proceso transparente</h3>
               <p>Precios, tiempos y condiciones claras antes de confirmar cualquier pago o entrega.</p>
             </div>
             <div class="home-item">
-              <img src="https://i.imgur.com/BORJ6LC.png" alt="Seguridad operativa" />
+              <img src="https://img.icons8.com/fluency/240/lock-2.png" alt="Seguridad operativa" />
               <h3>Seguridad operativa</h3>
               <p>Validamos pedidos y usamos pasos de control para proteger comprador y vendedor.</p>
             </div>
@@ -3215,7 +3230,7 @@
         <button id="logoutBtn" class="mini-btn danger" type="button">Cerrar sesión</button>
       </div>
       <div id="profileOrdersPane" class="profile-pane hidden" data-section="orders">
-        <p class="auth-hint">Tus tickets aparecerán aquí. Abre cada chat para hablar con el panel admin sin salir de tu perfil.</p>
+        <p class="auth-hint">Tus tickets se cargan automáticamente aquí. Si acabas de crear una orden, aparecerá sin recargar; el chat se sincroniza en vivo con administración.</p>
         <div id="userOrdersList"></div>
       </div>
       <div id="profileAdminTicketsPane" class="profile-pane hidden" data-section="admin-tickets">
@@ -5314,16 +5329,30 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         if (!adminReviewsList.children.length) adminReviewsList.innerHTML = '<p class="auth-hint">No hay reseñas todavía.</p>';
       }
 
+      function renderAllMarketSections() {
+        renderStreamingSection();
+        renderGiftcardsSection();
+        renderP2PSection();
+        if (marketDetailsWrap && marketOrderPanel) renderMarketCatalog(activeMarketType);
+        scheduleFullPageTranslation();
+      }
+
       async function loadMarketCatalogFromSupabase() {
-        if (!supabaseClient) return;
+        if (!supabaseClient) {
+          renderAllMarketSections();
+          return;
+        }
         const { data, error } = await supabaseClient
           .from('service_catalog_entries')
           .select('id,service_type,entry_type,category_name,item_name,image,value,sort_order,created_at')
           .order('sort_order', { ascending: true })
           .order('created_at', { ascending: true });
-        if (error || !Array.isArray(data)) return;
+        if (error || !Array.isArray(data)) {
+          renderAllMarketSections();
+          return;
+        }
         if (!data.length) {
-          renderStreamingSection();
+          renderAllMarketSections();
           return;
         }
         const grouped = { p2p: [], streaming: [], giftcards: [] };
@@ -5361,9 +5390,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         });
         sanitizeP2PCatalog();
         normalizeGeminiCatalogPlacement();
-        renderStreamingSection();
-        renderGiftcardsSection();
-        renderP2PSection();
+        renderAllMarketSections();
       }
 
       function getSelectedGoldProductInfo() {
@@ -5852,11 +5879,67 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         return `<strong>${escapeHtml(item.game || 'Orden')} · ${escapeHtml(item.product || 'Producto')}</strong>${presence}<p class="admin-game-desc">Servidor/Categoría: ${escapeHtml(item.server || '-')}</p><p class="admin-game-desc">Facción/Tipo: ${escapeHtml(item.faction || '-')} · Personaje/Cliente: ${escapeHtml(item.character || '-')}</p><p class="admin-game-desc">Entrega/Detalle: ${escapeHtml(item.delivery || '-')}</p><p class="admin-game-desc">Estado: ${escapeHtml(item.status || 'pendiente')} · Creado: ${escapeHtml(created)}</p>${contact}`;
       }
 
+      const TICKET_ATTACHMENT_MARKER = '[[TRADEHUD_ATTACHMENT:';
+      const MAX_TICKET_ATTACHMENT_BYTES = 8 * 1024 * 1024;
+
+      function encodeAttachmentPayload(payload = {}) {
+        return `${TICKET_ATTACHMENT_MARKER}${btoa(unescape(encodeURIComponent(JSON.stringify(payload))))}]]`;
+      }
+
+      function decodeTicketMessage(raw = '') {
+        const text = String(raw || '');
+        const start = text.indexOf(TICKET_ATTACHMENT_MARKER);
+        if (start === -1) return { text, attachment: null };
+        const end = text.indexOf(']]', start);
+        if (end === -1) return { text, attachment: null };
+        const encoded = text.slice(start + TICKET_ATTACHMENT_MARKER.length, end);
+        try {
+          return {
+            text: text.slice(0, start).trim(),
+            attachment: JSON.parse(decodeURIComponent(escape(atob(encoded))))
+          };
+        } catch {
+          return { text, attachment: null };
+        }
+      }
+
+      function normalizeTicketAttachmentUrl(attachment = {}) {
+        const url = String(attachment.url || '');
+        const type = String(attachment.type || '');
+        const isSafeDataUrl = url.startsWith('data:image/') || url.startsWith('data:video/');
+        const isSafeRemoteUrl = /^https?:\/\//i.test(url);
+        if (isSafeDataUrl && (!type || type.startsWith('image/') || type.startsWith('video/'))) return url;
+        if (isSafeRemoteUrl) return url;
+        return '';
+      }
+
+      function ticketAttachmentHtml(attachment = null) {
+        const safeUrl = normalizeTicketAttachmentUrl(attachment || {});
+        if (!safeUrl) return '';
+        const name = escapeHtml(attachment.name || 'archivo');
+        const url = escapeHtml(safeUrl);
+        const type = String(attachment.type || '');
+        if (type.startsWith('image/')) return `<div class="ticket-attachment"><img src="${url}" alt="${name}" /><a href="${url}" download="${name}">Descargar imagen</a></div>`;
+        if (type.startsWith('video/')) return `<div class="ticket-attachment"><video src="${url}" controls></video><a href="${url}" download="${name}">Descargar video</a></div>`;
+        return `<div class="ticket-attachment"><a href="${url}" download="${name}">📎 ${name}</a></div>`;
+      }
+
+      function fileToDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
       function ticketMessageHtml(message = {}) {
         const created = message.created_at ? new Date(message.created_at).toLocaleString('es-ES') : 'Ahora';
         const role = message.sender_role === 'admin' ? 'admin' : 'user';
         const label = role === 'admin' ? 'Admin TradeHub' : 'Cliente';
-        return `<div class="ticket-message ${role}"><span class="ticket-message-meta">${label} · ${escapeHtml(created)}</span><div class="ticket-message-body">${escapeHtml(message.message || '')}</div></div>`;
+        const parsed = decodeTicketMessage(message.message || '');
+        const body = parsed.text ? escapeHtml(parsed.text) : '<span class="auth-hint">Archivo adjunto</span>';
+        return `<div class="ticket-message ${role}"><span class="ticket-message-meta">${label} · ${escapeHtml(created)}</span><div class="ticket-message-body">${body}${ticketAttachmentHtml(parsed.attachment)}</div></div>`;
       }
 
       const LOCAL_TICKETS_KEY = 'tradehud_ticket_mirror';
@@ -5925,7 +6008,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       function ticketChatHtml(ticketId, mode = 'user') {
         const placeholder = mode === 'admin' ? 'Responder al cliente desde el panel admin...' : 'Escribe aquí para hablar con administración...';
-        return `<div class="ticket-chat" data-ticket-chat="${escapeHtml(ticketId)}" data-ticket-mode="${mode}"><div class="ticket-chat-head"><span>💬 Chat del ticket</span><small class="auth-hint">Auto</small></div><div class="ticket-messages" data-ticket-messages="${escapeHtml(ticketId)}"><p class="auth-hint">Cargando mensajes...</p></div><div class="ticket-compose"><textarea data-ticket-input="${escapeHtml(ticketId)}" placeholder="${placeholder}"></textarea><button class="panel-btn" type="button" data-ticket-send="${escapeHtml(ticketId)}">Enviar</button></div></div>`;
+        return `<div class="ticket-chat" data-ticket-chat="${escapeHtml(ticketId)}" data-ticket-mode="${mode}"><div class="ticket-chat-head"><span>💬 Chat del ticket</span><small class="auth-hint">Auto</small></div><div class="ticket-messages" data-ticket-messages="${escapeHtml(ticketId)}"><p class="auth-hint">Cargando mensajes...</p></div><div class="ticket-compose"><textarea data-ticket-input="${escapeHtml(ticketId)}" placeholder="${placeholder}"></textarea><button class="panel-btn" type="button" data-ticket-send="${escapeHtml(ticketId)}">Enviar</button><label class="ticket-attach-row">📎 Imagen o video <input data-ticket-file="${escapeHtml(ticketId)}" type="file" accept="image/*,video/*" /></label></div></div>`;
       }
 
       async function fetchTicketMessages(ticketId) {
@@ -5962,13 +6045,29 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           return;
         }
         const input = root.querySelector(`[data-ticket-input="${cssEscapeValue(ticketId)}"]`);
+        const fileInput = root.querySelector(`[data-ticket-file="${cssEscapeValue(ticketId)}"]`);
         const button = root.querySelector(`[data-ticket-send="${cssEscapeValue(ticketId)}"]`);
-        const message = input?.value?.trim() || '';
-        if (!message) {
-          showAuthNotice('Escribe un mensaje antes de enviarlo.', 'warn');
+        let message = input?.value?.trim() || '';
+        const file = fileInput?.files?.[0] || null;
+        if (!message && !file) {
+          showAuthNotice('Escribe un mensaje o adjunta una imagen/video antes de enviar.', 'warn');
+          return;
+        }
+        if (file && file.size > MAX_TICKET_ATTACHMENT_BYTES) {
+          showAuthNotice('El archivo supera 8 MB. Comprime la imagen/video o envíalo por WhatsApp/Discord.', 'warn');
           return;
         }
         if (button) button.disabled = true;
+        if (file) {
+          try {
+            const url = await fileToDataUrl(file);
+            message = `${message || file.name}\n\n${encodeAttachmentPayload({ name: file.name, type: file.type, url })}`;
+          } catch {
+            if (button) button.disabled = false;
+            showAuthNotice('No se pudo leer el archivo adjunto.', 'warn');
+            return;
+          }
+        }
         const senderRole = isAdminMode ? 'admin' : 'user';
         let error = null;
         const primaryClient = isAdminMode ? getAdminTicketClient() : getTicketClient(false);
@@ -6001,6 +6100,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
         if (button) button.disabled = false;
         input.value = '';
+        if (fileInput) fileInput.value = '';
         await renderTicketMessages(ticketId, root);
         if (!error) showAuthNotice('✅ Mensaje sincronizado en el chat del ticket.');
       }
@@ -6016,6 +6116,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           [profileDrawer, configModal].filter(Boolean).forEach((root) => {
             const isOpen = root.classList.contains('show') || root.getAttribute('aria-hidden') === 'false';
             if (isOpen && root.querySelector('[data-ticket-chat]')) hydrateTicketChats(root);
+            if (isOpen && root === profileDrawer && profileOrdersPane && !profileOrdersPane.classList.contains('hidden')) {
+              const text = userOrdersList?.textContent || '';
+              if (!userOrdersList?.children.length || text.includes('Aún no') || text.includes('No se pudieron')) renderUserOrders();
+            }
           });
         }, 2500);
       }
@@ -6095,8 +6199,33 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const merged = new Map(defaults.map((item) => [item.name, item]));
         dynamic.forEach((item) => merged.set(item.name, { ...item, count: Number(item.count || 0) + Number(merged.get(item.name)?.count || 0) }));
         const items = [...merged.values()].sort((a, b) => Number(b.count || 0) - Number(a.count || 0)).slice(0, 6);
-        const cards = [...items, ...items].map((item, index) => `<div class="home-item popular-cascade-card" ${index >= items.length ? 'aria-hidden="true"' : ''}><span class="popular-rank">${(index % items.length) + 1}</span><div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.type || 'Categoría popular')} se mueve según órdenes e interacciones recientes.</p></div><span class="popular-count">${Number(item.count || 0)} interacciones</span></div>`).join('');
+        const iconFor = (item) => {
+          const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
+          if (text.includes('p2p') || text.includes('paypal') || text.includes('zinli')) return '💱';
+          if (text.includes('stream') || text.includes('netflix')) return '🎬';
+          if (text.includes('gift') || text.includes('nitro')) return '🎁';
+          if (text.includes('wow') || text.includes('warcraft')) return '⚔️';
+          return '🎮';
+        };
+        const pageFor = (item) => {
+          const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
+          if (text.includes('p2p') || text.includes('paypal') || text.includes('zinli')) return 'p2p';
+          if (text.includes('stream') || text.includes('netflix')) return 'streaming';
+          if (text.includes('gift') || text.includes('nitro')) return 'giftcards';
+          return 'oro';
+        };
+        const cards = [...items, ...items].map((item, index) => {
+          const page = pageFor(item);
+          return `<div class="home-item popular-cascade-card" ${index >= items.length ? 'aria-hidden="true"' : ''}><span class="popular-rank">${iconFor(item)}</span><div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.type || 'Categoría popular')} se mueve según órdenes e interacciones recientes.</p></div><a class="popular-section-btn" href="#${page}" data-page-link data-page="${page}">Ir</a></div>`;
+        }).join('');
         grid.innerHTML = `<div class="popular-cascade-track">${cards}</div>`;
+        scheduleFullPageTranslation();
+        grid.querySelectorAll('[data-page-link]').forEach((link) => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(link.dataset.page);
+          });
+        });
       }
 
       async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
@@ -6176,8 +6305,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           card.innerHTML = `${ticketDetailHtml({ ...item, user_online: true, admin_online: presenceSnapshot.adminOnline })}${ticketChatHtml(item.id, 'user')}`;
           userOrdersList.appendChild(card);
         });
-        if (!userOrdersList.children.length) userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes.</p>';
+        if (!userOrdersList.children.length) userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes. Si acabas de crear una orden, espera unos segundos: se sincroniza automáticamente sin recargar.</p>';
         await hydrateTicketChats(userOrdersList);
+        scheduleFullPageTranslation();
       }
 
 
@@ -7849,6 +7979,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         btn.addEventListener('click', () => {
           const fallbackType = idx === 1 ? 'giftcards' : idx === 2 ? 'streaming' : 'p2p';
           setActiveMarketType(btn.dataset.marketService || fallbackType);
+          renderAllMarketSections();
         });
       });
       if (marketTypeP2P) marketTypeP2P.addEventListener('click', () => setActiveMarketType('p2p'));
@@ -7973,7 +8104,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           setActiveMarketType(activeMarketType);
           renderMarketCatalog(activeMarketType);
           renderStreamingSection();
-          await syncFromSupabase();
+          await loadMarketCatalogFromSupabase();
+          setActiveMarketType(activeMarketType);
           showAdminNotice('Categoría actualizada correctamente.', 'ok');
           closeStreamingCategoryModalFn();
           return;
@@ -8008,7 +8140,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         setActiveMarketType(activeMarketType);
         renderMarketCatalog(activeMarketType);
         renderStreamingSection();
-        await syncFromSupabase();
+        await loadMarketCatalogFromSupabase();
+        setActiveMarketType(activeMarketType);
         showAdminNotice('Categoría agregada correctamente.', 'ok');
         streamingCategoryNameModal.value = '';
         streamingCategoryImageModal.value = '';
@@ -8090,7 +8223,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         marketCategoryFormWrap?.classList.add('hidden');
         marketCategoryFormActions?.classList.add('hidden');
         setActiveMarketType(activeMarketType);
-        await syncFromSupabase();
+        await loadMarketCatalogFromSupabase();
+        setActiveMarketType(activeMarketType);
         showAdminNotice(`Categoría agregada en ${marketCatalog[activeMarketType].title}.`, 'ok');
       });
       uploadMarketCategoryImageBtn?.addEventListener('click', async () => {
@@ -9078,6 +9212,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       };
 
       function applyGoogleTranslate(lang = 'es', attempt = 0) {
+        document.documentElement.lang = lang === 'en' ? 'en' : 'es';
+        document.body.setAttribute('translate', 'yes');
         setGoogleTranslateCookie(lang);
         const combo = document.querySelector('.goog-te-combo');
         if (!combo) {
@@ -9092,6 +9228,10 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         combo.dispatchEvent(new Event('change', { bubbles: true }));
         combo.dispatchEvent(new Event('input', { bubbles: true }));
         document.body.classList.toggle('tradehub-translated-en', target === 'en');
+        if (target === 'en' && attempt < 3) {
+          clearTimeout(googleTranslateRetryTimer);
+          googleTranslateRetryTimer = setTimeout(() => applyGoogleTranslate('en', attempt + 1), 900);
+        }
       }
 
       function scheduleFullPageTranslation() {
