@@ -552,6 +552,16 @@
         color: #ffd670;
         font-size: 1.4rem;
         font-weight: 950;
+        overflow: hidden;
+      }
+      .popular-rank img {
+        width: 82%;
+        height: 82%;
+        object-fit: contain;
+        display: block;
+        margin: 0;
+        background: transparent;
+        border-radius: 10px;
       }
       .popular-count, .popular-section-btn {
         border: 1px solid rgba(255,255,255,.32);
@@ -6185,11 +6195,26 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const items = [...merged.values()].sort((a, b) => Number(b.count || 0) - Number(a.count || 0)).slice(0, 6);
         const iconFor = (item) => {
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
-          if (text.includes('p2p') || text.includes('paypal') || text.includes('zinli')) return '💱';
-          if (text.includes('stream') || text.includes('netflix')) return '🎬';
-          if (text.includes('gift') || text.includes('nitro')) return '🎁';
-          if (text.includes('wow') || text.includes('warcraft')) return '⚔️';
-          return '🎮';
+          const itemNameText = String(item.name || '').toLowerCase();
+          const gameMatch = games.find((game) => {
+            const gameName = String(game.name || '').toLowerCase();
+            return gameName && (text.includes(gameName) || (itemNameText && gameName.includes(itemNameText)));
+          });
+          if (text.includes('netflix')) return { src: 'https://cdn.simpleicons.org/netflix/E50914', alt: 'Netflix', fallback: 'N' };
+          if (text.includes('discord') || text.includes('nitro')) return { src: 'https://cdn.simpleicons.org/discord/5865F2', alt: 'Discord Nitro', fallback: 'D' };
+          if (text.includes('paypal')) return { src: 'https://cdn.simpleicons.org/paypal/009CDE', alt: 'PayPal', fallback: '$' };
+          if (text.includes('zinli')) return { src: 'https://img.icons8.com/fluency/96/money-transfer.png', alt: 'Zinli / P2P', fallback: 'Z' };
+          if (text.includes('p2p') || text.includes('usdt')) return { src: 'https://img.icons8.com/fluency/96/currency-exchange.png', alt: 'P2P', fallback: '$' };
+          if (text.includes('stream')) return { src: 'https://img.icons8.com/fluency/96/tv.png', alt: 'Streaming', fallback: '▶' };
+          if (text.includes('gift')) return { src: 'https://img.icons8.com/fluency/96/gift-card.png', alt: 'GiftCards', fallback: '🎁' };
+          if (text.includes('wow') || text.includes('warcraft')) return { src: wowGameIcon, alt: 'World of Warcraft', fallback: 'WW' };
+          if (gameMatch?.icon) return { src: gameMatch.icon, alt: gameMatch.name || item.name || 'Juego popular', fallback: '🎮' };
+          return { src: 'https://img.icons8.com/fluency/96/controller.png', alt: item.name || 'Juego popular', fallback: '🎮' };
+        };
+        const iconHtmlFor = (item) => {
+          const icon = iconFor(item);
+          if (!icon?.src) return escapeHtml(icon?.fallback || '🎮');
+          return `<img src="${escapeHtml(icon.src)}" alt="${escapeHtml(icon.alt || item.name || 'Icono popular')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(document.createTextNode('${escapeHtml(icon.fallback || '🎮')}'))" />`;
         };
         const pageFor = (item) => {
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
@@ -6200,7 +6225,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         };
         const cards = [...items, ...items].map((item, index) => {
           const page = pageFor(item);
-          return `<div class="home-item popular-cascade-card" ${index >= items.length ? 'aria-hidden="true"' : ''}><span class="popular-rank">${iconFor(item)}</span><div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.type || 'Categoría popular')} se mueve según órdenes e interacciones recientes.</p></div><a class="popular-section-btn" href="#${page}" data-page-link data-page="${page}">Ir</a></div>`;
+          return `<div class="home-item popular-cascade-card" ${index >= items.length ? 'aria-hidden="true"' : ''}><span class="popular-rank">${iconHtmlFor(item)}</span><div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.type || 'Categoría popular')} se mueve según órdenes e interacciones recientes.</p></div><a class="popular-section-btn" href="#${page}" data-page-link data-page="${page}">Ir</a></div>`;
         }).join('');
         grid.innerHTML = `<div class="popular-cascade-track">${cards}</div>`;
         scheduleFullPageTranslation();
