@@ -6220,8 +6220,13 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           if (text.includes('p2p') || text.includes('usdt')) return { src: makePopularIcon('P2P', '#0f5132', '#ffffff', '#20c997'), alt: 'P2P', fallback: '$' };
           if (text.includes('stream')) return { src: makePopularIcon('▶', '#14213d', '#ffffff', '#4dabf7'), alt: 'Streaming', fallback: '▶' };
           if (text.includes('gift')) return { src: makePopularIcon('GIFT', '#6f42c1', '#ffffff', '#ffd43b'), alt: 'GiftCards', fallback: '🎁' };
-          if (text.includes('wow') || text.includes('warcraft')) return { src: wowGameIcon, alt: 'World of Warcraft', fallback: 'WW' };
-          if (gameMatch?.icon) return { src: gameMatch.icon, alt: gameMatch.name || item.name || 'Juego popular', fallback: '🎮' };
+          if (text.includes('wow') || text.includes('warcraft')) return { src: makePopularIcon('WOW', '#2a1d0e', '#f6ca63', '#f6ca63'), alt: 'World of Warcraft', fallback: 'WW' };
+          if (text.includes('albion')) return { src: makePopularIcon('ALB', '#1f2937', '#f8fafc', '#d1a44d'), alt: 'Albion Online', fallback: 'ALB' };
+          if (text.includes('aion')) return { src: makePopularIcon('AION', '#0f172a', '#e2e8f0', '#38bdf8'), alt: 'AION', fallback: 'A' };
+          if (text.includes('lineage')) return { src: makePopularIcon('L2', '#111827', '#f8fafc', '#f59e0b'), alt: 'Lineage 2', fallback: 'L2' };
+          if (text.includes('dofus')) return { src: makePopularIcon('DOF', '#1f2937', '#ecfeff', '#22d3ee'), alt: 'Dofus', fallback: 'DOF' };
+          if (text.includes('tibia')) return { src: makePopularIcon('TIB', '#1f2937', '#f8fafc', '#34d399'), alt: 'Tibia', fallback: 'TIB' };
+          if (gameMatch?.name) return { src: makePopularIcon(gameMatch.name.replace(/[^a-z0-9]/gi, '').slice(0,4).toUpperCase() || 'GAME', '#1f2937', '#ffffff', '#60a5fa'), alt: gameMatch.name || item.name || 'Juego popular', fallback: '🎮' };
           return { src: makePopularIcon('GAME', '#1f2937', '#ffffff', '#60a5fa'), alt: item.name || 'Juego popular', fallback: '🎮' };
         };
         const iconHtmlFor = (item) => {
