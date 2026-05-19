@@ -6253,14 +6253,14 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             const hit = categories.find((cat) => {
               const catName = String(cat?.name || '').toLowerCase();
               return catName && (name.includes(catName) || catName.includes(name));
-            });
+            }) || categories[0] || null;
             const src = resolveMarketCategoryImage(key, hit);
             const stableFallback = getStableCategoryFallbackImage(key, hit?.name || item.name || '');
             const fallbackSrc = stableFallback || marketDefaultImages[key] || '';
             if (src || fallbackSrc) return { src: src || fallbackSrc, alt: hit?.name || item.name || 'Categoría popular', fallbackSrc };
           }
           if (gameMatch?.icon) return { src: gameMatch.icon, alt: gameMatch.name || item.name || 'Juego popular', fallbackSrc: wowGameIcon || getStableCategoryFallbackImage('streaming', gameMatch.name || '') || '' };
-          return null;
+          return { src: marketDefaultImages.streaming || getStableCategoryFallbackImage('streaming', item.name || ''), alt: item.name || 'Categoría popular', fallbackSrc: getStableCategoryFallbackImage('streaming', item.name || '') || '' };
         };
         const iconFor = (item) => {
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
@@ -6289,7 +6289,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         };
         const iconHtmlFor = (item) => {
           const icon = iconFor(item);
-          if (icon?.src) return `<img src="${escapeHtml(icon.src)}" alt="${escapeHtml(icon.alt || item.name || 'Icono popular')}" loading="lazy" referrerpolicy="no-referrer" onerror="if(this.dataset.fallback&&this.src!==this.dataset.fallback){this.src=this.dataset.fallback;return;}this.replaceWith(document.createTextNode('${escapeHtml(icon.fallback || '🎮')}'));" data-fallback="${escapeHtml(icon.fallbackSrc || '')}" />`;
+          if (icon?.src) return `<img src="${escapeHtml(icon.src)}" alt="${escapeHtml(icon.alt || item.name || 'Icono popular')}" loading="lazy" referrerpolicy="no-referrer" onerror="if(this.dataset.fallback&&this.src!==this.dataset.fallback){this.src=this.dataset.fallback;return;}this.replaceWith(document.createTextNode('🎮'));" data-fallback="${escapeHtml(icon.fallbackSrc || '')}" />`;
           if (icon?.svg) return icon.svg;
           return `<span>${escapeHtml(icon?.fallback || '🎮')}</span>`;
         };
