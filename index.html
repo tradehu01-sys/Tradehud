@@ -6311,9 +6311,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         };
         const iconHtmlFor = (item) => {
           const icon = iconFor(item);
-          if (icon?.src) return `<img src="${escapeHtml(icon.src)}" alt="${escapeHtml(icon.alt || item.name || 'Icono popular')}" loading="lazy" referrerpolicy="no-referrer" onerror="if(this.dataset.fallback&&this.src!==this.dataset.fallback){this.src=this.dataset.fallback;return;}this.replaceWith(document.createTextNode('🎮'));" data-fallback="${escapeHtml(icon.fallbackSrc || '')}" />`;
           if (icon?.svg) return icon.svg;
-          return `<span>${escapeHtml(icon?.fallback || '🎮')}</span>`;
+          const label = String(item?.name || icon?.alt || 'GAME').replace(/[^a-z0-9]/gi, '').slice(0, 4).toUpperCase() || 'GAME';
+          return makePopularIcon(label, '#1f2937', '#ffffff', '#60a5fa');
         };
         const pageFor = (item) => {
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
