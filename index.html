@@ -4609,6 +4609,34 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const fromDefault = marketDefaultImages[bucketKey] || '';
         return fromCategory || fromDefault;
       }
+      function getStableCategoryFallbackImage(type, name = '') {
+        const n = String(name || '').toLowerCase();
+        if (type === 'streaming') {
+          if (n.includes('netflix')) return 'https://cdn.simpleicons.org/netflix/E50914';
+          if (n.includes('disney')) return 'https://cdn.simpleicons.org/disney+/113CCF';
+          if (n.includes('prime')) return 'https://cdn.simpleicons.org/primevideo/00A8E1';
+          if (n.includes('hbo')) return 'https://cdn.simpleicons.org/hbo/FFFFFF';
+          if (n.includes('youtube')) return 'https://cdn.simpleicons.org/youtube/FF0000';
+          if (n.includes('apple')) return 'https://cdn.simpleicons.org/apple/FFFFFF';
+          if (n.includes('paramount')) return 'https://cdn.simpleicons.org/paramount+/0064FF';
+        }
+        if (type === 'giftcards') {
+          if (n.includes('discord')) return 'https://cdn.simpleicons.org/discord/5865F2';
+          if (n.includes('steam')) return 'https://cdn.simpleicons.org/steam/FFFFFF';
+          if (n.includes('playstation')) return 'https://cdn.simpleicons.org/playstation/003791';
+          if (n.includes('xbox')) return 'https://cdn.simpleicons.org/xbox/107C10';
+          if (n.includes('google')) return 'https://cdn.simpleicons.org/googleplay/34A853';
+          if (n.includes('amazon')) return 'https://cdn.simpleicons.org/amazon/FF9900';
+          if (n.includes('apple')) return 'https://cdn.simpleicons.org/apple/FFFFFF';
+        }
+        if (type === 'p2p') {
+          if (n.includes('paypal')) return 'https://cdn.simpleicons.org/paypal/00457C';
+          if (n.includes('zinli')) return 'https://cdn.simpleicons.org/zelle/6D1ED4';
+          if (n.includes('usdt') || n.includes('tether')) return 'https://cdn.simpleicons.org/tether/50AF95';
+          return 'https://cdn.simpleicons.org/binance/F3BA2F';
+        }
+        return '';
+      }
       const p2pOfficialPrices = [
         'ZINLI - Zinli 1$ - 1.30$', 'ZINLI - Zinli 2$ - 2.60$', 'ZINLI - Zinli 5$ - 6.50$', 'ZINLI - Zinli 10$ - 12$',
         'ZINLI - Zinli 15$ - 17.25$', 'ZINLI - Zinli 20$ - 23$', 'ZINLI - Zinli 25$ - 28.75$', 'ZINLI - Zinli 30$ - 34.50$',
@@ -6227,9 +6255,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
               return catName && (name.includes(catName) || catName.includes(name));
             });
             const src = resolveMarketCategoryImage(key, hit);
-            if (src) return { src, alt: hit?.name || item.name || 'Categoría popular', fallbackSrc: marketDefaultImages[key] || '' };
+            const stableFallback = getStableCategoryFallbackImage(key, hit?.name || item.name || '');
+            const fallbackSrc = stableFallback || marketDefaultImages[key] || '';
+            if (src || fallbackSrc) return { src: src || fallbackSrc, alt: hit?.name || item.name || 'Categoría popular', fallbackSrc };
           }
-          if (gameMatch?.icon) return { src: gameMatch.icon, alt: gameMatch.name || item.name || 'Juego popular', fallbackSrc: wowGameIcon || '' };
+          if (gameMatch?.icon) return { src: gameMatch.icon, alt: gameMatch.name || item.name || 'Juego popular', fallbackSrc: wowGameIcon || getStableCategoryFallbackImage('streaming', gameMatch.name || '') || '' };
           return null;
         };
         const iconFor = (item) => {
@@ -6807,7 +6837,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           if (priceLabel) priceLabel.textContent = 'Precio de la cuenta';
           streamingModalTitle.textContent = name;
           streamingModalServiceName.textContent = name;
-          streamingModalIcon.innerHTML = `<img src="${resolveMarketCategoryImage('streaming', selectedCategory)}" alt="${name}" />`;
+          streamingModalIcon.innerHTML = `<img src="${resolveMarketCategoryImage('streaming', selectedCategory)}" alt="${name}" onerror="this.onerror=null;this.src='${getStableCategoryFallbackImage('streaming', name)}';" />`;
           if (streamingServiceLogoHero) streamingServiceLogoHero.src = resolveMarketCategoryImage('streaming', selectedCategory);
           if (streamingServiceHeroTitle) streamingServiceHeroTitle.textContent = `${name} · Compra segura`;
           const availableTypes = [...new Set(parsedPrices.map((p) => p.type))];
@@ -6840,7 +6870,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const btn = document.createElement('button');
           btn.className = 'server';
           btn.type = 'button';
-          btn.innerHTML = `<div class="server-icon"><img src="${resolveMarketCategoryImage('streaming', cat)}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎬 Streaming</span><span class="market-card-chip">⚡ Rápido</span></div>`;
+          btn.innerHTML = `<div class="server-icon"><img src="${resolveMarketCategoryImage('streaming', cat)}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" onerror="this.onerror=null;this.src='${getStableCategoryFallbackImage('streaming', cat.name)}';" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎬 Streaming</span><span class="market-card-chip">⚡ Rápido</span></div>`;
           btn.addEventListener('click', () => {
             openStreamingModal(cat.name);
           });
@@ -6867,7 +6897,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const specialMap = giftcardSpecialPriceMaps[cat.name];
           const previewMap = specialMap || giftAmountMap;
           const previewKeys = Object.keys(previewMap).slice(0, 4);
-          btn.innerHTML = `<div class="server-icon"><img src="${resolveMarketCategoryImage('giftcards', cat)}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎁 GiftCard</span><span class="market-card-chip">💳 Digital</span></div><div class="giftcard-price-ribbon">${previewKeys.map((amount) => `<span>${amount}→${previewMap[amount]}</span>`).join('')}</div>`;
+          btn.innerHTML = `<div class="server-icon"><img src="${resolveMarketCategoryImage('giftcards', cat)}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" onerror="this.onerror=null;this.src='${getStableCategoryFallbackImage('giftcards', cat.name)}';" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">🎁 GiftCard</span><span class="market-card-chip">💳 Digital</span></div><div class="giftcard-price-ribbon">${previewKeys.map((amount) => `<span>${amount}→${previewMap[amount]}</span>`).join('')}</div>`;
           btn.addEventListener('click', () => {
             const currentType = activeMarketType;
             activeMarketType = 'giftcards';
@@ -6883,7 +6913,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             if (priceLabel) priceLabel.textContent = 'Precio total';
             streamingModalTitle.textContent = cat.name;
             streamingModalServiceName.textContent = cat.name;
-            streamingModalIcon.innerHTML = `<img src="${resolveMarketCategoryImage('giftcards', cat)}" alt="${cat.name}" />`;
+            streamingModalIcon.innerHTML = `<img src="${resolveMarketCategoryImage('giftcards', cat)}" alt="${cat.name}" onerror="this.onerror=null;this.src='${getStableCategoryFallbackImage('giftcards', cat.name)}';" />`;
             if (streamingServiceLogoHero) streamingServiceLogoHero.src = resolveMarketCategoryImage('giftcards', cat);
             if (streamingServiceHeroTitle) streamingServiceHeroTitle.textContent = `${cat.name} · Pedido rápido`;
             streamingAccountType.innerHTML = `<option value="${cat.name}">${cat.name}</option>`;
@@ -6943,7 +6973,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const btn = document.createElement('button');
           btn.className = 'server';
           btn.type = 'button';
-          btn.innerHTML = `<div class="server-icon"><img src="${resolveMarketCategoryImage('p2p', cat)}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">💱 P2P</span><span class="market-card-chip">🛡️ Moderado</span></div>`;
+          btn.innerHTML = `<div class="server-icon"><img src="${resolveMarketCategoryImage('p2p', cat)}" alt="${cat.name}" style="border-radius:999px;object-fit:cover;" onerror="this.onerror=null;this.src='${getStableCategoryFallbackImage('p2p', cat.name)}';" /></div><span class="server-name">${cat.name}</span><div class="market-card-meta"><span class="market-card-chip">💱 P2P</span><span class="market-card-chip">🛡️ Moderado</span></div>`;
           btn.addEventListener('click', () => {
             const p2pKey = getP2PAllowedKey(cat.name);
             const related = bucket.prices.filter((p) => getP2PAllowedKey(p) === p2pKey);
@@ -6987,7 +7017,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
               if (streamingServiceDetails) streamingServiceDetails.textContent = exchangeDetail;
               streamingModalTitle.textContent = cat.name;
               streamingModalServiceName.textContent = cat.name;
-              streamingModalIcon.innerHTML = `<img src="${resolveMarketCategoryImage('p2p', cat)}" alt="${cat.name}" />`;
+              streamingModalIcon.innerHTML = `<img src="${resolveMarketCategoryImage('p2p', cat)}" alt="${cat.name}" onerror="this.onerror=null;this.src='${getStableCategoryFallbackImage('p2p', cat.name)}';" />`;
               if (streamingHeroInfo) streamingHeroInfo.style.display = '';
               if (streamingServiceDetails) streamingServiceDetails.style.display = '';
               streamingModalTicketBtn.dataset.category = cat.name;
@@ -7017,7 +7047,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             if (streamingServiceDetails) streamingServiceDetails.textContent = `PRECIOS ${cat.name}\n${detail}\n\nSoporte: WhatsApp · Telegram · Discord`;
             streamingModalTitle.textContent = cat.name;
             streamingModalServiceName.textContent = cat.name;
-            streamingModalIcon.innerHTML = `<img src="${resolveMarketCategoryImage('p2p', cat)}" alt="${cat.name}" />`;
+            streamingModalIcon.innerHTML = `<img src="${resolveMarketCategoryImage('p2p', cat)}" alt="${cat.name}" onerror="this.onerror=null;this.src='${getStableCategoryFallbackImage('p2p', cat.name)}';" />`;
             if (streamingHeroInfo) streamingHeroInfo.style.display = '';
             if (streamingServiceDetails) streamingServiceDetails.style.display = '';
             streamingModalTicketBtn.dataset.category = cat.name;
