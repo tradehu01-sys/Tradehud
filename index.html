@@ -4603,11 +4603,21 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         giftcards: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&'
       };
 
+      function isLikelyBrokenCatalogImage(src = '') {
+        const value = String(src || '').trim().toLowerCase();
+        if (!value) return true;
+        return value.includes('cdn.discordapp.com/attachments/1495867730752966788/')
+          || value.includes('cdn.discordapp.com/attachments/149625')
+          || value.includes('chatgpt_image_20_abr_2026')
+          || value.includes('chatgpt_image_21_abr_2026');
+      }
       function resolveMarketCategoryImage(type, cat = null) {
         const bucketKey = ['streaming', 'giftcards', 'p2p'].includes(type) ? type : 'streaming';
         const fromCategory = cat?.image ? String(cat.image).trim() : '';
-        const fromDefault = marketDefaultImages[bucketKey] || '';
-        return fromCategory || fromDefault;
+        const stableFallback = getStableCategoryFallbackImage(bucketKey, cat?.name || '');
+        const fromDefault = marketDefaultImages[bucketKey] || stableFallback || '';
+        if (!fromCategory) return fromDefault;
+        return isLikelyBrokenCatalogImage(fromCategory) ? (stableFallback || fromDefault || fromCategory) : fromCategory;
       }
       function getStableCategoryFallbackImage(type, name = '') {
         const n = String(name || '').toLowerCase();
