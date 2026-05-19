@@ -2542,7 +2542,7 @@
               <p>Subidas, dungeons y metas PvE/PvP con jugadores expertos.</p>
             </div>
             <div class="home-item">
-              <img src="https://cdn.discordapp.com/attachments/1434981534833704970/1505269331108298943/image.png?ex=6a0a02cf&amp;is=6a08b14f&amp;hm=33cced75fdd0e2bb323d36aef3c5acafdbb577e5803d4b03f134607d4a5e5fee&amp;" alt="Cuentas y servicios" />
+              <img src="https://i.imgur.com/8b8Q2Qq.jpeg" alt="Cuentas y servicios" />
               <h3>Cuentas y servicios</h3>
               <p>Publica y vende con mediación segura dentro de la comunidad.</p>
             </div>
@@ -6202,9 +6202,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         dynamic.forEach((item) => merged.set(item.name, { ...item, count: Number(item.count || 0) + Number(merged.get(item.name)?.count || 0) }));
         const items = [...merged.values()].sort((a, b) => Number(b.count || 0) - Number(a.count || 0)).slice(0, 6);
         const makePopularIcon = (label, bg = '#172033', fg = '#ffffff', accent = '#f6ca63') => {
-          const safeLabel = String(label || 'TH').slice(0, 5);
-          const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" rx="22" fill="${bg}"/><circle cx="48" cy="48" r="34" fill="none" stroke="${accent}" stroke-width="5" opacity=".85"/><text x="48" y="57" text-anchor="middle" fill="${fg}" font-family="Arial,sans-serif" font-size="26" font-weight="900">${safeLabel}</text></svg>`;
-          return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+          const safeLabel = escapeHtml(String(label || 'TH').slice(0, 5));
+          return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><rect width="96" height="96" rx="22" fill="${bg}"/><circle cx="48" cy="48" r="34" fill="none" stroke="${accent}" stroke-width="5" opacity=".85"/><text x="48" y="57" text-anchor="middle" fill="${fg}" font-family="Arial,sans-serif" font-size="26" font-weight="900">${safeLabel}</text></svg>`;
         };
         const iconFor = (item) => {
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
@@ -6213,26 +6212,26 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             const gameName = String(game.name || '').toLowerCase();
             return gameName && (text.includes(gameName) || (itemNameText && gameName.includes(itemNameText)));
           });
-          if (text.includes('netflix')) return { src: makePopularIcon('N', '#111111', '#E50914', '#E50914'), alt: 'Netflix', fallback: 'N' };
-          if (text.includes('discord') || text.includes('nitro')) return { src: makePopularIcon('DIS', '#5865F2', '#ffffff', '#ffffff'), alt: 'Discord Nitro', fallback: 'D' };
-          if (text.includes('paypal')) return { src: makePopularIcon('PP', '#003087', '#ffffff', '#009CDE'), alt: 'PayPal', fallback: '$' };
-          if (text.includes('zinli')) return { src: makePopularIcon('Z', '#20c997', '#04140f', '#ffffff'), alt: 'Zinli / P2P', fallback: 'Z' };
-          if (text.includes('p2p') || text.includes('usdt')) return { src: makePopularIcon('P2P', '#0f5132', '#ffffff', '#20c997'), alt: 'P2P', fallback: '$' };
-          if (text.includes('stream')) return { src: makePopularIcon('▶', '#14213d', '#ffffff', '#4dabf7'), alt: 'Streaming', fallback: '▶' };
-          if (text.includes('gift')) return { src: makePopularIcon('GIFT', '#6f42c1', '#ffffff', '#ffd43b'), alt: 'GiftCards', fallback: '🎁' };
-          if (text.includes('wow') || text.includes('warcraft')) return { src: makePopularIcon('WOW', '#2a1d0e', '#f6ca63', '#f6ca63'), alt: 'World of Warcraft', fallback: 'WW' };
-          if (text.includes('albion')) return { src: makePopularIcon('ALB', '#1f2937', '#f8fafc', '#d1a44d'), alt: 'Albion Online', fallback: 'ALB' };
-          if (text.includes('aion')) return { src: makePopularIcon('AION', '#0f172a', '#e2e8f0', '#38bdf8'), alt: 'AION', fallback: 'A' };
-          if (text.includes('lineage')) return { src: makePopularIcon('L2', '#111827', '#f8fafc', '#f59e0b'), alt: 'Lineage 2', fallback: 'L2' };
-          if (text.includes('dofus')) return { src: makePopularIcon('DOF', '#1f2937', '#ecfeff', '#22d3ee'), alt: 'Dofus', fallback: 'DOF' };
-          if (text.includes('tibia')) return { src: makePopularIcon('TIB', '#1f2937', '#f8fafc', '#34d399'), alt: 'Tibia', fallback: 'TIB' };
-          if (gameMatch?.name) return { src: makePopularIcon(gameMatch.name.replace(/[^a-z0-9]/gi, '').slice(0,4).toUpperCase() || 'GAME', '#1f2937', '#ffffff', '#60a5fa'), alt: gameMatch.name || item.name || 'Juego popular', fallback: '🎮' };
-          return { src: makePopularIcon('GAME', '#1f2937', '#ffffff', '#60a5fa'), alt: item.name || 'Juego popular', fallback: '🎮' };
+          if (text.includes('netflix')) return { svg: makePopularIcon('N', '#111111', '#E50914', '#E50914'), alt: 'Netflix', fallback: 'N' };
+          if (text.includes('discord') || text.includes('nitro')) return { svg: makePopularIcon('DIS', '#5865F2', '#ffffff', '#ffffff'), alt: 'Discord Nitro', fallback: 'D' };
+          if (text.includes('paypal')) return { svg: makePopularIcon('PP', '#003087', '#ffffff', '#009CDE'), alt: 'PayPal', fallback: '$' };
+          if (text.includes('zinli')) return { svg: makePopularIcon('Z', '#20c997', '#04140f', '#ffffff'), alt: 'Zinli / P2P', fallback: 'Z' };
+          if (text.includes('p2p') || text.includes('usdt')) return { svg: makePopularIcon('P2P', '#0f5132', '#ffffff', '#20c997'), alt: 'P2P', fallback: '$' };
+          if (text.includes('stream')) return { svg: makePopularIcon('▶', '#14213d', '#ffffff', '#4dabf7'), alt: 'Streaming', fallback: '▶' };
+          if (text.includes('gift')) return { svg: makePopularIcon('GIFT', '#6f42c1', '#ffffff', '#ffd43b'), alt: 'GiftCards', fallback: '🎁' };
+          if (text.includes('wow') || text.includes('warcraft')) return { svg: makePopularIcon('WOW', '#2a1d0e', '#f6ca63', '#f6ca63'), alt: 'World of Warcraft', fallback: 'WW' };
+          if (text.includes('albion')) return { svg: makePopularIcon('ALB', '#1f2937', '#f8fafc', '#d1a44d'), alt: 'Albion Online', fallback: 'ALB' };
+          if (text.includes('aion')) return { svg: makePopularIcon('AION', '#0f172a', '#e2e8f0', '#38bdf8'), alt: 'AION', fallback: 'A' };
+          if (text.includes('lineage')) return { svg: makePopularIcon('L2', '#111827', '#f8fafc', '#f59e0b'), alt: 'Lineage 2', fallback: 'L2' };
+          if (text.includes('dofus')) return { svg: makePopularIcon('DOF', '#1f2937', '#ecfeff', '#22d3ee'), alt: 'Dofus', fallback: 'DOF' };
+          if (text.includes('tibia')) return { svg: makePopularIcon('TIB', '#1f2937', '#f8fafc', '#34d399'), alt: 'Tibia', fallback: 'TIB' };
+          if (gameMatch?.name) return { svg: makePopularIcon(gameMatch.name.replace(/[^a-z0-9]/gi, '').slice(0,4).toUpperCase() || 'GAME', '#1f2937', '#ffffff', '#60a5fa'), alt: gameMatch.name || item.name || 'Juego popular', fallback: '🎮' };
+          return { svg: makePopularIcon('GAME', '#1f2937', '#ffffff', '#60a5fa'), alt: item.name || 'Juego popular', fallback: '🎮' };
         };
         const iconHtmlFor = (item) => {
           const icon = iconFor(item);
-          if (!icon?.src) return escapeHtml(icon?.fallback || '🎮');
-          return `<img src="${escapeHtml(icon.src)}" alt="${escapeHtml(icon.alt || item.name || 'Icono popular')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(document.createTextNode('${escapeHtml(icon.fallback || '🎮')}'))" />`;
+          if (icon?.svg) return icon.svg;
+          return `<span>${escapeHtml(icon?.fallback || '🎮')}</span>`;
         };
         const pageFor = (item) => {
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
