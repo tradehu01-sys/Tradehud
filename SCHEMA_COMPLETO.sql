@@ -397,7 +397,8 @@ delete from public.service_catalog_entries where service_type in ('p2p','streami
 delete from public.service_catalog_entries where service_type = 'streaming' and entry_type = 'category' and category_name in ('Discord Nitro');
 delete from public.service_catalog_entries where service_type = 'giftcards' and entry_type = 'price' and category_name in ('Discord Nitro','Gemini');
 delete from public.service_catalog_entries where service_type = 'giftcards' and entry_type = 'category' and category_name = 'Gemini';
-delete from public.service_catalog_entries where service_type = 'streaming' and entry_type = 'price' and category_name = 'Gemini';
+delete from public.service_catalog_entries where service_type = 'streaming' and entry_type = 'price' and category_name in ('Gemini','CANVA EDU PRO','CAMVA EDU PRO');
+delete from public.service_catalog_entries where service_type = 'streaming' and entry_type = 'category' and category_name = 'CAMVA EDU PRO';
 insert into public.service_catalog_entries (service_type, entry_type, category_name, item_name, image, value, sort_order)
 values
 ('p2p','category','ZINLI','ZINLI','https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png','',1),
@@ -414,7 +415,7 @@ values
 ('streaming','category','Paramount','Paramount','https://upload.wikimedia.org/wikipedia/commons/9/94/Paramount%2B_logo.svg','',9),
 ('streaming','category','Apple TV','Apple TV','https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg','',10),
 ('streaming','category','Gemini','Gemini','https://upload.wikimedia.org/wikipedia/commons/8/8f/Google-gemini-icon.svg','',11),
-('streaming','category','CAMVA EDU PRO','CAMVA EDU PRO','https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg','',12),
+('streaming','category','CANVA EDU PRO','CANVA EDU PRO','https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg','',12),
 ('giftcards','category','Battle Net Gift Card','Battle Net Gift Card','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',1),
 ('giftcards','category','Amazon Gift Card','Amazon Gift Card','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',2),
 ('giftcards','category','Roblox Gift Cards','Roblox Gift Cards','https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png','',3),
@@ -462,9 +463,9 @@ values
 ('streaming','price','CapCut Pro','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',11),
 ('streaming','price','Paramount','1 PERFIL 2.50$ (MES)','','1 PERFIL 2.50$ (MES)',12),
 ('streaming','price','Apple TV','1 PERFIL 3$ (MES)','','1 PERFIL 3$ (MES)',13),
-('streaming','price','Gemini','1 PERFIL 2.50$ (MES)','','1 PERFIL 2.50$ (MES)',14),
-('streaming','price','Gemini','CUENTA COMPLETA 7$ (AÑO)','','CUENTA COMPLETA 7$ (AÑO)',15),
-('streaming','price','CAMVA EDU PRO','1 AÑO 3$','','1 AÑO 3$',16),
+('streaming','price','Gemini','Perfil 2.50$','','Perfil 2.50$',14),
+('streaming','price','CANVA EDU PRO','1 MES 1.50$','','1 MES 1.50$',15),
+('streaming','price','CANVA EDU PRO','1 AÑO 3.50$','','1 AÑO 3.50$',16),
 ('giftcards','price','Discord Nitro','BASIC MES 4.49$','','Discord Nitro - BASIC MES 4.49$',101),
 ('giftcards','price','Discord Nitro','BASIC AÑO 44.99$','','Discord Nitro - BASIC AÑO 44.99$',102),
 ('giftcards','price','Discord Nitro','NITRO MES 11.99$','','Discord Nitro - NITRO MES 11.99$',103),
