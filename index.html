@@ -4606,8 +4606,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       function isLikelyBrokenCatalogImage(src = '') {
         const value = String(src || '').trim().toLowerCase();
         if (!value) return true;
-        return value.includes('cdn.discordapp.com/attachments/1495867730752966788/')
-          || value.includes('cdn.discordapp.com/attachments/149625')
+        return value.includes('cdn.discordapp.com/attachments/')
           || value.includes('chatgpt_image_20_abr_2026')
           || value.includes('chatgpt_image_21_abr_2026');
       }
@@ -4647,6 +4646,19 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
         return '';
       }
+
+      function normalizeMarketCatalogImages() {
+        ['streaming', 'giftcards', 'p2p'].forEach((type) => {
+          const categories = marketCatalog?.[type]?.categories || [];
+          categories.forEach((cat) => {
+            const next = resolveMarketCategoryImage(type, cat);
+            if (next && next !== cat.image) cat.image = next;
+          });
+        });
+      }
+
+      normalizeMarketCatalogImages();
+
       const p2pOfficialPrices = [
         'ZINLI - Zinli 1$ - 1.30$', 'ZINLI - Zinli 2$ - 2.60$', 'ZINLI - Zinli 5$ - 6.50$', 'ZINLI - Zinli 10$ - 12$',
         'ZINLI - Zinli 15$ - 17.25$', 'ZINLI - Zinli 20$ - 23$', 'ZINLI - Zinli 25$ - 28.75$', 'ZINLI - Zinli 30$ - 34.50$',
