@@ -6217,11 +6217,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             const categories = marketCatalog?.[key]?.categories || [];
             const hit = categories.find((cat) => {
               const catName = String(cat?.name || '').toLowerCase();
-              return !!cat?.image && catName && (name.includes(catName) || catName.includes(name));
+              return catName && (name.includes(catName) || catName.includes(name));
             });
-            if (hit?.image) return { src: hit.image, alt: hit.name || item.name || 'Categoría popular' };
+            const src = hit?.image || marketDefaultImages[key] || '';
+            if (src) return { src, alt: hit?.name || item.name || 'Categoría popular', fallbackSrc: marketDefaultImages[key] || '' };
           }
-          if (gameMatch?.icon) return { src: gameMatch.icon, alt: gameMatch.name || item.name || 'Juego popular' };
+          if (gameMatch?.icon) return { src: gameMatch.icon, alt: gameMatch.name || item.name || 'Juego popular', fallbackSrc: wowGameIcon || '' };
           return null;
         };
         const iconFor = (item) => {
@@ -6232,7 +6233,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             return gameName && (text.includes(gameName) || (itemNameText && gameName.includes(itemNameText)));
           });
           const catalogImage = findPopularCatalogImage(item, gameMatch);
-          if (catalogImage?.src) return { src: catalogImage.src, alt: catalogImage.alt || item.name || 'Categoría popular', fallback: '🎮' };
+          if (catalogImage?.src) return { src: catalogImage.src, alt: catalogImage.alt || item.name || 'Categoría popular', fallback: '🎮', fallbackSrc: catalogImage.fallbackSrc || '' };
           if (text.includes('netflix')) return { svg: makePopularIcon('N', '#111111', '#E50914', '#E50914'), alt: 'Netflix', fallback: 'N' };
           if (text.includes('discord') || text.includes('nitro')) return { svg: makePopularIcon('DIS', '#5865F2', '#ffffff', '#ffffff'), alt: 'Discord Nitro', fallback: 'D' };
           if (text.includes('paypal')) return { svg: makePopularIcon('PP', '#003087', '#ffffff', '#009CDE'), alt: 'PayPal', fallback: '$' };
@@ -6251,7 +6252,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         };
         const iconHtmlFor = (item) => {
           const icon = iconFor(item);
-          if (icon?.src) return `<img src="${escapeHtml(icon.src)}" alt="${escapeHtml(icon.alt || item.name || 'Icono popular')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(document.createTextNode('${escapeHtml(icon.fallback || '🎮')}'))" />`;
+          if (icon?.src) return `<img src="${escapeHtml(icon.src)}" alt="${escapeHtml(icon.alt || item.name || 'Icono popular')}" loading="lazy" referrerpolicy="no-referrer" onerror="if(this.dataset.fallback&&this.src!==this.dataset.fallback){this.src=this.dataset.fallback;return;}this.replaceWith(document.createTextNode('${escapeHtml(icon.fallback || '🎮')}'));" data-fallback="${escapeHtml(icon.fallbackSrc || '')}" />`;
           if (icon?.svg) return icon.svg;
           return `<span>${escapeHtml(icon?.fallback || '🎮')}</span>`;
         };
