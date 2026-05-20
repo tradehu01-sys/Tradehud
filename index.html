@@ -2391,7 +2391,7 @@
     <section class="top-banner-cascade" aria-label="Promociones destacadas TradeHud">
       <div class="banner-marquee">
         <a class="promo-banner" href="#oro" data-page-link data-page="oro">
-          <span class="promo-icon" aria-hidden="true">⚔️</span>
+          <span class="promo-icon" aria-hidden="true">🛒</span>
           <span class="promo-copy"><strong>Marketplace MMORPG activo</strong><span>Oro, cuentas y servicios con tickets seguros y atención directa.</span></span>
           <span class="promo-cta">Ver juegos</span>
         </a>
@@ -2416,7 +2416,7 @@
           <span class="promo-cta">P2P</span>
         </a>
         <a class="promo-banner" href="#oro" data-page-link data-page="oro" aria-hidden="true" tabindex="-1">
-          <span class="promo-icon" aria-hidden="true">⚔️</span>
+          <span class="promo-icon" aria-hidden="true">🛒</span>
           <span class="promo-copy"><strong>Marketplace MMORPG activo</strong><span>Oro, cuentas y servicios con tickets seguros y atención directa.</span></span>
           <span class="promo-cta">Ver juegos</span>
         </a>
@@ -6259,60 +6259,49 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const merged = new Map(defaults.map((item) => [item.name, item]));
         dynamic.forEach((item) => merged.set(item.name, { ...item, count: Number(item.count || 0) + Number(merged.get(item.name)?.count || 0) }));
         const items = [...merged.values()].sort((a, b) => Number(b.count || 0) - Number(a.count || 0)).slice(0, 6);
-        const makePopularIcon = (label, bg = '#172033', fg = '#ffffff', accent = '#f6ca63') => {
-          const safeLabel = escapeHtml(String(label || 'TH').slice(0, 5));
-          return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><rect width="96" height="96" rx="22" fill="${bg}"/><circle cx="48" cy="48" r="34" fill="none" stroke="${accent}" stroke-width="5" opacity=".85"/><text x="48" y="57" text-anchor="middle" fill="${fg}" font-family="Arial,sans-serif" font-size="26" font-weight="900">${safeLabel}</text></svg>`;
+        const categoryIconByType = {
+          streaming: 'https://cdn.simpleicons.org/youtube/FF0000',
+          giftcards: 'https://cdn.simpleicons.org/steam/FFFFFF',
+          p2p: 'https://cdn.simpleicons.org/paypal/00457C',
+          oro: 'https://cdn.simpleicons.org/worldofwarcraft/148EFF'
         };
-        const findPopularCatalogImage = (item = {}, gameMatch = null) => {
-          const name = String(item.name || '').toLowerCase().trim();
-          const type = String(item.type || '').toLowerCase();
-          const pools = [];
-          if (type.includes('stream')) pools.push('streaming');
-          if (type.includes('gift')) pools.push('giftcards');
-          if (type.includes('p2p') || name.includes('paypal') || name.includes('zinli') || name.includes('usdt')) pools.push('p2p');
-          pools.push('streaming', 'giftcards', 'p2p');
-          for (const key of pools) {
-            const categories = marketCatalog?.[key]?.categories || [];
-            const hit = categories.find((cat) => {
-              const catName = String(cat?.name || '').toLowerCase();
-              return catName && (name.includes(catName) || catName.includes(name));
-            }) || categories[0] || null;
-            const src = resolveMarketCategoryImage(key, hit);
-            const stableFallback = getStableCategoryFallbackImage(key, hit?.name || item.name || '');
-            const fallbackSrc = stableFallback || marketDefaultImages[key] || '';
-            if (src || fallbackSrc) return { src: src || fallbackSrc, alt: hit?.name || item.name || 'Categoría popular', fallbackSrc };
-          }
-          if (gameMatch?.icon) return { src: gameMatch.icon, alt: gameMatch.name || item.name || 'Juego popular', fallbackSrc: wowGameIcon || getStableCategoryFallbackImage('streaming', gameMatch.name || '') || '' };
-          return { src: marketDefaultImages.streaming || getStableCategoryFallbackImage('streaming', item.name || ''), alt: item.name || 'Categoría popular', fallbackSrc: getStableCategoryFallbackImage('streaming', item.name || '') || '' };
-        };
-        const iconFor = (item) => {
+        const inferPopularType = (item = {}) => {
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
-          const itemNameText = String(item.name || '').toLowerCase();
-          const gameMatch = games.find((game) => {
-            const gameName = String(game.name || '').toLowerCase();
-            return gameName && (text.includes(gameName) || (itemNameText && gameName.includes(itemNameText)));
-          });
-          if (text.includes('netflix')) return { svg: makePopularIcon('N', '#111111', '#E50914', '#E50914'), alt: 'Netflix', fallback: 'N' };
-          if (text.includes('discord') || text.includes('nitro')) return { svg: makePopularIcon('DIS', '#5865F2', '#ffffff', '#ffffff'), alt: 'Discord Nitro', fallback: 'D' };
-          if (text.includes('paypal')) return { svg: makePopularIcon('PP', '#003087', '#ffffff', '#009CDE'), alt: 'PayPal', fallback: '$' };
-          if (text.includes('zinli')) return { svg: makePopularIcon('Z', '#20c997', '#04140f', '#ffffff'), alt: 'Zinli / P2P', fallback: 'Z' };
-          if (text.includes('p2p') || text.includes('usdt')) return { svg: makePopularIcon('P2P', '#0f5132', '#ffffff', '#20c997'), alt: 'P2P', fallback: '$' };
-          if (text.includes('stream')) return { svg: makePopularIcon('▶', '#14213d', '#ffffff', '#4dabf7'), alt: 'Streaming', fallback: '▶' };
-          if (text.includes('gift')) return { svg: makePopularIcon('GIFT', '#6f42c1', '#ffffff', '#ffd43b'), alt: 'GiftCards', fallback: '🎁' };
-          if (text.includes('wow') || text.includes('warcraft')) return { svg: makePopularIcon('WOW', '#2a1d0e', '#f6ca63', '#f6ca63'), alt: 'World of Warcraft', fallback: 'WW' };
-          if (text.includes('albion')) return { svg: makePopularIcon('ALB', '#1f2937', '#f8fafc', '#d1a44d'), alt: 'Albion Online', fallback: 'ALB' };
-          if (text.includes('aion')) return { svg: makePopularIcon('AION', '#0f172a', '#e2e8f0', '#38bdf8'), alt: 'AION', fallback: 'A' };
-          if (text.includes('lineage')) return { svg: makePopularIcon('L2', '#111827', '#f8fafc', '#f59e0b'), alt: 'Lineage 2', fallback: 'L2' };
-          if (text.includes('dofus')) return { svg: makePopularIcon('DOF', '#1f2937', '#ecfeff', '#22d3ee'), alt: 'Dofus', fallback: 'DOF' };
-          if (text.includes('tibia')) return { svg: makePopularIcon('TIB', '#1f2937', '#f8fafc', '#34d399'), alt: 'Tibia', fallback: 'TIB' };
-          if (gameMatch?.name) return { svg: makePopularIcon(gameMatch.name.replace(/[^a-z0-9]/gi, '').slice(0,4).toUpperCase() || 'GAME', '#1f2937', '#ffffff', '#60a5fa'), alt: gameMatch.name || item.name || 'Juego popular', fallback: '🎮' };
-          return { svg: makePopularIcon('GAME', '#1f2937', '#ffffff', '#60a5fa'), alt: item.name || 'Juego popular', fallback: '🎮' };
+          if (text.includes('gift')) return 'giftcards';
+          if (text.includes('p2p') || text.includes('paypal') || text.includes('zinli') || text.includes('usdt')) return 'p2p';
+          if (text.includes('stream') || text.includes('netflix') || text.includes('disney') || text.includes('prime')) return 'streaming';
+          return 'oro';
+        };
+        const resolvePopularTypeIcon = (item = {}) => {
+          const type = inferPopularType(item);
+          if (type === 'oro') {
+            const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
+            const gameMatch = games.find((game) => {
+              const gameName = String(game.name || '').toLowerCase();
+              return gameName && text.includes(gameName);
+            });
+            return {
+              src: gameMatch?.icon || categoryIconByType.oro,
+              alt: gameMatch?.name || item.name || 'Juego popular',
+              fallback: categoryIconByType.oro
+            };
+          }
+          const categories = marketCatalog?.[type]?.categories || [];
+          const name = String(item.name || '').toLowerCase();
+          const hit = categories.find((cat) => {
+            const catName = String(cat?.name || '').toLowerCase();
+            return catName && (name.includes(catName) || catName.includes(name));
+          }) || categories[0] || null;
+          const src = resolveMarketCategoryImage(type, hit);
+          return {
+            src: src || categoryIconByType[type],
+            alt: hit?.name || item.name || 'Categoría popular',
+            fallback: categoryIconByType[type]
+          };
         };
         const iconHtmlFor = (item) => {
-          const icon = iconFor(item);
-          if (icon?.svg) return icon.svg;
-          const label = String(item?.name || icon?.alt || 'GAME').replace(/[^a-z0-9]/gi, '').slice(0, 4).toUpperCase() || 'GAME';
-          return makePopularIcon(label, '#1f2937', '#ffffff', '#60a5fa');
+          const icon = resolvePopularTypeIcon(item);
+          return `<img src="${icon.src}" alt="${escapeHtml(icon.alt)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${icon.fallback}';" />`;
         };
         const pageFor = (item) => {
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
