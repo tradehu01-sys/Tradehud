@@ -6278,15 +6278,23 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const type = inferPopularType(item);
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
           if (type === 'oro') {
-            const itemName = String(item.name || '').toLowerCase();
-            const gameMatch = games.find((game) => {
-              const gameName = String(game.name || '').toLowerCase();
-              if (!gameName) return false;
-              if (text.includes(gameName) || gameName.includes(itemName)) return true;
-              if (itemName.includes('wow retail') && gameName.includes('world of warcraft retail')) return true;
-              if (itemName.includes('wow') && gameName.includes('world of warcraft')) return true;
-              return false;
-            });
+            const itemName = String(item.name || '').toLowerCase().trim();
+            const scoreGameMatch = (gameNameRaw = '') => {
+              const gameName = String(gameNameRaw || '').toLowerCase().trim();
+              if (!gameName) return -1;
+              if (itemName === gameName) return 100;
+              if (itemName.includes('wow retail') && gameName.includes('world of warcraft retail')) return 95;
+              if (itemName.includes('retail') && gameName.includes('retail')) return 90;
+              if (text.includes(gameName)) return 80;
+              if (gameName.includes(itemName)) return 70;
+              if (itemName.includes('wow') && gameName.includes('world of warcraft')) return 60;
+              return -1;
+            };
+            const ranked = games
+              .map((game) => ({ game, score: scoreGameMatch(game?.name) }))
+              .filter((entry) => entry.score >= 0)
+              .sort((a, b) => b.score - a.score || String(a.game?.name || '').length - String(b.game?.name || '').length);
+            const gameMatch = ranked[0]?.game || null;
             return {
               src: gameMatch?.icon || wowGameIcon || popularTypeFallback.oro,
               alt: gameMatch?.name || item.name || 'Juego popular',
