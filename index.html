@@ -2536,7 +2536,7 @@
               <p>Subidas, dungeons y metas PvE/PvP con jugadores expertos.</p>
             </div>
             <div class="home-item">
-              <img src="https://cdn.discordapp.com/attachments/1434981534833704970/1505269331108298943/image.png?ex=6a0d4e8f&is=6a0bfd0f&hm=720cce42780260901816750d7ed6dd70f74d2e4c4c72d31f8100ef54e0d053ef&" alt="Cuentas y servicios" />
+              <img src="https://cdn.discordapp.com/attachments/1434981534833704970/1505269331108298943/image.png?ex=6a0f48cf&is=6a0df74f&hm=186b441677129d9afad55ec7dd97d51bd72590b30f494ddaaac89e2bd16b6c4b&" alt="Cuentas y servicios" />
               <h3>Cuentas y servicios</h3>
               <p>Publica y vende con mediación segura dentro de la comunidad.</p>
             </div>
@@ -4353,8 +4353,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       const cerrarCategoriasVista = document.getElementById('cerrarCategoriasVista');
       const defaultServices = ['gold', 'boosting', 'accounts'];
       const FIXED_GOLD_IMG = 'https://i.imgur.com/c5ktaxz.png';
-      const FIXED_BOOSTING_IMG = 'https://i.imgur.com/9QHS0xN.png';
-      const FIXED_ACCOUNTS_IMG = 'https://i.imgur.com/MfZK9dg.png';
+      const FIXED_BOOSTING_IMG = 'https://cdn.discordapp.com/attachments/1434981534833704970/1505269331108298943/image.png?ex=6a0f48cf&is=6a0df74f&hm=186b441677129d9afad55ec7dd97d51bd72590b30f494ddaaac89e2bd16b6c4b&';
+      const FIXED_ACCOUNTS_IMG = 'https://cdn.discordapp.com/attachments/1434981534833704970/1505269331108298943/image.png?ex=6a0f48cf&is=6a0df74f&hm=186b441677129d9afad55ec7dd97d51bd72590b30f494ddaaac89e2bd16b6c4b&';
       const FIXED_SELL_GOLD_IMG = 'https://i.imgur.com/ODy7Rqb.png';
       const serviceCatalog = {
         boosting: {
@@ -6753,6 +6753,21 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         renderCategoryList('bosteo', categoriaListaBosteo);
       }
 
+      function renderBoostingAdminSections() {
+        if (!categoriaListaBosteo) return;
+        categoriaListaBosteo.innerHTML = '';
+        const entries = Object.entries(boostingServiceCatalog || {});
+        entries.forEach(([gameName, config]) => {
+          const servers = Object.keys(config?.leveling || {});
+          const profCount = Array.isArray(config?.professions) ? config.professions.length : 0;
+          const item = document.createElement('article');
+          item.className = 'category-item';
+          item.innerHTML = `<strong>${escapeHtml(gameName)}</strong><p class="admin-game-desc">Leveleo: ${servers.length} servidor(es)</p><p class="admin-game-desc">Profesiones: ${profCount} apartado(s)</p>`;
+          categoriaListaBosteo.appendChild(item);
+        });
+        if (!categoriaListaBosteo.children.length) categoriaListaBosteo.innerHTML = '<p class="auth-hint">Sin apartados de boosting configurados.</p>';
+      }
+
       function renderAdminAccounts() {
         adminAccountsList.innerHTML = '';
         gameAccounts.forEach((account, index) => {
@@ -7232,6 +7247,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         renderPriceOptions();
         renderAdminAccounts();
         renderFactionOptionsAdmin();
+        renderBoostingAdminSections();
       }
 
       function renderServerByGame() {
@@ -8094,6 +8110,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           tabPreciosOro.classList.add('active');
           editorPreciosOro.classList.remove('hidden');
           renderFactionOptionsAdmin();
+        renderBoostingAdminSections();
         } else if (tab === 'market') {
           if (tabMarketAdmin) tabMarketAdmin.classList.add('active');
           if (editorMarketAdmin) editorMarketAdmin.classList.remove('hidden');
@@ -8109,6 +8126,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         } else if (tab === 'bosteo') {
           tabBosteo.classList.add('active');
           editorBosteo.classList.remove('hidden');
+          renderBoostingAdminSections();
         } else if (tab === 'reviews') {
           tabReviewsAdmin.classList.add('active');
           editorReviewsAdmin.classList.remove('hidden');
@@ -9615,6 +9633,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         await saveFactionConfigRemote(gameName);
         renderFactionGameSelect(gameName);
         renderFactionOptionsAdmin();
+        renderBoostingAdminSections();
       });
       if (addFactionOptionBtn) addFactionOptionBtn.addEventListener('click', async () => {
         const value = newFactionOption.value.trim();
@@ -9626,6 +9645,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         saveFactionConfig();
         await saveFactionConfigRemote(gameName);
         renderFactionOptionsAdmin();
+        renderBoostingAdminSections();
       });
       if (factionOptionsList) factionOptionsList.addEventListener('click', async (event) => {
         const btn = event.target.closest('[data-remove-faction]');
@@ -9636,6 +9656,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         saveFactionConfig();
         await saveFactionConfigRemote(gameName);
         renderFactionOptionsAdmin();
+        renderBoostingAdminSections();
       });
 
       loadReviews();
