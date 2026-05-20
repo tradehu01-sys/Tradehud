@@ -529,41 +529,34 @@
       }
       #popularCascadeGrid:hover .popular-cascade-track { animation-play-state: paused; }
       .popular-cascade-card {
-        width: min(520px, 86vw);
-        min-height: 92px;
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        align-items: center;
-        gap: .75rem;
-        padding: .75rem .9rem;
-        background: radial-gradient(circle at 15% 0%, rgba(246,202,99,.2), transparent 34%), linear-gradient(135deg,#252f38,#151d24 58%,#222e37);
-        box-shadow: 0 14px 36px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05);
-      }
-      .popular-cascade-card h3 { margin: 0 0 .15rem; color: #fff; font-size: 1rem; }
-      .popular-cascade-card p { margin: 0; color: #d6d6d6; font-size: .83rem; line-height: 1.35; }
-      .popular-rank {
-        width: 58px;
-        height: 58px;
-        border-radius: 16px;
-        display: grid;
-        place-items: center;
-        border: 1px solid rgba(255,255,255,.18);
-        background: rgba(255,255,255,.07);
-        color: #ffd670;
-        font-size: 1.4rem;
-        font-weight: 950;
+        width: min(330px, 86vw);
         overflow: hidden;
+        border: 1px solid #3e4d61;
+        border-radius: 14px;
+        background: linear-gradient(180deg,#1a2430,#111923);
+        box-shadow: 0 14px 32px rgba(0,0,0,.28);
       }
-      .popular-rank img,
-      .popular-rank svg {
-        width: 82%;
-        height: 82%;
-        object-fit: contain;
-        display: block;
-        margin: 0;
-        background: transparent;
-        border-radius: 10px;
+      .popular-top {
+        display:flex;align-items:center;justify-content:space-between;gap:.7rem;
+        padding:.7rem .8rem;
+        background: linear-gradient(90deg,#f59e0b,#f97316);
       }
+      .popular-top.blue { background: linear-gradient(90deg,#1d4ed8,#2563eb); }
+      .popular-top .popular-rank {
+        width:38px;height:38px;border-radius:999px;display:grid;place-items:center;
+        overflow:hidden;border:2px solid rgba(255,255,255,.7);background:#0f172a;
+      }
+      .popular-top .popular-rank img { width:100%;height:100%;object-fit:cover; }
+      .popular-headline { flex:1;min-width:0; }
+      .popular-headline h3 { margin:0;color:#fff;font-size:1rem;line-height:1.1; }
+      .popular-headline p { margin:.1rem 0 0;color:#ecfeff;font-size:.8rem;font-weight:700; }
+      .popular-price { text-align:right;color:#fff;font-weight:900;font-size:1.8rem;line-height:1; }
+      .popular-price small { display:block;font-size:.75rem;opacity:.9; }
+      .popular-preview { position:relative;height:118px;background:#020617; }
+      .popular-preview img { width:100%;height:100%;object-fit:cover;display:block; }
+      .popular-chip { position:absolute;right:.6rem;top:.55rem;background:#2563eb;color:#fff;border-radius:999px;padding:.2rem .5rem;font-size:.7rem;font-weight:800; }
+      .popular-bottom { display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.62rem .8rem; }
+      .popular-bottom p { margin:0;color:#dbeafe;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
       .popular-count, .popular-section-btn {
         border: 1px solid rgba(255,255,255,.32);
         border-radius: 999px;
@@ -576,7 +569,7 @@
         text-decoration: none;
       }
       .popular-section-btn { background: linear-gradient(135deg,#0bbf6a,#158dff); color:#fff; border-color:#fff; }
-      @media (max-width:760px){ .popular-cascade-card{width:86vw;grid-template-columns:auto 1fr}.popular-count{grid-column:1/-1;text-align:center} }
+      @media (max-width:760px){ .popular-cascade-card{width:86vw;} .popular-top{padding:.58rem .65rem;} .popular-preview{height:102px;} }
 
 
       .home-item img {
@@ -6324,7 +6317,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         };
         const cards = [...items, ...items].map((item, index) => {
           const page = pageFor(item);
-          return `<div class="home-item popular-cascade-card" ${index >= items.length ? 'aria-hidden="true"' : ''}><span class="popular-rank">${iconHtmlFor(item)}</span><div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.type || 'Categoría popular')} se mueve según órdenes e interacciones recientes.</p></div><a class="popular-section-btn" href="#${page}" data-page-link data-page="${page}">Ir</a></div>`;
+          const icon = resolvePopularTypeIcon(item);
+          const tone = page === 'streaming' || page === 'giftcards' ? 'blue' : '';
+          const chip = page === 'oro' ? 'CUENTA' : page === 'p2p' ? 'P2P' : 'OBJETO';
+          const price = page === 'oro' ? '$76.00' : page === 'p2p' ? '$6.99' : '$80.00';
+          return `<div class="home-item popular-cascade-card" ${index >= items.length ? 'aria-hidden="true"' : ''}><div class="popular-top ${tone}"><span class="popular-rank">${iconHtmlFor(item)}</span><div class="popular-headline"><h3>${escapeHtml(item.name)}</h3><p>Disponible</p></div><div class="popular-price">${price}<small>USD</small></div></div><div class="popular-preview"><img src="${icon.src || icon.fallback}" alt="${escapeHtml(icon.alt)}" onerror="this.onerror=null;this.src='${icon.fallback}';"/><span class="popular-chip">${chip}</span></div><div class="popular-bottom"><p>${escapeHtml(item.type || 'Categoría popular')}</p><a class="popular-section-btn" href="#${page}" data-page-link data-page="${page}">Ir</a></div></div>`;
         }).join('');
         grid.innerHTML = `<div class="popular-cascade-track">${cards}</div>`;
         scheduleFullPageTranslation();
