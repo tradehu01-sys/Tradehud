@@ -5203,6 +5203,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
+      let pageSwitchToken = 0;
       let activeOrderGame = null;
       let presenceSnapshot = { onlineCount: 0, adminOnline: false, byUserId: {} };
       const PRESENCE_STALE_MS = 35000;
@@ -6641,6 +6642,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function showPage(page, targetId = '') {
+        if (!page) return;
+        if (['streaming', 'giftcards', 'p2p'].includes(page)) setActiveMarketType(page);
         if (page !== 'game-detail') {
           gameWindowModal?.classList.remove('show');
           gameWindowModal?.setAttribute('aria-hidden', 'true');
@@ -6649,10 +6652,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           streamingModal?.classList.remove('show');
           streamingModal?.setAttribute('aria-hidden', 'true');
         }
+        const thisSwitch = ++pageSwitchToken;
         pageLoader.classList.add('show');
         pageLoader.setAttribute('aria-hidden', 'false');
         clearTimeout(pageSwitchTimer);
         pageSwitchTimer = setTimeout(() => {
+          if (thisSwitch !== pageSwitchToken) return;
           setActivePage(page);
           pageLoader.classList.remove('show');
           pageLoader.setAttribute('aria-hidden', 'true');
@@ -7670,7 +7675,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       pageLinks.forEach((link) => {
         link.addEventListener('click', (e) => {
           e.preventDefault();
-          showPage(link.dataset.page, link.dataset.target || '');
+          const page = link.dataset.page || 'inicio';
+          showPage(page, link.dataset.target || '');
         });
       });
 
