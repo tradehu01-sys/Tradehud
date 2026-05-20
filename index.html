@@ -6260,10 +6260,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         dynamic.forEach((item) => merged.set(item.name, { ...item, count: Number(item.count || 0) + Number(merged.get(item.name)?.count || 0) }));
         const items = [...merged.values()].sort((a, b) => Number(b.count || 0) - Number(a.count || 0)).slice(0, 6);
         const categoryIconByType = {
-          streaming: 'https://cdn.simpleicons.org/youtube/FF0000',
-          giftcards: 'https://cdn.simpleicons.org/steam/FFFFFF',
-          p2p: 'https://cdn.simpleicons.org/paypal/00457C',
-          oro: 'https://cdn.simpleicons.org/worldofwarcraft/148EFF'
+          streaming: 'https://img.icons8.com/fluency/96/video.png',
+          giftcards: 'https://img.icons8.com/fluency/96/gift.png',
+          p2p: 'https://img.icons8.com/fluency/96/money-transfer.png',
+          oro: wowGameIcon
         };
         const inferPopularType = (item = {}) => {
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
@@ -6293,10 +6293,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             return catName && (name.includes(catName) || catName.includes(name));
           }) || categories[0] || null;
           const src = resolveMarketCategoryImage(type, hit);
+          const stable = getStableCategoryFallbackImage(type, hit?.name || item.name || '');
           return {
-            src: src || categoryIconByType[type],
+            src: src || stable || categoryIconByType[type],
             alt: hit?.name || item.name || 'Categoría popular',
-            fallback: categoryIconByType[type]
+            fallback: stable || categoryIconByType[type]
           };
         };
         const iconHtmlFor = (item) => {
