@@ -6328,7 +6328,32 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const icon = resolvePopularTypeIcon(item);
           const tone = page === 'streaming' || page === 'giftcards' ? 'blue' : '';
           const chip = page === 'oro' ? 'CUENTA' : page === 'p2p' ? 'P2P' : 'OBJETO';
-          const price = page === 'oro' ? '$76.00' : page === 'p2p' ? '$6.99' : '$80.00';
+          const parsePrice = (text = '') => {
+            const m = String(text).match(/(\d+(?:[.,]\d+)?)\$/);
+            return m ? Number(m[1].replace(',', '.')) : null;
+          };
+          const inferCardPrice = () => {
+            const nameLower = String(item.name || '').toLowerCase();
+            if (page === 'oro') {
+              const gameMatch = games.find((g) => nameLower.includes(String(g.name || '').toLowerCase()) || String(g.name || '').toLowerCase().includes(nameLower));
+              const candidate = goldPrices.find((row) => !gameMatch || row.game === gameMatch.name) || goldPrices[0];
+              return Number(candidate?.price || 0) || 0;
+            }
+            if (page === 'streaming') {
+              const line = marketCatalog.streaming.prices.find((row) => String(row).toLowerCase().includes(nameLower)) || marketCatalog.streaming.prices[0] || '';
+              return parsePrice(line) || 0;
+            }
+            if (page === 'giftcards') {
+              const line = marketCatalog.giftcards.prices.find((row) => String(row).toLowerCase().includes(nameLower)) || marketCatalog.giftcards.prices[0] || '';
+              return parsePrice(line) || 0;
+            }
+            const line = marketCatalog.p2p.prices.find((row) => String(row).toLowerCase().includes(nameLower)) || marketCatalog.p2p.prices[0] || '';
+            const nums = String(line).match(/(\d+(?:[.,]\d+)?)\$/g) || [];
+            const last = nums.length ? nums[nums.length - 1] : '';
+            return parsePrice(last) || parsePrice(line) || 0;
+          };
+          const priceValue = inferCardPrice();
+          const price = `$${priceValue.toFixed(2)}`;
           return `<div class="home-item popular-cascade-card" ${index >= items.length ? 'aria-hidden="true"' : ''}><div class="popular-top ${tone}"><span class="popular-rank">${iconHtmlFor(item)}</span><div class="popular-headline"><h3>${escapeHtml(item.name)}</h3><p>Disponible</p></div><div class="popular-price">${price}<small>USD</small></div></div><div class="popular-preview"><img src="${icon.src || icon.fallback}" alt="${escapeHtml(icon.alt)}" onerror="this.onerror=null;this.src='${icon.fallback}';"/><span class="popular-chip">${chip}</span></div><div class="popular-bottom"><p>${escapeHtml(item.type || 'Categoría popular')}</p><a class="popular-section-btn" href="#${page}" data-page-link data-page="${page}">Ir</a></div></div>`;
         }).join('');
         grid.innerHTML = `<div class="popular-cascade-track">${cards}</div>`;
