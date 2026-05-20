@@ -5241,14 +5241,22 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       async function saveFactionConfigRemote(gameName = '') {
-        if (!supabaseClient || !gameName) return;
+        if (!supabaseClient || !gameName) return false;
         const config = getFactionConfig(gameName);
-        await supabaseClient.from('gold_game_options').upsert({
+        const payload = {
           game: gameName,
           faction_disabled: Boolean(config.disabled),
           faction_options: config.options || [],
           updated_at: new Date().toISOString()
-        });
+        };
+        const { error } = await supabaseClient
+          .from('gold_game_options')
+          .upsert(payload, { onConflict: 'game' });
+        if (error) {
+          showAdminNotice(`No se pudo guardar facciones en Supabase (${gameName}): ${friendlyError(error.message)}`, 'warn');
+          return false;
+        }
+        return true;
       }
 
       async function loadGoldGameOptionsFromSupabase() {
@@ -9560,31 +9568,34 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       }
 
       if (factionGameSelect) factionGameSelect.addEventListener('change', renderFactionOptionsAdmin);
-      if (disableFactionCheck) disableFactionCheck.addEventListener('change', () => {
-        const config = getFactionConfig(factionGameSelect.value);
+      if (disableFactionCheck) disableFactionCheck.addEventListener('change', async () => {
+        const gameName = factionGameSelect.value;
+        const config = getFactionConfig(gameName);
         config.disabled = disableFactionCheck.checked;
         saveFactionConfig();
-        saveFactionConfigRemote(factionGameSelect.value);
-        renderFactionGameSelect(factionGameSelect.value);
+        await saveFactionConfigRemote(gameName);
+        renderFactionGameSelect(gameName);
         renderFactionOptionsAdmin();
       });
-      if (addFactionOptionBtn) addFactionOptionBtn.addEventListener('click', () => {
+      if (addFactionOptionBtn) addFactionOptionBtn.addEventListener('click', async () => {
         const value = newFactionOption.value.trim();
         if (!value) return;
-        const config = getFactionConfig(factionGameSelect.value);
+        const gameName = factionGameSelect.value;
+        const config = getFactionConfig(gameName);
         config.options = [...new Set([...(config.options || []), value])];
         newFactionOption.value = '';
         saveFactionConfig();
-        saveFactionConfigRemote(factionGameSelect.value);
+        await saveFactionConfigRemote(gameName);
         renderFactionOptionsAdmin();
       });
-      if (factionOptionsList) factionOptionsList.addEventListener('click', (event) => {
+      if (factionOptionsList) factionOptionsList.addEventListener('click', async (event) => {
         const btn = event.target.closest('[data-remove-faction]');
         if (!btn) return;
-        const config = getFactionConfig(factionGameSelect.value);
+        const gameName = factionGameSelect.value;
+        const config = getFactionConfig(gameName);
         config.options.splice(Number(btn.dataset.removeFaction), 1);
         saveFactionConfig();
-        saveFactionConfigRemote(factionGameSelect.value);
+        await saveFactionConfigRemote(gameName);
         renderFactionOptionsAdmin();
       });
 
