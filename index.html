@@ -8169,21 +8169,27 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           adminMsg.style.color = '#ff9ea7';
           return;
         }
-        if (!supabaseClient) {
-          adminMsg.textContent = 'Supabase no configurado.';
-          adminMsg.style.color = '#ff9ea7';
-          return;
+
+        if (supabaseClient) {
+          const { error } = await supabaseClient.auth.signInWithPassword({
+            email: DEFAULT_ADMIN_EMAIL,
+            password: DEFAULT_ADMIN_PASSWORD
+          });
+          if (!error) {
+            adminMsg.textContent = '';
+            adminModal.classList.remove('show');
+            adminModal.setAttribute('aria-hidden', 'true');
+            configModal.classList.add('show');
+            configModal.setAttribute('aria-hidden', 'false');
+            activateAdminTab('tickets');
+            return;
+          }
+          console.warn('admin db auth failed, fallback to local admin panel:', error.message);
         }
-        const { error } = await supabaseClient.auth.signInWithPassword({
-          email: DEFAULT_ADMIN_EMAIL,
-          password: DEFAULT_ADMIN_PASSWORD
-        });
-        if (error) {
-          adminMsg.textContent = `No se pudo iniciar admin en base: ${friendlyError(error.message)}`;
-          adminMsg.style.color = '#ff9ea7';
-          return;
-        }
-        adminMsg.textContent = '';
+
+        adminPanelUnlocked = true;
+        adminMsg.textContent = 'Acceso admin local habilitado. Si deseas guardar en base, inicia sesión con una cuenta admin válida de Supabase.';
+        adminMsg.style.color = '#ffd39a';
         adminModal.classList.remove('show');
         adminModal.setAttribute('aria-hidden', 'true');
         configModal.classList.add('show');
