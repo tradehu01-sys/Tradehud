@@ -2794,7 +2794,7 @@
             <div id="accountsPanelList" class="accounts-grid" style="margin-top:.75rem;"></div>
           </div>
           <div id="boostingOptionsPanel" class="boosting-options-panel hidden">
-            <strong style="display:block;margin-bottom:.55rem;">Opciones de boosting</strong>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.55rem;"><strong style="display:block;">Opciones de boosting</strong><button id="boostingBackTopBtn" class="mini-btn" type="button">← Volver</button></div>
             <div id="boostingButtonsView" class="boosting-buttons">
               <button id="boostProfBtn" class="boosting-circle-btn" type="button"><img src="https://i.imgur.com/zw0daBf.png" alt="Profesiones" /></button>
               <button id="boostLevelBtn" class="boosting-circle-btn" type="button"><img src="https://i.imgur.com/WrbIQPl.png" alt="Leveleo de cuentas" /></button>
@@ -3773,6 +3773,7 @@
       const boostLevelBtn = document.getElementById('boostLevelBtn');
       const boostBackBtn = document.getElementById('boostBackBtn');
       const boostFormBackBottomBtn = document.getElementById('boostFormBackBottomBtn');
+      const boostingBackTopBtn = document.getElementById('boostingBackTopBtn');
       const accountsBackBottomBtn = document.getElementById('accountsBackBottomBtn');
       const boostLevelForm = document.getElementById('boostLevelForm');
       const boostCreateTicketBtn = document.getElementById('boostCreateTicketBtn');
@@ -6638,6 +6639,35 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           .filter((serviceKey) => !serviceRenderOrder.includes(serviceKey))
           .filter((serviceKey) => !(replaceGoldWithCustom && serviceKey === customServiceForReplacement))
           .forEach((serviceKey) => {
+            const normalized = String(serviceKey || '').toLowerCase();
+            if (normalized.includes('boost')) {
+              const button = document.createElement('button');
+              button.className = 'game-option boost';
+              button.type = 'button';
+              button.dataset.service = 'boosting';
+              button.innerHTML = `<img src="${serviceCatalog.boosting.image}" alt="Boosting" loading="lazy" referrerpolicy="no-referrer" /><span>boosting</span>`;
+              button.addEventListener('click', () => {
+                closeGoldOrderPanel();
+                closeAccountsPanel();
+                openBoostingOptionsPanel();
+              });
+              gameWindowOptions.appendChild(button);
+              return;
+            }
+            if (normalized.includes('cuenta') || normalized.includes('account')) {
+              const button = document.createElement('button');
+              button.className = 'game-option accounts';
+              button.type = 'button';
+              button.dataset.service = 'accounts';
+              button.innerHTML = `<img src="${serviceCatalog.accounts.image}" alt="Cuentas" loading="lazy" referrerpolicy="no-referrer" /><span>cuentas</span>`;
+              button.addEventListener('click', () => {
+                closeGoldOrderPanel();
+                openAccountsPanel(game);
+                closeBoostingOptionsPanel();
+              });
+              gameWindowOptions.appendChild(button);
+              return;
+            }
             const button = document.createElement('button');
             button.className = 'game-option boost';
             button.type = 'button';
@@ -8799,6 +8829,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         if (boostLevelForm) boostLevelForm.classList.add('hidden');
       }
       boostBackBtn?.addEventListener('click', backToBoostOptions);
+      boostingBackTopBtn?.addEventListener('click', closeBoostingOptionsPanel);
       boostFormBackBottomBtn?.addEventListener('click', backToBoostOptions);
       accountsBackBottomBtn?.addEventListener('click', closeAccountsPanel);
       boostServer?.addEventListener('change', () => { renderBoostPriceList(); updateBoostCalculation(); });
