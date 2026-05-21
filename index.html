@@ -6593,6 +6593,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         if (boostGame) boostGame.value = game.name;
         const rawServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
         const gameServices = [...new Set(rawServices.map((item) => String(item || '').toLowerCase().trim()).filter(Boolean))];
+        const hasUnknownServices = gameServices.some((service) => !['gold', 'boosting', 'accounts'].includes(service));
+        if (hasUnknownServices && !gameServices.includes('boosting')) gameServices.push('boosting');
+        if (hasUnknownServices && !gameServices.includes('accounts')) gameServices.push('accounts');
         const customMeta = customServiceMetaByGame[game.name] || null;
         const replaceGoldWithCustom = Boolean(customMeta?.replaceGold && gameServices.some((service) => !['boosting', 'accounts', 'gold'].includes(service)));
         gameWindowTitle.textContent = game.name;
