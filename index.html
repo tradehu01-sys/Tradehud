@@ -3269,9 +3269,9 @@
           <button id="closeAdmin" class="close-btn">✕</button>
         </div>
         <label for="adminUser">Usuario</label>
-        <input id="adminUser" type="text" placeholder="Usuario" />
+        <input id="adminUser" type="text" placeholder="Solo cuenta admin Supabase" />
         <label for="adminPass">Contraseña</label>
-        <input id="adminPass" type="password" placeholder="Contraseña" />
+        <input id="adminPass" type="password" placeholder="Usa login principal" />
         <button id="adminLogin" class="admin-login">Entrar</button>
         <div id="adminMsg" class="admin-msg"></div>
       </div>
@@ -7999,10 +7999,6 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       authLoginBtn.addEventListener('click', async () => {
         const loginEmail = authLoginEmail.value.trim().toLowerCase();
         const loginPassword = authLoginPassword.value;
-        if (loginEmail === DEFAULT_ADMIN_EMAIL && loginPassword === DEFAULT_ADMIN_PASSWORD) {
-          await loginLocalAdminAccount();
-          return;
-        }
         if (!supabaseClient) return;
         const { error } = await supabaseClient.auth.signInWithPassword({
           email: loginEmail,
@@ -8134,21 +8130,11 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       adminLogin.addEventListener('click', () => {
-        const user = document.getElementById('adminUser').value.trim();
-        const pass = document.getElementById('adminPass').value.trim();
-        if (user === 'admin' && pass === 'admin123') {
-          adminPanelUnlocked = true;
-          adminMsg.textContent = '';
-          adminMsg.style.color = '#8fffd8';
-          adminModal.classList.remove('show');
-          adminModal.setAttribute('aria-hidden', 'true');
-          configModal.classList.add('show');
-          configModal.setAttribute('aria-hidden', 'false');
-          activateAdminTab('tickets');
-        } else {
-          adminMsg.textContent = 'Credenciales incorrectas.';
-          adminMsg.style.color = '#ff9ea7';
-        }
+        adminMsg.textContent = 'Acceso local desactivado. Inicia sesión con tu cuenta admin de Supabase para guardar cambios en base de datos.';
+        adminMsg.style.color = '#ffd39a';
+        adminModal.classList.remove('show');
+        adminModal.setAttribute('aria-hidden', 'true');
+        openAuth('login');
       });
 
       closeConfig.addEventListener('click', () => {
