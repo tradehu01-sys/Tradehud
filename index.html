@@ -6743,8 +6743,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function navigateBackToCategories(parentPage = activeDetailParentPage || 'oro') {
-        if (history.state?.tradehudDetail) history.back();
-        else returnToParentPage(parentPage);
+        returnToParentPage(parentPage);
+        const hashMap = { oro: '#oro', streaming: '#streaming', giftcards: '#giftcards', p2p: '#p2p', 'vendemos-oro': '#vender', inicio: '#inicio' };
+        const targetHash = hashMap[parentPage] || '#inicio';
+        if (location.hash !== targetHash) history.replaceState({}, '', targetHash);
       }
 
       function openDigitalOrderPage(parentPage = activeMarketType || 'streaming') {
@@ -8860,6 +8862,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         streamingModal?.setAttribute('aria-hidden', 'true');
         digitalHistoryOpen = false;
         showPage(parent);
+        const hashMap = { streaming: '#streaming', giftcards: '#giftcards', p2p: '#p2p' };
+        const targetHash = hashMap[parent] || '#streaming';
+        if (location.hash !== targetHash) history.replaceState({}, '', targetHash);
       }
       closeStreamingModal?.addEventListener('click', closeStreamingOrderModal);
       streamingBottomBackBtn?.addEventListener('click', closeStreamingOrderModal);
