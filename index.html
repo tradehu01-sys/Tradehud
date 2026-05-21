@@ -6407,6 +6407,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         await getPresenceSnapshot([currentUser.id]);
         await openProfileDrawer('orders');
         await renderUserOrders();
+        await renderTicketMessages(ticketId, profileDrawer);
         await renderAdminTickets(adminTicketsList);
         await renderAdminTickets(profileAdminTicketsList);
         showAuthNotice(successMessage);
@@ -6658,6 +6659,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       function showPage(page, targetId = '') {
         if (!page) return;
         if (['streaming', 'giftcards', 'p2p'].includes(page)) setActiveMarketType(page);
+        const pageHashMap = { inicio: '#inicio', oro: '#oro', 'vendemos-oro': '#vender', streaming: '#streaming', giftcards: '#giftcards', p2p: '#p2p', legal: '#legal' };
+        if (!targetId && !history.state?.tradehudDetail) {
+          const nextHash = pageHashMap[page] || `#${page}`;
+          if (location.hash !== nextHash) history.replaceState(history.state || {}, '', nextHash);
+        }
         if (page !== 'game-detail') {
           gameWindowModal?.classList.remove('show');
           gameWindowModal?.setAttribute('aria-hidden', 'true');
@@ -7701,6 +7707,13 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       }
       initializeApp();
       startTicketAutoRefresh();
+
+      (function bootPageFromHash(){
+        const hash = (location.hash || '').replace('#','').trim().toLowerCase();
+        const map = { inicio:'inicio', oro:'oro', vender:'vendemos-oro', streaming:'streaming', giftcards:'giftcards', p2p:'p2p' };
+        const targetPage = map[hash];
+        if (targetPage) setTimeout(() => showPage(targetPage), 260);
+      })();
 
       pageLinks.forEach((link) => {
         link.addEventListener('click', (e) => {
