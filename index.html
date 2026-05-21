@@ -8890,7 +8890,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       giftcardsSearch?.addEventListener('input', renderGiftcardsSection);
       p2pSearch?.addEventListener('input', renderP2PSection);
       function closeStreamingOrderModal() {
-        navigateBackToCategories(activeDetailParentPage || activeMarketType || 'streaming');
+        const parent = activeDetailParentPage || activeMarketType || 'streaming';
+        returnToParentPage(parent);
       }
       closeStreamingModal?.addEventListener('click', closeStreamingOrderModal);
       streamingBottomBackBtn?.addEventListener('click', closeStreamingOrderModal);
