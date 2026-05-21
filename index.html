@@ -6402,29 +6402,45 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           status: 'pendiente',
           created_at: new Date().toISOString()
         };
+
+        const localTicket = { ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline };
         trackPopularOrder(ticketPayload);
-        saveLocalTicket({ ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline });
-        await getPresenceSnapshot([currentUser.id]);
-        await openProfileDrawer('orders');
-        await renderUserOrders();
-        await renderTicketMessages(ticketId, profileDrawer);
-        await renderAdminTickets(adminTicketsList);
-        await renderAdminTickets(profileAdminTicketsList);
+        saveLocalTicket(localTicket);
         showAuthNotice(successMessage);
+
+        try {
+          await getPresenceSnapshot([currentUser.id]);
+          await openProfileDrawer('orders');
+          await renderUserOrders();
+          await renderTicketMessages(ticketId, profileDrawer);
+          await renderAdminTickets(adminTicketsList);
+          await renderAdminTickets(profileAdminTicketsList);
+        } catch (uiError) {
+          console.warn('ticket optimistic render failed', uiError);
+        }
+
         if (!supabaseClient) {
           showAuthNotice('✅ Orden creada en respaldo local. Conecta Supabase para sincronizarla entre dispositivos.', 'warn');
           return true;
         }
-        const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
-        if (error) {
-          showAuthNotice(`✅ Orden visible en tu perfil. No se pudo sincronizar aún: ${friendlyError(error.message)}`, 'warn');
-          return true;
-        }
-        saveLocalTicket({ ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline, synced: true });
-        await renderUserOrders();
-        await renderAdminTickets(adminTicketsList);
-        await renderAdminTickets(profileAdminTicketsList);
-        await renderTicketMessages(ticketId, profileDrawer);
+
+        (async () => {
+          const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
+          if (error) {
+            showAuthNotice(`✅ Orden local creada. No se pudo sincronizar aún: ${friendlyError(error.message)}`, 'warn');
+            return;
+          }
+          saveLocalTicket({ ...localTicket, synced: true });
+          try {
+            await renderUserOrders();
+            await renderAdminTickets(adminTicketsList);
+            await renderAdminTickets(profileAdminTicketsList);
+            await renderTicketMessages(ticketId, profileDrawer);
+          } catch (syncUiError) {
+            console.warn('ticket synced render failed', syncUiError);
+          }
+        })();
+
         return true;
       }
 
