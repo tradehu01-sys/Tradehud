@@ -3269,9 +3269,9 @@
           <button id="closeAdmin" class="close-btn">✕</button>
         </div>
         <label for="adminUser">Usuario</label>
-        <input id="adminUser" type="text" placeholder="Solo cuenta admin Supabase" />
+        <input id="adminUser" type="text" placeholder="Usuario" />
         <label for="adminPass">Contraseña</label>
-        <input id="adminPass" type="password" placeholder="Usa login principal" />
+        <input id="adminPass" type="password" placeholder="Contraseña" />
         <button id="adminLogin" class="admin-login">Entrar</button>
         <div id="adminMsg" class="admin-msg"></div>
       </div>
@@ -6635,10 +6635,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const customServiceForReplacement = replaceGoldWithCustom
           ? gameServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service))
           : null;
+        const allowCustomUnknownServices = Boolean(customMeta?.enabled) || !gameServices.some((key) => ['gold','boosting','accounts'].includes(key));
         gameServices
           .filter((serviceKey) => !serviceRenderOrder.includes(serviceKey))
           .filter((serviceKey) => !(replaceGoldWithCustom && serviceKey === customServiceForReplacement))
           .forEach((serviceKey) => {
+            if (!allowCustomUnknownServices) return;
             const normalized = String(serviceKey || '').toLowerCase();
             if (normalized.includes('boost')) {
               const button = document.createElement('button');
@@ -8159,12 +8161,34 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         }
       });
 
-      adminLogin.addEventListener('click', () => {
-        adminMsg.textContent = 'Acceso local desactivado. Inicia sesión con tu cuenta admin de Supabase para guardar cambios en base de datos.';
-        adminMsg.style.color = '#ffd39a';
+      adminLogin.addEventListener('click', async () => {
+        const user = document.getElementById('adminUser').value.trim();
+        const pass = document.getElementById('adminPass').value.trim();
+        if (user !== 'admin' || pass !== 'admin123') {
+          adminMsg.textContent = 'Credenciales incorrectas.';
+          adminMsg.style.color = '#ff9ea7';
+          return;
+        }
+        if (!supabaseClient) {
+          adminMsg.textContent = 'Supabase no configurado.';
+          adminMsg.style.color = '#ff9ea7';
+          return;
+        }
+        const { error } = await supabaseClient.auth.signInWithPassword({
+          email: DEFAULT_ADMIN_EMAIL,
+          password: DEFAULT_ADMIN_PASSWORD
+        });
+        if (error) {
+          adminMsg.textContent = `No se pudo iniciar admin en base: ${friendlyError(error.message)}`;
+          adminMsg.style.color = '#ff9ea7';
+          return;
+        }
+        adminMsg.textContent = '';
         adminModal.classList.remove('show');
         adminModal.setAttribute('aria-hidden', 'true');
-        openAuth('login');
+        configModal.classList.add('show');
+        configModal.setAttribute('aria-hidden', 'false');
+        activateAdminTab('tickets');
       });
 
       closeConfig.addEventListener('click', () => {
