@@ -6595,7 +6595,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         if (!game) return;
         activeOrderGame = game;
         if (boostGame) boostGame.value = game.name;
-        const rawServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
+        const rawServices = Array.isArray(game.services) ? game.services : defaultServices;
         const gameServices = [...new Set(rawServices.map((item) => String(item || '').toLowerCase().trim()).filter(Boolean))];
         const hasUnknownServices = gameServices.some((service) => !['gold', 'boosting', 'accounts'].includes(service));
         if (hasUnknownServices && !gameServices.includes('boosting')) gameServices.push('boosting');
@@ -7358,7 +7358,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         const i = selectedAdminIndex;
         const game = games[i];
         if (!game) return;
-        const selectedServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
+        const selectedServices = Array.isArray(game.services) ? game.services : defaultServices;
         juegoNombre.value = game.name;
         juegoImagen.value = game.icon;
         juegoDescripcion.value = game.description || '';
@@ -7398,7 +7398,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         if (serviceGold.checked) services.push('gold');
         if (customServiceEnabled.checked && customServiceInput.value.trim()) services.push(customServiceInput.value.trim().toLowerCase());
         const unique = [...new Set(services.map((item) => String(item || '').toLowerCase().trim()).filter(Boolean))];
-        return unique.length ? unique : [...defaultServices];
+        return unique;
       }
 
       function updateGamePreview() {
@@ -7594,7 +7594,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
                 const customName = String(row.custom_service_name).trim().toLowerCase();
                 if (customName && !clean.includes(customName)) clean.push(customName);
               }
-              return clean.length ? clean : [...defaultServices];
+              return Array.isArray(row.services) ? clean : [...defaultServices];
             })()
           })));
           games.splice(0, games.length, ...uniqueGames);
