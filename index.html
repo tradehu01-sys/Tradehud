@@ -5227,6 +5227,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let selectedMarketCategory = '';
       let dbConnectionNoticeShown = false;
       let goldCategoriesSupportsImageColumn = true;
+      let ticketRealtimeChannel = null;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
       const factionOptionsByGame = JSON.parse(localStorage.getItem('tradehud_faction_options') || '{}');
 
@@ -5270,6 +5271,32 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           };
         });
         saveFactionConfig();
+      }
+
+
+      async function refreshTicketUisNow() {
+        try {
+          if (currentUser) await renderUserOrders();
+          await renderAdminTickets(adminTicketsList);
+          await renderAdminTickets(profileAdminTicketsList);
+        } catch (e) {
+          console.warn('refreshTicketUisNow failed', e);
+        }
+      }
+
+      function setupTicketRealtime() {
+        if (!supabaseClient || ticketRealtimeChannel) return;
+        ticketRealtimeChannel = supabaseClient
+          .channel('tradehud-live-tickets')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => {
+            refreshTicketUisNow();
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'ticket_messages' }, () => {
+            refreshTicketUisNow();
+          })
+          .subscribe((status) => {
+            if (status === 'SUBSCRIBED') console.log('ticket realtime active');
+          });
       }
 
       function isAdminUser(user, profile = null) {
@@ -7669,6 +7696,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           try { loadSelectedGame(); } catch (e) { console.warn('loadSelectedGame failed', e); }
           try { await loadMarketCatalogFromSupabase(); } catch (e) { console.warn('loadMarketCatalogFromSupabase failed', e); }
           try { await loadGoldGameOptionsFromSupabase(); } catch (e) { console.warn('loadGoldGameOptionsFromSupabase failed', e); }
+          try { setupTicketRealtime(); } catch (e) { console.warn('setupTicketRealtime failed', e); }
           try { renderStreamingSection(); } catch (e) { console.warn('renderStreamingSection failed', e); }
           try { renderGiftcardsSection(); } catch (e) { console.warn('renderGiftcardsSection failed', e); }
           try { renderPopularCascade(); } catch (e) { console.warn('renderPopularCascade failed', e); }
