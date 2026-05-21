@@ -5256,7 +5256,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           .from('gold_game_options')
           .upsert(payload, { onConflict: 'game' });
         if (error) {
-          showAdminNotice(`No se pudo guardar facciones en Supabase (${gameName}): ${friendlyError(error.message)}`, 'warn');
+          if (adminPanelUnlocked || configModal?.classList.contains('show')) {
+            showAdminNotice(`No se pudo guardar facciones en Supabase (${gameName}): ${friendlyError(error.message)}`, 'warn');
+          } else {
+            console.warn('saveFactionConfigRemote failed:', gameName, error.message);
+          }
           return false;
         }
         return true;
@@ -6638,54 +6642,6 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const customServiceForReplacement = replaceGoldWithCustom
           ? gameServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service))
           : null;
-        const allowCustomUnknownServices = Boolean(customMeta?.enabled) || !gameServices.some((key) => ['gold','boosting','accounts'].includes(key));
-        gameServices
-          .filter((serviceKey) => !serviceRenderOrder.includes(serviceKey))
-          .filter((serviceKey) => !(replaceGoldWithCustom && serviceKey === customServiceForReplacement))
-          .forEach((serviceKey) => {
-            if (!allowCustomUnknownServices) return;
-            const normalized = String(serviceKey || '').toLowerCase();
-            if (normalized.includes('boost')) {
-              const button = document.createElement('button');
-              button.className = 'game-option boost';
-              button.type = 'button';
-              button.dataset.service = 'boosting';
-              button.innerHTML = `<img src="${serviceCatalog.boosting.image}" alt="Boosting" loading="lazy" referrerpolicy="no-referrer" /><span>boosting</span>`;
-              button.addEventListener('click', () => {
-                closeGoldOrderPanel();
-                closeAccountsPanel();
-                openBoostingOptionsPanel();
-              });
-              gameWindowOptions.appendChild(button);
-              return;
-            }
-            if (normalized.includes('cuenta') || normalized.includes('account')) {
-              const button = document.createElement('button');
-              button.className = 'game-option accounts';
-              button.type = 'button';
-              button.dataset.service = 'accounts';
-              button.innerHTML = `<img src="${serviceCatalog.accounts.image}" alt="Cuentas" loading="lazy" referrerpolicy="no-referrer" /><span>cuentas</span>`;
-              button.addEventListener('click', () => {
-                closeGoldOrderPanel();
-                openAccountsPanel(game);
-                closeBoostingOptionsPanel();
-              });
-              gameWindowOptions.appendChild(button);
-              return;
-            }
-            const button = document.createElement('button');
-            button.className = 'game-option boost';
-            button.type = 'button';
-            button.dataset.service = serviceKey;
-            const onlyImage = Boolean(customMeta?.hideName);
-            button.innerHTML = `<img src="${customMeta?.image || 'https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1200&auto=format&fit=crop'}" alt="${serviceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${serviceKey}</span>`}`;
-            button.addEventListener('click', () => {
-              closeGoldOrderPanel();
-              closeAccountsPanel();
-              closeBoostingOptionsPanel();
-            });
-            gameWindowOptions.appendChild(button);
-          });
         if (replaceGoldWithCustom) {
           const customServiceKey = customServiceForReplacement;
           if (customServiceKey) {
@@ -8900,7 +8856,10 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       p2pSearch?.addEventListener('input', renderP2PSection);
       function closeStreamingOrderModal() {
         const parent = activeDetailParentPage || activeMarketType || 'streaming';
-        returnToParentPage(parent);
+        streamingModal?.classList.remove('show');
+        streamingModal?.setAttribute('aria-hidden', 'true');
+        digitalHistoryOpen = false;
+        showPage(parent);
       }
       closeStreamingModal?.addEventListener('click', closeStreamingOrderModal);
       streamingBottomBackBtn?.addEventListener('click', closeStreamingOrderModal);
