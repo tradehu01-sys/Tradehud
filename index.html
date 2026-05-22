@@ -6431,13 +6431,18 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           return false;
         }
         if (ticketCreationInFlight) {
-          showAuthNotice('⏳ Ya estamos creando tu ticket. Espera unos segundos.', 'warn');
+          showAuthNotice('⏳ Ya estamos creando tu ticket. Espera unos segundos.', 'warn', 10000);
           return false;
         }
+
         ticketCreationInFlight = true;
         const createButtons = [...document.querySelectorAll('.create-order-btn')];
-        createButtons.forEach((btn) => { btn.disabled = true; btn.dataset.prevLabel = btn.innerHTML; btn.innerHTML = '<span class="btn-icon">⏳</span>CREANDO...'; });
-          showAuthNotice('⏳ Creando ticket, por favor espera...', 'warn', 12000);
+        createButtons.forEach((btn) => {
+          btn.disabled = true;
+          btn.dataset.prevLabel = btn.innerHTML;
+          btn.innerHTML = '<span class="btn-icon">⏳</span>CREANDO...';
+        });
+
         try {
           const ticketId = window.crypto?.randomUUID?.() || `ticket-${Date.now()}-${Math.random().toString(16).slice(2)}`;
           const ticketPayload = {
@@ -6456,50 +6461,46 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const localTicket = { ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline };
           trackPopularOrder(ticketPayload);
           saveLocalTicket(localTicket);
-          showAuthNotice(successMessage);
 
-          try {
-            await getPresenceSnapshot([currentUser.id]);
-            await openProfileDrawer('orders');
-            await renderUserOrders();
-            await renderTicketMessages(ticketId, profileDrawer);
-            if (isAdminSession()) {
-              await renderAdminTickets(adminTicketsList);
-              await renderAdminTickets(profileAdminTicketsList);
-            }
-          } catch (uiError) {
-            console.warn('ticket optimistic render failed', uiError);
-          }
+          await getPresenceSnapshot([currentUser.id]);
+          await openProfileDrawer('orders');
+          await renderUserOrders();
+          await renderTicketMessages(ticketId, profileDrawer);
 
           if (!supabaseClient) {
-            showAuthNotice('✅ Orden creada en respaldo local. Conecta Supabase para sincronizarla entre dispositivos.', 'warn');
+            showAuthNotice('✅ Ticket creado en modo local (sin Supabase).', 'warn', 10000);
             return true;
           }
 
-          (async () => {
-            const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
-            if (error) {
-              showAuthNotice(`✅ Orden local creada. No se pudo sincronizar aún: ${friendlyError(error.message)}`, 'warn');
-              return;
-            }
-            saveLocalTicket({ ...localTicket, synced: true });
-            try {
-              await renderUserOrders();
-              if (isAdminSession()) {
-                await renderAdminTickets(adminTicketsList);
-                await renderAdminTickets(profileAdminTicketsList);
-              }
-              await renderTicketMessages(ticketId, profileDrawer);
-            } catch (syncUiError) {
-              console.warn('ticket synced render failed', syncUiError);
-            }
-          })();
+          const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
+          if (error) {
+            showAuthNotice(`⚠️ Ticket guardado localmente. Falló sincronización: ${friendlyError(error.message)}`, 'warn', 12000);
+            return true;
+          }
 
+          saveLocalTicket({ ...localTicket, synced: true });
+          await renderUserOrders();
+          await renderTicketMessages(ticketId, profileDrawer);
+          if (isAdminSession()) {
+            await renderAdminTickets(adminTicketsList);
+            await renderAdminTickets(profileAdminTicketsList);
+          }
+          showAuthNotice(successMessage, 'info', 10000);
           return true;
+        } catch (error) {
+          console.warn('saveTicketToProfile failed', error);
+          showAuthNotice(`No se pudo crear el ticket: ${friendlyError(error?.message || '')}`, 'warn', 12000);
+          return false;
         } finally {
           ticketCreationInFlight = false;
           const createButtonsUnlock = [...document.querySelectorAll('.create-order-btn')];
-          createButtonsUnlock.forEach((btn) => { btn.disabled = false; if (btn.dataset.prevLabel) { btn.innerHTML = btn.dataset.prevLabel; delete btn.dataset.prevLabel; } });
+          createButtonsUnlock.forEach((btn) => {
+            btn.disabled = false;
+            if (btn.dataset.prevLabel) {
+              btn.innerHTML = btn.dataset.prevLabel;
+              delete btn.dataset.prevLabel;
+            }
+          });
         }
       }
 
