@@ -6037,6 +6037,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       const LOCAL_TICKETS_KEY = 'tradehud_ticket_mirror';
+      let ticketCreationInFlight = false;
+
       const LOCAL_TICKET_MESSAGES_KEY = 'tradehud_ticket_message_mirror';
 
       function readLocalJson(key, fallback) {
@@ -6421,6 +6423,13 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           showAuthNotice('Debes iniciar sesión para crear una orden.', 'warn');
           return false;
         }
+        if (ticketCreationInFlight) {
+          showAuthNotice('⏳ Ya estamos creando tu ticket. Espera unos segundos.', 'warn');
+          return false;
+        }
+        ticketCreationInFlight = true;
+        const createButtons = [...document.querySelectorAll('.create-order-btn')];
+        createButtons.forEach((btn) => { btn.disabled = true; btn.dataset.prevLabel = btn.textContent || ''; });
         const ticketId = window.crypto?.randomUUID?.() || `ticket-${Date.now()}-${Math.random().toString(16).slice(2)}`;
         const ticketPayload = {
           id: ticketId,
@@ -6478,6 +6487,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         })();
 
         return true;
+      } finally {
+        ticketCreationInFlight = false;
+        const createButtons = [...document.querySelectorAll('.create-order-btn')];
+        createButtons.forEach((btn) => { btn.disabled = false; });
       }
 
 
