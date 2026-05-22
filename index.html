@@ -6429,68 +6429,70 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
         ticketCreationInFlight = true;
         const createButtons = [...document.querySelectorAll('.create-order-btn')];
-        createButtons.forEach((btn) => { btn.disabled = true; btn.dataset.prevLabel = btn.textContent || ''; });
-        const ticketId = window.crypto?.randomUUID?.() || `ticket-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-        const ticketPayload = {
-          id: ticketId,
-          user_id: currentUser.id,
-          game: payload.game || 'Orden TradeHub',
-          server: payload.server || '',
-          product: payload.product || '',
-          faction: payload.faction || '',
-          character: payload.character || '',
-          delivery: payload.delivery || '',
-          status: 'pendiente',
-          created_at: new Date().toISOString()
-        };
-
-        const localTicket = { ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline };
-        trackPopularOrder(ticketPayload);
-        saveLocalTicket(localTicket);
-        showAuthNotice(successMessage);
-
+        createButtons.forEach((btn) => { btn.disabled = true; });
         try {
-          await getPresenceSnapshot([currentUser.id]);
-          await openProfileDrawer('orders');
-          await renderUserOrders();
-          await renderTicketMessages(ticketId, profileDrawer);
-          if (isAdminSession()) {
-            await renderAdminTickets(adminTicketsList);
-            await renderAdminTickets(profileAdminTicketsList);
-          }
-        } catch (uiError) {
-          console.warn('ticket optimistic render failed', uiError);
-        }
+          const ticketId = window.crypto?.randomUUID?.() || `ticket-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+          const ticketPayload = {
+            id: ticketId,
+            user_id: currentUser.id,
+            game: payload.game || 'Orden TradeHub',
+            server: payload.server || '',
+            product: payload.product || '',
+            faction: payload.faction || '',
+            character: payload.character || '',
+            delivery: payload.delivery || '',
+            status: 'pendiente',
+            created_at: new Date().toISOString()
+          };
 
-        if (!supabaseClient) {
-          showAuthNotice('✅ Orden creada en respaldo local. Conecta Supabase para sincronizarla entre dispositivos.', 'warn');
-          return true;
-        }
+          const localTicket = { ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline };
+          trackPopularOrder(ticketPayload);
+          saveLocalTicket(localTicket);
+          showAuthNotice(successMessage);
 
-        (async () => {
-          const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
-          if (error) {
-            showAuthNotice(`✅ Orden local creada. No se pudo sincronizar aún: ${friendlyError(error.message)}`, 'warn');
-            return;
-          }
-          saveLocalTicket({ ...localTicket, synced: true });
           try {
+            await getPresenceSnapshot([currentUser.id]);
+            await openProfileDrawer('orders');
             await renderUserOrders();
+            await renderTicketMessages(ticketId, profileDrawer);
             if (isAdminSession()) {
               await renderAdminTickets(adminTicketsList);
               await renderAdminTickets(profileAdminTicketsList);
             }
-            await renderTicketMessages(ticketId, profileDrawer);
-          } catch (syncUiError) {
-            console.warn('ticket synced render failed', syncUiError);
+          } catch (uiError) {
+            console.warn('ticket optimistic render failed', uiError);
           }
-        })();
 
-        return true;
-      } finally {
-        ticketCreationInFlight = false;
-        const createButtons = [...document.querySelectorAll('.create-order-btn')];
-        createButtons.forEach((btn) => { btn.disabled = false; });
+          if (!supabaseClient) {
+            showAuthNotice('✅ Orden creada en respaldo local. Conecta Supabase para sincronizarla entre dispositivos.', 'warn');
+            return true;
+          }
+
+          (async () => {
+            const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
+            if (error) {
+              showAuthNotice(`✅ Orden local creada. No se pudo sincronizar aún: ${friendlyError(error.message)}`, 'warn');
+              return;
+            }
+            saveLocalTicket({ ...localTicket, synced: true });
+            try {
+              await renderUserOrders();
+              if (isAdminSession()) {
+                await renderAdminTickets(adminTicketsList);
+                await renderAdminTickets(profileAdminTicketsList);
+              }
+              await renderTicketMessages(ticketId, profileDrawer);
+            } catch (syncUiError) {
+              console.warn('ticket synced render failed', syncUiError);
+            }
+          })();
+
+          return true;
+        } finally {
+          ticketCreationInFlight = false;
+          const createButtonsUnlock = [...document.querySelectorAll('.create-order-btn')];
+          createButtonsUnlock.forEach((btn) => { btn.disabled = false; });
+        }
       }
 
 
