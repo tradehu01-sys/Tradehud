@@ -5229,6 +5229,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let dbConnectionNoticeShown = false;
       let goldCategoriesSupportsImageColumn = true;
       let ticketRealtimeChannel = null;
+      let ticketRefreshInFlight = false;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
       const factionOptionsByGame = JSON.parse(localStorage.getItem('tradehud_faction_options') || '{}');
 
@@ -5280,12 +5281,18 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
 
       async function refreshTicketUisNow() {
+        if (ticketRefreshInFlight) return;
+        ticketRefreshInFlight = true;
         try {
           if (currentUser) await renderUserOrders();
-          await renderAdminTickets(adminTicketsList);
-          await renderAdminTickets(profileAdminTicketsList);
+          if (isAdminSession()) {
+            await renderAdminTickets(adminTicketsList);
+            await renderAdminTickets(profileAdminTicketsList);
+          }
         } catch (e) {
           console.warn('refreshTicketUisNow failed', e);
+        } finally {
+          ticketRefreshInFlight = false;
         }
       }
 
@@ -5840,14 +5847,14 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         authModal.setAttribute('aria-hidden', 'false');
       }
 
-      function showAuthNotice(message, kind = 'info') {
+      function showAuthNotice(message, kind = 'info', durationMs = 7200) {
         authNotice.textContent = message;
         authNotice.classList.add('show');
         authNotice.classList.toggle('warn', kind === 'warn');
         clearTimeout(showAuthNotice._timer);
         showAuthNotice._timer = setTimeout(() => {
           authNotice.classList.remove('show');
-        }, 7200);
+        }, Math.max(1200, Number(durationMs) || 7200));
       }
 
       function isEmailRateLimitError(message = '') {
@@ -6429,7 +6436,8 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
         ticketCreationInFlight = true;
         const createButtons = [...document.querySelectorAll('.create-order-btn')];
-        createButtons.forEach((btn) => { btn.disabled = true; });
+        createButtons.forEach((btn) => { btn.disabled = true; btn.dataset.prevLabel = btn.innerHTML; btn.innerHTML = '<span class="btn-icon">⏳</span>CREANDO...'; });
+          showAuthNotice('⏳ Creando ticket, por favor espera...', 'warn', 12000);
         try {
           const ticketId = window.crypto?.randomUUID?.() || `ticket-${Date.now()}-${Math.random().toString(16).slice(2)}`;
           const ticketPayload = {
@@ -6491,7 +6499,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         } finally {
           ticketCreationInFlight = false;
           const createButtonsUnlock = [...document.querySelectorAll('.create-order-btn')];
-          createButtonsUnlock.forEach((btn) => { btn.disabled = false; });
+          createButtonsUnlock.forEach((btn) => { btn.disabled = false; if (btn.dataset.prevLabel) { btn.innerHTML = btn.dataset.prevLabel; delete btn.dataset.prevLabel; } });
         }
       }
 
