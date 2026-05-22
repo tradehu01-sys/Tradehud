@@ -1,8 +1,9 @@
 -- Patch pequeño: habilitar guardado de facciones/opciones por juego desde panel admin web (modo anon).
 -- Fecha: 2026-05-21
 -- Ejecutar en Supabase SQL Editor.
+-- IMPORTANTE: pega el script en texto plano, sin traducción automática del navegador (Google Translate puede cambiar keywords SQL).
+-- Si ves "comenzar;" en lugar de "begin;", hubo traducción automática; este patch ya no requiere BEGIN/COMMIT.
 
-begin;
 
 create table if not exists public.gold_game_options (
   game text primary key,
@@ -54,4 +55,3 @@ grant select on public.gold_game_options to anon;
 grant select, insert, update, delete on public.gold_game_options to authenticated;
 grant insert, update, delete on public.gold_game_options to anon;
 
-commit;
