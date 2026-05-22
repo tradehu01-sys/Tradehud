@@ -6445,8 +6445,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           await openProfileDrawer('orders');
           await renderUserOrders();
           await renderTicketMessages(ticketId, profileDrawer);
-          await renderAdminTickets(adminTicketsList);
-          await renderAdminTickets(profileAdminTicketsList);
+          if (isAdminSession()) {
+            await renderAdminTickets(adminTicketsList);
+            await renderAdminTickets(profileAdminTicketsList);
+          }
         } catch (uiError) {
           console.warn('ticket optimistic render failed', uiError);
         }
@@ -6465,8 +6467,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           saveLocalTicket({ ...localTicket, synced: true });
           try {
             await renderUserOrders();
-            await renderAdminTickets(adminTicketsList);
-            await renderAdminTickets(profileAdminTicketsList);
+            if (isAdminSession()) {
+              await renderAdminTickets(adminTicketsList);
+              await renderAdminTickets(profileAdminTicketsList);
+            }
             await renderTicketMessages(ticketId, profileDrawer);
           } catch (syncUiError) {
             console.warn('ticket synced render failed', syncUiError);
