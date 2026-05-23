@@ -6438,6 +6438,15 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
       }
 
+      async function safeUiAwait(taskPromise, ms = 3500, label = 'UI task') {
+        try {
+          return await withTimeout(taskPromise, ms, `${label} tardó demasiado`);
+        } catch (error) {
+          console.warn(`${label} skipped after timeout/error`, error);
+          return null;
+        }
+      }
+
       async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
         if (!currentUser) {
           openAuth('login');
@@ -6476,10 +6485,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           trackPopularOrder(ticketPayload);
           saveLocalTicket(localTicket);
 
-          await getPresenceSnapshot([currentUser.id]);
-          await openProfileDrawer('orders');
-          await renderUserOrders();
-          await renderTicketMessages(ticketId, profileDrawer);
+          await safeUiAwait(getPresenceSnapshot([currentUser.id]), 2500, 'Presence snapshot');
+          await safeUiAwait(openProfileDrawer('orders'), 4000, 'Open profile drawer');
+          await safeUiAwait(renderUserOrders(), 4000, 'Render user orders');
+          await safeUiAwait(renderTicketMessages(ticketId, profileDrawer), 3000, 'Render ticket messages');
 
           if (!supabaseClient) {
             showAuthNotice('✅ Ticket creado en modo local (sin Supabase).', 'warn', 10000);
@@ -6497,11 +6506,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           }
 
           saveLocalTicket({ ...localTicket, synced: true });
-          await renderUserOrders();
-          await renderTicketMessages(ticketId, profileDrawer);
+          await safeUiAwait(renderUserOrders(), 4000, 'Render user orders sync');
+          await safeUiAwait(renderTicketMessages(ticketId, profileDrawer), 3000, 'Render ticket messages sync');
           if (isAdminSession()) {
-            await renderAdminTickets(adminTicketsList);
-            await renderAdminTickets(profileAdminTicketsList);
+            await safeUiAwait(renderAdminTickets(adminTicketsList), 4000, 'Render admin tickets main');
+            await safeUiAwait(renderAdminTickets(profileAdminTicketsList), 4000, 'Render admin tickets profile');
           }
           showAuthNotice(successMessage, 'info', 10000);
           return true;
