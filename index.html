@@ -6424,6 +6424,20 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         });
       }
 
+      async function withTimeout(promise, ms = 8000, timeoutMessage = 'Tiempo de espera agotado') {
+        let timer;
+        try {
+          return await Promise.race([
+            promise,
+            new Promise((_, reject) => {
+              timer = setTimeout(() => reject(new Error(timeoutMessage)), ms);
+            })
+          ]);
+        } finally {
+          if (timer) clearTimeout(timer);
+        }
+      }
+
       async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
         if (!currentUser) {
           openAuth('login');
@@ -6472,7 +6486,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             return true;
           }
 
-          const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
+          const { error } = await withTimeout(
+            supabaseClient.from('tickets').insert(ticketPayload),
+            9000,
+            'Supabase tardó demasiado en responder'
+          );
           if (error) {
             showAuthNotice(`⚠️ Ticket guardado localmente. Falló sincronización: ${friendlyError(error.message)}`, 'warn', 12000);
             return true;
