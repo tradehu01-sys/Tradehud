@@ -6102,7 +6102,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function isAdminSession() {
-        return adminPanelUnlocked || isAdminUser(currentUser, currentProfile);
+        return isAdminUser(currentUser, currentProfile) || (adminPanelUnlocked && currentUser?.id === LOCAL_ADMIN_ID);
       }
 
       function getAdminTicketClient() {
@@ -7768,6 +7768,10 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
                 profileNameTop.textContent = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil';
                 profileEmailTop.textContent = currentUser.email || '';
                 await loadUserProfile();
+                const dbAdmin = Boolean(currentProfile?.is_admin);
+                const localAdminUser = currentUser?.id === LOCAL_ADMIN_ID;
+                if (!dbAdmin && !localAdminUser) adminPanelUnlocked = false;
+                updateProfileAdminUi();
                 await updatePresence(true);
                 if (isAdminSession()) await renderAdminTickets(profileAdminTicketsList);
                 await renderUserOrders();
