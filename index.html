@@ -6055,6 +6055,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       const inMemoryTickets = [];
+      const pendingUserTickets = new Map();
       let ticketCreationInFlight = false;
 
       const inMemoryTicketMessages = {};
@@ -6508,6 +6509,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           };
 
           const localTicket = { ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline };
+          pendingUserTickets.set(ticketId, localTicket);
           trackPopularOrder(ticketPayload);
           saveLocalTicket(localTicket);
           saveSessionTicket(localTicket);
@@ -6532,8 +6534,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             return true;
           }
 
-          saveLocalTicket({ ...localTicket, synced: true });
-          saveSessionTicket({ ...localTicket, synced: true });
+          const syncedTicket = { ...localTicket, synced: true };
+          pendingUserTickets.set(ticketId, syncedTicket);
+          saveLocalTicket(syncedTicket);
+          saveSessionTicket(syncedTicket);
           await safeUiAwait(renderUserOrders(), 4000, 'Render user orders sync');
           await safeUiAwait(renderTicketMessages(ticketId, profileDrawer), 3000, 'Render ticket messages sync');
           if (isAdminSession()) {
@@ -6564,6 +6568,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
         const localTickets = getLocalTickets().filter((item) => item.user_id === currentUser.id);
         const sessionTickets = sessionTicketMirror.filter((item) => item.user_id === currentUser.id);
+        const pendingTickets = [...pendingUserTickets.values()].filter((item) => item.user_id === currentUser.id);
         let data = [];
         let error = null;
         if (supabaseClient) {
@@ -6579,7 +6584,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           userOrdersList.innerHTML = `<p class="auth-hint">No se pudieron cargar tus órdenes: ${escapeHtml(friendlyError(error.message))}</p>`;
           return;
         }
-        const tickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...sessionTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))]
+        const tickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...sessionTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...pendingTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))]
           .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
         tickets.forEach((item) => {
           const card = document.createElement('article');
