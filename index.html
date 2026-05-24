@@ -8131,6 +8131,24 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         await loadUserProfile();
       });
 
+
+      async function performLogoutUi() {
+        try {
+          if (currentUser?.id !== LOCAL_ADMIN_ID) await safeUiAwait(updatePresence(false), 2500, 'Logout presence');
+          if (supabaseClient && currentUser?.id !== LOCAL_ADMIN_ID) {
+            await safeUiAwait(supabaseClient.auth.signOut(), 3500, 'Supabase signOut');
+          }
+        } catch (e) {
+          console.warn('logout failed', e);
+        }
+        currentUser = null;
+        currentProfile = null;
+        adminPanelUnlocked = false;
+        updateProfileAdminUi();
+        toggleUserButtons();
+        await safeUiAwait(renderActiveSellersStatus(), 2500, 'Render sellers status after logout');
+      }
+
       changePasswordBtn.addEventListener('click', async () => {
         if (!supabaseClient) return;
         const nueva = prompt('Escribe tu nueva contraseña (mínimo 6 caracteres):');
@@ -8141,15 +8159,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       logoutBtn.addEventListener('click', async () => {
-        if (currentUser?.id !== LOCAL_ADMIN_ID) await updatePresence(false);
-        if (supabaseClient && currentUser?.id !== LOCAL_ADMIN_ID) await supabaseClient.auth.signOut();
-        currentUser = null;
-        currentProfile = null;
-        adminPanelUnlocked = false;
-        updateProfileAdminUi();
-        toggleUserButtons();
-        await renderActiveSellersStatus();
+        await performLogoutUi();
         profileDrawer.classList.remove('show');
+        profileDrawer.setAttribute('aria-hidden', 'true');
         profileMsg.textContent = 'Sesión cerrada.';
         profileMsg.style.color = '#9affcc';
         showAuthNotice('👋 Te desconectaste de tu cuenta.');
@@ -8181,17 +8193,21 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       adminLogin.addEventListener('click', async () => {
         const user = document.getElementById('adminUser').value.trim();
         const pass = document.getElementById('adminPass').value.trim();
-        if (user !== 'admin' || pass !== 'admin123') {
+        const normalizedUser = user.toLowerCase();
+        const acceptedUser = normalizedUser === 'admin' || normalizedUser === DEFAULT_ADMIN_EMAIL.toLowerCase();
+        if (!acceptedUser || !pass) {
           adminMsg.textContent = 'Credenciales incorrectas.';
           adminMsg.style.color = '#ff9ea7';
           return;
         }
 
         if (supabaseClient) {
-          const { error } = await supabaseClient.auth.signInWithPassword({
-            email: DEFAULT_ADMIN_EMAIL,
-            password: DEFAULT_ADMIN_PASSWORD
-          });
+          const dbEmail = normalizedUser.includes('@') ? normalizedUser : DEFAULT_ADMIN_EMAIL;
+          const dbPassword = normalizedUser === 'admin' ? DEFAULT_ADMIN_PASSWORD : pass;
+          const { error } = await withTimeout(supabaseClient.auth.signInWithPassword({
+            email: dbEmail,
+            password: dbPassword
+          }), 7000, 'Login admin tardó demasiado');
           if (!error) {
             adminMsg.textContent = '';
             adminModal.classList.remove('show');
@@ -9410,14 +9426,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       cerrarSesionAdmin.addEventListener('click', async () => {
-        if (currentUser?.id !== LOCAL_ADMIN_ID) await updatePresence(false);
-        if (supabaseClient && currentUser?.id !== LOCAL_ADMIN_ID) await supabaseClient.auth.signOut();
-        currentUser = null;
-        currentProfile = null;
-        adminPanelUnlocked = false;
-        updateProfileAdminUi();
-        toggleUserButtons();
-        await renderActiveSellersStatus();
+        await performLogoutUi();
         showAdminNotice('Sección cerrada ✨ ¡Buen trabajo, admin!', 'ok');
         setTimeout(() => {
           configModal.classList.remove('show');
