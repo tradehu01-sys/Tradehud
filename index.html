@@ -6460,7 +6460,28 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
       }
 
-      async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
+            async function retryTicketSyncInBackground(ticketPayload, localTicket, attempts = 3) {
+        if (!supabaseClient) return false;
+        for (let i = 0; i < attempts; i += 1) {
+          const waitMs = 1200 * (i + 1);
+          await new Promise((resolve) => setTimeout(resolve, waitMs));
+          try {
+            const { error } = await withTimeout(supabaseClient.from('tickets').insert(ticketPayload), 9000, 'Supabase tardó demasiado en responder');
+            if (!error) {
+              const syncedTicket = { ...localTicket, synced: true };
+              pendingUserTickets.set(ticketPayload.id, syncedTicket);
+              saveLocalTicket(syncedTicket);
+              saveSessionTicket(syncedTicket);
+              safeUiAwait(renderUserOrders(), 3500, 'Render user orders retry sync');
+              if (isAdminSession()) safeUiAwait(renderAdminTickets(profileAdminTicketsList), 3500, 'Render admin tickets retry sync');
+              return true;
+            }
+          } catch {}
+        }
+        return false;
+      }
+
+async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
         if (!currentUser) {
           openAuth('login');
           showAuthNotice('Debes iniciar sesión para crear una orden.', 'warn');
@@ -6548,7 +6569,13 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           return true;
         } catch (error) {
           console.warn('saveTicketToProfile failed', error);
-          showAuthNotice(`No se pudo crear el ticket: ${friendlyError(error?.message || '')}`, 'warn', 12000);
+          const msg = String(error?.message || '');
+          if (msg.toLowerCase().includes('tardó demasiado')) {
+            showAuthNotice('✅ Ticket creado localmente. Estamos sincronizando con soporte en segundo plano...', 'warn', 12000);
+            retryTicketSyncInBackground(ticketPayload, localTicket, 4);
+            return true;
+          }
+          showAuthNotice(`No se pudo crear el ticket: ${friendlyError(msg)}`, 'warn', 12000);
           return false;
         } finally {
           clearTimeout(forceUnlockTimer);
