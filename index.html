@@ -6178,6 +6178,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           return;
         }
         if (button) button.disabled = true;
+        safeUiAwait(getPresenceSnapshot([currentUser?.id].filter(Boolean)), 2000, 'Presence before send');
         if (file) {
           try {
             const url = await fileToDataUrl(file);
@@ -6206,7 +6207,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           }
 
           const fallbackClient = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY && !isServiceRoleKey ? getTicketClient(true) : null;
-          for (let attempt = 0; error && attempt < 2; attempt += 1) {
+          for (let attempt = 0; error && attempt < 4; attempt += 1) {
             if (!fallbackClient) break;
             const retry = await withTimeout(fallbackClient.from('ticket_messages').insert({
               ticket_id: ticketId,
@@ -6472,6 +6473,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
             async function retryTicketSyncInBackground(ticketPayload, localTicket, attempts = 3) {
+        return false;
         if (!supabaseClient) return false;
         for (let i = 0; i < attempts; i += 1) {
           const waitMs = 1200 * (i + 1);
@@ -6552,8 +6554,10 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
           safeUiAwait(renderTicketMessages(ticketId, profileDrawer), 3000, 'Render ticket messages');
 
           if (!supabaseClient) {
-            showAuthNotice('✅ Ticket creado en modo local (sin Supabase).', 'warn', 10000);
-            return true;
+            pendingUserTickets.delete(ticketId);
+            removeLocalTicket(ticketId);
+            showAuthNotice('No se pudo crear el ticket: Supabase no está conectado.', 'warn', 12000);
+            return false;
           }
 
           const { error } = await withTimeout(
@@ -6562,8 +6566,11 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
             'Supabase tardó demasiado en responder'
           );
           if (error) {
-            showAuthNotice(`⚠️ Ticket guardado localmente. Falló sincronización: ${friendlyError(error.message)}`, 'warn', 12000);
-            return true;
+            pendingUserTickets.delete(ticketId);
+            removeLocalTicket(ticketId);
+            safeUiAwait(renderUserOrders(), 3000, 'Render user orders rollback');
+            showAuthNotice(`No se pudo crear el ticket: ${friendlyError(error.message)}`, 'warn', 12000);
+            return false;
           }
 
           const syncedTicket = { ...localTicket, synced: true };
@@ -6582,9 +6589,11 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
           console.warn('saveTicketToProfile failed', error);
           const msg = String(error?.message || '');
           if (msg.toLowerCase().includes('tardó demasiado')) {
-            showAuthNotice('✅ Ticket creado localmente. Estamos sincronizando con soporte en segundo plano...', 'warn', 12000);
-            retryTicketSyncInBackground(ticketPayload, localTicket, 4);
-            return true;
+            pendingUserTickets.delete(ticketId);
+            removeLocalTicket(ticketId);
+            safeUiAwait(renderUserOrders(), 3000, 'Render user orders timeout rollback');
+            showAuthNotice('No se pudo crear el ticket: Supabase tardó demasiado en responder.', 'warn', 12000);
+            return false;
           }
           showAuthNotice(`No se pudo crear el ticket: ${friendlyError(msg)}`, 'warn', 12000);
           return false;
