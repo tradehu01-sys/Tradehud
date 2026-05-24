@@ -6047,6 +6047,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let ticketCreationInFlight = false;
 
       const LOCAL_TICKET_MESSAGES_KEY = 'tradehud_ticket_message_mirror';
+      const sessionTicketMirror = [];
 
       function readLocalJson(key, fallback) {
         try { return JSON.parse(localStorage.getItem(key) || '') || fallback; } catch { return fallback; }
@@ -6065,6 +6066,14 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const tickets = getLocalTickets().filter((item) => item.id !== ticket.id);
         tickets.unshift(ticket);
         writeLocalJson(LOCAL_TICKETS_KEY, tickets.slice(0, 200));
+      }
+
+      function saveSessionTicket(ticket = {}) {
+        if (!ticket.id) return;
+        const filtered = sessionTicketMirror.filter((item) => item.id !== ticket.id);
+        filtered.unshift(ticket);
+        sessionTicketMirror.length = 0;
+        sessionTicketMirror.push(...filtered.slice(0, 200));
       }
 
       function removeLocalTicket(ticketId) {
@@ -6484,6 +6493,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           const localTicket = { ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline };
           trackPopularOrder(ticketPayload);
           saveLocalTicket(localTicket);
+          saveSessionTicket(localTicket);
 
           await safeUiAwait(getPresenceSnapshot([currentUser.id]), 2500, 'Presence snapshot');
           await safeUiAwait(openProfileDrawer('orders'), 4000, 'Open profile drawer');
@@ -6506,6 +6516,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           }
 
           saveLocalTicket({ ...localTicket, synced: true });
+          saveSessionTicket({ ...localTicket, synced: true });
           await safeUiAwait(renderUserOrders(), 4000, 'Render user orders sync');
           await safeUiAwait(renderTicketMessages(ticketId, profileDrawer), 3000, 'Render ticket messages sync');
           if (isAdminSession()) {
@@ -6541,6 +6552,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           profileSectionStatus.dataset.section = 'orders';
         }
         const localTickets = getLocalTickets().filter((item) => item.user_id === currentUser.id);
+        const sessionTickets = sessionTicketMirror.filter((item) => item.user_id === currentUser.id);
         let data = [];
         let error = null;
         if (supabaseClient) {
@@ -6556,7 +6568,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           userOrdersList.innerHTML = `<p class="auth-hint">No se pudieron cargar tus órdenes: ${escapeHtml(friendlyError(error.message))}</p>`;
           return;
         }
-        const tickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))]
+        const tickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...sessionTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))]
           .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
         tickets.forEach((item) => {
           const card = document.createElement('article');
