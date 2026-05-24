@@ -3250,6 +3250,10 @@
       </div>
       <div id="profileOrdersPane" class="profile-pane hidden" data-section="orders">
         <p class="auth-hint">Tus tickets se cargan automáticamente aquí. Si acabas de crear una orden, aparecerá sin recargar; el chat se sincroniza en vivo con administración.</p>
+        <div class="admin-panel-actions" style="margin-top:0;">
+          <strong style="flex:1;display:flex;align-items:center;">Mis órdenes</strong>
+          <button id="refreshUserOrdersBtn" class="mini-btn" type="button">Actualizar</button>
+        </div>
         <div id="userOrdersList"></div>
       </div>
       <div id="profileAdminTicketsPane" class="profile-pane hidden" data-section="admin-tickets">
@@ -3864,6 +3868,7 @@
       const changePasswordBtn = document.getElementById('changePasswordBtn');
       const logoutBtn = document.getElementById('logoutBtn');
       const userOrdersList = document.getElementById('userOrdersList');
+      const refreshUserOrdersBtn = document.getElementById('refreshUserOrdersBtn');
       const profileAdminTicketsList = document.getElementById('profileAdminTicketsList');
       const refreshProfileAdminTicketsBtn = document.getElementById('refreshProfileAdminTicketsBtn');
       const profileMsg = document.getElementById('profileMsg');
@@ -5367,7 +5372,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const byUserId = {};
         if (currentUser?.id) byUserId[currentUser.id] = true;
         let onlineCount = currentUser ? 1 : 0;
-        let adminOnline = Boolean(adminPanelUnlocked || (currentProfile?.is_admin && isProfileOnline(currentProfile)));
+        let adminOnline = Boolean(isAdminSession() || adminPanelUnlocked || (currentProfile?.is_admin && isProfileOnline(currentProfile)));
         if (supabaseClient) {
           const { data } = await supabaseClient
             .from('user_profiles')
@@ -5380,6 +5385,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           }
         }
         userIds.forEach((id) => { if (id && currentUser?.id === id) byUserId[id] = true; });
+        if (currentUser?.id) byUserId[currentUser.id] = true;
         presenceSnapshot = { onlineCount, adminOnline, byUserId };
         updatePresenceIndicators(presenceSnapshot);
         return presenceSnapshot;
@@ -7953,6 +7959,10 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       tabProfileAdminTickets?.addEventListener('click', async () => {
         setProfileSection('adminTickets');
         await renderAdminTickets(profileAdminTicketsList);
+      });
+
+      refreshUserOrdersBtn?.addEventListener('click', async () => {
+        await renderUserOrders();
       });
 
       userOrdersList.addEventListener('click', async (e) => {
