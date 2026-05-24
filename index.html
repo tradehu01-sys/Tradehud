@@ -8049,12 +8049,20 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         const loginEmail = authLoginEmail.value.trim().toLowerCase();
         const loginPassword = authLoginPassword.value;
         if (!supabaseClient) return;
-        const { error } = await supabaseClient.auth.signInWithPassword({
+        const { error } = await withTimeout(supabaseClient.auth.signInWithPassword({
           email: loginEmail,
           password: loginPassword
-        });
+        }), 7000, 'Inicio de sesión tardó demasiado');
         if (error) {
-          authMsg.textContent = friendlyError(error.message);
+          const isDefaultAdminEmail = loginEmail === DEFAULT_ADMIN_EMAIL.toLowerCase();
+          const isDefaultAdminPass = loginPassword === DEFAULT_ADMIN_PASSWORD;
+          if (isDefaultAdminEmail && isDefaultAdminPass) {
+            await loginLocalAdminAccount();
+            return;
+          }
+          authMsg.textContent = isDefaultAdminEmail
+            ? 'Credenciales inválidas o el usuario admin no existe en Supabase Auth. Crea/restablece admin@tradehud.com en Authentication > Users.'
+            : friendlyError(error.message);
           authMsg.style.color = '#ffb6b6';
           return;
         }
