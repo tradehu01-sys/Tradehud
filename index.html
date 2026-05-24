@@ -6471,12 +6471,26 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
 
         ticketCreationInFlight = true;
+        const unlockCreateButtons = () => {
+          const createButtonsUnlock = [...document.querySelectorAll('.create-order-btn')];
+          createButtonsUnlock.forEach((btn) => {
+            btn.disabled = false;
+            if (btn.dataset.prevLabel) {
+              btn.innerHTML = btn.dataset.prevLabel;
+              delete btn.dataset.prevLabel;
+            }
+          });
+        };
         const createButtons = [...document.querySelectorAll('.create-order-btn')];
         createButtons.forEach((btn) => {
           btn.disabled = true;
           btn.dataset.prevLabel = btn.innerHTML;
           btn.innerHTML = '<span class="btn-icon">⏳</span>CREANDO...';
         });
+        const forceUnlockTimer = setTimeout(() => {
+          ticketCreationInFlight = false;
+          unlockCreateButtons();
+        }, 15000);
 
         try {
           const ticketId = window.crypto?.randomUUID?.() || `ticket-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -6533,15 +6547,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           showAuthNotice(`No se pudo crear el ticket: ${friendlyError(error?.message || '')}`, 'warn', 12000);
           return false;
         } finally {
+          clearTimeout(forceUnlockTimer);
           ticketCreationInFlight = false;
-          const createButtonsUnlock = [...document.querySelectorAll('.create-order-btn')];
-          createButtonsUnlock.forEach((btn) => {
-            btn.disabled = false;
-            if (btn.dataset.prevLabel) {
-              btn.innerHTML = btn.dataset.prevLabel;
-              delete btn.dataset.prevLabel;
-            }
-          });
+          unlockCreateButtons();
         }
       }
 
