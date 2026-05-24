@@ -6172,39 +6172,42 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
         const senderRole = isAdminMode ? 'admin' : 'user';
         let error = null;
-        const primaryClient = isAdminMode ? getAdminTicketClient() : getTicketClient(false);
-        const primaryPayload = {
-          ticket_id: ticketId,
-          sender_id: isAdminMode && primaryClient === adminAnonClient ? null : currentUser?.id || null,
-          sender_role: senderRole,
-          message
-        };
-        if (primaryClient) {
-          const result = await primaryClient.from('ticket_messages').insert(primaryPayload);
-          error = result.error;
-        } else {
-          error = new Error('Supabase no conectado');
-        }
-        if (error && window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY && !isServiceRoleKey) {
-          const fallbackClient = getTicketClient(true);
-          const retry = await fallbackClient.from('ticket_messages').insert({
+        try {
+          const primaryClient = isAdminMode ? getAdminTicketClient() : getTicketClient(false);
+          const primaryPayload = {
             ticket_id: ticketId,
-            sender_id: null,
+            sender_id: isAdminMode && primaryClient === adminAnonClient ? null : currentUser?.id || null,
             sender_role: senderRole,
             message
-          });
-          if (!retry.error) error = null;
-          else error = retry.error;
+          };
+          if (primaryClient) {
+            const result = await withTimeout(primaryClient.from('ticket_messages').insert(primaryPayload), 7000, 'Envío de mensaje tardó demasiado');
+            error = result.error;
+          } else {
+            error = new Error('Supabase no conectado');
+          }
+          if (error && window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY && !isServiceRoleKey) {
+            const fallbackClient = getTicketClient(true);
+            const retry = await withTimeout(fallbackClient.from('ticket_messages').insert({
+              ticket_id: ticketId,
+              sender_id: null,
+              sender_role: senderRole,
+              message
+            }), 7000, 'Reintento de mensaje tardó demasiado');
+            if (!retry.error) error = null;
+            else error = retry.error;
+          }
+          if (error) {
+            saveLocalTicketMessage(ticketId, { sender_role: senderRole, message });
+            showAuthNotice(`Mensaje guardado temporalmente. No se pudo sincronizar con Supabase: ${friendlyError(error.message)}`, 'warn');
+          }
+          input.value = '';
+          if (fileInput) fileInput.value = '';
+          await renderTicketMessages(ticketId, root);
+          if (!error) showAuthNotice('✅ Mensaje sincronizado en el chat del ticket.');
+        } finally {
+          if (button) button.disabled = false;
         }
-        if (error) {
-          saveLocalTicketMessage(ticketId, { sender_role: senderRole, message });
-          showAuthNotice(`Mensaje guardado solo en este navegador. No se pudo sincronizar con Supabase: ${friendlyError(error.message)}`, 'warn');
-        }
-        if (button) button.disabled = false;
-        input.value = '';
-        if (fileInput) fileInput.value = '';
-        await renderTicketMessages(ticketId, root);
-        if (!error) showAuthNotice('✅ Mensaje sincronizado en el chat del ticket.');
       }
 
       async function hydrateTicketChats(root = document) {
