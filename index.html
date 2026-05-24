@@ -6198,25 +6198,30 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           } else {
             error = new Error('Supabase no conectado');
           }
-          if (error && window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY && !isServiceRoleKey) {
-            const fallbackClient = getTicketClient(true);
+
+          const fallbackClient = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY && !isServiceRoleKey ? getTicketClient(true) : null;
+          for (let attempt = 0; error && attempt < 2; attempt += 1) {
+            if (!fallbackClient) break;
             const retry = await withTimeout(fallbackClient.from('ticket_messages').insert({
               ticket_id: ticketId,
               sender_id: null,
               sender_role: senderRole,
               message
             }), 7000, 'Reintento de mensaje tardó demasiado');
-            if (!retry.error) error = null;
-            else error = retry.error;
+            error = retry.error || null;
+            if (!error) break;
+            await new Promise((resolve) => setTimeout(resolve, 900 * (attempt + 1)));
           }
+
           if (error) {
-            saveLocalTicketMessage(ticketId, { sender_role: senderRole, message });
-            showAuthNotice(`Mensaje guardado temporalmente. No se pudo sincronizar con Supabase: ${friendlyError(error.message)}`, 'warn');
+            showAuthNotice(`No se pudo enviar al admin: ${friendlyError(error.message)}. Intenta de nuevo.`, 'warn', 10000);
+            return;
           }
+
           input.value = '';
           if (fileInput) fileInput.value = '';
           await renderTicketMessages(ticketId, root);
-          if (!error) showAuthNotice('✅ Mensaje sincronizado en el chat del ticket.');
+          showAuthNotice('✅ Mensaje sincronizado en el chat del ticket.');
         } finally {
           if (button) button.disabled = false;
         }
@@ -6616,7 +6621,8 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
         tickets.forEach((item) => {
           const card = document.createElement('article');
           card.className = 'order-card';
-          card.innerHTML = `${ticketDetailHtml({ ...item, user_online: true, admin_online: presenceSnapshot.adminOnline })}${ticketChatHtml(item.id, 'user')}`;
+          const userIsOnline = Boolean(presenceSnapshot.byUserId?.[item.user_id] ?? (currentUser?.id && item.user_id === currentUser.id));
+          card.innerHTML = `${ticketDetailHtml({ ...item, user_online: userIsOnline, admin_online: presenceSnapshot.adminOnline })}${ticketChatHtml(item.id, 'user')}`;
           userOrdersList.appendChild(card);
         });
         if (!userOrdersList.children.length) userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes. Si acabas de crear una orden, espera unos segundos: se sincroniza automáticamente sin recargar.</p>';
