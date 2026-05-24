@@ -5381,11 +5381,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           if (Array.isArray(data)) {
             onlineCount = data.filter(isProfileOnline).length;
             data.forEach((profile) => { byUserId[profile.id] = isProfileOnline(profile); });
-            adminOnline = adminOnline || data.some((profile) => isProfileOnline(profile) && (profile.is_admin || ADMIN_EMAILS.includes(String(profile.email || '').toLowerCase())));
+            adminOnline = adminOnline || data.some((profile) => (profile.is_admin || ADMIN_EMAILS.includes(String(profile.email || '').toLowerCase())) && (profile.is_online !== false || isProfileOnline(profile)));
           }
         }
         userIds.forEach((id) => { if (id && currentUser?.id === id) byUserId[id] = true; });
         if (currentUser?.id) byUserId[currentUser.id] = true;
+        if (isAdminSession()) adminOnline = true;
         presenceSnapshot = { onlineCount, adminOnline, byUserId };
         updatePresenceIndicators(presenceSnapshot);
         return presenceSnapshot;
@@ -6631,8 +6632,18 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
           userOrdersList.innerHTML = `<p class="auth-hint">No se pudieron cargar tus órdenes: ${escapeHtml(friendlyError(error.message))}</p>`;
           return;
         }
-        const tickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...sessionTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...pendingTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))]
-          .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        const mergedTickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...sessionTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...pendingTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))];
+        const byId = new Map();
+        mergedTickets.forEach((t) => { if (t?.id) byId.set(t.id, t); });
+        const tickets = [...byId.values()].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        if (!error && Array.isArray(data)) {
+          const remoteIds = new Set((data || []).map((t) => t.id));
+          const cleaned = inMemoryTickets.filter((t) => !t?.user_id || t.user_id !== currentUser.id || remoteIds.has(t.id));
+          inMemoryTickets.length = 0;
+          inMemoryTickets.push(...cleaned);
+          [...pendingUserTickets.keys()].forEach((id) => { if (remoteIds.has(id)) pendingUserTickets.delete(id); });
+          sessionTicketMirror.splice(0, sessionTicketMirror.length, ...sessionTicketMirror.filter((t) => !t?.user_id || t.user_id !== currentUser.id || remoteIds.has(t.id)));
+        }
         tickets.forEach((item) => {
           const card = document.createElement('article');
           card.className = 'order-card';
