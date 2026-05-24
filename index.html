@@ -11,7 +11,7 @@
     <script>
       (function seedTradeHubTranslateCookie(){
         var lang = 'es';
-        try { lang = localStorage.getItem('tradehud_language') || 'es'; } catch (e) {}
+        lang = (window.__tradehudLanguage || 'es');
         var value = lang === 'en' ? '/es/en' : '/es/es';
         var expires = 'Fri, 31 Dec 9999 23:59:59 GMT';
         document.cookie = 'googtrans=' + value + ';path=/;expires=' + expires;
@@ -5231,7 +5231,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let ticketRealtimeChannel = null;
       let ticketRefreshInFlight = false;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
-      const factionOptionsByGame = JSON.parse(localStorage.getItem('tradehud_faction_options') || '{}');
+      const factionOptionsByGame = {};
 
       function getFactionConfig(gameName = '') {
         if (!factionOptionsByGame[gameName]) {
@@ -5241,7 +5241,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function saveFactionConfig() {
-        localStorage.setItem('tradehud_faction_options', JSON.stringify(factionOptionsByGame));
+        return true;
       }
 
       async function saveFactionConfigRemote(gameName = '') {
@@ -6043,29 +6043,22 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         return `<div class="ticket-message ${role}"><span class="ticket-message-meta">${label} · ${escapeHtml(created)}</span><div class="ticket-message-body">${body}${ticketAttachmentHtml(parsed.attachment)}</div></div>`;
       }
 
-      const LOCAL_TICKETS_KEY = 'tradehud_ticket_mirror';
+      const inMemoryTickets = [];
       let ticketCreationInFlight = false;
 
-      const LOCAL_TICKET_MESSAGES_KEY = 'tradehud_ticket_message_mirror';
+      const inMemoryTicketMessages = {};
       const sessionTicketMirror = [];
 
-      function readLocalJson(key, fallback) {
-        try { return JSON.parse(localStorage.getItem(key) || '') || fallback; } catch { return fallback; }
-      }
-
-      function writeLocalJson(key, value) {
-        localStorage.setItem(key, JSON.stringify(value));
-      }
-
       function getLocalTickets() {
-        return readLocalJson(LOCAL_TICKETS_KEY, []);
+        return [...inMemoryTickets];
       }
 
       function saveLocalTicket(ticket = {}) {
         if (!ticket.id) return;
         const tickets = getLocalTickets().filter((item) => item.id !== ticket.id);
         tickets.unshift(ticket);
-        writeLocalJson(LOCAL_TICKETS_KEY, tickets.slice(0, 200));
+        inMemoryTickets.length = 0;
+        inMemoryTickets.push(...tickets.slice(0, 200));
       }
 
       function saveSessionTicket(ticket = {}) {
@@ -6077,28 +6070,25 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function removeLocalTicket(ticketId) {
-        writeLocalJson(LOCAL_TICKETS_KEY, getLocalTickets().filter((item) => item.id !== ticketId));
-        const messages = readLocalJson(LOCAL_TICKET_MESSAGES_KEY, {});
-        delete messages[ticketId];
-        writeLocalJson(LOCAL_TICKET_MESSAGES_KEY, messages);
+        const tickets = getLocalTickets().filter((item) => item.id !== ticketId);
+        inMemoryTickets.length = 0;
+        inMemoryTickets.push(...tickets);
+        delete inMemoryTicketMessages[ticketId];
       }
 
       function getLocalTicketMessages(ticketId) {
-        const messages = readLocalJson(LOCAL_TICKET_MESSAGES_KEY, {});
-        return messages[ticketId] || [];
+        return inMemoryTicketMessages[ticketId] || [];
       }
 
       function saveLocalTicketMessage(ticketId, message = {}) {
         if (!ticketId || !message.message) return;
-        const messages = readLocalJson(LOCAL_TICKET_MESSAGES_KEY, {});
-        messages[ticketId] = [...(messages[ticketId] || []), {
+        inMemoryTicketMessages[ticketId] = [...(inMemoryTicketMessages[ticketId] || []), {
           id: message.id || `local-${Date.now()}`,
           ticket_id: ticketId,
           sender_role: message.sender_role || 'user',
           message: message.message,
           created_at: message.created_at || new Date().toISOString()
         }];
-        writeLocalJson(LOCAL_TICKET_MESSAGES_KEY, messages);
       }
 
       function mergeTicketMessages(remote = [], local = []) {
@@ -6272,7 +6262,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         return true;
       }
 
-      const POPULAR_ORDERS_KEY = 'tradehud_popular_orders';
+      const inMemoryPopularOrders = {};
 
       function normalizePopularName(item = {}) {
         const raw = [item.game, item.server, item.product].filter(Boolean).join(' ');
@@ -6286,7 +6276,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function readPopularOrders() {
-        return readLocalJson(POPULAR_ORDERS_KEY, {});
+        return { ...inMemoryPopularOrders };
       }
 
       function trackPopularOrder(ticket = {}) {
@@ -6294,7 +6284,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const popular = readPopularOrders();
         const current = popular[name] || { name, count: 0, type: ticket.game || 'Orden' };
         popular[name] = { ...current, name, count: Number(current.count || 0) + 1, type: ticket.game || current.type || 'Orden' };
-        writeLocalJson(POPULAR_ORDERS_KEY, popular);
+        Object.keys(inMemoryPopularOrders).forEach((k)=>delete inMemoryPopularOrders[k]); Object.assign(inMemoryPopularOrders, popular);
         renderPopularCascade();
       }
 
@@ -9498,10 +9488,10 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           pageTitle: 'TradeHud | MMORPG Gold Buying and Selling'
         }
       };
-      let currentLanguage = localStorage.getItem('tradehud_language') || 'es';
+      let currentLanguage = window.__tradehudLanguage || 'es';
       function applyLanguage(lang = 'es') {
         currentLanguage = i18nMessages[lang] ? lang : 'es';
-        localStorage.setItem('tradehud_language', currentLanguage);
+        window.__tradehudLanguage = currentLanguage;
         document.documentElement.lang = currentLanguage;
         document.title = i18nMessages[currentLanguage]?.pageTitle || i18nMessages.es.pageTitle;
         document.querySelectorAll('[data-i18n]').forEach((el) => {
