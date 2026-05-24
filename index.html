@@ -6514,10 +6514,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           saveLocalTicket(localTicket);
           saveSessionTicket(localTicket);
 
-          await safeUiAwait(getPresenceSnapshot([currentUser.id]), 2500, 'Presence snapshot');
-          await safeUiAwait(openProfileDrawer('orders'), 4000, 'Open profile drawer');
-          await safeUiAwait(renderUserOrders(), 4000, 'Render user orders');
-          await safeUiAwait(renderTicketMessages(ticketId, profileDrawer), 3000, 'Render ticket messages');
+          safeUiAwait(getPresenceSnapshot([currentUser.id]), 2500, 'Presence snapshot');
+          safeUiAwait(openProfileDrawer('orders'), 4000, 'Open profile drawer');
+          safeUiAwait(renderUserOrders(), 4000, 'Render user orders');
+          safeUiAwait(renderTicketMessages(ticketId, profileDrawer), 3000, 'Render ticket messages');
 
           if (!supabaseClient) {
             showAuthNotice('✅ Ticket creado en modo local (sin Supabase).', 'warn', 10000);
@@ -6538,11 +6538,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           pendingUserTickets.set(ticketId, syncedTicket);
           saveLocalTicket(syncedTicket);
           saveSessionTicket(syncedTicket);
-          await safeUiAwait(renderUserOrders(), 4000, 'Render user orders sync');
-          await safeUiAwait(renderTicketMessages(ticketId, profileDrawer), 3000, 'Render ticket messages sync');
+          safeUiAwait(renderUserOrders(), 4000, 'Render user orders sync');
+          safeUiAwait(renderTicketMessages(ticketId, profileDrawer), 3000, 'Render ticket messages sync');
           if (isAdminSession()) {
-            await safeUiAwait(renderAdminTickets(adminTicketsList), 4000, 'Render admin tickets main');
-            await safeUiAwait(renderAdminTickets(profileAdminTicketsList), 4000, 'Render admin tickets profile');
+            safeUiAwait(renderAdminTickets(adminTicketsList), 4000, 'Render admin tickets main');
+            safeUiAwait(renderAdminTickets(profileAdminTicketsList), 4000, 'Render admin tickets profile');
           }
           showAuthNotice(successMessage, 'info', 10000);
           return true;
