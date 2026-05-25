@@ -6076,6 +6076,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let ticketCreationInFlight = false;
       let hardTicketCreateLockUntil = 0;
       const recentTicketFingerprints = new Map();
+      let lastUserTicketsCache = { items: [], ts: 0 };
 
       const inMemoryTicketMessages = {};
       const sessionTicketMirror = [];
@@ -6581,15 +6582,10 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
           };
 
           const localTicket = { ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline };
-          pendingUserTickets.set(ticketId, localTicket);
           trackPopularOrder(ticketPayload);
-          saveLocalTicket(localTicket);
-          saveSessionTicket(localTicket);
 
           safeUiAwait(getPresenceSnapshot([currentUser.id]), 2500, 'Presence snapshot');
           safeUiAwait(openProfileDrawer('orders'), 4000, 'Open profile drawer');
-          safeUiAwait(renderUserOrders(), 4000, 'Render user orders');
-          safeUiAwait(renderTicketMessages(ticketId, profileDrawer), 3000, 'Render ticket messages');
 
           if (!supabaseClient) {
             pendingUserTickets.delete(ticketId);
@@ -6672,8 +6668,16 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
           error = result.error;
         }
         if (error && !localTickets.length) {
-          userOrdersList.innerHTML = `<p class="auth-hint">No se pudieron cargar tus órdenes: ${escapeHtml(friendlyError(error.message))}</p>`;
-          return;
+          const cacheFresh = Date.now() - Number(lastUserTicketsCache.ts || 0) < 30000;
+          if (cacheFresh && (lastUserTicketsCache.items || []).length) {
+            data = lastUserTicketsCache.items;
+          } else {
+            userOrdersList.innerHTML = `<p class="auth-hint">No se pudieron cargar tus órdenes: ${escapeHtml(friendlyError(error.message))}</p>`;
+            return;
+          }
+        }
+        if (!error && Array.isArray(data) && data.length) {
+          lastUserTicketsCache = { items: data.slice(), ts: Date.now() };
         }
         const mergedTickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...sessionTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...pendingTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))];
         const byId = new Map();
