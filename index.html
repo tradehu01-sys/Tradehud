@@ -6074,6 +6074,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       const inMemoryTickets = [];
       const pendingUserTickets = new Map();
       let ticketCreationInFlight = false;
+      let hardTicketCreateLockUntil = 0;
       const recentTicketFingerprints = new Map();
 
       const inMemoryTicketMessages = {};
@@ -6507,6 +6508,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
 async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
+        const nowHardLock = Date.now();
+        if (nowHardLock < hardTicketCreateLockUntil) {
+          showAuthNotice('⏳ Orden en proceso, espera un momento...', 'warn', 6000);
+          return false;
+        }
+        hardTicketCreateLockUntil = nowHardLock + 6000;
         if (!currentUser) {
           openAuth('login');
           showAuthNotice('Debes iniciar sesión para crear una orden.', 'warn');
@@ -6555,6 +6562,7 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
           ticketCreationInFlight = false;
           unlockCreateButtons();
           setTimeout(() => recentTicketFingerprints.delete(fingerprint), 9000);
+          setTimeout(() => { if (Date.now() >= hardTicketCreateLockUntil) hardTicketCreateLockUntil = 0; }, 1500);
         }, 15000);
 
         try {
