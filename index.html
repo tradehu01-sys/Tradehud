@@ -5378,10 +5378,20 @@ Atención al cliente: WhatsApp · Telegram · Discord`
             .from('user_profiles')
             .select('id,email,is_admin,is_online,last_seen')
             .limit(300);
-          if (Array.isArray(data)) {
+          if (Array.isArray(data) && data.length) {
             onlineCount = data.filter(isProfileOnline).length;
             data.forEach((profile) => { byUserId[profile.id] = isProfileOnline(profile); });
             adminOnline = adminOnline || data.some((profile) => (profile.is_admin || ADMIN_EMAILS.includes(String(profile.email || '').toLowerCase())) && (profile.is_online !== false || isProfileOnline(profile)));
+          }
+          if (!adminOnline && currentUser?.id) {
+            const recentCut = new Date(Date.now() - 8 * 60 * 1000).toISOString();
+            const { data: recentAdminMsgs } = await supabaseClient
+              .from('ticket_messages')
+              .select('id,created_at')
+              .eq('sender_role', 'admin')
+              .gte('created_at', recentCut)
+              .limit(1);
+            adminOnline = Boolean(Array.isArray(recentAdminMsgs) && recentAdminMsgs.length);
           }
         }
         userIds.forEach((id) => { if (id && currentUser?.id === id) byUserId[id] = true; });
@@ -6580,11 +6590,17 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
             return false;
           }
 
-          const { error } = await withTimeout(
-            supabaseClient.from('tickets').insert(ticketPayload),
-            9000,
-            'Supabase tardó demasiado en responder'
-          );
+          let error = null;
+          for (let attempt = 0; attempt < 2; attempt += 1) {
+            const res = await withTimeout(
+              supabaseClient.from('tickets').insert(ticketPayload),
+              18000,
+              'Supabase tardó demasiado en responder'
+            );
+            error = res?.error || null;
+            if (!error) break;
+            await new Promise((resolve) => setTimeout(resolve, 900 * (attempt + 1)));
+          }
           if (error) {
             pendingUserTickets.delete(ticketId);
             removeLocalTicket(ticketId);
