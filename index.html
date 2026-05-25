@@ -6064,6 +6064,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       const inMemoryTickets = [];
       const pendingUserTickets = new Map();
       let ticketCreationInFlight = false;
+      const recentTicketFingerprints = new Map();
 
       const inMemoryTicketMessages = {};
       const sessionTicketMirror = [];
@@ -6501,6 +6502,23 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
           showAuthNotice('Debes iniciar sesión para crear una orden.', 'warn');
           return false;
         }
+        const fingerprint = [
+          currentUser?.id || '',
+          payload.game || '',
+          payload.server || '',
+          payload.product || '',
+          payload.faction || '',
+          payload.character || '',
+          payload.delivery || ''
+        ].join('|').toLowerCase();
+        const now = Date.now();
+        const lastAttemptAt = recentTicketFingerprints.get(fingerprint) || 0;
+        if (now - lastAttemptAt < 8000) {
+          showAuthNotice('⏳ Ya recibimos esa orden. Espera unos segundos para evitar duplicados.', 'warn', 9000);
+          return false;
+        }
+        recentTicketFingerprints.set(fingerprint, now);
+
         if (ticketCreationInFlight) {
           showAuthNotice('⏳ Ya estamos creando tu ticket. Espera unos segundos.', 'warn', 10000);
           return false;
@@ -6526,6 +6544,7 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
         const forceUnlockTimer = setTimeout(() => {
           ticketCreationInFlight = false;
           unlockCreateButtons();
+          setTimeout(() => recentTicketFingerprints.delete(fingerprint), 9000);
         }, 15000);
 
         try {
