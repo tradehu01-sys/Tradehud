@@ -6646,6 +6646,7 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
 
 
       async function renderUserOrders() {
+        const previousHtml = userOrdersList.innerHTML;
         userOrdersList.innerHTML = '';
         if (!currentUser) return;
         await getPresenceSnapshot([currentUser.id]);
@@ -6671,8 +6672,12 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
           const cacheFresh = Date.now() - Number(lastUserTicketsCache.ts || 0) < 30000;
           if (cacheFresh && (lastUserTicketsCache.items || []).length) {
             data = lastUserTicketsCache.items;
+          } else if (previousHtml && !previousHtml.includes('Aún no tienes órdenes')) {
+            userOrdersList.innerHTML = previousHtml;
+            showAuthNotice('No pudimos actualizar tus órdenes en este momento. Intenta de nuevo en unos segundos.', 'warn', 7000);
+            return;
           } else {
-            userOrdersList.innerHTML = `<p class="auth-hint">No se pudieron cargar tus órdenes: ${escapeHtml(friendlyError(error.message))}</p>`;
+            userOrdersList.innerHTML = '<p class="auth-hint">No pudimos actualizar tus órdenes ahora mismo. Intenta de nuevo en unos segundos.</p>';
             return;
           }
         }
@@ -8199,7 +8204,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             return;
           }
           authMsg.textContent = isDefaultAdminEmail
-            ? 'Credenciales inválidas o el usuario admin no existe en Supabase Auth. Crea/restablece admin@tradehud.com en Authentication > Users.'
+            ? 'No pudimos iniciar sesión ahora mismo. Verifica tu correo y clave, o intenta nuevamente en unos segundos.'
             : friendlyError(error.message);
           authMsg.style.color = '#ffb6b6';
           return;
