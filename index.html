@@ -2040,10 +2040,13 @@
       .ticket-message.user { border-color:rgba(122,178,255,.55); }
       .ticket-message-meta { display:block; color:#aac1ea; font-size:.76rem; font-weight:800; margin-bottom:.25rem; }
       .ticket-message-body { white-space:pre-wrap; word-break:break-word; }
-      .ticket-compose { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.45rem; margin-top:.5rem; align-items:end; }
-      .ticket-compose textarea { min-height:72px; resize:vertical; }
-      .ticket-attach-row { grid-column:1 / -1; display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; color:#b9c9ef; font-size:.82rem; }
-      .ticket-attach-row input[type="file"] { max-width:260px; }
+      .ticket-compose { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:.45rem; margin-top:.5rem; align-items:end; }
+      .ticket-compose textarea { min-height:72px; resize:vertical; grid-column:2 / 3; }
+      .ticket-attach-row { grid-column:1 / 2; display:flex; align-items:center; justify-content:center; width:38px; height:38px; border:1px solid #3a4f78; border-radius:10px; color:#b9c9ef; font-size:.9rem; cursor:pointer; }
+      .ticket-attach-row span { display:inline-flex; }
+      .ticket-attach-row input[type="file"] { display:none; }
+      .ticket-send-btn { grid-column:3 / 4; min-width:44px; padding:.55rem .7rem; border-radius:10px; }
+      
       .ticket-attachment { margin-top:.45rem; border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:.45rem; background:rgba(0,0,0,.16); }
       .ticket-attachment img, .ticket-attachment video { display:block; max-width:100%; max-height:280px; border-radius:10px; object-fit:contain; background:#02050a; }
       .ticket-attachment a { color:#9ed2ff; font-weight:800; }
@@ -6065,7 +6068,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       function ticketMessageHtml(message = {}) {
         const created = message.created_at ? new Date(message.created_at).toLocaleString('es-ES') : 'Ahora';
         const role = message.sender_role === 'admin' ? 'admin' : 'user';
-        const label = role === 'admin' ? 'Admin TradeHub' : 'Cliente';
+        const label = role === 'admin' ? 'Administrador TradeHud' : (currentProfile?.name || currentUser?.user_metadata?.name || currentUser?.email?.split('@')?.[0] || 'Usuario');
         const parsed = decodeTicketMessage(message.message || '');
         const body = parsed.text ? escapeHtml(parsed.text) : '<span class="auth-hint">Archivo adjunto</span>';
         return `<div class="ticket-message ${role}"><span class="ticket-message-meta">${label} · ${escapeHtml(created)}</span><div class="ticket-message-body">${body}${ticketAttachmentHtml(parsed.attachment)}</div></div>`;
@@ -6143,7 +6146,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       function ticketChatHtml(ticketId, mode = 'user') {
         const placeholder = mode === 'admin' ? 'Responder al cliente desde el panel admin...' : 'Escribe aquí para hablar con administración...';
-        return `<div class="ticket-chat" data-ticket-chat="${escapeHtml(ticketId)}" data-ticket-mode="${mode}"><div class="ticket-chat-head"><span>💬 Chat del ticket</span><small class="auth-hint">Auto</small></div><div class="ticket-messages" data-ticket-messages="${escapeHtml(ticketId)}"><p class="auth-hint">Cargando mensajes...</p></div><div class="ticket-compose"><textarea data-ticket-input="${escapeHtml(ticketId)}" placeholder="${placeholder}"></textarea><button class="panel-btn" type="button" data-ticket-send="${escapeHtml(ticketId)}">Enviar</button><label class="ticket-attach-row">📎 Imagen o video <input data-ticket-file="${escapeHtml(ticketId)}" type="file" accept="image/*,video/*" /></label></div></div>`;
+        return `<div class="ticket-chat" data-ticket-chat="${escapeHtml(ticketId)}" data-ticket-mode="${mode}"><div class="ticket-chat-head"><span>💬 Chat del ticket</span><small class="auth-hint">Auto</small></div><div class="ticket-messages" data-ticket-messages="${escapeHtml(ticketId)}"><p class="auth-hint">Cargando mensajes...</p></div><div class="ticket-compose"><label class="ticket-attach-row" title="Adjuntar imagen o video"><span>🖼️</span><input data-ticket-file="${escapeHtml(ticketId)}" type="file" accept="image/*,video/*" /></label><textarea data-ticket-input="${escapeHtml(ticketId)}" placeholder="${placeholder}"></textarea><button class="panel-btn ticket-send-btn" type="button" data-ticket-send="${escapeHtml(ticketId)}" aria-label="Enviar mensaje">➤</button></div></div>`;
       }
 
       async function fetchTicketMessages(ticketId) {
