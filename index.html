@@ -3250,7 +3250,11 @@
       </div>
       <div id="profileOrdersPane" class="profile-pane hidden" data-section="orders">
         <p class="auth-hint">Tus tickets se cargan automáticamente aquí. Si acabas de crear una orden, aparecerá sin recargar; el chat se sincroniza en vivo con administración.</p>
-                <div id="userOrdersList"></div>
+        <div class="admin-panel-actions" style="margin-top:0;">
+          <strong style="flex:1;display:flex;align-items:center;">Mis órdenes</strong>
+          <button id="refreshUserOrdersBtn" class="mini-btn" type="button">Actualizar</button>
+        </div>
+        <div id="userOrdersList"></div>
       </div>
       <div id="profileAdminTicketsPane" class="profile-pane hidden" data-section="admin-tickets">
         <p class="auth-hint">Vista de administrador dentro de tu cuenta. Revisa, responde y elimina tickets sin abrir el panel de configuración.</p>
@@ -3864,6 +3868,7 @@
       const changePasswordBtn = document.getElementById('changePasswordBtn');
       const logoutBtn = document.getElementById('logoutBtn');
       const userOrdersList = document.getElementById('userOrdersList');
+      const refreshUserOrdersBtn = document.getElementById('refreshUserOrdersBtn');
             const profileAdminTicketsList = document.getElementById('profileAdminTicketsList');
       const refreshProfileAdminTicketsBtn = document.getElementById('refreshProfileAdminTicketsBtn');
       const profileMsg = document.getElementById('profileMsg');
@@ -6167,7 +6172,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         wrap.scrollTop = wrap.scrollHeight;
       }
 
-      async function sendTicketMessage(ticketId, mode = 'user', root = document) {
+      async function sendTicketMessage(ticketId, mode = 'user', root = document, triggerBtn = null) {
         const isAdminMode = mode === 'admin' && isAdminSession();
         if (!currentUser && !isAdminMode) {
           openAuth('login');
@@ -6176,7 +6181,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
         const input = root.querySelector(`[data-ticket-input="${cssEscapeValue(ticketId)}"]`);
         const fileInput = root.querySelector(`[data-ticket-file="${cssEscapeValue(ticketId)}"]`);
-        const button = root.querySelector(`[data-ticket-send="${cssEscapeValue(ticketId)}"]`);
+        const button = triggerBtn || root.querySelector(`[data-ticket-send="${cssEscapeValue(ticketId)}"]`);
         let message = input?.value?.trim() || '';
         const file = fileInput?.files?.[0] || null;
         if (!message && !file) {
@@ -8016,11 +8021,15 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         await renderAdminTickets(profileAdminTicketsList);
       });
 
+      refreshUserOrdersBtn?.addEventListener('click', async () => {
+        await renderUserOrders();
+      });
+
 
       userOrdersList.addEventListener('click', async (e) => {
         const sendBtn = e.target.closest('[data-ticket-send]');
         const refreshBtn = e.target.closest('[data-ticket-refresh]');
-        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'user', userOrdersList);
+        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'user', userOrdersList, sendBtn);
         if (refreshBtn) await renderTicketMessages(refreshBtn.dataset.ticketRefresh, userOrdersList);
       });
 
@@ -8029,7 +8038,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         const sendBtn = e.target.closest('[data-ticket-send]');
         const refreshBtn = e.target.closest('[data-ticket-refresh]');
         if (deleteBtn) await deleteAdminTicket(deleteBtn.dataset.ticketDelete, root);
-        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'admin', root);
+        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'admin', root, sendBtn);
         if (refreshBtn) await renderTicketMessages(refreshBtn.dataset.ticketRefresh, root);
       }
 
