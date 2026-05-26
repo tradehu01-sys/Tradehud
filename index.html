@@ -2098,13 +2098,14 @@
       
       @media (max-width: 640px) {
         .container { width: 100%; padding-inline: 10px; }
-        .nav { flex-direction: column; align-items: stretch; gap: .55rem; padding: .6rem 0; }
+        .nav { flex-direction: column; align-items: stretch; gap: .5rem; padding: .55rem 0; }
         .logo { justify-content: center; }
-        .logo img { width: 132px; height: 42px; }
+        .logo img { width: 128px; height: 40px; }
         nav { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
-        nav a { flex: 0 0 auto; }
-        .nav-actions { flex-wrap: wrap; justify-content: center; }
-        .nav-actions > * { flex: 0 0 auto; }
+        nav a { flex: 0 0 auto; font-size: .76rem; padding: .34rem .7rem; }
+        .nav-actions { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:.4rem; }
+        .nav-actions > * { min-width:0; width:100%; text-align:center; justify-content:center; font-size:.74rem; padding:.34rem .5rem; }
+        .nav-actions .admin-open { grid-column: 1 / -1; }
       }
 
       @media (max-width: 640px) {
@@ -2594,7 +2595,7 @@
               <p>Subidas, dungeons y metas PvE/PvP con jugadores expertos.</p>
             </div>
             <div class="home-item">
-              <img src="https://cdn.discordapp.com/attachments/1434981534833704970/1505269331108298943/image.png?ex=6a0f48cf&is=6a0df74f&hm=186b441677129d9afad55ec7dd97d51bd72590b30f494ddaaac89e2bd16b6c4b&" alt="Cuentas y servicios" />
+              <img src="https://i.imgur.com/3EGEUQd.png" alt="Cuentas y servicios" />
               <h3>Cuentas y servicios</h3>
               <p>Publica y vende con mediación segura dentro de la comunidad.</p>
             </div>
@@ -4418,7 +4419,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       const defaultServices = ['gold', 'boosting', 'accounts'];
       const FIXED_GOLD_IMG = 'https://i.imgur.com/c5ktaxz.png';
       const FIXED_BOOSTING_IMG = 'https://i.imgur.com/9QHS0xN.png';
-      const FIXED_ACCOUNTS_IMG = 'https://i.imgur.com/MfZK9dg.png';
+      const FIXED_ACCOUNTS_IMG = 'https://i.imgur.com/3EGEUQd.png';
       const FIXED_SELL_GOLD_IMG = 'https://i.imgur.com/ODy7Rqb.png';
       const serviceCatalog = {
         boosting: {
@@ -4657,7 +4658,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       };
       const marketDefaultImages = {
         p2p: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&',
-        streaming: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&',
+        streaming: 'https://i.imgur.com/3EGEUQd.png',
         giftcards: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&'
       };
 
