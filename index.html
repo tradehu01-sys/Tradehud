@@ -6642,72 +6642,54 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
 
 
       async function renderUserOrders() {
+        if (!userOrdersList) return;
         if (renderUserOrdersInFlight) return;
         renderUserOrdersInFlight = true;
         try {
-          const previousHtml = userOrdersList.innerHTML;
           userOrdersList.innerHTML = '';
           if (!currentUser) return;
-        await getPresenceSnapshot([currentUser.id]);
-        if (profileSectionStatus) {
-          profileSectionStatus.textContent = `Estás viendo tickets: Tu cuenta ON · Admin ${presenceSnapshot.adminOnline ? 'ON' : 'OFF'}`;
-          profileSectionStatus.dataset.section = 'orders';
-        }
-        const localTickets = getLocalTickets().filter((item) => item.user_id === currentUser.id);
-        const sessionTickets = sessionTicketMirror.filter((item) => item.user_id === currentUser.id);
-        const pendingTickets = [...pendingUserTickets.values()].filter((item) => item.user_id === currentUser.id);
-        let data = [];
-        let error = null;
-        if (supabaseClient) {
-          const result = await supabaseClient
-            .from('tickets')
-            .select('id,user_id,game,server,product,faction,character,delivery,status,created_at')
-            .eq('user_id', currentUser.id)
-            .order('created_at', { ascending: false });
-          data = result.data || [];
-          error = result.error;
-        }
-        if (error && !localTickets.length) {
-          const cacheFresh = Date.now() - Number(lastUserTicketsCache.ts || 0) < 30000;
-          if (cacheFresh && (lastUserTicketsCache.items || []).length) {
-            data = lastUserTicketsCache.items;
-          } else if (previousHtml && !previousHtml.includes('Aún no tienes órdenes')) {
-            userOrdersList.innerHTML = previousHtml;
-            showAuthNotice('No pudimos actualizar tus órdenes en este momento. Intenta de nuevo en unos segundos.', 'warn', 7000);
-            return;
-          } else {
-            userOrdersList.innerHTML = '<p class="auth-hint">No pudimos actualizar tus órdenes ahora mismo. Intenta de nuevo en unos segundos.</p>';
+          await getPresenceSnapshot([currentUser.id]);
+          if (profileSectionStatus) {
+            profileSectionStatus.textContent = `Estás viendo tickets: Tu cuenta ON · Admin ${presenceSnapshot.adminOnline ? 'ON' : 'OFF'}`;
+            profileSectionStatus.dataset.section = 'orders';
+          }
+
+          let data = [];
+          let error = null;
+          if (supabaseClient) {
+            const result = await supabaseClient
+              .from('tickets')
+              .select('id,user_id,game,server,product,faction,character,delivery,status,created_at')
+              .eq('user_id', currentUser.id)
+              .order('created_at', { ascending: false });
+            data = result.data || [];
+            error = result.error;
+          }
+
+          if (error) {
+            userOrdersList.innerHTML = '<p class="auth-hint">No pudimos cargar tus órdenes en este momento. Intenta de nuevo en unos segundos.</p>';
             return;
           }
+
+          const tickets = [...(data || [])].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+          tickets.forEach((item) => {
+            const card = document.createElement('article');
+            card.className = 'order-card';
+            const userIsOnline = Boolean(presenceSnapshot.byUserId?.[item.user_id] ?? (currentUser?.id && item.user_id === currentUser.id));
+            card.innerHTML = `${ticketDetailHtml({ ...item, user_online: userIsOnline, admin_online: presenceSnapshot.adminOnline })}${ticketChatHtml(item.id, 'user')}`;
+            userOrdersList.appendChild(card);
+          });
+
+          if (!userOrdersList.children.length) {
+            userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes.</p>';
+            return;
+          }
+
+          await hydrateTicketChats(userOrdersList);
+          scheduleFullPageTranslation();
+        } finally {
+          renderUserOrdersInFlight = false;
         }
-        if (!error && Array.isArray(data) && data.length) {
-          lastUserTicketsCache = { items: data.slice(), ts: Date.now() };
-        }
-        const mergedTickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...sessionTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id)), ...pendingTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))];
-        const byId = new Map();
-        mergedTickets.forEach((t) => { if (t?.id) byId.set(t.id, t); });
-        const tickets = [...byId.values()].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-        if (!error && Array.isArray(data)) {
-          const remoteIds = new Set((data || []).map((t) => t.id));
-          const cleaned = inMemoryTickets.filter((t) => !t?.user_id || t.user_id !== currentUser.id || remoteIds.has(t.id));
-          inMemoryTickets.length = 0;
-          inMemoryTickets.push(...cleaned);
-          [...pendingUserTickets.keys()].forEach((id) => { if (remoteIds.has(id)) pendingUserTickets.delete(id); });
-          sessionTicketMirror.splice(0, sessionTicketMirror.length, ...sessionTicketMirror.filter((t) => !t?.user_id || t.user_id !== currentUser.id || remoteIds.has(t.id)));
-        }
-        tickets.forEach((item) => {
-          const card = document.createElement('article');
-          card.className = 'order-card';
-          const userIsOnline = Boolean(presenceSnapshot.byUserId?.[item.user_id] ?? (currentUser?.id && item.user_id === currentUser.id));
-          card.innerHTML = `${ticketDetailHtml({ ...item, user_online: userIsOnline, admin_online: presenceSnapshot.adminOnline })}${ticketChatHtml(item.id, 'user')}`;
-          userOrdersList.appendChild(card);
-        });
-        if (!userOrdersList.children.length) userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes. Si acabas de crear una orden, espera unos segundos: se sincroniza automáticamente sin recargar.</p>';
-        await hydrateTicketChats(userOrdersList);
-        scheduleFullPageTranslation();
-      } finally {
-        renderUserOrdersInFlight = false;
-      }
       }
 
       async function renderAdminTickets(target = adminTicketsList) {
