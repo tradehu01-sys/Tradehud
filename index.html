@@ -2095,6 +2095,18 @@
         .sell-grid { grid-template-columns: 1fr; }
         .admin-split { grid-template-columns: 1fr; }
       }
+      
+      @media (max-width: 640px) {
+        .container { width: 100%; padding-inline: 10px; }
+        .nav { flex-direction: column; align-items: stretch; gap: .55rem; padding: .6rem 0; }
+        .logo { justify-content: center; }
+        .logo img { width: 132px; height: 42px; }
+        nav { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+        nav a { flex: 0 0 auto; }
+        .nav-actions { flex-wrap: wrap; justify-content: center; }
+        .nav-actions > * { flex: 0 0 auto; }
+      }
+
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
         .gold-order-grid { grid-template-columns: 1fr; }
