@@ -3250,11 +3250,7 @@
       </div>
       <div id="profileOrdersPane" class="profile-pane hidden" data-section="orders">
         <p class="auth-hint">Tus tickets se cargan automáticamente aquí. Si acabas de crear una orden, aparecerá sin recargar; el chat se sincroniza en vivo con administración.</p>
-        <div class="admin-panel-actions" style="margin-top:0;">
-          <strong style="flex:1;display:flex;align-items:center;">Mis órdenes</strong>
-          <button id="refreshUserOrdersBtn" class="mini-btn" type="button">Actualizar</button>
-        </div>
-        <div id="userOrdersList"></div>
+                <div id="userOrdersList"></div>
       </div>
       <div id="profileAdminTicketsPane" class="profile-pane hidden" data-section="admin-tickets">
         <p class="auth-hint">Vista de administrador dentro de tu cuenta. Revisa, responde y elimina tickets sin abrir el panel de configuración.</p>
@@ -3868,8 +3864,7 @@
       const changePasswordBtn = document.getElementById('changePasswordBtn');
       const logoutBtn = document.getElementById('logoutBtn');
       const userOrdersList = document.getElementById('userOrdersList');
-      const refreshUserOrdersBtn = document.getElementById('refreshUserOrdersBtn');
-      const profileAdminTicketsList = document.getElementById('profileAdminTicketsList');
+            const profileAdminTicketsList = document.getElementById('profileAdminTicketsList');
       const refreshProfileAdminTicketsBtn = document.getElementById('refreshProfileAdminTicketsBtn');
       const profileMsg = document.getElementById('profileMsg');
       const adminModal = document.getElementById('adminModal');
@@ -6077,6 +6072,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let hardTicketCreateLockUntil = 0;
       const recentTicketFingerprints = new Map();
       let lastUserTicketsCache = { items: [], ts: 0 };
+      let renderUserOrdersInFlight = false;
 
       const inMemoryTicketMessages = {};
       const sessionTicketMirror = [];
@@ -6646,9 +6642,12 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
 
 
       async function renderUserOrders() {
-        const previousHtml = userOrdersList.innerHTML;
-        userOrdersList.innerHTML = '';
-        if (!currentUser) return;
+        if (renderUserOrdersInFlight) return;
+        renderUserOrdersInFlight = true;
+        try {
+          const previousHtml = userOrdersList.innerHTML;
+          userOrdersList.innerHTML = '';
+          if (!currentUser) return;
         await getPresenceSnapshot([currentUser.id]);
         if (profileSectionStatus) {
           profileSectionStatus.textContent = `Estás viendo tickets: Tu cuenta ON · Admin ${presenceSnapshot.adminOnline ? 'ON' : 'OFF'}`;
@@ -6706,8 +6705,10 @@ async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden cre
         if (!userOrdersList.children.length) userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes. Si acabas de crear una orden, espera unos segundos: se sincroniza automáticamente sin recargar.</p>';
         await hydrateTicketChats(userOrdersList);
         scheduleFullPageTranslation();
+      } finally {
+        renderUserOrdersInFlight = false;
       }
-
+      }
 
       async function renderAdminTickets(target = adminTicketsList) {
         if (!target) return;
@@ -8033,9 +8034,6 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         await renderAdminTickets(profileAdminTicketsList);
       });
 
-      refreshUserOrdersBtn?.addEventListener('click', async () => {
-        await renderUserOrders();
-      });
 
       userOrdersList.addEventListener('click', async (e) => {
         const sendBtn = e.target.closest('[data-ticket-send]');
