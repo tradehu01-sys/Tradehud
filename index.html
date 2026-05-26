@@ -1594,6 +1594,7 @@
       }
 
       .logout-btn {
+        margin-left:auto;
         border: 1px solid #8a6a2b;
         border-radius: 8px;
         background: linear-gradient(120deg, #2e2514, #5b4418);
@@ -2049,7 +2050,7 @@
 
       .ticket-chat[data-ticket-mode="admin"] .ticket-messages { min-height: 210px; max-height: 320px; }
       .ticket-chat[data-ticket-mode="admin"] .ticket-compose { grid-template-columns: 42px minmax(0,1fr) 52px; align-items: stretch; }
-      .ticket-chat[data-ticket-mode="admin"] .ticket-compose textarea { min-height: 98px; font-size: .98rem; line-height: 1.35; padding: .6rem .65rem; }
+      .ticket-chat[data-ticket-mode="admin"] .ticket-compose textarea { min-height: 122px; font-size: .98rem; line-height: 1.35; padding: .6rem .65rem; }
       .ticket-chat[data-ticket-mode="admin"] .ticket-send-btn { font-size: 1.05rem; font-weight: 800; }
       .ticket-chat[data-ticket-mode="admin"] .ticket-attach-row { width: 42px; height: 42px; }
 
@@ -3304,14 +3305,6 @@
         </div>
         <div id="userOrdersList"></div>
       </div>
-      <div id="profileAdminTicketsPane" class="profile-pane hidden" data-section="admin-tickets">
-        <p class="auth-hint">Vista de administrador dentro de tu cuenta. Revisa, responde y elimina tickets sin abrir el panel de configuración.</p>
-        <div class="admin-panel-actions" style="margin-top:0;">
-          <strong style="flex:1;display:flex;align-items:center;">Administrador · tickets</strong>
-          <button id="refreshProfileAdminTicketsBtn" class="mini-btn" type="button">Actualizar</button>
-        </div>
-        <div id="profileAdminTicketsList" class="admin-game-list admin-ticket-board"></div>
-      </div>
       <div id="profileMsg" class="admin-msg"></div>
     </aside>
 
@@ -3345,7 +3338,6 @@
         <div class="admin-head">
           <strong>Configuraciones</strong>
           <div class="admin-head-actions">
-            <button id="closeConfig" class="close-btn">✕</button>
             <button id="cerrarSesionAdmin" class="logout-btn" type="button">Cerrar sesión</button>
           </div>
         </div>
@@ -6344,6 +6336,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         profileDrawer.classList.add('show');
         profileDrawer.setAttribute('aria-hidden', 'false');
         await loadUserProfile();
+        showAuthNotice(profileMsg.textContent || 'Información guardada.', profileMsg.style.color === '#ffb6b6' ? 'warn' : 'info', 5000);
         const requestedSection = section === 'adminTickets' && !isAdminSession() ? 'orders' : section;
         setProfileSection(requestedSection);
         if (requestedSection === 'orders') await renderUserOrders();
@@ -8064,11 +8057,6 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         setProfileSection('orders');
         await renderUserOrders();
       });
-      tabProfileAdminTickets?.addEventListener('click', async () => {
-        setProfileSection('adminTickets');
-        await renderAdminTickets(profileAdminTicketsList);
-      });
-
       refreshUserOrdersBtn?.addEventListener('click', async () => {
         await renderUserOrders();
       });
@@ -8341,9 +8329,17 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         if (!supabaseClient) return;
         const nueva = prompt('Escribe tu nueva contraseña (mínimo 6 caracteres):');
         if (!nueva) return;
+        const confirmar = prompt('Confirma la nueva contraseña:');
+        if (confirmar !== nueva) {
+          profileMsg.textContent = 'Las contraseñas no coinciden.';
+          profileMsg.style.color = '#ffb6b6';
+          showAuthNotice('Las contraseñas no coinciden.', 'warn', 5000);
+          return;
+        }
         const { error } = await supabaseClient.auth.updateUser({ password: nueva });
         profileMsg.textContent = error ? 'No se pudo cambiar contraseña.' : 'Contraseña actualizada.';
         profileMsg.style.color = error ? '#ffb6b6' : '#9affcc';
+        showAuthNotice(profileMsg.textContent, error ? 'warn' : 'info', 5000);
       });
 
       logoutBtn.addEventListener('click', async () => {
@@ -8418,7 +8414,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         activateAdminTab('tickets');
       });
 
-      closeConfig.addEventListener('click', () => {
+      closeConfig?.addEventListener('click', () => {
         configModal.classList.remove('show');
         configModal.setAttribute('aria-hidden', 'true');
       });
