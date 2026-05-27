@@ -3363,8 +3363,7 @@
           <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
           <button id="tabPreciosOro" class="panel-tab" type="button">Precios</button>
           <button id="tabMarketAdmin" class="panel-tab" type="button">Streaming / Servicios</button>
-                    <button id="tabTicketsAdmin" class="panel-tab" type="button">Tickets</button>
-          <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
+                              <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
           <button id="tabBosteo" class="panel-tab" type="button">Bosteo</button>
           <button id="tabReviewsAdmin" class="panel-tab" type="button">Reseñas</button>
         </div>
@@ -8068,7 +8067,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           authModal.setAttribute('aria-hidden', 'true');
           configModal.classList.add('show');
           configModal.setAttribute('aria-hidden', 'false');
-          activateAdminTab('tickets');
+          activateAdminTab('juegos');
           showAuthNotice('✅ Modo admin rápido activado.');
           return;
         }
@@ -8286,7 +8285,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           closeAuth();
           configModal.classList.add('show');
           configModal.setAttribute('aria-hidden', 'false');
-          activateAdminTab('tickets');
+          activateAdminTab('juegos');
           showAuthNotice('✅ Panel de ajustes abierto como admin.');
           return;
         }
@@ -8494,7 +8493,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             adminModal.setAttribute('aria-hidden', 'true');
             configModal.classList.add('show');
             configModal.setAttribute('aria-hidden', 'false');
-            activateAdminTab('tickets');
+            activateAdminTab('juegos');
             return;
           }
           console.warn('admin db auth failed, fallback to local admin panel:', error.message);
@@ -8507,7 +8506,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         adminModal.setAttribute('aria-hidden', 'true');
         configModal.classList.add('show');
         configModal.setAttribute('aria-hidden', 'false');
-        activateAdminTab('tickets');
+        activateAdminTab('juegos');
       });
 
       closeConfig?.addEventListener('click', () => {
@@ -8541,7 +8540,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           setActiveMarketType(activeMarketType || 'streaming');
           renderMarketAdminLists(activeMarketType || 'streaming');
         } else if (tab === 'tickets') {
-          tabTicketsAdmin.classList.add('active');
+          tabListaJuegosAdmin.classList.add('active');
           editorTicketsAdmin.classList.remove('hidden');
           renderAdminTickets();
         } else if (tab === 'cuentas') {
@@ -8565,7 +8564,6 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       tabListaServidoresAdmin.addEventListener('click', () => activateAdminTab('servidores'));
       tabPreciosOro.addEventListener('click', () => activateAdminTab('precios'));
       if (tabMarketAdmin) tabMarketAdmin.addEventListener('click', () => activateAdminTab('market'));
-      tabTicketsAdmin.addEventListener('click', () => activateAdminTab('tickets'));
       refreshAdminTicketsBtn?.addEventListener('click', () => renderAdminTickets(adminTicketsList));
       refreshProfileAdminTicketsBtn?.addEventListener('click', () => renderAdminTickets(profileAdminTicketsList));
       tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
