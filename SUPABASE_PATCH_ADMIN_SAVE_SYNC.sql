@@ -25,6 +25,7 @@ alter table public.gold_catalog_entries enable row level security;
 drop policy if exists app_assets_public_read on public.app_assets;
 drop policy if exists app_assets_admin_write on public.app_assets;
 drop policy if exists app_assets_authenticated_write on public.app_assets;
+drop policy if exists app_assets_anon_write on public.app_assets;
 
 create policy app_assets_public_read
 on public.app_assets
@@ -44,9 +45,17 @@ to authenticated
 using (true)
 with check (true);
 
+create policy app_assets_anon_write
+on public.app_assets
+for all
+to anon
+using (true)
+with check (true);
+
 drop policy if exists gold_catalog_public_read on public.gold_catalog_entries;
 drop policy if exists gold_catalog_admin_write on public.gold_catalog_entries;
 drop policy if exists gold_catalog_authenticated_write on public.gold_catalog_entries;
+drop policy if exists gold_catalog_anon_write on public.gold_catalog_entries;
 
 create policy gold_catalog_public_read
 on public.gold_catalog_entries
@@ -66,10 +75,17 @@ to authenticated
 using (true)
 with check (true);
 
-grant select on public.app_assets to anon;
+create policy gold_catalog_anon_write
+on public.gold_catalog_entries
+for all
+to anon
+using (true)
+with check (true);
+
+grant select, insert, update, delete on public.app_assets to anon;
 grant select, insert, update, delete on public.app_assets to authenticated;
 
-grant select on public.gold_catalog_entries to anon;
+grant select, insert, update, delete on public.gold_catalog_entries to anon;
 grant select, insert, update, delete on public.gold_catalog_entries to authenticated;
 
 select 'ok_app_assets' as check_name, count(*)::int as total from public.app_assets
