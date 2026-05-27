@@ -2655,18 +2655,6 @@
         <div class="container">
           <h2 class="section-title">Testimonios de <span>clientes</span></h2>
           <article class="home-block testimonials-grid" id="testimonialsGrid">
-            <div class="home-item">
-              <h3>“Entrega puntual”</h3>
-              <p>“Compré oro para WoW y en minutos ya estaba listo. Me explicaron todo por Discord.” — Cliente Retail</p>
-            </div>
-            <div class="home-item">
-              <h3>“Soporte excelente”</h3>
-              <p>“Primera vez usando el servicio y me acompañaron hasta cerrar la venta sin problemas.” — Vendedor L2</p>
-            </div>
-            <div class="home-item">
-              <h3>“Recomiendo TradeHud”</h3>
-              <p>“El proceso fue claro, rápido y seguro. Volveré a contratar boosting.” — Jugador Albion</p>
-            </div>
             <form id="reviewForm" class="review-form">
               <strong>Agrega tu reseña</strong>
               <input id="reviewName" type="text" maxlength="80" placeholder="Tu nombre o alias" />
@@ -3280,8 +3268,7 @@
       <div class="profile-tabs" role="tablist" aria-label="Secciones de perfil">
         <button id="tabProfileInfo" class="profile-tab active" type="button" role="tab" aria-selected="true">Perfil</button>
         <button id="tabProfileOrders" class="profile-tab" type="button" role="tab" aria-selected="false">Órdenes</button>
-        <button id="tabProfileAdminTickets" class="profile-tab hidden" type="button" role="tab" aria-selected="false">Admin tickets</button>
-      </div>
+              </div>
       <div id="profileSectionStatus" class="profile-section-status" role="status" aria-live="polite">Estás en la sección: Perfil</div>
       <div id="profileInfoPane" class="profile-pane" data-section="profile">
         <label for="profileNameInput">Nombre</label>
@@ -3294,6 +3281,13 @@
         <div class="admin-panel-actions">
           <button id="saveProfileBtn" class="panel-btn" type="button">Guardar información</button>
           <button id="changePasswordBtn" class="panel-btn" type="button">Cambiar contraseña</button>
+        </div>
+        <div id="profilePasswordWrap" class="hidden" style="margin-top:.55rem;display:grid;gap:.45rem;">
+          <label for="profileNewPasswordInput">Nueva contraseña</label>
+          <input id="profileNewPasswordInput" type="password" placeholder="Mínimo 6 caracteres" />
+          <label for="profileConfirmPasswordInput">Confirmar contraseña</label>
+          <input id="profileConfirmPasswordInput" type="password" placeholder="Repite la contraseña" />
+          <button id="saveProfilePasswordBtn" class="panel-btn" type="button">Guardar nueva contraseña</button>
         </div>
         <button id="logoutBtn" class="mini-btn danger" type="button">Cerrar sesión</button>
       </div>
@@ -3894,8 +3888,7 @@
       const closeProfileDrawer = document.getElementById('closeProfileDrawer');
       const tabProfileInfo = document.getElementById('tabProfileInfo');
       const tabProfileOrders = document.getElementById('tabProfileOrders');
-      const tabProfileAdminTickets = document.getElementById('tabProfileAdminTickets');
-      const profileSectionStatus = document.getElementById('profileSectionStatus');
+            const profileSectionStatus = document.getElementById('profileSectionStatus');
       const profileInfoPane = document.getElementById('profileInfoPane');
       const profileOrdersPane = document.getElementById('profileOrdersPane');
       const profileAdminTicketsPane = document.getElementById('profileAdminTicketsPane');
@@ -3912,6 +3905,10 @@
             const profileAdminTicketsList = document.getElementById('profileAdminTicketsList');
       const refreshProfileAdminTicketsBtn = document.getElementById('refreshProfileAdminTicketsBtn');
       const profileMsg = document.getElementById('profileMsg');
+      const profilePasswordWrap = document.getElementById('profilePasswordWrap');
+      const profileNewPasswordInput = document.getElementById('profileNewPasswordInput');
+      const profileConfirmPasswordInput = document.getElementById('profileConfirmPasswordInput');
+      const saveProfilePasswordBtn = document.getElementById('saveProfilePasswordBtn');
       const adminModal = document.getElementById('adminModal');
       const adminLogin = document.getElementById('adminLogin');
       const adminMsg = document.getElementById('adminMsg');
@@ -5957,7 +5954,6 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       function updateProfileAdminUi() {
         const isAdmin = isAdminSession();
-        tabProfileAdminTickets?.classList.toggle('hidden', !isAdmin);
         if (!isAdmin && profileAdminTicketsPane && !profileAdminTicketsPane.classList.contains('hidden')) setProfileSection('info');
       }
 
@@ -6337,10 +6333,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         profileDrawer.setAttribute('aria-hidden', 'false');
         await loadUserProfile();
         showAuthNotice(profileMsg.textContent || 'Información guardada.', profileMsg.style.color === '#ffb6b6' ? 'warn' : 'info', 5000);
-        const requestedSection = section === 'adminTickets' && !isAdminSession() ? 'orders' : section;
+        const requestedSection = section === 'adminTickets' ? 'orders' : section;
         setProfileSection(requestedSection);
         if (requestedSection === 'orders') await renderUserOrders();
-        if (requestedSection === 'adminTickets') await renderAdminTickets(profileAdminTicketsList);
+        if (isAdminSession()) await renderAdminTickets(profileAdminTicketsList);
         return true;
       }
 
@@ -8036,19 +8032,16 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
       function setProfileSection(section = 'info') {
         const isOrders = section === 'orders';
-        const isAdminTickets = section === 'adminTickets';
-        tabProfileInfo.classList.toggle('active', !isOrders && !isAdminTickets);
+        tabProfileInfo.classList.toggle('active', !isOrders);
         tabProfileOrders.classList.toggle('active', isOrders);
-        tabProfileAdminTickets?.classList.toggle('active', isAdminTickets);
-        tabProfileInfo.setAttribute('aria-selected', String(!isOrders && !isAdminTickets));
+        tabProfileInfo.setAttribute('aria-selected', String(!isOrders));
         tabProfileOrders.setAttribute('aria-selected', String(isOrders));
-        tabProfileAdminTickets?.setAttribute('aria-selected', String(isAdminTickets));
-        profileInfoPane.classList.toggle('hidden', isOrders || isAdminTickets);
+        profileInfoPane.classList.toggle('hidden', isOrders);
         profileOrdersPane.classList.toggle('hidden', !isOrders);
-        profileAdminTicketsPane?.classList.toggle('hidden', !isAdminTickets);
+        profileAdminTicketsPane?.classList.add('hidden');
         if (profileSectionStatus) {
-          profileSectionStatus.textContent = `Estás en la sección: ${isAdminTickets ? 'Administrador · Tickets' : isOrders ? 'Órdenes' : 'Perfil'}`;
-          profileSectionStatus.dataset.section = isAdminTickets ? 'admin-tickets' : isOrders ? 'orders' : 'profile';
+          profileSectionStatus.textContent = `Estás en la sección: ${isOrders ? 'Órdenes' : 'Perfil'}`;
+          profileSectionStatus.dataset.section = isOrders ? 'orders' : 'profile';
         }
       }
 
@@ -8210,7 +8203,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         toggleUserButtons();
         closeAuth();
         showAuthNotice('✅ Entraste como administrador de tickets.');
-        await openProfileDrawer('adminTickets');
+        await openProfileDrawer('orders');
       }
 
       authLoginBtn.addEventListener('click', async () => {
@@ -8238,7 +8231,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         authMsg.style.color = '#9affcc';
         showAuthNotice('✅ Inicio de sesión exitoso.');
         closeAuth();
-        if (ADMIN_EMAILS.includes(loginEmail)) setTimeout(() => openProfileDrawer('adminTickets'), 350);
+        if (ADMIN_EMAILS.includes(loginEmail)) setTimeout(() => openProfileDrawer('orders'), 350);
       });
 
       forgotPasswordBtn.addEventListener('click', openResetPasswordWindow);
@@ -8298,13 +8291,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           await supabaseClient.auth.updateUser({
             data: { name: nextName, discord: nextDiscord, phone: nextPhone }
           });
-          profileMsg.textContent = 'Guardado local en sesión. Revisa las políticas de la base de datos TradeHub para persistir en tabla.';
+          profileMsg.textContent = 'Información guardada. Si no aparece en otro dispositivo, intenta nuevamente en unos segundos.';
           profileMsg.style.color = '#ffd39a';
         } else {
           profileMsg.textContent = 'Información actualizada.';
           profileMsg.style.color = '#9affcc';
         }
         await loadUserProfile();
+        showAuthNotice(profileMsg.textContent || 'Información guardada correctamente.', profileMsg.style.color === '#ffb6b6' ? 'warn' : 'info', 5000);
       });
 
 
@@ -8326,10 +8320,22 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       }
 
       changePasswordBtn.addEventListener('click', async () => {
+        profilePasswordWrap?.classList.toggle('hidden');
+        if (!profilePasswordWrap?.classList.contains('hidden')) {
+          profileNewPasswordInput?.focus();
+        }
+      });
+
+      saveProfilePasswordBtn?.addEventListener('click', async () => {
         if (!supabaseClient) return;
-        const nueva = prompt('Escribe tu nueva contraseña (mínimo 6 caracteres):');
-        if (!nueva) return;
-        const confirmar = prompt('Confirma la nueva contraseña:');
+        const nueva = (profileNewPasswordInput?.value || '').trim();
+        const confirmar = (profileConfirmPasswordInput?.value || '').trim();
+        if (!nueva || nueva.length < 6) {
+          profileMsg.textContent = 'La contraseña debe tener mínimo 6 caracteres.';
+          profileMsg.style.color = '#ffb6b6';
+          showAuthNotice(profileMsg.textContent, 'warn', 5000);
+          return;
+        }
         if (confirmar !== nueva) {
           profileMsg.textContent = 'Las contraseñas no coinciden.';
           profileMsg.style.color = '#ffb6b6';
@@ -8337,9 +8343,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           return;
         }
         const { error } = await supabaseClient.auth.updateUser({ password: nueva });
-        profileMsg.textContent = error ? 'No se pudo cambiar contraseña.' : 'Contraseña actualizada.';
+        profileMsg.textContent = error ? 'No se pudo cambiar contraseña. Intenta nuevamente.' : 'Contraseña actualizada correctamente.';
         profileMsg.style.color = error ? '#ffb6b6' : '#9affcc';
         showAuthNotice(profileMsg.textContent, error ? 'warn' : 'info', 5000);
+        if (!error) {
+          profileNewPasswordInput.value = '';
+          profileConfirmPasswordInput.value = '';
+          profilePasswordWrap?.classList.add('hidden');
+        }
       });
 
       logoutBtn.addEventListener('click', async () => {
