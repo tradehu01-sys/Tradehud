@@ -3268,6 +3268,7 @@
       <div class="profile-tabs" role="tablist" aria-label="Secciones de perfil">
         <button id="tabProfileInfo" class="profile-tab active" type="button" role="tab" aria-selected="true">Perfil</button>
         <button id="tabProfileOrders" class="profile-tab" type="button" role="tab" aria-selected="false">Órdenes</button>
+        <button id="tabProfileAdminTickets" class="profile-tab hidden" type="button" role="tab" aria-selected="false">Admin tickets</button>
               </div>
       <div id="profileSectionStatus" class="profile-section-status" role="status" aria-live="polite">Estás en la sección: Perfil</div>
       <div id="profileInfoPane" class="profile-pane" data-section="profile">
@@ -3298,6 +3299,14 @@
           <button id="refreshUserOrdersBtn" class="mini-btn" type="button">Actualizar</button>
         </div>
         <div id="userOrdersList"></div>
+      </div>
+      <div id="profileAdminTicketsPane" class="profile-pane hidden" data-section="adminTickets">
+        <p class="auth-hint">Vista de administrador dentro de tu cuenta. Aquí gestionas todos los tickets.</p>
+        <div class="admin-panel-actions" style="margin-top:0;">
+          <strong style="flex:1;display:flex;align-items:center;">Administrador · tickets</strong>
+          <button id="refreshProfileAdminTicketsBtn" class="mini-btn" type="button">Actualizar</button>
+        </div>
+        <div id="profileAdminTicketsList" class="admin-game-list admin-ticket-board"></div>
       </div>
       <div id="profileMsg" class="admin-msg"></div>
     </aside>
@@ -3888,6 +3897,7 @@
       const closeProfileDrawer = document.getElementById('closeProfileDrawer');
       const tabProfileInfo = document.getElementById('tabProfileInfo');
       const tabProfileOrders = document.getElementById('tabProfileOrders');
+      const tabProfileAdminTickets = document.getElementById('tabProfileAdminTickets');
             const profileSectionStatus = document.getElementById('profileSectionStatus');
       const profileInfoPane = document.getElementById('profileInfoPane');
       const profileOrdersPane = document.getElementById('profileOrdersPane');
@@ -5954,6 +5964,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       function updateProfileAdminUi() {
         const isAdmin = isAdminSession();
+        tabProfileAdminTickets?.classList.toggle('hidden', !isAdmin);
         if (!isAdmin && profileAdminTicketsPane && !profileAdminTicketsPane.classList.contains('hidden')) setProfileSection('info');
       }
 
@@ -6333,10 +6344,11 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         profileDrawer.setAttribute('aria-hidden', 'false');
         await loadUserProfile();
         showAuthNotice(profileMsg.textContent || 'Información guardada.', profileMsg.style.color === '#ffb6b6' ? 'warn' : 'info', 5000);
-        const requestedSection = section === 'adminTickets' ? 'orders' : section;
+        const requestedSection = section === 'adminTickets' && !isAdminSession() ? 'orders' : section;
         setProfileSection(requestedSection);
         if (requestedSection === 'orders') await renderUserOrders();
-        if (isAdminSession()) await renderAdminTickets(profileAdminTicketsList);
+        if (requestedSection === 'adminTickets') await renderAdminTickets(profileAdminTicketsList);
+        sessionStorage.setItem('tradehud_profile_open', '1');
         return true;
       }
 
@@ -7930,6 +7942,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
               await updatePresence(true);
               if (isAdminSession()) await renderAdminTickets(profileAdminTicketsList);
               await renderUserOrders();
+              await restoreProfileDrawerState();
             }
             toggleUserButtons();
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
@@ -7944,6 +7957,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
                 profileNameTop.textContent = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil';
                 profileEmailTop.textContent = currentUser.email || '';
                 await loadUserProfile();
+                await restoreProfileDrawerState();
                 const dbAdmin = Boolean(currentProfile?.is_admin);
                 const localAdminUser = currentUser?.id === LOCAL_ADMIN_ID;
                 if (!dbAdmin && !localAdminUser) adminPanelUnlocked = false;
@@ -8041,19 +8055,26 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       closeProfileDrawer.addEventListener('click', () => {
         profileDrawer.classList.remove('show');
         profileDrawer.setAttribute('aria-hidden', 'true');
+        sessionStorage.removeItem('tradehud_profile_open');
       });
       function setProfileSection(section = 'info') {
         const isOrders = section === 'orders';
-        tabProfileInfo.classList.toggle('active', !isOrders);
+        const isAdminTickets = section === 'adminTickets';
+        tabProfileInfo.classList.toggle('active', !isOrders && !isAdminTickets);
         tabProfileOrders.classList.toggle('active', isOrders);
-        tabProfileInfo.setAttribute('aria-selected', String(!isOrders));
+        tabProfileAdminTickets?.classList.toggle('active', isAdminTickets);
+        tabProfileInfo.setAttribute('aria-selected', String(!isOrders && !isAdminTickets));
         tabProfileOrders.setAttribute('aria-selected', String(isOrders));
-        profileInfoPane.classList.toggle('hidden', isOrders);
+        tabProfileAdminTickets?.setAttribute('aria-selected', String(isAdminTickets));
+        profileInfoPane.classList.toggle('hidden', isOrders || isAdminTickets);
         profileOrdersPane.classList.toggle('hidden', !isOrders);
-        profileAdminTicketsPane?.classList.add('hidden');
+        profileAdminTicketsPane?.classList.toggle('hidden', !isAdminTickets);
         if (profileSectionStatus) {
-          profileSectionStatus.textContent = `Estás en la sección: ${isOrders ? 'Órdenes' : 'Perfil'}`;
-          profileSectionStatus.dataset.section = isOrders ? 'orders' : 'profile';
+          profileSectionStatus.textContent = `Estás en la sección: ${isAdminTickets ? 'Administrador · Tickets' : isOrders ? 'Órdenes' : 'Perfil'}`;
+          profileSectionStatus.dataset.section = isAdminTickets ? 'admin-tickets' : isOrders ? 'orders' : 'profile';
+        }
+        if (profileDrawer?.classList.contains('show')) {
+          sessionStorage.setItem('tradehud_profile_section', isAdminTickets ? 'adminTickets' : isOrders ? 'orders' : 'info');
         }
       }
 
@@ -8061,6 +8082,10 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       tabProfileOrders.addEventListener('click', async () => {
         setProfileSection('orders');
         await renderUserOrders();
+      });
+      tabProfileAdminTickets?.addEventListener('click', async () => {
+        setProfileSection('adminTickets');
+        await renderAdminTickets(profileAdminTicketsList);
       });
       refreshUserOrdersBtn?.addEventListener('click', async () => {
         await renderUserOrders();
@@ -8369,6 +8394,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         await performLogoutUi();
         profileDrawer.classList.remove('show');
         profileDrawer.setAttribute('aria-hidden', 'true');
+        sessionStorage.removeItem('tradehud_profile_open');
         profileMsg.textContent = 'Sesión cerrada.';
         profileMsg.style.color = '#9affcc';
         showAuthNotice('👋 Te desconectaste de tu cuenta.');
@@ -9768,6 +9794,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         });
       });
       applyLanguage(currentLanguage);
+
+      async function restoreProfileDrawerState() {
+        if (!currentUser) return;
+        if (sessionStorage.getItem('tradehud_profile_open') !== '1') return;
+        const savedSection = sessionStorage.getItem('tradehud_profile_section') || 'info';
+        await openProfileDrawer(savedSection);
+      }
+
 
       let googleTranslateRetryTimer = null;
       let googleTranslateMutationTimer = null;
