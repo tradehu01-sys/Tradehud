@@ -2222,9 +2222,12 @@
       
       .profile-password-modal{position:fixed;inset:0;background:rgba(2,6,12,.72);display:none;align-items:center;justify-content:center;z-index:1500;padding:16px}
       .profile-password-modal.show{display:flex}
-      .profile-password-card{width:min(440px,96vw);background:#102033;border:1px solid #3f5f91;border-radius:14px;padding:14px;display:grid;gap:.55rem}
+      .profile-password-card{width:min(460px,96vw);background:linear-gradient(180deg,#11243b 0%,#0e1f34 100%);border:1px solid #4f74a8;border-radius:16px;padding:16px;display:grid;gap:.65rem;box-shadow:0 18px 45px rgba(1,5,11,.45)}
       .profile-password-head{display:flex;justify-content:space-between;align-items:center;color:#fff3c9;font-weight:800}
-      .profile-password-card input{width:100%;}
+      .profile-password-card input{width:100%;border:1px solid #5d78a8;border-radius:12px;padding:.72rem .78rem;background:#0a1628;color:#e9f2ff;font-size:1rem}
+      .profile-password-card input:focus{outline:none;border-color:#9ac9ff;box-shadow:0 0 0 2px rgba(154,201,255,.18)}
+      .profile-password-card label{color:#e4efff;font-weight:700}
+      .profile-password-card .panel-btn{margin-top:.35rem;min-height:44px}
 .review-form input,.review-form textarea{width:100%;border:1px solid #56636d;border-radius:10px;background:#1a2229;color:#fff;padding:.65rem}
       .review-actions{display:flex;gap:.55rem;align-items:center;flex-wrap:wrap}
       .review-msg{font-size:.86rem;color:#d6d6d6}
@@ -3406,7 +3409,7 @@
             <div class="admin-split">
               <div class="form-group">
                 <label for="precioCantidadAdd">Cantidad de oro</label>
-                <input id="precioCantidadAdd" type="number" min="100" step="100" placeholder="100" />
+                <input id="precioCantidadAdd" type="text" placeholder="Ej: 10g, 100G, 1m" />
               </div>
               <div class="form-group">
                 <label for="precioValorAdd">Precio (USD)</label>
@@ -8339,7 +8342,12 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       saveProfileBtn.addEventListener('click', async () => {
-        if (!currentUser || !supabaseClient) return;
+        if (!currentUser || !supabaseClient) {
+          profileMsg.textContent = 'Inicia sesión para guardar tu información.';
+          profileMsg.style.color = '#ffb6b6';
+          showAuthNotice(profileMsg.textContent, 'warn', 5000);
+          return;
+        }
         const nextName = profileNameInput.value.trim() || 'Usuario';
         const nextDiscord = profileDiscordInput.value.trim();
         const nextPhone = profilePhoneInput.value.trim();
@@ -8361,7 +8369,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           profileMsg.textContent = 'Información guardada. Si no aparece en otro dispositivo, intenta nuevamente en unos segundos.';
           profileMsg.style.color = '#ffd39a';
         } else {
-          profileMsg.textContent = 'Información actualizada.';
+          profileMsg.textContent = 'Información guardada correctamente.';
           profileMsg.style.color = '#9affcc';
         }
         await loadUserProfile();
@@ -9417,23 +9425,31 @@ async function saveGoldPriceRemote({ game, server, amount, price, sortOrder = 0 
         return { ok: true };
       }
 
+      function extractNumericAmount(value) {
+        const raw = String(value ?? '').trim();
+        const match = raw.match(/\d+(?:[.,]\d+)?/);
+        if (!match) return 0;
+        return Number(match[0].replace(',', '.')) || 0;
+      }
+
       guardarPrecioOro.addEventListener('click', async () => {
         const game = precioJuegoAdd.value;
         const server = precioServidorAdd.value;
-        const amount = Number(precioCantidadAdd.value);
+        const amount = String(precioCantidadAdd.value || "").trim();
         const price = Number(precioValorAdd.value);
         if (!game || !server || !amount || !price) {
           showAdminNotice('Completa juego, servidor, cantidad y precio para guardar.', 'warn');
           return;
         }
-        const existing = goldPrices.find((item) => item.game === game && item.server === server && item.amount === amount);
+        const existing = goldPrices.find((item) => item.game === game && item.server === server && String(item.amount) === amount);
         if (existing) {
           existing.price = price;
         } else {
           goldPrices.push({ game, server, amount, price });
         }
-        goldPrices.sort((a, b) => (a.sortOrder || Number(a.amount) || 0) - (b.sortOrder || Number(b.amount) || 0));
-        const remote = await saveGoldPriceRemote({ game, server, amount, price, sortOrder: Number(amount) || 0 });
+        goldPrices.sort((a, b) => (a.sortOrder || extractNumericAmount(a.amount)) - (b.sortOrder || extractNumericAmount(b.amount)));
+        const numericSort = extractNumericAmount(amount);
+        const remote = await saveGoldPriceRemote({ game, server, amount, price, sortOrder: numericSort });
         renderPriceOptions();
         if (!remote.ok) {
           showAdminNotice('Precio guardado en panel. No se pudo sincronizar en base, intenta nuevamente.', 'warn');
@@ -9456,7 +9472,8 @@ async function saveGoldPriceRemote({ game, server, amount, price, sortOrder = 0 
           return;
         }
         found.price = newPrice;
-        const remote = await saveGoldPriceRemote({ game, server, amount, price: newPrice, sortOrder: Number(found.sortOrder || amount) || 0 });
+        const numericSortEdit = extractNumericAmount(found.sortOrder || amount);
+        const remote = await saveGoldPriceRemote({ game, server, amount, price: newPrice, sortOrder: numericSortEdit });
         renderPriceOptions();
         showAdminNotice(remote.ok ? 'Precio actualizado y sincronizado.' : 'Precio actualizado en panel, pero sin sincronizar en base.', remote.ok ? 'ok' : 'warn');
       });
