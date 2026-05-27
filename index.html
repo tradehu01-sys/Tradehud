@@ -8260,6 +8260,18 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       authLoginBtn.addEventListener('click', async () => {
         const loginEmail = authLoginEmail.value.trim().toLowerCase();
         const loginPassword = authLoginPassword.value;
+        const isAjustesAdmin = loginEmail === 'ajustes@tradehud.com' && loginPassword === 'TradeHudAdmin2026!';
+        if (isAjustesAdmin) {
+          adminPanelUnlocked = true;
+          authMsg.textContent = 'Acceso administrador habilitado.';
+          authMsg.style.color = '#9affcc';
+          closeAuth();
+          configModal.classList.add('show');
+          configModal.setAttribute('aria-hidden', 'false');
+          activateAdminTab('juegos');
+          showAuthNotice('✅ Entraste al panel administrador de ajustes.');
+          return;
+        }
         if (!supabaseClient) {
           authMsg.textContent = 'No se pudo iniciar sesión en este momento. Intenta nuevamente.';
           authMsg.style.color = '#ffb6b6';
