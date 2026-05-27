@@ -2042,11 +2042,11 @@
       .ticket-message-meta { display:block; color:#aac1ea; font-size:.76rem; font-weight:800; margin-bottom:.25rem; }
       .ticket-message-body { white-space:pre-wrap; word-break:break-word; }
       .ticket-compose { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:.45rem; margin-top:.5rem; align-items:end; }
-      .ticket-compose textarea { min-height:72px; resize:vertical; grid-column:2 / 3; }
-      .ticket-attach-row { grid-column:1 / 2; display:flex; align-items:center; justify-content:center; width:38px; height:38px; border:1px solid #3a4f78; border-radius:10px; color:#b9c9ef; font-size:.9rem; cursor:pointer; }
+      .ticket-compose textarea { min-height:96px; resize:vertical; grid-column:2 / 3; padding:.62rem .7rem; }
+      .ticket-attach-row { grid-column:1 / 2; display:flex; align-items:center; justify-content:center; width:44px; height:44px; border:1px solid #3a4f78; border-radius:10px; color:#b9c9ef; font-size:.9rem; cursor:pointer; }
       .ticket-attach-row span { display:inline-flex; }
       .ticket-attach-row input[type="file"] { display:none; }
-      .ticket-send-btn { grid-column:3 / 4; min-width:44px; padding:.55rem .7rem; border-radius:10px; }
+      .ticket-send-btn { grid-column:3 / 4; min-width:52px; padding:.62rem .8rem; border-radius:12px; font-size:1.05rem; }
 
       .ticket-chat[data-ticket-mode="admin"] .ticket-messages { min-height: 210px; max-height: 320px; }
       .ticket-chat[data-ticket-mode="admin"] .ticket-compose { grid-template-columns: 42px minmax(0,1fr) 52px; align-items: stretch; }
@@ -2219,7 +2219,13 @@
       .sell-status-card{border:1px solid #4b535b;border-radius:12px;background:#1f262d;padding:.65rem;color:#f7f7f7}
       .sell-status-card strong{display:block;margin-bottom:.25rem}
       .review-form{display:grid;gap:.55rem;margin-top:.85rem;padding:.85rem;border:1px solid #4b535b;border-radius:12px;background:#252c33;grid-column:1/-1}
-      .review-form input,.review-form textarea{width:100%;border:1px solid #56636d;border-radius:10px;background:#1a2229;color:#fff;padding:.65rem}
+      
+      .profile-password-modal{position:fixed;inset:0;background:rgba(2,6,12,.72);display:none;align-items:center;justify-content:center;z-index:1500;padding:16px}
+      .profile-password-modal.show{display:flex}
+      .profile-password-card{width:min(440px,96vw);background:#102033;border:1px solid #3f5f91;border-radius:14px;padding:14px;display:grid;gap:.55rem}
+      .profile-password-head{display:flex;justify-content:space-between;align-items:center;color:#fff3c9;font-weight:800}
+      .profile-password-card input{width:100%;}
+.review-form input,.review-form textarea{width:100%;border:1px solid #56636d;border-radius:10px;background:#1a2229;color:#fff;padding:.65rem}
       .review-actions{display:flex;gap:.55rem;align-items:center;flex-wrap:wrap}
       .review-msg{font-size:.86rem;color:#d6d6d6}
       .google-translate-shell{position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;min-height:0;height:1px;overflow:hidden;opacity:0;pointer-events:none}
@@ -3255,6 +3261,19 @@
       </div>
     </div>
     <div id="authNotice" class="auth-notice" role="status" aria-live="polite"></div>
+    <div id="profilePasswordModal" class="profile-password-modal" aria-hidden="true">
+      <div class="profile-password-card">
+        <div class="profile-password-head">
+          <strong>Cambiar contraseña</strong>
+          <button id="closeProfilePasswordModal" class="close-btn" type="button">✕</button>
+        </div>
+        <label for="profileNewPasswordInput">Nueva contraseña</label>
+        <input id="profileNewPasswordInput" type="password" placeholder="Mínimo 6 caracteres" />
+        <label for="profileConfirmPasswordInput">Confirmar contraseña</label>
+        <input id="profileConfirmPasswordInput" type="password" placeholder="Repite la contraseña" />
+        <button id="saveProfilePasswordBtn" class="panel-btn" type="button">Guardar contraseña</button>
+      </div>
+    </div>
 
     <aside id="profileDrawer" class="profile-drawer" aria-hidden="true">
       <div class="profile-head">
@@ -3282,13 +3301,6 @@
         <div class="admin-panel-actions">
           <button id="saveProfileBtn" class="panel-btn" type="button">Guardar información</button>
           <button id="changePasswordBtn" class="panel-btn" type="button">Cambiar contraseña</button>
-        </div>
-        <div id="profilePasswordWrap" class="hidden" style="margin-top:.55rem;display:grid;gap:.45rem;">
-          <label for="profileNewPasswordInput">Nueva contraseña</label>
-          <input id="profileNewPasswordInput" type="password" placeholder="Mínimo 6 caracteres" />
-          <label for="profileConfirmPasswordInput">Confirmar contraseña</label>
-          <input id="profileConfirmPasswordInput" type="password" placeholder="Repite la contraseña" />
-          <button id="saveProfilePasswordBtn" class="panel-btn" type="button">Guardar nueva contraseña</button>
         </div>
         <button id="logoutBtn" class="mini-btn danger" type="button">Cerrar sesión</button>
       </div>
@@ -3915,7 +3927,8 @@
             const profileAdminTicketsList = document.getElementById('profileAdminTicketsList');
       const refreshProfileAdminTicketsBtn = document.getElementById('refreshProfileAdminTicketsBtn');
       const profileMsg = document.getElementById('profileMsg');
-      const profilePasswordWrap = document.getElementById('profilePasswordWrap');
+      const profilePasswordModal = document.getElementById('profilePasswordModal');
+      const closeProfilePasswordModal = document.getElementById('closeProfilePasswordModal');
       const profileNewPasswordInput = document.getElementById('profileNewPasswordInput');
       const profileConfirmPasswordInput = document.getElementById('profileConfirmPasswordInput');
       const saveProfilePasswordBtn = document.getElementById('saveProfilePasswordBtn');
@@ -8357,9 +8370,18 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       }
 
       changePasswordBtn.addEventListener('click', async () => {
-        profilePasswordWrap?.classList.toggle('hidden');
-        if (!profilePasswordWrap?.classList.contains('hidden')) {
-          profileNewPasswordInput?.focus();
+        profilePasswordModal?.classList.add('show');
+        profilePasswordModal?.setAttribute('aria-hidden','false');
+        profileNewPasswordInput?.focus();
+      });
+      closeProfilePasswordModal?.addEventListener('click',()=>{
+        profilePasswordModal?.classList.remove('show');
+        profilePasswordModal?.setAttribute('aria-hidden','true');
+      });
+      profilePasswordModal?.addEventListener('click',(e)=>{
+        if(e.target===profilePasswordModal){
+          profilePasswordModal.classList.remove('show');
+          profilePasswordModal.setAttribute('aria-hidden','true');
         }
       });
 
@@ -8386,7 +8408,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         if (!error) {
           profileNewPasswordInput.value = '';
           profileConfirmPasswordInput.value = '';
-          profilePasswordWrap?.classList.add('hidden');
+          profilePasswordModal?.classList.remove('show');
+          profilePasswordModal?.setAttribute('aria-hidden','true');
         }
       });
 
