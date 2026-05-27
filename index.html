@@ -8061,7 +8061,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         const passValue = (authLoginPassword?.value || '').trim();
         const isQuickAdmin =
           ((emailValue === 'admin' || emailValue === 'admin@tradehud.com') && (passValue === 'admin123' || passValue === DEFAULT_ADMIN_PASSWORD))
-          || (emailValue === 'ajustes@tradehud@gmail.com' && passValue === 'TradeHudAdmin2026!');
+          || (emailValue === 'ajustes@tradehud.com' && passValue === 'TradeHudAdmin2026!');
         if (isQuickAdmin) {
           adminPanelUnlocked = true;
           authModal.classList.remove('show');
@@ -8278,7 +8278,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       authLoginBtn.addEventListener('click', async () => {
         const loginEmail = authLoginEmail.value.trim().toLowerCase();
         const loginPassword = authLoginPassword.value;
-        const isQuickAdmin = ((loginEmail === 'admin' || loginEmail === 'admin@tradehud.com') && (loginPassword === 'admin123' || loginPassword === DEFAULT_ADMIN_PASSWORD)) || (loginEmail === 'ajustes@tradehud@gmail.com' && loginPassword === 'TradeHudAdmin2026!');
+        const isQuickAdmin = ((loginEmail === 'admin' || loginEmail === 'admin@tradehud.com') && (loginPassword === 'admin123' || loginPassword === DEFAULT_ADMIN_PASSWORD)) || (loginEmail === 'ajustes@tradehud.com' && loginPassword === 'TradeHudAdmin2026!');
         if (isQuickAdmin) {
           adminPanelUnlocked = true;
           authMsg.textContent = 'Acceso de administrador habilitado.';
@@ -9790,15 +9790,12 @@ async function saveGoldPriceRemote({ game, server, amount, price, sortOrder = 0 
 
       cerrarSesionAdmin.addEventListener('click', async () => {
         await performLogoutUi();
-        showAdminNotice('Sección cerrada ✨ ¡Buen trabajo, admin!', 'ok');
-        setTimeout(() => {
-          configModal.classList.remove('show');
-          configModal.setAttribute('aria-hidden', 'true');
-          adminModal.classList.add('show');
-          adminModal.setAttribute('aria-hidden', 'false');
-          adminMsg.textContent = 'Sesión cerrada correctamente.';
-          adminMsg.style.color = '#8fdcff';
-        }, 450);
+        configModal.classList.remove('show');
+        configModal.setAttribute('aria-hidden', 'true');
+        openAuth('login');
+        authMsg.textContent = 'Sesión cerrada correctamente. Inicia sesión para continuar.';
+        authMsg.style.color = '#8fdcff';
+        showAuthNotice('👋 Sesión cerrada. Vuelve a ingresar cuando quieras.');
       });
 
       const i18nMessages = {

@@ -7,7 +7,7 @@
 -- Passwords are NOT set from this script.
 -- Create/update these users in Authentication > Users first:
 -- - admin@tradehud.com
--- - ajustes@tradehud@gmail.com
+-- - ajustes@tradehud.com
 -- Then run this SQL.
 
 create extension if not exists pgcrypto;
@@ -46,7 +46,7 @@ $$;
 insert into public.user_profiles (id, email, name, is_admin, is_online, last_seen)
 select u.id, lower(u.email), 'Administrador TradeHud', true, false, now()
 from auth.users u
-where lower(u.email) in ('admin@tradehud.com', 'ajustes@tradehud@gmail.com')
+where lower(u.email) in ('admin@tradehud.com', 'ajustes@tradehud.com')
 on conflict (id) do update
 set email = excluded.email,
     name = excluded.name,
@@ -61,5 +61,5 @@ where email is not null;
 -- Quick check results
 select id, email, is_admin
 from public.user_profiles
-where lower(email) in ('admin@tradehud.com', 'ajustes@tradehud@gmail.com')
+where lower(email) in ('admin@tradehud.com', 'ajustes@tradehud.com')
 order by email;
