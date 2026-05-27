@@ -7783,11 +7783,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           }
         }
         const { data: gamesData, error: gamesError } = gamesResult;
-        if (gamesError || categoriesError) {
+        const { data: goldData, error: goldError } = await supabaseClient
+          .from('gold_catalog_entries')
+          .select('game,server,package_name,price_usd,sort_order');
+        if (gamesError || categoriesError || goldError) {
           if (gamesError?.message?.toLowerCase().includes('services')) {
             showAdminNotice('Falta la columna "services" en la tabla games de Supabase.', 'warn');
           } else {
-            const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
+            const detail = gamesError?.message || categoriesError?.message || goldError?.message || 'sin detalle';
             showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
             setDbStatus(`no conectada: ${detail}`.slice(0, 120), 'warn');
           }
@@ -7831,6 +7834,15 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             name: row.name,
             description: row.description || 'Sin descripción.',
             image: row.image || ''
+          })));
+        }
+        if (Array.isArray(goldData) && goldData.length) {
+          goldPrices.splice(0, goldPrices.length, ...goldData.map((row) => ({
+            game: row.game,
+            server: row.server,
+            amount: row.package_name,
+            price: Number(row.price_usd || 0),
+            sortOrder: Number(row.sort_order || 0)
           })));
         }
         if (!dbConnectionNoticeShown) {
@@ -9281,18 +9293,52 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       precioServidorEdit.addEventListener('change', renderPriceOptions);
       precioPaqueteEdit.addEventListener('change', () => {
         const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
-        if (!selected) return;
+        if (!selected) {
+          showAdminNotice('Selecciona un paquete para eliminar.', 'warn');
+          return;
+        }
         const [game, server, amount] = selected.value.split('|');
         const found = goldPrices.find((item) => item.game === game && item.server === server && String(item.amount) === amount);
         if (found) precioValorEdit.value = String(found.price);
       });
 
-      guardarPrecioOro.addEventListener('click', () => {
+      async function saveGoldPriceRemote({ game, server, amount, price, sortOrder = 0 }) {
+        if (!supabaseClient) return { ok: false, reason: 'offline' };
+        const payload = {
+          game,
+          server,
+          package_name: `${amount}`,
+          price_usd: Number(price),
+          sort_order: Number(sortOrder) || Number(amount) || 0
+        };
+        const { error } = await supabaseClient
+          .from('gold_catalog_entries')
+          .upsert(payload, { onConflict: 'game,server,package_name' });
+        if (error) return { ok: false, reason: error.message || 'error' };
+        return { ok: true };
+      }
+
+      async function deleteGoldPriceRemote({ game, server, amount }) {
+        if (!supabaseClient) return { ok: false, reason: 'offline' };
+        const { error } = await supabaseClient
+          .from('gold_catalog_entries')
+          .delete()
+          .eq('game', game)
+          .eq('server', server)
+          .eq('package_name', String(amount));
+        if (error) return { ok: false, reason: error.message || 'error' };
+        return { ok: true };
+      }
+
+      guardarPrecioOro.addEventListener('click', async () => {
         const game = precioJuegoAdd.value;
         const server = precioServidorAdd.value;
         const amount = Number(precioCantidadAdd.value);
         const price = Number(precioValorAdd.value);
-        if (!game || !server || !amount || !price) return;
+        if (!game || !server || !amount || !price) {
+          showAdminNotice('Completa juego, servidor, cantidad y precio para guardar.', 'warn');
+          return;
+        }
         const existing = goldPrices.find((item) => item.game === game && item.server === server && item.amount === amount);
         if (existing) {
           existing.price = price;
@@ -9300,31 +9346,50 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           goldPrices.push({ game, server, amount, price });
         }
         goldPrices.sort((a, b) => (a.sortOrder || Number(a.amount) || 0) - (b.sortOrder || Number(b.amount) || 0));
+        const remote = await saveGoldPriceRemote({ game, server, amount, price, sortOrder: Number(amount) || 0 });
         renderPriceOptions();
-        showAdminNotice(`Precio guardado: ${game} / ${server} / ${amount}`, 'ok');
+        if (!remote.ok) {
+          showAdminNotice('Precio guardado en panel. No se pudo sincronizar en base, intenta nuevamente.', 'warn');
+        } else {
+          showAdminNotice(`Precio guardado y sincronizado: ${game} / ${server} / ${amount}`, 'ok');
+        }
       });
 
-      guardarEdicionPrecio.addEventListener('click', () => {
+      guardarEdicionPrecio.addEventListener('click', async () => {
         const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
-        if (!selected) return;
+        if (!selected) {
+          showAdminNotice('Selecciona un paquete para eliminar.', 'warn');
+          return;
+        }
         const [game, server, amount] = selected.value.split('|');
         const newPrice = Number(precioValorEdit.value);
         const found = goldPrices.find((item) => item.game === game && item.server === server && String(item.amount) === amount);
-        if (!found || !newPrice) return;
+        if (!found || !newPrice) {
+          showAdminNotice('Precio inválido. Verifica el valor antes de guardar.', 'warn');
+          return;
+        }
         found.price = newPrice;
+        const remote = await saveGoldPriceRemote({ game, server, amount, price: newPrice, sortOrder: Number(found.sortOrder || amount) || 0 });
         renderPriceOptions();
-        showAdminNotice('Precio actualizado.', 'ok');
+        showAdminNotice(remote.ok ? 'Precio actualizado y sincronizado.' : 'Precio actualizado en panel, pero sin sincronizar en base.', remote.ok ? 'ok' : 'warn');
       });
 
-      eliminarPrecio.addEventListener('click', () => {
+      eliminarPrecio.addEventListener('click', async () => {
         const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
-        if (!selected) return;
+        if (!selected) {
+          showAdminNotice('Selecciona un paquete para eliminar.', 'warn');
+          return;
+        }
         const [game, server, amount] = selected.value.split('|');
         const idx = goldPrices.findIndex((item) => item.game === game && item.server === server && String(item.amount) === amount);
-        if (idx < 0) return;
+        if (idx < 0) {
+          showAdminNotice('No se encontró el precio seleccionado.', 'warn');
+          return;
+        }
         goldPrices.splice(idx, 1);
+        const remote = await deleteGoldPriceRemote({ game, server, amount });
         renderPriceOptions();
-        showAdminNotice('Precio eliminado.', 'warn');
+        showAdminNotice(remote.ok ? 'Precio eliminado y sincronizado.' : 'Precio eliminado del panel, pero no se pudo borrar en base.', remote.ok ? 'warn' : 'warn');
       });
 
       verCategoriasOro?.addEventListener('click', () => {
