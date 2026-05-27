@@ -8059,7 +8059,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       openLogin.addEventListener('click', async () => {
         const emailValue = (authLoginEmail?.value || '').trim().toLowerCase();
         const passValue = (authLoginPassword?.value || '').trim();
-        const isQuickAdmin = (emailValue === 'admin' const isQuickAdmin = (emailValue === 'admin' || emailValue === 'admin@tradehud.com') && passValue === 'admin123';const isQuickAdmin = (emailValue === 'admin' || emailValue === 'admin@tradehud.com') && passValue === 'admin123'; passValue === 'admin123') || (emailValue === 'admin@tradehud.com' const isQuickAdmin = (emailValue === 'admin' || emailValue === 'admin@tradehud.com') && passValue === 'admin123';const isQuickAdmin = (emailValue === 'admin' || emailValue === 'admin@tradehud.com') && passValue === 'admin123'; (passValue === 'admin123' || passValue === DEFAULT_ADMIN_PASSWORD));
+        const isQuickAdmin =
+          ((emailValue === 'admin' || emailValue === 'admin@tradehud.com') && (passValue === 'admin123' || passValue === DEFAULT_ADMIN_PASSWORD))
+          || (emailValue === 'ajustes@tradehud@gmail.com' && passValue === 'TradeHudAdmin2026!');
         if (isQuickAdmin) {
           adminPanelUnlocked = true;
           authModal.classList.remove('show');
@@ -8072,6 +8074,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         }
         openAuth('login');
       });
+      
       closeAuthModal.addEventListener('click', closeAuth);
       authModal.addEventListener('click', (e) => {
         if (e.target === authModal) closeAuth();
@@ -8275,7 +8278,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       authLoginBtn.addEventListener('click', async () => {
         const loginEmail = authLoginEmail.value.trim().toLowerCase();
         const loginPassword = authLoginPassword.value;
-        const isQuickAdmin = (loginEmail === 'admin' && loginPassword === 'admin123') || (loginEmail === 'admin@tradehud.com' && (loginPassword === 'admin123' || loginPassword === DEFAULT_ADMIN_PASSWORD));
+        const isQuickAdmin = ((loginEmail === 'admin' || loginEmail === 'admin@tradehud.com') && (loginPassword === 'admin123' || loginPassword === DEFAULT_ADMIN_PASSWORD)) || (loginEmail === 'ajustes@tradehud@gmail.com' && loginPassword === 'TradeHudAdmin2026!');
         if (isQuickAdmin) {
           adminPanelUnlocked = true;
           authMsg.textContent = 'Acceso de administrador habilitado.';
