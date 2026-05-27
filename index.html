@@ -8055,24 +8055,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       openRegister.addEventListener('click', () => openAuth('register'));
-      openLogin.addEventListener('click', async () => {
-        const emailValue = (authLoginEmail?.value || '').trim().toLowerCase();
-        const passValue = (authLoginPassword?.value || '').trim();
-        const isQuickAdmin =
-          ((emailValue === 'admin' || emailValue === 'admin@tradehud.com') && (passValue === 'admin123' || passValue === DEFAULT_ADMIN_PASSWORD))
-          || (emailValue === 'ajustes@tradehud.com' && passValue === 'TradeHudAdmin2026!');
-        if (isQuickAdmin) {
-          adminPanelUnlocked = true;
-          authModal.classList.remove('show');
-          authModal.setAttribute('aria-hidden', 'true');
-          configModal.classList.add('show');
-          configModal.setAttribute('aria-hidden', 'false');
-          activateAdminTab('juegos');
-          showAuthNotice('✅ Modo admin rápido activado.');
-          return;
-        }
-        openAuth('login');
-      });
+      openLogin.addEventListener('click', () => openAuth('login'));
       
       closeAuthModal.addEventListener('click', closeAuth);
       authModal.addEventListener('click', (e) => {
@@ -8277,18 +8260,6 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       authLoginBtn.addEventListener('click', async () => {
         const loginEmail = authLoginEmail.value.trim().toLowerCase();
         const loginPassword = authLoginPassword.value;
-        const isQuickAdmin = ((loginEmail === 'admin' || loginEmail === 'admin@tradehud.com') && (loginPassword === 'admin123' || loginPassword === DEFAULT_ADMIN_PASSWORD)) || (loginEmail === 'ajustes@tradehud.com' && loginPassword === 'TradeHudAdmin2026!');
-        if (isQuickAdmin) {
-          adminPanelUnlocked = true;
-          authMsg.textContent = 'Acceso de administrador habilitado.';
-          authMsg.style.color = '#9affcc';
-          closeAuth();
-          configModal.classList.add('show');
-          configModal.setAttribute('aria-hidden', 'false');
-          activateAdminTab('juegos');
-          showAuthNotice('✅ Panel de ajustes abierto como admin.');
-          return;
-        }
         if (!supabaseClient) {
           authMsg.textContent = 'No se pudo iniciar sesión en este momento. Intenta nuevamente.';
           authMsg.style.color = '#ffb6b6';
@@ -8398,6 +8369,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         currentUser = null;
         currentProfile = null;
         adminPanelUnlocked = false;
+        if (profileNameInput) profileNameInput.value = '';
+        if (profileDiscordInput) profileDiscordInput.value = '';
+        if (profilePhoneInput) profilePhoneInput.value = '';
         updateProfileAdminUi();
         toggleUserButtons();
         await safeUiAwait(renderActiveSellersStatus(), 2500, 'Render sellers status after logout');
