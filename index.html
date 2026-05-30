@@ -14,6 +14,8 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://i.imgur.com/BzQZCIH.png" />
 
+    <link rel="icon" type="image/png" href="https://i.imgur.com/BzQZCIH.png" />
+    <link rel="shortcut icon" type="image/png" href="https://i.imgur.com/BzQZCIH.png" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script>
       (function seedTradeHubTranslateCookie(){
@@ -609,6 +611,34 @@
         color: #c8d5ef;
         line-height: 1.5;
       }
+
+      .gold-feature-links {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .55rem;
+        margin-top: .75rem;
+      }
+      .gold-feature-link {
+        border: 1px solid #59636e;
+        border-radius: 10px;
+        background: #171d24;
+        color: #f7f7f7;
+        cursor: pointer;
+        padding: .42rem;
+        text-align: left;
+        transition: transform .18s ease, border-color .18s ease;
+      }
+      .gold-feature-link:hover { transform: translateY(-2px); border-color: #f6ca63; }
+      .gold-feature-link img {
+        width: 100%;
+        height: 92px;
+        margin: 0 0 .38rem;
+        border-radius: 7px;
+        background: #10151b;
+        object-fit: cover;
+      }
+      .gold-feature-link strong { display: block; font-size: .78rem; line-height: 1.25; }
+      @media (max-width: 480px) { .gold-feature-links { grid-template-columns: 1fr; } }
 
 
       .mmorpg-info-box {
@@ -2596,6 +2626,16 @@
               <img src="https://i.imgur.com/UiHN4SB.png" alt="Oro y monedas" />
               <h3>Oro y monedas</h3>
               <p>Precios claros, stock confirmado y entrega rápida.</p>
+              <div class="gold-feature-links" aria-label="Accesos directos de oro destacados">
+                <button class="gold-feature-link" type="button" data-featured-gold-game="World of Warcraft 20th Anniversary TBC">
+                  <img src="https://i.imgur.com/s84nz4c.png" alt="WoW Classic Burning Crusade TBC" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://i.imgur.com/UiHN4SB.png';" />
+                  <strong>WoW Classic Burning Crusade TBC</strong>
+                </button>
+                <button class="gold-feature-link" type="button" data-featured-gold-game="Albion Online">
+                  <img src="https://i.imgur.com/fiJfYkH.png" alt="Mercado de Albion Online" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://i.imgur.com/UiHN4SB.png';" />
+                  <strong>Mercado de Albion Online</strong>
+                </button>
+              </div>
             </div>
             <div class="home-item">
               <img src="https://i.imgur.com/yHA321T.png" alt="Boosting personalizado" />
@@ -10096,6 +10136,21 @@ async function saveGoldPriceRemote({ game, server, amount, price, sortOrder = 0 
           startupLanguageOverlay.setAttribute('aria-hidden', 'true');
         });
       }
+
+      document.querySelectorAll('[data-featured-gold-game]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const gameName = button.dataset.featuredGoldGame;
+          const gameIndex = games.findIndex((game) => game.name === gameName);
+          if (gameIndex < 0) {
+            showAuthNotice('Esta categoría todavía no está disponible.', 'warn');
+            return;
+          }
+          showPage('oro');
+          openGamePage(gameIndex);
+          openGoldOrderPanel(games[gameIndex]);
+          requestAnimationFrame(() => goldOrderPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+        });
+      });
 
       if (reviewForm) {
         reviewForm.addEventListener('submit', async (event) => {
