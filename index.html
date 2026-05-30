@@ -3,13 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="canonical" href="https://tradeshud.com/" />
     <title>TradeHud | Compra y Venta de Oro MMORPG</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='26' fill='%23070b15'/%3E%3Crect x='9' y='9' width='110' height='110' rx='22' fill='%23110f0a' stroke='%23f6ca63' stroke-width='6'/%3E%3Ctext x='64' y='58' text-anchor='middle' fill='%23f6ca63' font-family='Arial,sans-serif' font-size='34' font-weight='900'%3ETH%3C/text%3E%3Ctext x='64' y='86' text-anchor='middle' fill='%23ffffff' font-family='Arial,sans-serif' font-size='18' font-weight='800'%3EMMO%3C/text%3E%3C/svg%3E" />
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%23070b15'/%3E%3Crect x='13' y='13' width='154' height='154' rx='30' fill='%23110f0a' stroke='%23f6ca63' stroke-width='8'/%3E%3Ctext x='90' y='82' text-anchor='middle' fill='%23f6ca63' font-family='Arial,sans-serif' font-size='48' font-weight='900'%3ETH%3C/text%3E%3Ctext x='90' y='121' text-anchor='middle' fill='%23ffffff' font-family='Arial,sans-serif' font-size='25' font-weight='800'%3EMMO%3C/text%3E%3C/svg%3E" />
+    <meta name="description" content="TradeHud marketplace MMORPG: compra y venta de oro, cuentas, streaming, giftcards y servicios P2P con soporte por ticket." />
+    <meta property="og:image" content="https://i.imgur.com/qi2Wg8a.png" />
+    <meta property="og:image:secure_url" content="https://i.imgur.com/qi2Wg8a.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://i.imgur.com/qi2Wg8a.png" />
+
+    <link rel="icon" type="image/png" href="https://i.imgur.com/qi2Wg8a.png" />
     <script>
       (function seedTradeHubTranslateCookie(){
         var lang = 'es';
-        try { lang = localStorage.getItem('tradehud_language') || 'es'; } catch (e) {}
+        lang = (window.__tradehudLanguage || 'es');
         var value = lang === 'en' ? '/es/en' : '/es/es';
         var expires = 'Fri, 31 Dec 9999 23:59:59 GMT';
         document.cookie = 'googtrans=' + value + ';path=/;expires=' + expires;
@@ -529,41 +538,32 @@
       }
       #popularCascadeGrid:hover .popular-cascade-track { animation-play-state: paused; }
       .popular-cascade-card {
-        width: min(520px, 86vw);
-        min-height: 92px;
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        align-items: center;
-        gap: .75rem;
-        padding: .75rem .9rem;
-        background: radial-gradient(circle at 15% 0%, rgba(246,202,99,.2), transparent 34%), linear-gradient(135deg,#252f38,#151d24 58%,#222e37);
-        box-shadow: 0 14px 36px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05);
-      }
-      .popular-cascade-card h3 { margin: 0 0 .15rem; color: #fff; font-size: 1rem; }
-      .popular-cascade-card p { margin: 0; color: #d6d6d6; font-size: .83rem; line-height: 1.35; }
-      .popular-rank {
-        width: 58px;
-        height: 58px;
-        border-radius: 16px;
-        display: grid;
-        place-items: center;
-        border: 1px solid rgba(255,255,255,.18);
-        background: rgba(255,255,255,.07);
-        color: #ffd670;
-        font-size: 1.4rem;
-        font-weight: 950;
+        width: min(330px, 86vw);
         overflow: hidden;
+        border: 1px solid #3e4d61;
+        border-radius: 14px;
+        background: linear-gradient(180deg,#1a2430,#111923);
+        box-shadow: 0 14px 32px rgba(0,0,0,.28);
       }
-      .popular-rank img,
-      .popular-rank svg {
-        width: 82%;
-        height: 82%;
-        object-fit: contain;
-        display: block;
-        margin: 0;
-        background: transparent;
-        border-radius: 10px;
+      .popular-top {
+        display:flex;align-items:center;justify-content:space-between;gap:.7rem;
+        padding:.7rem .8rem;
+        background: linear-gradient(90deg,#f59e0b,#f97316);
       }
+      .popular-top.blue { background: linear-gradient(90deg,#1d4ed8,#2563eb); }
+      .popular-top .popular-rank {
+        width:38px;height:38px;border-radius:999px;display:grid;place-items:center;
+        overflow:hidden;border:2px solid rgba(255,255,255,.7);background:#0f172a;
+      }
+      .popular-top .popular-rank img { width:100%;height:100%;object-fit:cover; }
+      .popular-headline { flex:1;min-width:0; }
+      .popular-headline h3 { margin:0;color:#fff;font-size:1rem;line-height:1.1; }
+      .popular-headline p { margin:.1rem 0 0;color:#ecfeff;font-size:.8rem;font-weight:700; }
+            .popular-preview { position:relative;height:118px;background:#020617; }
+      .popular-preview img { width:100%;height:100%;object-fit:cover;display:block; }
+      .popular-chip { position:absolute;right:.6rem;top:.55rem;background:#2563eb;color:#fff;border-radius:999px;padding:.2rem .5rem;font-size:.7rem;font-weight:800; }
+      .popular-bottom { display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.62rem .8rem; }
+      .popular-bottom p { margin:0;color:#dbeafe;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
       .popular-count, .popular-section-btn {
         border: 1px solid rgba(255,255,255,.32);
         border-radius: 999px;
@@ -576,7 +576,7 @@
         text-decoration: none;
       }
       .popular-section-btn { background: linear-gradient(135deg,#0bbf6a,#158dff); color:#fff; border-color:#fff; }
-      @media (max-width:760px){ .popular-cascade-card{width:86vw;grid-template-columns:auto 1fr}.popular-count{grid-column:1/-1;text-align:center} }
+      @media (max-width:760px){ .popular-cascade-card{width:86vw;} .popular-top{padding:.58rem .65rem;} .popular-preview{height:102px;} }
 
 
       .home-item img {
@@ -608,6 +608,46 @@
         margin: 0;
         color: #c8d5ef;
         line-height: 1.5;
+      }
+
+      .gold-feature-showcase {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      .gold-feature-link {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: #f7f7f7;
+        cursor: pointer;
+        overflow: hidden;
+        padding: 0;
+        text-align: left;
+        transition: transform .18s ease, filter .18s ease;
+      }
+      .gold-feature-link:hover { transform: translateY(-3px); filter: brightness(1.08); }
+      .gold-feature-link img {
+        width: 100%;
+        height: 390px;
+        margin: 0;
+        background: transparent;
+        object-fit: cover;
+        display: block;
+        animation: goldFeatureJump 2.8s ease-in-out infinite;
+        will-change: transform;
+      }
+      .gold-feature-link:nth-child(2) img { animation-delay: .35s; }
+      .gold-feature-link:hover img { animation-play-state: paused; }
+      .gold-feature-link strong { display: block; padding: .72rem 0 0; font-size: 1.1rem; line-height: 1.25; }
+      @keyframes goldFeatureJump {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-14px); }
+      }
+      @media (max-width: 760px) {
+        .gold-feature-showcase { grid-template-columns: 1fr; gap: 1rem; }
+        .gold-feature-link img { height: 245px; }
       }
 
 
@@ -1592,6 +1632,7 @@
       }
 
       .logout-btn {
+        margin-left:auto;
         border: 1px solid #8a6a2b;
         border-radius: 8px;
         background: linear-gradient(120deg, #2e2514, #5b4418);
@@ -2038,10 +2079,45 @@
       .ticket-message.user { border-color:rgba(122,178,255,.55); }
       .ticket-message-meta { display:block; color:#aac1ea; font-size:.76rem; font-weight:800; margin-bottom:.25rem; }
       .ticket-message-body { white-space:pre-wrap; word-break:break-word; }
-      .ticket-compose { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.45rem; margin-top:.5rem; align-items:end; }
-      .ticket-compose textarea { min-height:72px; resize:vertical; }
-      .ticket-attach-row { grid-column:1 / -1; display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; color:#b9c9ef; font-size:.82rem; }
-      .ticket-attach-row input[type="file"] { max-width:260px; }
+      .ticket-compose { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:.45rem; margin-top:.5rem; align-items:end; }
+      .ticket-compose textarea { min-height:96px; resize:vertical; grid-column:2 / 3; padding:.62rem .7rem; }
+      .ticket-attach-row { grid-column:1 / 2; display:flex; align-items:center; justify-content:center; width:44px; height:44px; border:1px solid #3a4f78; border-radius:10px; color:#b9c9ef; font-size:.9rem; cursor:pointer; }
+      .ticket-attach-row span { display:inline-flex; }
+      .ticket-attach-row input[type="file"] { display:none; }
+      .ticket-send-btn { grid-column:3 / 4; min-width:52px; padding:.62rem .8rem; border-radius:12px; font-size:1.05rem; }
+
+      .ticket-chat[data-ticket-mode="admin"] .ticket-messages { min-height: 210px; max-height: 320px; }
+      .ticket-chat[data-ticket-mode="admin"] .ticket-compose { grid-template-columns: 42px minmax(0,1fr) 52px; align-items: stretch; }
+      .ticket-chat[data-ticket-mode="admin"] .ticket-compose textarea { min-height: 122px; font-size: .98rem; line-height: 1.35; padding: .6rem .65rem; }
+      .ticket-chat[data-ticket-mode="admin"] .ticket-send-btn { font-size: 1.05rem; font-weight: 800; }
+      .ticket-chat[data-ticket-mode="admin"] .ticket-attach-row { width: 42px; height: 42px; }
+
+      @media (max-width: 980px) {
+        .profile-drawer { width: min(96vw, 560px); }
+        .admin-ticket-board { min-height: 56vh; max-height: 66vh; }
+      }
+      @media (max-width: 760px) {
+        .profile-drawer { width: 100vw; border-left: 0; border-radius: 0; }
+        .profile-head { position: sticky; top: 0; z-index: 2; background: rgba(4,10,20,.95); }
+        .profile-tabs { grid-template-columns: 1fr; gap: .45rem; }
+        .admin-ticket-board { max-height: 62vh; padding: .25rem; }
+        .ticket-chat[data-ticket-mode="admin"] .ticket-messages { min-height: 180px; max-height: 44vh; }
+      }
+      @media (max-width: 560px) {
+        .ticket-compose,
+        .ticket-chat[data-ticket-mode="admin"] .ticket-compose {
+          grid-template-columns: 38px minmax(0,1fr) 44px;
+          gap: .35rem;
+        }
+        .ticket-compose textarea,
+        .ticket-chat[data-ticket-mode="admin"] .ticket-compose textarea {
+          min-height: 86px;
+          font-size: .95rem;
+        }
+        .ticket-send-btn { min-width: 44px; padding: .45rem .55rem; }
+      }
+
+      
       .ticket-attachment { margin-top:.45rem; border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:.45rem; background:rgba(0,0,0,.16); }
       .ticket-attachment img, .ticket-attachment video { display:block; max-width:100%; max-height:280px; border-radius:10px; object-fit:contain; background:#02050a; }
       .ticket-attachment a { color:#9ed2ff; font-weight:800; }
@@ -2058,6 +2134,19 @@
         .sell-grid { grid-template-columns: 1fr; }
         .admin-split { grid-template-columns: 1fr; }
       }
+      
+      @media (max-width: 640px) {
+        .container { width: 100%; padding-inline: 10px; }
+        .nav { flex-direction: column; align-items: stretch; gap: .5rem; padding: .55rem 0; }
+        .logo { justify-content: center; }
+        .logo img { width: 128px; height: 40px; }
+        nav { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+        nav a { flex: 0 0 auto; font-size: .76rem; padding: .34rem .7rem; }
+        .nav-actions { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:.4rem; }
+        .nav-actions > * { min-width:0; width:100%; text-align:center; justify-content:center; font-size:.74rem; padding:.34rem .5rem; }
+        .nav-actions .admin-open { grid-column: 1 / -1; }
+      }
+
       @media (max-width: 640px) {
         .hero-wrap,.grid-3,.grid-4,.server-row,.split,.footer-grid,.about-grid { grid-template-columns: 1fr; }
         .gold-order-grid { grid-template-columns: 1fr; }
@@ -2168,7 +2257,16 @@
       .sell-status-card{border:1px solid #4b535b;border-radius:12px;background:#1f262d;padding:.65rem;color:#f7f7f7}
       .sell-status-card strong{display:block;margin-bottom:.25rem}
       .review-form{display:grid;gap:.55rem;margin-top:.85rem;padding:.85rem;border:1px solid #4b535b;border-radius:12px;background:#252c33;grid-column:1/-1}
-      .review-form input,.review-form textarea{width:100%;border:1px solid #56636d;border-radius:10px;background:#1a2229;color:#fff;padding:.65rem}
+      
+      .profile-password-modal{position:fixed;inset:0;background:rgba(2,6,12,.72);display:none;align-items:center;justify-content:center;z-index:1500;padding:16px}
+      .profile-password-modal.show{display:flex}
+      .profile-password-card{width:min(460px,96vw);background:linear-gradient(180deg,#11243b 0%,#0e1f34 100%);border:1px solid #4f74a8;border-radius:16px;padding:16px;display:grid;gap:.65rem;box-shadow:0 18px 45px rgba(1,5,11,.45)}
+      .profile-password-head{display:flex;justify-content:space-between;align-items:center;color:#fff3c9;font-weight:800}
+      .profile-password-card input{width:100%;border:1px solid #5d78a8;border-radius:12px;padding:.72rem .78rem;background:#0a1628;color:#e9f2ff;font-size:1rem}
+      .profile-password-card input:focus{outline:none;border-color:#9ac9ff;box-shadow:0 0 0 2px rgba(154,201,255,.18)}
+      .profile-password-card label{color:#e4efff;font-weight:700}
+      .profile-password-card .panel-btn{margin-top:.35rem;min-height:44px}
+.review-form input,.review-form textarea{width:100%;border:1px solid #56636d;border-radius:10px;background:#1a2229;color:#fff;padding:.65rem}
       .review-actions{display:flex;gap:.55rem;align-items:center;flex-wrap:wrap}
       .review-msg{font-size:.86rem;color:#d6d6d6}
       .google-translate-shell{position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;min-height:0;height:1px;overflow:hidden;opacity:0;pointer-events:none}
@@ -2339,6 +2437,8 @@
       }
 
 </style>
+  
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"TradeHud","url":"https://tradeshud.com/","logo":"https://i.imgur.com/qi2Wg8a.png"}</script>
   </head>
     <body class="preload">
     <div id="startupLanguageOverlay" class="startup-language-overlay" aria-hidden="false">
@@ -2383,7 +2483,7 @@
             <img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />
             Discord
           </a>
-          <button id="openAdmin" class="admin-open" data-i18n="adminAccess">Acceso Admin</button>
+          
         </div>
       </div>
     </header>
@@ -2391,7 +2491,7 @@
     <section class="top-banner-cascade" aria-label="Promociones destacadas TradeHud">
       <div class="banner-marquee">
         <a class="promo-banner" href="#oro" data-page-link data-page="oro">
-          <span class="promo-icon" aria-hidden="true">⚔️</span>
+          <span class="promo-icon" aria-hidden="true">🛒</span>
           <span class="promo-copy"><strong>Marketplace MMORPG activo</strong><span>Oro, cuentas y servicios con tickets seguros y atención directa.</span></span>
           <span class="promo-cta">Ver juegos</span>
         </a>
@@ -2416,7 +2516,7 @@
           <span class="promo-cta">P2P</span>
         </a>
         <a class="promo-banner" href="#oro" data-page-link data-page="oro" aria-hidden="true" tabindex="-1">
-          <span class="promo-icon" aria-hidden="true">⚔️</span>
+          <span class="promo-icon" aria-hidden="true">🛒</span>
           <span class="promo-copy"><strong>Marketplace MMORPG activo</strong><span>Oro, cuentas y servicios con tickets seguros y atención directa.</span></span>
           <span class="promo-cta">Ver juegos</span>
         </a>
@@ -2543,10 +2643,20 @@
               <p>Subidas, dungeons y metas PvE/PvP con jugadores expertos.</p>
             </div>
             <div class="home-item">
-              <img src="https://cdn.discordapp.com/attachments/1434981534833704970/1505269331108298943/image.png?ex=6a0d4e8f&is=6a0bfd0f&hm=720cce42780260901816750d7ed6dd70f74d2e4c4c72d31f8100ef54e0d053ef&" alt="Cuentas y servicios" />
+              <img src="https://i.imgur.com/3EGEUQd.png" alt="Cuentas y servicios" />
               <h3>Cuentas y servicios</h3>
               <p>Publica y vende con mediación segura dentro de la comunidad.</p>
             </div>
+          </article>
+          <article class="gold-feature-showcase" aria-label="Accesos directos de oro destacados">
+            <button class="gold-feature-link" type="button" data-featured-gold-game="World of Warcraft 20th Anniversary TBC">
+              <img src="https://i.imgur.com/1ku9XBY.png" alt="WoW Classic Burning Crusade TBC" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://i.imgur.com/UiHN4SB.png';" />
+              <strong>WoW Classic Burning Crusade TBC</strong>
+            </button>
+            <button class="gold-feature-link" type="button" data-featured-gold-game="Albion Online">
+              <img src="https://i.imgur.com/kTH7qDn.png" alt="Mercado de Albion Online" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://i.imgur.com/UiHN4SB.png';" />
+              <strong>Mercado de Albion Online</strong>
+            </button>
           </article>
         </div>
       </section>
@@ -2602,18 +2712,6 @@
         <div class="container">
           <h2 class="section-title">Testimonios de <span>clientes</span></h2>
           <article class="home-block testimonials-grid" id="testimonialsGrid">
-            <div class="home-item">
-              <h3>“Entrega puntual”</h3>
-              <p>“Compré oro para WoW y en minutos ya estaba listo. Me explicaron todo por Discord.” — Cliente Retail</p>
-            </div>
-            <div class="home-item">
-              <h3>“Soporte excelente”</h3>
-              <p>“Primera vez usando el servicio y me acompañaron hasta cerrar la venta sin problemas.” — Vendedor L2</p>
-            </div>
-            <div class="home-item">
-              <h3>“Recomiendo TradeHud”</h3>
-              <p>“El proceso fue claro, rápido y seguro. Volveré a contratar boosting.” — Jugador Albion</p>
-            </div>
             <form id="reviewForm" class="review-form">
               <strong>Agrega tu reseña</strong>
               <input id="reviewName" type="text" maxlength="80" placeholder="Tu nombre o alias" />
@@ -2707,9 +2805,9 @@
                 <li>Soporte humano antes, durante y después de la compra.</li>
               </ul>
               <div class="game-contacts purchase-contact-actions">
-                <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
-                <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
-                <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Discord</a>
+                <a class="contact-link whatsapp-link" href="https://chat.whatsapp.com/H55chfz2dhxB7FgygYIpwv" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
+                <a class="contact-link telegram-link" href="https://t.me/TradeHubGames" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
+                <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" /><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" /> Discord</a>
               </div>
               <button id="backToCatalogsBtn" class="panel-btn game-back-btn" type="button">⬅ Volver a catálogos</button>
             </aside>
@@ -2780,9 +2878,9 @@
                   <div class="gold-order-note-item">✅ Seguimiento hasta confirmar recepción.</div>
                 </div>
                 <div class="purchase-contact-actions" aria-label="Contactos rápidos para comprar oro">
-                  <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
-                  <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
-                  <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Discord</a>
+                  <a class="contact-link whatsapp-link" href="https://chat.whatsapp.com/H55chfz2dhxB7FgygYIpwv" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
+                  <a class="contact-link telegram-link" href="https://t.me/TradeHubGames" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
+                  <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />💬 Discord</a>
                 </div>
               </aside>
             </div>
@@ -2790,9 +2888,9 @@
           <div id="accountsPanel" class="accounts-panel hidden">
             <strong style="display:block;margin-bottom:.55rem;">Cuentas disponibles por juego</strong>
             <div class="purchase-contact-actions" aria-label="Contactos rápidos para comprar cuentas">
-              <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
-              <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
-              <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Discord</a>
+              <a class="contact-link whatsapp-link" href="https://chat.whatsapp.com/H55chfz2dhxB7FgygYIpwv" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
+              <a class="contact-link telegram-link" href="https://t.me/TradeHubGames" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
+              <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />💬 Discord</a>
             </div>
             <div class="order-bottom-actions">
               <button id="accountsBackBottomBtn" class="back-to-services-btn" type="button">← Volver</button>
@@ -2801,7 +2899,7 @@
             <div id="accountsPanelList" class="accounts-grid" style="margin-top:.75rem;"></div>
           </div>
           <div id="boostingOptionsPanel" class="boosting-options-panel hidden">
-            <strong style="display:block;margin-bottom:.55rem;">Opciones de boosting</strong>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.55rem;"><strong style="display:block;">Opciones de boosting</strong><button id="boostingBackTopBtn" class="mini-btn" type="button">← Volver</button></div>
             <div id="boostingButtonsView" class="boosting-buttons">
               <button id="boostProfBtn" class="boosting-circle-btn" type="button"><img src="https://i.imgur.com/zw0daBf.png" alt="Profesiones" /></button>
               <button id="boostLevelBtn" class="boosting-circle-btn" type="button"><img src="https://i.imgur.com/WrbIQPl.png" alt="Leveleo de cuentas" /></button>
@@ -2864,9 +2962,9 @@
                 <button id="boostCreateTicketBtn" class="panel-btn create-order-btn icon-btn" type="button"><span class="btn-icon">🧾</span>CREAR ORDEN</button>
               </div>
               <div class="purchase-contact-actions" aria-label="Contactos rápidos para boosting">
-                <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
-                <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
-                <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Discord</a>
+                <a class="contact-link whatsapp-link" href="https://chat.whatsapp.com/H55chfz2dhxB7FgygYIpwv" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
+                <a class="contact-link telegram-link" href="https://t.me/TradeHubGames" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
+                <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />💬 Discord</a>
               </div>
             </div>
           </div>
@@ -2920,7 +3018,7 @@
                   src="https://i.imgur.com/ODy7Rqb.png"
                   alt="Recibe tu pago TradeHud"
                 />
-                <a class="discord-sell-btn" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer">Discord</a>
+                <a class="discord-sell-btn" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" /> Discord</a>
                 <p class="sell-note">🛡️ <strong>Transacción moderada y protegida por TradeHud.</strong></p>
                 <p class="sell-note"><strong>FAQ breve:</strong> ¿Qué pasa si me intentan estafar? El equipo de TradeHud modera y congela la transacción hasta resolver.</p>
                 <p class="sell-note">⚠️ TradeHud no está afiliado oficialmente con los desarrolladores de los juegos.</p>
@@ -2965,9 +3063,9 @@
               <div class="streaming-support-item"><strong>🎮 Discord</strong>Canal comunitario</div>
             </div>
             <div class="purchase-contact-actions" aria-label="Contactos rápidos para servicios digitales">
-              <a class="contact-link whatsapp-link" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
-              <a class="contact-link telegram-link" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
-              <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />Discord</a>
+              <a class="contact-link whatsapp-link" href="https://chat.whatsapp.com/H55chfz2dhxB7FgygYIpwv" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/whatsapp/25D366" alt="" />WhatsApp</a>
+              <a class="contact-link telegram-link" href="https://t.me/TradeHubGames" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/telegram/26A5E4" alt="" />Telegram</a>
+              <a class="contact-link discord-link" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img class="contact-icon" src="https://cdn.simpleicons.org/discord/5865F2" alt="" />💬 Discord</a>
             </div>
           </div>
           <div class="streaming-modal-layout">
@@ -3100,7 +3198,7 @@
           <a href="https://www.youtube.com/channel/UCJvhSvnlYs8pKYx3lwy4p2g" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="https://cdn.simpleicons.org/youtube/FF0000" alt="YouTube" /></a>
           <a href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer" aria-label="Discord"><img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" /></a>
           <a href="https://www.tiktok.com/@tradehubmmoprg?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><img src="https://cdn.simpleicons.org/tiktok/FFFFFF" alt="TikTok" /></a>
-          <a href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram" /></a>
+          <a href="https://t.me/TradeHubGames" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram" /></a>
         </div>
       </div>
       <div class="container footer-grid">
@@ -3127,9 +3225,9 @@
         <div class="footer-box">
           <h4>Soporte y ayuda</h4>
           <ul>
-            <li><a class="link-with-icon" href="https://api.whatsapp.com/send?phone=584247597206" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp" />WhatsApp</a></li>
-            <li><a class="link-with-icon" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />Discord</a></li>
-            <li><a class="link-with-icon" href="https://t.me/Tradehubmmoprg" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram" />Telegram</a></li>
+            <li><a class="link-with-icon" href="https://chat.whatsapp.com/H55chfz2dhxB7FgygYIpwv" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp" />WhatsApp</a></li>
+            <li><a class="link-with-icon" href="https://discord.gg/jSSPHhGWv2" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/discord/5865F2" alt="Discord" />💬 Discord</a></li>
+            <li><a class="link-with-icon" href="https://t.me/TradeHubGames" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram" />Telegram</a></li>
           </ul>
         </div>
         <div class="footer-box">
@@ -3214,6 +3312,19 @@
       </div>
     </div>
     <div id="authNotice" class="auth-notice" role="status" aria-live="polite"></div>
+    <div id="profilePasswordModal" class="profile-password-modal" aria-hidden="true">
+      <div class="profile-password-card">
+        <div class="profile-password-head">
+          <strong>Cambiar contraseña</strong>
+          <button id="closeProfilePasswordModal" class="close-btn" type="button">✕</button>
+        </div>
+        <label for="profileNewPasswordInput">Nueva contraseña</label>
+        <input id="profileNewPasswordInput" type="password" placeholder="Mínimo 6 caracteres" />
+        <label for="profileConfirmPasswordInput">Confirmar contraseña</label>
+        <input id="profileConfirmPasswordInput" type="password" placeholder="Repite la contraseña" />
+        <button id="saveProfilePasswordBtn" class="panel-btn" type="button">Guardar contraseña</button>
+      </div>
+    </div>
 
     <aside id="profileDrawer" class="profile-drawer" aria-hidden="true">
       <div class="profile-head">
@@ -3228,7 +3339,7 @@
         <button id="tabProfileInfo" class="profile-tab active" type="button" role="tab" aria-selected="true">Perfil</button>
         <button id="tabProfileOrders" class="profile-tab" type="button" role="tab" aria-selected="false">Órdenes</button>
         <button id="tabProfileAdminTickets" class="profile-tab hidden" type="button" role="tab" aria-selected="false">Admin tickets</button>
-      </div>
+              </div>
       <div id="profileSectionStatus" class="profile-section-status" role="status" aria-live="polite">Estás en la sección: Perfil</div>
       <div id="profileInfoPane" class="profile-pane" data-section="profile">
         <label for="profileNameInput">Nombre</label>
@@ -3246,10 +3357,14 @@
       </div>
       <div id="profileOrdersPane" class="profile-pane hidden" data-section="orders">
         <p class="auth-hint">Tus tickets se cargan automáticamente aquí. Si acabas de crear una orden, aparecerá sin recargar; el chat se sincroniza en vivo con administración.</p>
+        <div class="admin-panel-actions" style="margin-top:0;">
+          <strong style="flex:1;display:flex;align-items:center;">Mis órdenes</strong>
+          <button id="refreshUserOrdersBtn" class="mini-btn" type="button">Actualizar</button>
+        </div>
         <div id="userOrdersList"></div>
       </div>
-      <div id="profileAdminTicketsPane" class="profile-pane hidden" data-section="admin-tickets">
-        <p class="auth-hint">Vista de administrador dentro de tu cuenta. Revisa, responde y elimina tickets sin abrir el panel de configuración.</p>
+      <div id="profileAdminTicketsPane" class="profile-pane hidden" data-section="adminTickets">
+        <p class="auth-hint">Vista de administrador dentro de tu cuenta. Aquí gestionas todos los tickets.</p>
         <div class="admin-panel-actions" style="margin-top:0;">
           <strong style="flex:1;display:flex;align-items:center;">Administrador · tickets</strong>
           <button id="refreshProfileAdminTicketsBtn" class="mini-btn" type="button">Actualizar</button>
@@ -3289,7 +3404,6 @@
         <div class="admin-head">
           <strong>Configuraciones</strong>
           <div class="admin-head-actions">
-            <button id="closeConfig" class="close-btn">✕</button>
             <button id="cerrarSesionAdmin" class="logout-btn" type="button">Cerrar sesión</button>
           </div>
         </div>
@@ -3300,8 +3414,7 @@
           <button id="tabListaServidoresAdmin" class="panel-tab" type="button">Lista servidores (juegos)</button>
           <button id="tabPreciosOro" class="panel-tab" type="button">Precios</button>
           <button id="tabMarketAdmin" class="panel-tab" type="button">Streaming / Servicios</button>
-                    <button id="tabTicketsAdmin" class="panel-tab" type="button">Tickets</button>
-          <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
+                              <button id="tabCuentas" class="panel-tab" type="button">Cuentas</button>
           <button id="tabBosteo" class="panel-tab" type="button">Bosteo</button>
           <button id="tabReviewsAdmin" class="panel-tab" type="button">Reseñas</button>
         </div>
@@ -3344,7 +3457,7 @@
             <div class="admin-split">
               <div class="form-group">
                 <label for="precioCantidadAdd">Cantidad de oro</label>
-                <input id="precioCantidadAdd" type="number" min="100" step="100" placeholder="100" />
+                <input id="precioCantidadAdd" type="text" placeholder="Ej: 10g, 100G, 1m" />
               </div>
               <div class="form-group">
                 <label for="precioValorAdd">Precio (USD)</label>
@@ -3780,6 +3893,7 @@
       const boostLevelBtn = document.getElementById('boostLevelBtn');
       const boostBackBtn = document.getElementById('boostBackBtn');
       const boostFormBackBottomBtn = document.getElementById('boostFormBackBottomBtn');
+      const boostingBackTopBtn = document.getElementById('boostingBackTopBtn');
       const accountsBackBottomBtn = document.getElementById('accountsBackBottomBtn');
       const boostLevelForm = document.getElementById('boostLevelForm');
       const boostCreateTicketBtn = document.getElementById('boostCreateTicketBtn');
@@ -3804,7 +3918,7 @@
       const openRegister = document.getElementById('openRegister');
       const openLogin = document.getElementById('openLogin');
       const openProfile = document.getElementById('openProfile');
-      const DEFAULT_LOGO_DATA_URL = 'https://i.imgur.com/BzQZCIH.png';
+      const DEFAULT_LOGO_DATA_URL = 'https://i.imgur.com/qi2Wg8a.png';
       const mainLogoImg = document.getElementById('mainLogoImg');
       const authMiniLogoImg = document.querySelector('.auth-mini-logo');
       const adminLogoImg = document.querySelector('.admin-logo');
@@ -3846,7 +3960,7 @@
       const tabProfileInfo = document.getElementById('tabProfileInfo');
       const tabProfileOrders = document.getElementById('tabProfileOrders');
       const tabProfileAdminTickets = document.getElementById('tabProfileAdminTickets');
-      const profileSectionStatus = document.getElementById('profileSectionStatus');
+            const profileSectionStatus = document.getElementById('profileSectionStatus');
       const profileInfoPane = document.getElementById('profileInfoPane');
       const profileOrdersPane = document.getElementById('profileOrdersPane');
       const profileAdminTicketsPane = document.getElementById('profileAdminTicketsPane');
@@ -3859,9 +3973,15 @@
       const changePasswordBtn = document.getElementById('changePasswordBtn');
       const logoutBtn = document.getElementById('logoutBtn');
       const userOrdersList = document.getElementById('userOrdersList');
-      const profileAdminTicketsList = document.getElementById('profileAdminTicketsList');
+      const refreshUserOrdersBtn = document.getElementById('refreshUserOrdersBtn');
+            const profileAdminTicketsList = document.getElementById('profileAdminTicketsList');
       const refreshProfileAdminTicketsBtn = document.getElementById('refreshProfileAdminTicketsBtn');
       const profileMsg = document.getElementById('profileMsg');
+      const profilePasswordModal = document.getElementById('profilePasswordModal');
+      const closeProfilePasswordModal = document.getElementById('closeProfilePasswordModal');
+      const profileNewPasswordInput = document.getElementById('profileNewPasswordInput');
+      const profileConfirmPasswordInput = document.getElementById('profileConfirmPasswordInput');
+      const saveProfilePasswordBtn = document.getElementById('saveProfilePasswordBtn');
       const adminModal = document.getElementById('adminModal');
       const adminLogin = document.getElementById('adminLogin');
       const adminMsg = document.getElementById('adminMsg');
@@ -4600,7 +4720,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       };
       const marketDefaultImages = {
         p2p: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496252825313738893/ChatGPT_Image_20_abr_2026_06_02_01_p.m..png?ex=69f11e88&is=69efcd08&hm=7751f959e6f1d551c29e6c1e192d29e912108763eac3c3c7226c6f888f324d07&',
-        streaming: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496280085509050398/ChatGPT_Image_21_abr_2026_06_42_28_p.m..png?ex=69f137eb&is=69efe66b&hm=5034ac3e22adfcec3b816c54b532231aaf50a3ade08fa72c95cffd6bf3ab15f3&',
+        streaming: 'https://i.imgur.com/3EGEUQd.png',
         giftcards: 'https://cdn.discordapp.com/attachments/1495867730752966788/1496255540295368915/ChatGPT_Image_20_abr_2026_04_27_24_p.m..png?ex=69f1210f&is=69efcf8f&hm=5496b6f9571541aa163db12db3656b95db9381c8cd44c2bd9308b440f79a9fb0&'
       };
 
@@ -5208,6 +5328,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let selectedAdminIndex = 0;
       let editingAdminIndex = null;
       let pageSwitchTimer = null;
+      let pageSwitchToken = 0;
       let activeOrderGame = null;
       let presenceSnapshot = { onlineCount: 0, adminOnline: false, byUserId: {} };
       const PRESENCE_STALE_MS = 35000;
@@ -5233,8 +5354,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       let selectedMarketCategory = '';
       let dbConnectionNoticeShown = false;
       let goldCategoriesSupportsImageColumn = true;
+      let ticketRealtimeChannel = null;
+      let ticketRefreshInFlight = false;
       const serviceRenderOrder = ['gold', 'boosting', 'accounts'];
-      const factionOptionsByGame = JSON.parse(localStorage.getItem('tradehud_faction_options') || '{}');
+      const factionOptionsByGame = {};
 
       function getFactionConfig(gameName = '') {
         if (!factionOptionsByGame[gameName]) {
@@ -5244,18 +5367,30 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function saveFactionConfig() {
-        localStorage.setItem('tradehud_faction_options', JSON.stringify(factionOptionsByGame));
+        return true;
       }
 
       async function saveFactionConfigRemote(gameName = '') {
-        if (!supabaseClient || !gameName) return;
+        if (!supabaseClient || !gameName) return false;
         const config = getFactionConfig(gameName);
-        await supabaseClient.from('gold_game_options').upsert({
+        const payload = {
           game: gameName,
           faction_disabled: Boolean(config.disabled),
           faction_options: config.options || [],
           updated_at: new Date().toISOString()
-        });
+        };
+        const { error } = await supabaseClient
+          .from('gold_game_options')
+          .upsert(payload, { onConflict: 'game' });
+        if (error) {
+          if (adminPanelUnlocked || configModal?.classList.contains('show')) {
+            showAdminNotice(`No se pudo guardar facciones en Supabase (${gameName}): ${friendlyError(error.message)}`, 'warn');
+          } else {
+            console.warn('saveFactionConfigRemote failed:', gameName, error.message);
+          }
+          return false;
+        }
+        return true;
       }
 
       async function loadGoldGameOptionsFromSupabase() {
@@ -5268,6 +5403,38 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           };
         });
         saveFactionConfig();
+      }
+
+
+      async function refreshTicketUisNow() {
+        if (ticketRefreshInFlight) return;
+        ticketRefreshInFlight = true;
+        try {
+          if (currentUser) await renderUserOrders();
+          if (isAdminSession()) {
+            await renderAdminTickets(adminTicketsList);
+            await renderAdminTickets(profileAdminTicketsList);
+          }
+        } catch (e) {
+          console.warn('refreshTicketUisNow failed', e);
+        } finally {
+          ticketRefreshInFlight = false;
+        }
+      }
+
+      function setupTicketRealtime() {
+        if (!supabaseClient || ticketRealtimeChannel) return;
+        ticketRealtimeChannel = supabaseClient
+          .channel('tradehud-live-tickets')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => {
+            refreshTicketUisNow();
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'ticket_messages' }, () => {
+            refreshTicketUisNow();
+          })
+          .subscribe((status) => {
+            if (status === 'SUBSCRIBED') console.log('ticket realtime active');
+          });
       }
 
       function isAdminUser(user, profile = null) {
@@ -5315,19 +5482,31 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const byUserId = {};
         if (currentUser?.id) byUserId[currentUser.id] = true;
         let onlineCount = currentUser ? 1 : 0;
-        let adminOnline = Boolean(adminPanelUnlocked || (currentProfile?.is_admin && isProfileOnline(currentProfile)));
+        let adminOnline = Boolean(isAdminSession() || adminPanelUnlocked || (currentProfile?.is_admin && isProfileOnline(currentProfile)));
         if (supabaseClient) {
           const { data } = await supabaseClient
             .from('user_profiles')
             .select('id,email,is_admin,is_online,last_seen')
             .limit(300);
-          if (Array.isArray(data)) {
+          if (Array.isArray(data) && data.length) {
             onlineCount = data.filter(isProfileOnline).length;
             data.forEach((profile) => { byUserId[profile.id] = isProfileOnline(profile); });
-            adminOnline = adminOnline || data.some((profile) => isProfileOnline(profile) && (profile.is_admin || ADMIN_EMAILS.includes(String(profile.email || '').toLowerCase())));
+            adminOnline = adminOnline || data.some((profile) => (profile.is_admin || ADMIN_EMAILS.includes(String(profile.email || '').toLowerCase())) && (profile.is_online !== false || isProfileOnline(profile)));
+          }
+          if (!adminOnline && currentUser?.id) {
+            const recentCut = new Date(Date.now() - 8 * 60 * 1000).toISOString();
+            const { data: recentAdminMsgs } = await supabaseClient
+              .from('ticket_messages')
+              .select('id,created_at')
+              .eq('sender_role', 'admin')
+              .gte('created_at', recentCut)
+              .limit(1);
+            adminOnline = Boolean(Array.isArray(recentAdminMsgs) && recentAdminMsgs.length);
           }
         }
         userIds.forEach((id) => { if (id && currentUser?.id === id) byUserId[id] = true; });
+        if (currentUser?.id) byUserId[currentUser.id] = true;
+        if (isAdminSession()) adminOnline = true;
         presenceSnapshot = { onlineCount, adminOnline, byUserId };
         updatePresenceIndicators(presenceSnapshot);
         return presenceSnapshot;
@@ -5806,14 +5985,14 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         authModal.setAttribute('aria-hidden', 'false');
       }
 
-      function showAuthNotice(message, kind = 'info') {
+      function showAuthNotice(message, kind = 'info', durationMs = 7200) {
         authNotice.textContent = message;
         authNotice.classList.add('show');
         authNotice.classList.toggle('warn', kind === 'warn');
         clearTimeout(showAuthNotice._timer);
         showAuthNotice._timer = setTimeout(() => {
           authNotice.classList.remove('show');
-        }, 7200);
+        }, Math.max(1200, Number(durationMs) || 7200));
       }
 
       function isEmailRateLimitError(message = '') {
@@ -5996,57 +6175,63 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       function ticketMessageHtml(message = {}) {
         const created = message.created_at ? new Date(message.created_at).toLocaleString('es-ES') : 'Ahora';
         const role = message.sender_role === 'admin' ? 'admin' : 'user';
-        const label = role === 'admin' ? 'Admin TradeHub' : 'Cliente';
+        const label = role === 'admin' ? 'Administrador TradeHud' : (currentProfile?.name || currentUser?.user_metadata?.name || currentUser?.email?.split('@')?.[0] || 'Usuario');
         const parsed = decodeTicketMessage(message.message || '');
         const body = parsed.text ? escapeHtml(parsed.text) : '<span class="auth-hint">Archivo adjunto</span>';
         return `<div class="ticket-message ${role}"><span class="ticket-message-meta">${label} · ${escapeHtml(created)}</span><div class="ticket-message-body">${body}${ticketAttachmentHtml(parsed.attachment)}</div></div>`;
       }
 
-      const LOCAL_TICKETS_KEY = 'tradehud_ticket_mirror';
-      const LOCAL_TICKET_MESSAGES_KEY = 'tradehud_ticket_message_mirror';
+      const inMemoryTickets = [];
+      const pendingUserTickets = new Map();
+      let ticketCreationInFlight = false;
+      let hardTicketCreateLockUntil = 0;
+      const recentTicketFingerprints = new Map();
+      let lastUserTicketsCache = { items: [], ts: 0 };
+      let renderUserOrdersInFlight = false;
 
-      function readLocalJson(key, fallback) {
-        try { return JSON.parse(localStorage.getItem(key) || '') || fallback; } catch { return fallback; }
-      }
-
-      function writeLocalJson(key, value) {
-        localStorage.setItem(key, JSON.stringify(value));
-      }
+      const inMemoryTicketMessages = {};
+      const sessionTicketMirror = [];
 
       function getLocalTickets() {
-        return readLocalJson(LOCAL_TICKETS_KEY, []);
+        return [...inMemoryTickets];
       }
 
       function saveLocalTicket(ticket = {}) {
         if (!ticket.id) return;
         const tickets = getLocalTickets().filter((item) => item.id !== ticket.id);
         tickets.unshift(ticket);
-        writeLocalJson(LOCAL_TICKETS_KEY, tickets.slice(0, 200));
+        inMemoryTickets.length = 0;
+        inMemoryTickets.push(...tickets.slice(0, 200));
+      }
+
+      function saveSessionTicket(ticket = {}) {
+        if (!ticket.id) return;
+        const filtered = sessionTicketMirror.filter((item) => item.id !== ticket.id);
+        filtered.unshift(ticket);
+        sessionTicketMirror.length = 0;
+        sessionTicketMirror.push(...filtered.slice(0, 200));
       }
 
       function removeLocalTicket(ticketId) {
-        writeLocalJson(LOCAL_TICKETS_KEY, getLocalTickets().filter((item) => item.id !== ticketId));
-        const messages = readLocalJson(LOCAL_TICKET_MESSAGES_KEY, {});
-        delete messages[ticketId];
-        writeLocalJson(LOCAL_TICKET_MESSAGES_KEY, messages);
+        const tickets = getLocalTickets().filter((item) => item.id !== ticketId);
+        inMemoryTickets.length = 0;
+        inMemoryTickets.push(...tickets);
+        delete inMemoryTicketMessages[ticketId];
       }
 
       function getLocalTicketMessages(ticketId) {
-        const messages = readLocalJson(LOCAL_TICKET_MESSAGES_KEY, {});
-        return messages[ticketId] || [];
+        return inMemoryTicketMessages[ticketId] || [];
       }
 
       function saveLocalTicketMessage(ticketId, message = {}) {
         if (!ticketId || !message.message) return;
-        const messages = readLocalJson(LOCAL_TICKET_MESSAGES_KEY, {});
-        messages[ticketId] = [...(messages[ticketId] || []), {
+        inMemoryTicketMessages[ticketId] = [...(inMemoryTicketMessages[ticketId] || []), {
           id: message.id || `local-${Date.now()}`,
           ticket_id: ticketId,
           sender_role: message.sender_role || 'user',
           message: message.message,
           created_at: message.created_at || new Date().toISOString()
         }];
-        writeLocalJson(LOCAL_TICKET_MESSAGES_KEY, messages);
       }
 
       function mergeTicketMessages(remote = [], local = []) {
@@ -6059,7 +6244,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function isAdminSession() {
-        return adminPanelUnlocked || isAdminUser(currentUser, currentProfile);
+        return isAdminUser(currentUser, currentProfile) || (adminPanelUnlocked && currentUser?.id === LOCAL_ADMIN_ID);
       }
 
       function getAdminTicketClient() {
@@ -6068,7 +6253,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
 
       function ticketChatHtml(ticketId, mode = 'user') {
         const placeholder = mode === 'admin' ? 'Responder al cliente desde el panel admin...' : 'Escribe aquí para hablar con administración...';
-        return `<div class="ticket-chat" data-ticket-chat="${escapeHtml(ticketId)}" data-ticket-mode="${mode}"><div class="ticket-chat-head"><span>💬 Chat del ticket</span><small class="auth-hint">Auto</small></div><div class="ticket-messages" data-ticket-messages="${escapeHtml(ticketId)}"><p class="auth-hint">Cargando mensajes...</p></div><div class="ticket-compose"><textarea data-ticket-input="${escapeHtml(ticketId)}" placeholder="${placeholder}"></textarea><button class="panel-btn" type="button" data-ticket-send="${escapeHtml(ticketId)}">Enviar</button><label class="ticket-attach-row">📎 Imagen o video <input data-ticket-file="${escapeHtml(ticketId)}" type="file" accept="image/*,video/*" /></label></div></div>`;
+        return `<div class="ticket-chat" data-ticket-chat="${escapeHtml(ticketId)}" data-ticket-mode="${mode}"><div class="ticket-chat-head"><span>💬 Chat del ticket</span><small class="auth-hint">Auto</small></div><div class="ticket-messages" data-ticket-messages="${escapeHtml(ticketId)}"><p class="auth-hint">Cargando mensajes...</p></div><div class="ticket-compose"><label class="ticket-attach-row" title="Adjuntar imagen o video"><span>🖼️</span><input data-ticket-file="${escapeHtml(ticketId)}" type="file" accept="image/*,video/*" /></label><textarea data-ticket-input="${escapeHtml(ticketId)}" placeholder="${placeholder}"></textarea><button class="panel-btn ticket-send-btn" type="button" data-ticket-send="${escapeHtml(ticketId)}" aria-label="Enviar mensaje">➤</button></div></div>`;
       }
 
       async function fetchTicketMessages(ticketId) {
@@ -6097,7 +6282,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         wrap.scrollTop = wrap.scrollHeight;
       }
 
-      async function sendTicketMessage(ticketId, mode = 'user', root = document) {
+      async function sendTicketMessage(ticketId, mode = 'user', root = document, triggerBtn = null) {
         const isAdminMode = mode === 'admin' && isAdminSession();
         if (!currentUser && !isAdminMode) {
           openAuth('login');
@@ -6106,7 +6291,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
         const input = root.querySelector(`[data-ticket-input="${cssEscapeValue(ticketId)}"]`);
         const fileInput = root.querySelector(`[data-ticket-file="${cssEscapeValue(ticketId)}"]`);
-        const button = root.querySelector(`[data-ticket-send="${cssEscapeValue(ticketId)}"]`);
+        const button = triggerBtn || root.querySelector(`[data-ticket-send="${cssEscapeValue(ticketId)}"]`);
         let message = input?.value?.trim() || '';
         const file = fileInput?.files?.[0] || null;
         if (!message && !file) {
@@ -6118,6 +6303,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           return;
         }
         if (button) button.disabled = true;
+        safeUiAwait(getPresenceSnapshot([currentUser?.id].filter(Boolean)), 2000, 'Presence before send');
         if (file) {
           try {
             const url = await fileToDataUrl(file);
@@ -6130,39 +6316,47 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         }
         const senderRole = isAdminMode ? 'admin' : 'user';
         let error = null;
-        const primaryClient = isAdminMode ? getAdminTicketClient() : getTicketClient(false);
-        const primaryPayload = {
-          ticket_id: ticketId,
-          sender_id: isAdminMode && primaryClient === adminAnonClient ? null : currentUser?.id || null,
-          sender_role: senderRole,
-          message
-        };
-        if (primaryClient) {
-          const result = await primaryClient.from('ticket_messages').insert(primaryPayload);
-          error = result.error;
-        } else {
-          error = new Error('Supabase no conectado');
-        }
-        if (error && window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY && !isServiceRoleKey) {
-          const fallbackClient = getTicketClient(true);
-          const retry = await fallbackClient.from('ticket_messages').insert({
+        try {
+          const primaryClient = isAdminMode ? getAdminTicketClient() : getTicketClient(false);
+          const primaryPayload = {
             ticket_id: ticketId,
-            sender_id: null,
+            sender_id: isAdminMode && primaryClient === adminAnonClient ? null : currentUser?.id || null,
             sender_role: senderRole,
             message
-          });
-          if (!retry.error) error = null;
-          else error = retry.error;
+          };
+          if (primaryClient) {
+            const result = await withTimeout(primaryClient.from('ticket_messages').insert(primaryPayload), 7000, 'Envío de mensaje tardó demasiado');
+            error = result.error;
+          } else {
+            error = new Error('Supabase no conectado');
+          }
+
+          const fallbackClient = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY && !isServiceRoleKey ? getTicketClient(true) : null;
+          for (let attempt = 0; error && attempt < 4; attempt += 1) {
+            if (!fallbackClient) break;
+            const retry = await withTimeout(fallbackClient.from('ticket_messages').insert({
+              ticket_id: ticketId,
+              sender_id: null,
+              sender_role: senderRole,
+              message
+            }), 7000, 'Reintento de mensaje tardó demasiado');
+            error = retry.error || null;
+            if (!error) break;
+            await new Promise((resolve) => setTimeout(resolve, 900 * (attempt + 1)));
+          }
+
+          if (error) {
+            showAuthNotice(`No se pudo enviar al admin: ${friendlyError(error.message)}. Intenta de nuevo.`, 'warn', 10000);
+            return;
+          }
+
+          input.value = '';
+          if (fileInput) fileInput.value = '';
+          await renderTicketMessages(ticketId, root);
+          showAuthNotice('✅ Mensaje sincronizado en el chat del ticket.');
+        } finally {
+          if (button) button.disabled = false;
         }
-        if (error) {
-          saveLocalTicketMessage(ticketId, { sender_role: senderRole, message });
-          showAuthNotice(`Mensaje guardado solo en este navegador. No se pudo sincronizar con Supabase: ${friendlyError(error.message)}`, 'warn');
-        }
-        if (button) button.disabled = false;
-        input.value = '';
-        if (fileInput) fileInput.value = '';
-        await renderTicketMessages(ticketId, root);
-        if (!error) showAuthNotice('✅ Mensaje sincronizado en el chat del ticket.');
       }
 
       async function hydrateTicketChats(root = document) {
@@ -6176,10 +6370,9 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           [profileDrawer, configModal].filter(Boolean).forEach((root) => {
             const isOpen = root.classList.contains('show') || root.getAttribute('aria-hidden') === 'false';
             if (isOpen && root.querySelector('[data-ticket-chat]')) hydrateTicketChats(root);
-            if (isOpen && root === profileDrawer && profileOrdersPane && !profileOrdersPane.classList.contains('hidden')) {
-              const text = userOrdersList?.textContent || '';
-              if (!userOrdersList?.children.length || text.includes('Aún no') || text.includes('No se pudieron')) renderUserOrders();
-            }
+            // Evita recargar el listado de órdenes automáticamente aquí:
+            // eso provoca parpadeo/"reload" del panel usuario al crear tickets.
+            // La actualización de órdenes ya se hace por flujo explícito y realtime.
           });
         }, 2500);
       }
@@ -6213,14 +6406,16 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         profileDrawer.classList.add('show');
         profileDrawer.setAttribute('aria-hidden', 'false');
         await loadUserProfile();
+        showAuthNotice(profileMsg.textContent || 'Información guardada.', profileMsg.style.color === '#ffb6b6' ? 'warn' : 'info', 5000);
         const requestedSection = section === 'adminTickets' && !isAdminSession() ? 'orders' : section;
         setProfileSection(requestedSection);
         if (requestedSection === 'orders') await renderUserOrders();
         if (requestedSection === 'adminTickets') await renderAdminTickets(profileAdminTicketsList);
+        sessionStorage.setItem('tradehud_profile_open', '1');
         return true;
       }
 
-      const POPULAR_ORDERS_KEY = 'tradehud_popular_orders';
+      const inMemoryPopularOrders = {};
 
       function normalizePopularName(item = {}) {
         const raw = [item.game, item.server, item.product].filter(Boolean).join(' ');
@@ -6234,7 +6429,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function readPopularOrders() {
-        return readLocalJson(POPULAR_ORDERS_KEY, {});
+        return { ...inMemoryPopularOrders };
       }
 
       function trackPopularOrder(ticket = {}) {
@@ -6242,7 +6437,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const popular = readPopularOrders();
         const current = popular[name] || { name, count: 0, type: ticket.game || 'Orden' };
         popular[name] = { ...current, name, count: Number(current.count || 0) + 1, type: ticket.game || current.type || 'Orden' };
-        writeLocalJson(POPULAR_ORDERS_KEY, popular);
+        Object.keys(inMemoryPopularOrders).forEach((k)=>delete inMemoryPopularOrders[k]); Object.assign(inMemoryPopularOrders, popular);
         renderPopularCascade();
       }
 
@@ -6259,60 +6454,74 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const merged = new Map(defaults.map((item) => [item.name, item]));
         dynamic.forEach((item) => merged.set(item.name, { ...item, count: Number(item.count || 0) + Number(merged.get(item.name)?.count || 0) }));
         const items = [...merged.values()].sort((a, b) => Number(b.count || 0) - Number(a.count || 0)).slice(0, 6);
-        const makePopularIcon = (label, bg = '#172033', fg = '#ffffff', accent = '#f6ca63') => {
-          const safeLabel = escapeHtml(String(label || 'TH').slice(0, 5));
-          return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false"><rect width="96" height="96" rx="22" fill="${bg}"/><circle cx="48" cy="48" r="34" fill="none" stroke="${accent}" stroke-width="5" opacity=".85"/><text x="48" y="57" text-anchor="middle" fill="${fg}" font-family="Arial,sans-serif" font-size="26" font-weight="900">${safeLabel}</text></svg>`;
+        const popularTypeFallback = {
+          streaming: 'https://cdn.simpleicons.org/youtube/FF0000',
+          giftcards: 'https://cdn.simpleicons.org/steam/FFFFFF',
+          p2p: 'https://cdn.simpleicons.org/paypal/00457C',
+          oro: wowGameIcon
         };
-        const findPopularCatalogImage = (item = {}, gameMatch = null) => {
-          const name = String(item.name || '').toLowerCase().trim();
-          const type = String(item.type || '').toLowerCase();
-          const pools = [];
-          if (type.includes('stream')) pools.push('streaming');
-          if (type.includes('gift')) pools.push('giftcards');
-          if (type.includes('p2p') || name.includes('paypal') || name.includes('zinli') || name.includes('usdt')) pools.push('p2p');
-          pools.push('streaming', 'giftcards', 'p2p');
-          for (const key of pools) {
-            const categories = marketCatalog?.[key]?.categories || [];
-            const hit = categories.find((cat) => {
-              const catName = String(cat?.name || '').toLowerCase();
-              return catName && (name.includes(catName) || catName.includes(name));
-            }) || categories[0] || null;
-            const src = resolveMarketCategoryImage(key, hit);
-            const stableFallback = getStableCategoryFallbackImage(key, hit?.name || item.name || '');
-            const fallbackSrc = stableFallback || marketDefaultImages[key] || '';
-            if (src || fallbackSrc) return { src: src || fallbackSrc, alt: hit?.name || item.name || 'Categoría popular', fallbackSrc };
-          }
-          if (gameMatch?.icon) return { src: gameMatch.icon, alt: gameMatch.name || item.name || 'Juego popular', fallbackSrc: wowGameIcon || getStableCategoryFallbackImage('streaming', gameMatch.name || '') || '' };
-          return { src: marketDefaultImages.streaming || getStableCategoryFallbackImage('streaming', item.name || ''), alt: item.name || 'Categoría popular', fallbackSrc: getStableCategoryFallbackImage('streaming', item.name || '') || '' };
-        };
-        const iconFor = (item) => {
+        const inferPopularType = (item = {}) => {
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
-          const itemNameText = String(item.name || '').toLowerCase();
-          const gameMatch = games.find((game) => {
-            const gameName = String(game.name || '').toLowerCase();
-            return gameName && (text.includes(gameName) || (itemNameText && gameName.includes(itemNameText)));
-          });
-          if (text.includes('netflix')) return { svg: makePopularIcon('N', '#111111', '#E50914', '#E50914'), alt: 'Netflix', fallback: 'N' };
-          if (text.includes('discord') || text.includes('nitro')) return { svg: makePopularIcon('DIS', '#5865F2', '#ffffff', '#ffffff'), alt: 'Discord Nitro', fallback: 'D' };
-          if (text.includes('paypal')) return { svg: makePopularIcon('PP', '#003087', '#ffffff', '#009CDE'), alt: 'PayPal', fallback: '$' };
-          if (text.includes('zinli')) return { svg: makePopularIcon('Z', '#20c997', '#04140f', '#ffffff'), alt: 'Zinli / P2P', fallback: 'Z' };
-          if (text.includes('p2p') || text.includes('usdt')) return { svg: makePopularIcon('P2P', '#0f5132', '#ffffff', '#20c997'), alt: 'P2P', fallback: '$' };
-          if (text.includes('stream')) return { svg: makePopularIcon('▶', '#14213d', '#ffffff', '#4dabf7'), alt: 'Streaming', fallback: '▶' };
-          if (text.includes('gift')) return { svg: makePopularIcon('GIFT', '#6f42c1', '#ffffff', '#ffd43b'), alt: 'GiftCards', fallback: '🎁' };
-          if (text.includes('wow') || text.includes('warcraft')) return { svg: makePopularIcon('WOW', '#2a1d0e', '#f6ca63', '#f6ca63'), alt: 'World of Warcraft', fallback: 'WW' };
-          if (text.includes('albion')) return { svg: makePopularIcon('ALB', '#1f2937', '#f8fafc', '#d1a44d'), alt: 'Albion Online', fallback: 'ALB' };
-          if (text.includes('aion')) return { svg: makePopularIcon('AION', '#0f172a', '#e2e8f0', '#38bdf8'), alt: 'AION', fallback: 'A' };
-          if (text.includes('lineage')) return { svg: makePopularIcon('L2', '#111827', '#f8fafc', '#f59e0b'), alt: 'Lineage 2', fallback: 'L2' };
-          if (text.includes('dofus')) return { svg: makePopularIcon('DOF', '#1f2937', '#ecfeff', '#22d3ee'), alt: 'Dofus', fallback: 'DOF' };
-          if (text.includes('tibia')) return { svg: makePopularIcon('TIB', '#1f2937', '#f8fafc', '#34d399'), alt: 'Tibia', fallback: 'TIB' };
-          if (gameMatch?.name) return { svg: makePopularIcon(gameMatch.name.replace(/[^a-z0-9]/gi, '').slice(0,4).toUpperCase() || 'GAME', '#1f2937', '#ffffff', '#60a5fa'), alt: gameMatch.name || item.name || 'Juego popular', fallback: '🎮' };
-          return { svg: makePopularIcon('GAME', '#1f2937', '#ffffff', '#60a5fa'), alt: item.name || 'Juego popular', fallback: '🎮' };
+          if (text.includes('gift') || text.includes('nitro')) return 'giftcards';
+          if (text.includes('p2p') || text.includes('paypal') || text.includes('zinli') || text.includes('usdt')) return 'p2p';
+          if (text.includes('stream') || text.includes('netflix') || text.includes('disney') || text.includes('prime') || text.includes('hbo')) return 'streaming';
+          return 'oro';
+        };
+        const resolvePopularTypeIcon = (item = {}) => {
+          const type = inferPopularType(item);
+          const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
+          if (type === 'oro') {
+            const itemName = String(item.name || '').toLowerCase().trim();
+            const scoreGameMatch = (gameNameRaw = '') => {
+              const gameName = String(gameNameRaw || '').toLowerCase().trim();
+              if (!gameName) return -1;
+              if (itemName === gameName) return 100;
+              if (itemName.includes('wow retail') && gameName.includes('world of warcraft retail')) return 95;
+              if (itemName.includes('retail') && gameName.includes('retail')) return 90;
+              if (text.includes(gameName)) return 80;
+              if (gameName.includes(itemName)) return 70;
+              if (itemName.includes('wow') && gameName.includes('world of warcraft')) return 60;
+              return -1;
+            };
+            const ranked = games
+              .map((game) => ({ game, score: scoreGameMatch(game?.name) }))
+              .filter((entry) => entry.score >= 0)
+              .sort((a, b) => b.score - a.score || String(a.game?.name || '').length - String(b.game?.name || '').length);
+            const gameMatch = ranked[0]?.game || null;
+            return {
+              src: gameMatch?.icon || wowGameIcon || popularTypeFallback.oro,
+              alt: gameMatch?.name || item.name || 'Juego popular',
+              fallback: wowGameIcon || popularTypeFallback.oro
+            };
+          }
+          const categories = marketCatalog?.[type]?.categories || [];
+          const name = String(item.name || '').toLowerCase();
+          const hit = categories.find((cat) => {
+            const catName = String(cat?.name || '').toLowerCase();
+            return catName && (name.includes(catName) || catName.includes(name));
+          }) || categories[0] || null;
+          const src = resolveMarketCategoryImage(type, hit);
+          const stable = getStableCategoryFallbackImage(type, hit?.name || item.name || '');
+          const fallback = stable || popularTypeFallback[type];
+          return {
+            src: src || fallback,
+            alt: hit?.name || item.name || 'Categoría popular',
+            fallback
+          };
+        };
+        const dataUrlByType = {
+          streaming: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' rx='20' fill='%237f1d1d'/%3E%3Ccircle cx='48' cy='48' r='28' fill='none' stroke='%23ef4444' stroke-width='6'/%3E%3Ctext x='48' y='56' text-anchor='middle' fill='white' font-family='Arial' font-size='20' font-weight='800'%3ESTR%3C/text%3E%3C/svg%3E",
+          giftcards: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' rx='20' fill='%233b0764'/%3E%3Ccircle cx='48' cy='48' r='28' fill='none' stroke='%23facc15' stroke-width='6'/%3E%3Ctext x='48' y='56' text-anchor='middle' fill='white' font-family='Arial' font-size='20' font-weight='800'%3EGFT%3C/text%3E%3C/svg%3E",
+          p2p: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' rx='20' fill='%23064e3b'/%3E%3Ccircle cx='48' cy='48' r='28' fill='none' stroke='%2334d399' stroke-width='6'/%3E%3Ctext x='48' y='56' text-anchor='middle' fill='white' font-family='Arial' font-size='20' font-weight='800'%3EP2P%3C/text%3E%3C/svg%3E",
+          oro: wowGameIcon
         };
         const iconHtmlFor = (item) => {
-          const icon = iconFor(item);
-          if (icon?.svg) return icon.svg;
-          const label = String(item?.name || icon?.alt || 'GAME').replace(/[^a-z0-9]/gi, '').slice(0, 4).toUpperCase() || 'GAME';
-          return makePopularIcon(label, '#1f2937', '#ffffff', '#60a5fa');
+          const icon = resolvePopularTypeIcon(item);
+          const type = inferPopularType(item);
+          const dataFallback = dataUrlByType[type] || dataUrlByType.oro;
+          const primary = icon.src || dataFallback;
+          const secondary = icon.fallback || dataFallback;
+          return `<img src="${primary}" alt="${escapeHtml(icon.alt)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${secondary}';if(this.src==='${secondary}')this.src='${dataFallback}';" />`;
         };
         const pageFor = (item) => {
           const text = `${item.name || ''} ${item.type || ''}`.toLowerCase();
@@ -6323,100 +6532,282 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         };
         const cards = [...items, ...items].map((item, index) => {
           const page = pageFor(item);
-          return `<div class="home-item popular-cascade-card" ${index >= items.length ? 'aria-hidden="true"' : ''}><span class="popular-rank">${iconHtmlFor(item)}</span><div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.type || 'Categoría popular')} se mueve según órdenes e interacciones recientes.</p></div><a class="popular-section-btn" href="#${page}" data-page-link data-page="${page}">Ir</a></div>`;
+          const icon = resolvePopularTypeIcon(item);
+          const tone = page === 'streaming' || page === 'giftcards' ? 'blue' : '';
+          const chip = page === 'oro' ? 'CUENTA' : page === 'p2p' ? 'P2P' : 'OBJETO';
+          return `<div class="home-item popular-cascade-card" data-popular-page="${page}" data-popular-name="${escapeHtml(item.name)}" ${index >= items.length ? 'aria-hidden="true"' : ''}><div class="popular-top ${tone}"><span class="popular-rank">${iconHtmlFor(item)}</span><div class="popular-headline"><h3>${escapeHtml(item.name)}</h3><p>Disponible</p></div></div><div class="popular-preview"><img src="${icon.src || icon.fallback}" alt="${escapeHtml(icon.alt)}" onerror="this.onerror=null;this.src='${icon.fallback}';"/><span class="popular-chip">${chip}</span></div><div class="popular-bottom"><p>${escapeHtml(item.type || 'Categoría popular')}</p><a class="popular-section-btn" href="#${page}" data-popular-open="1" data-page-link data-page="${page}">Comprar ahora</a></div></div>`;
         }).join('');
         grid.innerHTML = `<div class="popular-cascade-track">${cards}</div>`;
         scheduleFullPageTranslation();
-        grid.querySelectorAll('[data-page-link]').forEach((link) => {
+        grid.querySelectorAll('[data-popular-open="1"]').forEach((link) => {
           link.addEventListener('click', (e) => {
             e.preventDefault();
-            showPage(link.dataset.page);
+            const card = link.closest('.popular-cascade-card');
+            const page = card?.dataset.popularPage || link.dataset.page || 'inicio';
+            const itemName = (card?.dataset.popularName || '').toLowerCase();
+            if (page === 'oro') {
+              const index = games.findIndex((g) => {
+                const n = String(g.name || '').toLowerCase();
+                return n && (itemName.includes(n) || n.includes(itemName) || (itemName.includes('wow retail') && n.includes('world of warcraft retail')));
+              });
+              showPage('oro');
+              if (index >= 0) {
+                setTimeout(() => openGamePage(index), 240);
+              }
+              return;
+            }
+            showPage(page);
+            setTimeout(() => {
+              const bucket = marketCatalog?.[page];
+              const match = bucket?.categories?.find((cat) => String(cat.name || '').toLowerCase().includes(itemName) || itemName.includes(String(cat.name || '').toLowerCase()));
+              if (!match) return;
+              if (page === 'streaming') {
+                const btn = [...(streamingCategoryGrid?.querySelectorAll('button.server') || [])].find((b) => b.querySelector('.server-name')?.textContent?.toLowerCase() === String(match.name || '').toLowerCase());
+                btn?.click();
+              } else if (page === 'giftcards') {
+                const btn = [...(giftcardsCategoryGrid?.querySelectorAll('button.server') || [])].find((b) => b.querySelector('.server-name')?.textContent?.toLowerCase() === String(match.name || '').toLowerCase());
+                btn?.click();
+              } else if (page === 'p2p') {
+                const btn = [...(p2pCategoryGrid?.querySelectorAll('button.server') || [])].find((b) => b.querySelector('.server-name')?.textContent?.toLowerCase() === String(match.name || '').toLowerCase());
+                btn?.click();
+              }
+            }, 260);
           });
         });
       }
 
-      async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
+      async function withTimeout(promise, ms = 8000, timeoutMessage = 'Tiempo de espera agotado') {
+        let timer;
+        try {
+          return await Promise.race([
+            promise,
+            new Promise((_, reject) => {
+              timer = setTimeout(() => reject(new Error(timeoutMessage)), ms);
+            })
+          ]);
+        } finally {
+          if (timer) clearTimeout(timer);
+        }
+      }
+
+      async function safeUiAwait(taskPromise, ms = 3500, label = 'UI task') {
+        try {
+          return await withTimeout(taskPromise, ms, `${label} tardó demasiado`);
+        } catch (error) {
+          console.warn(`${label} skipped after timeout/error`, error);
+          return null;
+        }
+      }
+
+            async function retryTicketSyncInBackground(ticketPayload, localTicket, attempts = 3) {
+        return false;
+        if (!supabaseClient) return false;
+        for (let i = 0; i < attempts; i += 1) {
+          const waitMs = 1200 * (i + 1);
+          await new Promise((resolve) => setTimeout(resolve, waitMs));
+          try {
+            const { error } = await withTimeout(supabaseClient.from('tickets').insert(ticketPayload), 9000, 'Supabase tardó demasiado en responder');
+            if (!error) {
+              const syncedTicket = { ...localTicket, synced: true };
+              pendingUserTickets.set(ticketPayload.id, syncedTicket);
+              saveLocalTicket(syncedTicket);
+              saveSessionTicket(syncedTicket);
+              safeUiAwait(renderUserOrders(), 3500, 'Render user orders retry sync');
+              if (isAdminSession()) safeUiAwait(renderAdminTickets(profileAdminTicketsList), 3500, 'Render admin tickets retry sync');
+              return true;
+            }
+          } catch {}
+        }
+        return false;
+      }
+
+async function saveTicketToProfile(payload = {}, successMessage = '✅ Orden creada. Revisa Perfil → Órdenes para seguimiento.') {
+        const nowHardLock = Date.now();
+        if (nowHardLock < hardTicketCreateLockUntil) {
+          showAuthNotice('⏳ Orden en proceso, espera un momento...', 'warn', 6000);
+          return false;
+        }
+        hardTicketCreateLockUntil = nowHardLock + 6000;
         if (!currentUser) {
           openAuth('login');
           showAuthNotice('Debes iniciar sesión para crear una orden.', 'warn');
           return false;
         }
-        const ticketId = window.crypto?.randomUUID?.() || `ticket-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-        const ticketPayload = {
-          id: ticketId,
-          user_id: currentUser.id,
-          game: payload.game || 'Orden TradeHub',
-          server: payload.server || '',
-          product: payload.product || '',
-          faction: payload.faction || '',
-          character: payload.character || '',
-          delivery: payload.delivery || '',
-          status: 'pendiente',
-          created_at: new Date().toISOString()
+        const fingerprint = [
+          currentUser?.id || '',
+          payload.game || '',
+          payload.server || '',
+          payload.product || '',
+          payload.faction || '',
+          payload.character || '',
+          payload.delivery || ''
+        ].join('|').toLowerCase();
+        const now = Date.now();
+        const lastAttemptAt = recentTicketFingerprints.get(fingerprint) || 0;
+        if (now - lastAttemptAt < 8000) {
+          showAuthNotice('⏳ Ya recibimos esa orden. Espera unos segundos para evitar duplicados.', 'warn', 9000);
+          return false;
+        }
+        recentTicketFingerprints.set(fingerprint, now);
+
+        if (ticketCreationInFlight) {
+          showAuthNotice('⏳ Ya estamos creando tu ticket. Espera unos segundos.', 'warn', 10000);
+          return false;
+        }
+
+        ticketCreationInFlight = true;
+        const unlockCreateButtons = () => {
+          const createButtonsUnlock = [...document.querySelectorAll('.create-order-btn')];
+          createButtonsUnlock.forEach((btn) => {
+            btn.disabled = false;
+            if (btn.dataset.prevLabel) {
+              btn.innerHTML = btn.dataset.prevLabel;
+              delete btn.dataset.prevLabel;
+            }
+          });
         };
-        trackPopularOrder(ticketPayload);
-        saveLocalTicket({ ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline });
-        await getPresenceSnapshot([currentUser.id]);
-        await openProfileDrawer('orders');
-        await renderUserOrders();
-        await renderAdminTickets(adminTicketsList);
-        await renderAdminTickets(profileAdminTicketsList);
-        showAuthNotice(successMessage);
-        if (!supabaseClient) {
-          showAuthNotice('✅ Orden creada en respaldo local. Conecta Supabase para sincronizarla entre dispositivos.', 'warn');
+        const createButtons = [...document.querySelectorAll('.create-order-btn')];
+        createButtons.forEach((btn) => {
+          btn.disabled = true;
+          btn.dataset.prevLabel = btn.innerHTML;
+          btn.innerHTML = '<span class="btn-icon">⏳</span>CREANDO...';
+        });
+        const forceUnlockTimer = setTimeout(() => {
+          ticketCreationInFlight = false;
+          unlockCreateButtons();
+          setTimeout(() => recentTicketFingerprints.delete(fingerprint), 9000);
+          setTimeout(() => { if (Date.now() >= hardTicketCreateLockUntil) hardTicketCreateLockUntil = 0; }, 1500);
+        }, 15000);
+
+        try {
+          const ticketId = window.crypto?.randomUUID?.() || `ticket-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+          const ticketPayload = {
+            id: ticketId,
+            user_id: currentUser.id,
+            game: payload.game || 'Orden TradeHub',
+            server: payload.server || '',
+            product: payload.product || '',
+            faction: payload.faction || '',
+            character: payload.character || '',
+            delivery: payload.delivery || '',
+            status: 'pendiente',
+            created_at: new Date().toISOString()
+          };
+
+          const localTicket = { ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline };
+          trackPopularOrder(ticketPayload);
+
+          safeUiAwait(getPresenceSnapshot([currentUser.id]), 2500, 'Presence snapshot');
+          safeUiAwait(openProfileDrawer('orders'), 4000, 'Open profile drawer');
+
+          if (!supabaseClient) {
+            pendingUserTickets.delete(ticketId);
+            removeLocalTicket(ticketId);
+            showAuthNotice('No se pudo crear el ticket: Supabase no está conectado.', 'warn', 12000);
+            return false;
+          }
+
+          let error = null;
+          for (let attempt = 0; attempt < 2; attempt += 1) {
+            const res = await withTimeout(
+              supabaseClient.from('tickets').insert(ticketPayload),
+              18000,
+              'Supabase tardó demasiado en responder'
+            );
+            error = res?.error || null;
+            if (!error) break;
+            await new Promise((resolve) => setTimeout(resolve, 900 * (attempt + 1)));
+          }
+          if (error) {
+            pendingUserTickets.delete(ticketId);
+            removeLocalTicket(ticketId);
+            safeUiAwait(renderUserOrders(), 3000, 'Render user orders rollback');
+            showAuthNotice(`No se pudo crear el ticket: ${friendlyError(error.message)}`, 'warn', 12000);
+            return false;
+          }
+
+          const syncedTicket = { ...localTicket, synced: true };
+          pendingUserTickets.set(ticketId, syncedTicket);
+          saveLocalTicket(syncedTicket);
+          saveSessionTicket(syncedTicket);
+          safeUiAwait(renderUserOrders(), 4000, 'Render user orders sync');
+          safeUiAwait(renderTicketMessages(ticketId, profileDrawer), 3000, 'Render ticket messages sync');
+          if (isAdminSession()) {
+            safeUiAwait(renderAdminTickets(adminTicketsList), 4000, 'Render admin tickets main');
+            safeUiAwait(renderAdminTickets(profileAdminTicketsList), 4000, 'Render admin tickets profile');
+          }
+          showAuthNotice(successMessage, 'info', 10000);
           return true;
+        } catch (error) {
+          console.warn('saveTicketToProfile failed', error);
+          const msg = String(error?.message || '');
+          if (msg.toLowerCase().includes('tardó demasiado')) {
+            pendingUserTickets.delete(ticketId);
+            removeLocalTicket(ticketId);
+            safeUiAwait(renderUserOrders(), 3000, 'Render user orders timeout rollback');
+            showAuthNotice('No se pudo crear el ticket: Supabase tardó demasiado en responder.', 'warn', 12000);
+            return false;
+          }
+          showAuthNotice(`No se pudo crear el ticket: ${friendlyError(msg)}`, 'warn', 12000);
+          return false;
+        } finally {
+          clearTimeout(forceUnlockTimer);
+          ticketCreationInFlight = false;
+          unlockCreateButtons();
         }
-        const { error } = await supabaseClient.from('tickets').insert(ticketPayload);
-        if (error) {
-          showAuthNotice(`✅ Orden visible en tu perfil. No se pudo sincronizar aún: ${friendlyError(error.message)}`, 'warn');
-          return true;
-        }
-        saveLocalTicket({ ...ticketPayload, user_profiles: currentProfile || null, user_online: true, admin_online: presenceSnapshot.adminOnline, synced: true });
-        await renderUserOrders();
-        await renderAdminTickets(adminTicketsList);
-        await renderAdminTickets(profileAdminTicketsList);
-        await renderTicketMessages(ticketId, profileDrawer);
-        return true;
       }
 
 
       async function renderUserOrders() {
-        userOrdersList.innerHTML = '';
-        if (!currentUser) return;
-        await getPresenceSnapshot([currentUser.id]);
-        if (profileSectionStatus) {
-          profileSectionStatus.textContent = `Estás viendo tickets: Tu cuenta ON · Admin ${presenceSnapshot.adminOnline ? 'ON' : 'OFF'}`;
-          profileSectionStatus.dataset.section = 'orders';
-        }
-        const localTickets = getLocalTickets().filter((item) => item.user_id === currentUser.id);
-        let data = [];
-        let error = null;
-        if (supabaseClient) {
-          const result = await supabaseClient
-            .from('tickets')
-            .select('id,user_id,game,server,product,faction,character,delivery,status,created_at')
-            .eq('user_id', currentUser.id)
-            .order('created_at', { ascending: false });
-          data = result.data || [];
-          error = result.error;
-        }
-        if (error && !localTickets.length) {
-          userOrdersList.innerHTML = `<p class="auth-hint">No se pudieron cargar tus órdenes: ${escapeHtml(friendlyError(error.message))}</p>`;
-          return;
-        }
-        const tickets = [...(data || []), ...localTickets.filter((local) => !(data || []).some((remote) => remote.id === local.id))]
-          .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-        tickets.forEach((item) => {
-          const card = document.createElement('article');
-          card.className = 'order-card';
-          card.innerHTML = `${ticketDetailHtml({ ...item, user_online: true, admin_online: presenceSnapshot.adminOnline })}${ticketChatHtml(item.id, 'user')}`;
-          userOrdersList.appendChild(card);
-        });
-        if (!userOrdersList.children.length) userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes. Si acabas de crear una orden, espera unos segundos: se sincroniza automáticamente sin recargar.</p>';
-        await hydrateTicketChats(userOrdersList);
-        scheduleFullPageTranslation();
-      }
+        if (!userOrdersList) return;
+        if (renderUserOrdersInFlight) return;
+        renderUserOrdersInFlight = true;
+        try {
+          userOrdersList.innerHTML = '';
+          if (!currentUser) return;
+          await getPresenceSnapshot([currentUser.id]);
+          if (profileSectionStatus) {
+            profileSectionStatus.textContent = `Estás viendo tickets: Tu cuenta ON · Admin ${presenceSnapshot.adminOnline ? 'ON' : 'OFF'}`;
+            profileSectionStatus.dataset.section = 'orders';
+          }
 
+          let data = [];
+          let error = null;
+          if (supabaseClient) {
+            const result = await supabaseClient
+              .from('tickets')
+              .select('id,user_id,game,server,product,faction,character,delivery,status,created_at')
+              .eq('user_id', currentUser.id)
+              .order('created_at', { ascending: false });
+            data = result.data || [];
+            error = result.error;
+          }
+
+          if (error) {
+            userOrdersList.innerHTML = '<p class="auth-hint">No pudimos cargar tus órdenes en este momento. Intenta de nuevo en unos segundos.</p>';
+            return;
+          }
+
+          const tickets = [...(data || [])].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+          tickets.forEach((item) => {
+            const card = document.createElement('article');
+            card.className = 'order-card';
+            const userIsOnline = Boolean(presenceSnapshot.byUserId?.[item.user_id] ?? (currentUser?.id && item.user_id === currentUser.id));
+            card.innerHTML = `${ticketDetailHtml({ ...item, user_online: userIsOnline, admin_online: presenceSnapshot.adminOnline })}${ticketChatHtml(item.id, 'user')}`;
+            userOrdersList.appendChild(card);
+          });
+
+          if (!userOrdersList.children.length) {
+            userOrdersList.innerHTML = '<p class="auth-hint">Aún no tienes órdenes.</p>';
+            return;
+          }
+
+          await hydrateTicketChats(userOrdersList);
+          scheduleFullPageTranslation();
+        } finally {
+          renderUserOrdersInFlight = false;
+        }
+      }
 
       async function renderAdminTickets(target = adminTicketsList) {
         if (!target) return;
@@ -6498,7 +6889,7 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         if (!game) return;
         activeOrderGame = game;
         if (boostGame) boostGame.value = game.name;
-        const rawServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
+        const rawServices = Array.isArray(game.services) ? game.services : defaultServices;
         const gameServices = [...new Set(rawServices.map((item) => String(item || '').toLowerCase().trim()).filter(Boolean))];
         const customMeta = customServiceMetaByGame[game.name] || null;
         const replaceGoldWithCustom = Boolean(customMeta?.replaceGold && gameServices.some((service) => !['boosting', 'accounts', 'gold'].includes(service)));
@@ -6542,23 +6933,6 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         const customServiceForReplacement = replaceGoldWithCustom
           ? gameServices.find((service) => !['boosting', 'accounts', 'gold'].includes(service))
           : null;
-        gameServices
-          .filter((serviceKey) => !serviceRenderOrder.includes(serviceKey))
-          .filter((serviceKey) => !(replaceGoldWithCustom && serviceKey === customServiceForReplacement))
-          .forEach((serviceKey) => {
-            const button = document.createElement('button');
-            button.className = 'game-option boost';
-            button.type = 'button';
-            button.dataset.service = serviceKey;
-            const onlyImage = Boolean(customMeta?.hideName);
-            button.innerHTML = `<img src="${customMeta?.image || 'https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1200&auto=format&fit=crop'}" alt="${serviceKey}" loading="lazy" referrerpolicy="no-referrer" />${onlyImage ? '' : `<span>${serviceKey}</span>`}`;
-            button.addEventListener('click', () => {
-              closeGoldOrderPanel();
-              closeAccountsPanel();
-              closeBoostingOptionsPanel();
-            });
-            gameWindowOptions.appendChild(button);
-          });
         if (replaceGoldWithCustom) {
           const customServiceKey = customServiceForReplacement;
           if (customServiceKey) {
@@ -6608,6 +6982,13 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function showPage(page, targetId = '') {
+        if (!page) return;
+        if (['streaming', 'giftcards', 'p2p'].includes(page)) setActiveMarketType(page);
+        const pageHashMap = { inicio: '#inicio', oro: '#oro', 'vendemos-oro': '#vender', streaming: '#streaming', giftcards: '#giftcards', p2p: '#p2p', legal: '#legal' };
+        if (!targetId && !history.state?.tradehudDetail) {
+          const nextHash = pageHashMap[page] || `#${page}`;
+          if (location.hash !== nextHash) history.replaceState(history.state || {}, '', nextHash);
+        }
         if (page !== 'game-detail') {
           gameWindowModal?.classList.remove('show');
           gameWindowModal?.setAttribute('aria-hidden', 'true');
@@ -6616,10 +6997,12 @@ Atención al cliente: WhatsApp · Telegram · Discord`
           streamingModal?.classList.remove('show');
           streamingModal?.setAttribute('aria-hidden', 'true');
         }
+        const thisSwitch = ++pageSwitchToken;
         pageLoader.classList.add('show');
         pageLoader.setAttribute('aria-hidden', 'false');
         clearTimeout(pageSwitchTimer);
         pageSwitchTimer = setTimeout(() => {
+          if (thisSwitch !== pageSwitchToken) return;
           setActivePage(page);
           pageLoader.classList.remove('show');
           pageLoader.setAttribute('aria-hidden', 'true');
@@ -6651,8 +7034,10 @@ Atención al cliente: WhatsApp · Telegram · Discord`
       }
 
       function navigateBackToCategories(parentPage = activeDetailParentPage || 'oro') {
-        if (history.state?.tradehudDetail) history.back();
-        else returnToParentPage(parentPage);
+        returnToParentPage(parentPage);
+        const hashMap = { oro: '#oro', streaming: '#streaming', giftcards: '#giftcards', p2p: '#p2p', 'vendemos-oro': '#vender', inicio: '#inicio' };
+        const targetHash = hashMap[parentPage] || '#inicio';
+        if (location.hash !== targetHash) history.replaceState({}, '', targetHash);
       }
 
       function openDigitalOrderPage(parentPage = activeMarketType || 'streaming') {
@@ -6707,6 +7092,21 @@ Atención al cliente: WhatsApp · Telegram · Discord`
         renderCategoryList('oro', categoriaListaOro);
         renderCategoryList('cuentas', categoriaListaCuentas);
         renderCategoryList('bosteo', categoriaListaBosteo);
+      }
+
+      function renderBoostingAdminSections() {
+        if (!categoriaListaBosteo) return;
+        categoriaListaBosteo.innerHTML = '';
+        const entries = Object.entries(boostingServiceCatalog || {});
+        entries.forEach(([gameName, config]) => {
+          const servers = Object.keys(config?.leveling || {});
+          const profCount = Array.isArray(config?.professions) ? config.professions.length : 0;
+          const item = document.createElement('article');
+          item.className = 'category-item';
+          item.innerHTML = `<strong>${escapeHtml(gameName)}</strong><p class="admin-game-desc">Leveleo: ${servers.length} servidor(es)</p><p class="admin-game-desc">Profesiones: ${profCount} apartado(s)</p>`;
+          categoriaListaBosteo.appendChild(item);
+        });
+        if (!categoriaListaBosteo.children.length) categoriaListaBosteo.innerHTML = '<p class="auth-hint">Sin apartados de boosting configurados.</p>';
       }
 
       function renderAdminAccounts() {
@@ -7188,6 +7588,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         renderPriceOptions();
         renderAdminAccounts();
         renderFactionOptionsAdmin();
+        renderBoostingAdminSections();
       }
 
       function renderServerByGame() {
@@ -7248,7 +7649,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         const i = selectedAdminIndex;
         const game = games[i];
         if (!game) return;
-        const selectedServices = Array.isArray(game.services) && game.services.length ? game.services : defaultServices;
+        const selectedServices = Array.isArray(game.services) ? game.services : defaultServices;
         juegoNombre.value = game.name;
         juegoImagen.value = game.icon;
         juegoDescripcion.value = game.description || '';
@@ -7288,7 +7689,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         if (serviceGold.checked) services.push('gold');
         if (customServiceEnabled.checked && customServiceInput.value.trim()) services.push(customServiceInput.value.trim().toLowerCase());
         const unique = [...new Set(services.map((item) => String(item || '').toLowerCase().trim()).filter(Boolean))];
-        return unique.length ? unique : [...defaultServices];
+        return unique;
       }
 
       function updateGamePreview() {
@@ -7457,11 +7858,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           }
         }
         const { data: gamesData, error: gamesError } = gamesResult;
-        if (gamesError || categoriesError) {
+        const { data: goldData, error: goldError } = await supabaseClient
+          .from('gold_catalog_entries')
+          .select('game,server,package_name,price_usd,sort_order');
+        if (gamesError || categoriesError || goldError) {
           if (gamesError?.message?.toLowerCase().includes('services')) {
             showAdminNotice('Falta la columna "services" en la tabla games de Supabase.', 'warn');
           } else {
-            const detail = gamesError?.message || categoriesError?.message || 'sin detalle';
+            const detail = gamesError?.message || categoriesError?.message || goldError?.message || 'sin detalle';
             showAdminNotice(`Error cargando datos de Supabase: ${detail}`, 'warn');
             setDbStatus(`no conectada: ${detail}`.slice(0, 120), 'warn');
           }
@@ -7484,7 +7888,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
                 const customName = String(row.custom_service_name).trim().toLowerCase();
                 if (customName && !clean.includes(customName)) clean.push(customName);
               }
-              return clean.length ? clean : [...defaultServices];
+              return Array.isArray(row.services) ? clean : [...defaultServices];
             })()
           })));
           games.splice(0, games.length, ...uniqueGames);
@@ -7505,6 +7909,15 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
             name: row.name,
             description: row.description || 'Sin descripción.',
             image: row.image || ''
+          })));
+        }
+        if (Array.isArray(goldData) && goldData.length) {
+          goldPrices.splice(0, goldPrices.length, ...goldData.map((row) => ({
+            game: row.game,
+            server: row.server,
+            amount: row.package_name,
+            price: Number(row.price_usd || 0),
+            sortOrder: Number(row.sort_order || 0)
           })));
         }
         if (!dbConnectionNoticeShown) {
@@ -7579,6 +7992,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           try { loadSelectedGame(); } catch (e) { console.warn('loadSelectedGame failed', e); }
           try { await loadMarketCatalogFromSupabase(); } catch (e) { console.warn('loadMarketCatalogFromSupabase failed', e); }
           try { await loadGoldGameOptionsFromSupabase(); } catch (e) { console.warn('loadGoldGameOptionsFromSupabase failed', e); }
+          try { await loadGameServersRemote(); } catch (e) { console.warn('loadGameServersRemote failed', e); }
+          try { setupTicketRealtime(); } catch (e) { console.warn('setupTicketRealtime failed', e); }
           try { renderStreamingSection(); } catch (e) { console.warn('renderStreamingSection failed', e); }
           try { renderGiftcardsSection(); } catch (e) { console.warn('renderGiftcardsSection failed', e); }
           try { renderPopularCascade(); } catch (e) { console.warn('renderPopularCascade failed', e); }
@@ -7591,6 +8006,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
               await updatePresence(true);
               if (isAdminSession()) await renderAdminTickets(profileAdminTicketsList);
               await renderUserOrders();
+              await restoreProfileDrawerState();
             }
             toggleUserButtons();
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
@@ -7605,6 +8021,11 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
                 profileNameTop.textContent = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'Perfil';
                 profileEmailTop.textContent = currentUser.email || '';
                 await loadUserProfile();
+                await restoreProfileDrawerState();
+                const dbAdmin = Boolean(currentProfile?.is_admin);
+                const localAdminUser = currentUser?.id === LOCAL_ADMIN_ID;
+                if (!dbAdmin && !localAdminUser) adminPanelUnlocked = false;
+                updateProfileAdminUi();
                 await updatePresence(true);
                 if (isAdminSession()) await renderAdminTickets(profileAdminTicketsList);
                 await renderUserOrders();
@@ -7634,10 +8055,18 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       initializeApp();
       startTicketAutoRefresh();
 
+      (function bootPageFromHash(){
+        const hash = (location.hash || '').replace('#','').trim().toLowerCase();
+        const map = { inicio:'inicio', oro:'oro', vender:'vendemos-oro', streaming:'streaming', giftcards:'giftcards', p2p:'p2p' };
+        const targetPage = map[hash];
+        if (targetPage) setTimeout(() => showPage(targetPage), 260);
+      })();
+
       pageLinks.forEach((link) => {
         link.addEventListener('click', (e) => {
           e.preventDefault();
-          showPage(link.dataset.page, link.dataset.target || '');
+          const page = link.dataset.page || 'inicio';
+          showPage(page, link.dataset.target || '');
         });
       });
 
@@ -7678,6 +8107,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
 
       openRegister.addEventListener('click', () => openAuth('register'));
       openLogin.addEventListener('click', () => openAuth('login'));
+      
       closeAuthModal.addEventListener('click', closeAuth);
       authModal.addEventListener('click', (e) => {
         if (e.target === authModal) closeAuth();
@@ -7690,6 +8120,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       closeProfileDrawer.addEventListener('click', () => {
         profileDrawer.classList.remove('show');
         profileDrawer.setAttribute('aria-hidden', 'true');
+        sessionStorage.removeItem('tradehud_profile_open');
       });
       function setProfileSection(section = 'info') {
         const isOrders = section === 'orders';
@@ -7707,6 +8138,9 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           profileSectionStatus.textContent = `Estás en la sección: ${isAdminTickets ? 'Administrador · Tickets' : isOrders ? 'Órdenes' : 'Perfil'}`;
           profileSectionStatus.dataset.section = isAdminTickets ? 'admin-tickets' : isOrders ? 'orders' : 'profile';
         }
+        if (profileDrawer?.classList.contains('show')) {
+          sessionStorage.setItem('tradehud_profile_section', isAdminTickets ? 'adminTickets' : isOrders ? 'orders' : 'info');
+        }
       }
 
       tabProfileInfo.addEventListener('click', () => setProfileSection('info'));
@@ -7718,11 +8152,15 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         setProfileSection('adminTickets');
         await renderAdminTickets(profileAdminTicketsList);
       });
+      refreshUserOrdersBtn?.addEventListener('click', async () => {
+        await renderUserOrders();
+      });
+
 
       userOrdersList.addEventListener('click', async (e) => {
         const sendBtn = e.target.closest('[data-ticket-send]');
         const refreshBtn = e.target.closest('[data-ticket-refresh]');
-        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'user', userOrdersList);
+        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'user', userOrdersList, sendBtn);
         if (refreshBtn) await renderTicketMessages(refreshBtn.dataset.ticketRefresh, userOrdersList);
       });
 
@@ -7731,7 +8169,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         const sendBtn = e.target.closest('[data-ticket-send]');
         const refreshBtn = e.target.closest('[data-ticket-refresh]');
         if (deleteBtn) await deleteAdminTicket(deleteBtn.dataset.ticketDelete, root);
-        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'admin', root);
+        if (sendBtn) await sendTicketMessage(sendBtn.dataset.ticketSend, 'admin', root, sendBtn);
         if (refreshBtn) await renderTicketMessages(refreshBtn.dataset.ticketRefresh, root);
       }
 
@@ -7867,23 +8305,43 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         toggleUserButtons();
         closeAuth();
         showAuthNotice('✅ Entraste como administrador de tickets.');
-        await openProfileDrawer('adminTickets');
+        await openProfileDrawer('orders');
       }
 
       authLoginBtn.addEventListener('click', async () => {
         const loginEmail = authLoginEmail.value.trim().toLowerCase();
         const loginPassword = authLoginPassword.value;
-        if (loginEmail === DEFAULT_ADMIN_EMAIL && loginPassword === DEFAULT_ADMIN_PASSWORD) {
-          await loginLocalAdminAccount();
+        const isAjustesAdmin = loginEmail === 'ajustes@tradehud.com' && loginPassword === 'TradeHudAdmin2026!';
+        if (isAjustesAdmin) {
+          adminPanelUnlocked = true;
+          authMsg.textContent = 'Acceso administrador habilitado.';
+          authMsg.style.color = '#9affcc';
+          closeAuth();
+          configModal.classList.add('show');
+          configModal.setAttribute('aria-hidden', 'false');
+          activateAdminTab('juegos');
+          showAuthNotice('✅ Entraste al panel administrador de ajustes.');
           return;
         }
-        if (!supabaseClient) return;
-        const { error } = await supabaseClient.auth.signInWithPassword({
+        if (!supabaseClient) {
+          authMsg.textContent = 'No se pudo iniciar sesión en este momento. Intenta nuevamente.';
+          authMsg.style.color = '#ffb6b6';
+          return;
+        }
+        const { error } = await withTimeout(supabaseClient.auth.signInWithPassword({
           email: loginEmail,
           password: loginPassword
-        });
+        }), 7000, 'Inicio de sesión tardó demasiado');
         if (error) {
-          authMsg.textContent = friendlyError(error.message);
+          const isDefaultAdminEmail = loginEmail === DEFAULT_ADMIN_EMAIL.toLowerCase();
+          const isDefaultAdminPass = loginPassword === DEFAULT_ADMIN_PASSWORD;
+          if (isDefaultAdminEmail && isDefaultAdminPass) {
+            await loginLocalAdminAccount();
+            return;
+          }
+          authMsg.textContent = isDefaultAdminEmail
+            ? 'No pudimos iniciar sesión ahora mismo. Verifica tu correo y clave, o intenta nuevamente en unos segundos.'
+            : friendlyError(error.message);
           authMsg.style.color = '#ffb6b6';
           return;
         }
@@ -7891,7 +8349,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         authMsg.style.color = '#9affcc';
         showAuthNotice('✅ Inicio de sesión exitoso.');
         closeAuth();
-        if (ADMIN_EMAILS.includes(loginEmail)) setTimeout(() => openProfileDrawer('adminTickets'), 350);
+        if (ADMIN_EMAILS.includes(loginEmail)) setTimeout(() => openProfileDrawer('orders'), 350);
       });
 
       forgotPasswordBtn.addEventListener('click', openResetPasswordWindow);
@@ -7932,7 +8390,12 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       saveProfileBtn.addEventListener('click', async () => {
-        if (!currentUser || !supabaseClient) return;
+        if (!currentUser || !supabaseClient) {
+          profileMsg.textContent = 'Inicia sesión para guardar tu información.';
+          profileMsg.style.color = '#ffb6b6';
+          showAuthNotice(profileMsg.textContent, 'warn', 5000);
+          return;
+        }
         const nextName = profileNameInput.value.trim() || 'Usuario';
         const nextDiscord = profileDiscordInput.value.trim();
         const nextPhone = profilePhoneInput.value.trim();
@@ -7951,51 +8414,92 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           await supabaseClient.auth.updateUser({
             data: { name: nextName, discord: nextDiscord, phone: nextPhone }
           });
-          profileMsg.textContent = 'Guardado local en sesión. Revisa las políticas de la base de datos TradeHub para persistir en tabla.';
+          profileMsg.textContent = 'Información guardada. Si no aparece en otro dispositivo, intenta nuevamente en unos segundos.';
           profileMsg.style.color = '#ffd39a';
         } else {
-          profileMsg.textContent = 'Información actualizada.';
+          profileMsg.textContent = 'Información guardada correctamente.';
           profileMsg.style.color = '#9affcc';
         }
         await loadUserProfile();
+        showAuthNotice(profileMsg.textContent || 'Información guardada correctamente.', profileMsg.style.color === '#ffb6b6' ? 'warn' : 'info', 5000);
       });
 
-      changePasswordBtn.addEventListener('click', async () => {
-        if (!supabaseClient) return;
-        const nueva = prompt('Escribe tu nueva contraseña (mínimo 6 caracteres):');
-        if (!nueva) return;
-        const { error } = await supabaseClient.auth.updateUser({ password: nueva });
-        profileMsg.textContent = error ? 'No se pudo cambiar contraseña.' : 'Contraseña actualizada.';
-        profileMsg.style.color = error ? '#ffb6b6' : '#9affcc';
-      });
 
-      logoutBtn.addEventListener('click', async () => {
-        if (currentUser?.id !== LOCAL_ADMIN_ID) await updatePresence(false);
-        if (supabaseClient && currentUser?.id !== LOCAL_ADMIN_ID) await supabaseClient.auth.signOut();
+      async function performLogoutUi() {
+        try {
+          if (currentUser?.id !== LOCAL_ADMIN_ID) await safeUiAwait(updatePresence(false), 2500, 'Logout presence');
+          if (supabaseClient && currentUser?.id !== LOCAL_ADMIN_ID) {
+            await safeUiAwait(supabaseClient.auth.signOut(), 3500, 'Supabase signOut');
+          }
+        } catch (e) {
+          console.warn('logout failed', e);
+        }
         currentUser = null;
         currentProfile = null;
         adminPanelUnlocked = false;
+        if (profileNameInput) profileNameInput.value = '';
+        if (profileDiscordInput) profileDiscordInput.value = '';
+        if (profilePhoneInput) profilePhoneInput.value = '';
         updateProfileAdminUi();
         toggleUserButtons();
-        await renderActiveSellersStatus();
+        await safeUiAwait(renderActiveSellersStatus(), 2500, 'Render sellers status after logout');
+      }
+
+      changePasswordBtn.addEventListener('click', async () => {
+        profilePasswordModal?.classList.add('show');
+        profilePasswordModal?.setAttribute('aria-hidden','false');
+        profileNewPasswordInput?.focus();
+      });
+      closeProfilePasswordModal?.addEventListener('click',()=>{
+        profilePasswordModal?.classList.remove('show');
+        profilePasswordModal?.setAttribute('aria-hidden','true');
+      });
+      profilePasswordModal?.addEventListener('click',(e)=>{
+        if(e.target===profilePasswordModal){
+          profilePasswordModal.classList.remove('show');
+          profilePasswordModal.setAttribute('aria-hidden','true');
+        }
+      });
+
+      saveProfilePasswordBtn?.addEventListener('click', async () => {
+        if (!supabaseClient) return;
+        const nueva = (profileNewPasswordInput?.value || '').trim();
+        const confirmar = (profileConfirmPasswordInput?.value || '').trim();
+        if (!nueva || nueva.length < 6) {
+          profileMsg.textContent = 'La contraseña debe tener mínimo 6 caracteres.';
+          profileMsg.style.color = '#ffb6b6';
+          showAuthNotice(profileMsg.textContent, 'warn', 5000);
+          return;
+        }
+        if (confirmar !== nueva) {
+          profileMsg.textContent = 'Las contraseñas no coinciden.';
+          profileMsg.style.color = '#ffb6b6';
+          showAuthNotice('Las contraseñas no coinciden.', 'warn', 5000);
+          return;
+        }
+        const { error } = await supabaseClient.auth.updateUser({ password: nueva });
+        profileMsg.textContent = error ? 'No se pudo cambiar contraseña. Intenta nuevamente.' : 'Contraseña actualizada correctamente.';
+        profileMsg.style.color = error ? '#ffb6b6' : '#9affcc';
+        showAuthNotice(profileMsg.textContent, error ? 'warn' : 'info', 5000);
+        if (!error) {
+          profileNewPasswordInput.value = '';
+          profileConfirmPasswordInput.value = '';
+          profilePasswordModal?.classList.remove('show');
+          profilePasswordModal?.setAttribute('aria-hidden','true');
+        }
+      });
+
+      logoutBtn.addEventListener('click', async () => {
+        await performLogoutUi();
         profileDrawer.classList.remove('show');
+        profileDrawer.setAttribute('aria-hidden', 'true');
+        sessionStorage.removeItem('tradehud_profile_open');
         profileMsg.textContent = 'Sesión cerrada.';
         profileMsg.style.color = '#9affcc';
         showAuthNotice('👋 Te desconectaste de tu cuenta.');
       });
 
-      openAdmin.addEventListener('click', () => {
-        if (currentUser && isAdminUser(currentUser, currentProfile)) {
-          adminMsg.textContent = '';
-          configModal.classList.add('show');
-          configModal.setAttribute('aria-hidden', 'false');
-          activateAdminTab('tickets');
-          return;
-        }
-        adminModal.classList.add('show');
-        adminModal.setAttribute('aria-hidden', 'false');
-      });
-
+      
       closeAdmin.addEventListener('click', () => {
         adminModal.classList.remove('show');
         adminModal.setAttribute('aria-hidden', 'true');
@@ -8007,25 +8511,47 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         }
       });
 
-      adminLogin.addEventListener('click', () => {
+      adminLogin.addEventListener('click', async () => {
         const user = document.getElementById('adminUser').value.trim();
         const pass = document.getElementById('adminPass').value.trim();
-        if (user === 'admin' && pass === 'admin123') {
-          adminPanelUnlocked = true;
-          adminMsg.textContent = '';
-          adminMsg.style.color = '#8fffd8';
-          adminModal.classList.remove('show');
-          adminModal.setAttribute('aria-hidden', 'true');
-          configModal.classList.add('show');
-          configModal.setAttribute('aria-hidden', 'false');
-          activateAdminTab('tickets');
-        } else {
+        const normalizedUser = user.toLowerCase();
+        const acceptedUser = normalizedUser === 'admin' || normalizedUser === DEFAULT_ADMIN_EMAIL.toLowerCase();
+        if (!acceptedUser || !pass) {
           adminMsg.textContent = 'Credenciales incorrectas.';
           adminMsg.style.color = '#ff9ea7';
+          return;
         }
+
+        if (supabaseClient) {
+          const dbEmail = normalizedUser.includes('@') ? normalizedUser : DEFAULT_ADMIN_EMAIL;
+          const dbPassword = normalizedUser === 'admin' ? DEFAULT_ADMIN_PASSWORD : pass;
+          const { error } = await withTimeout(supabaseClient.auth.signInWithPassword({
+            email: dbEmail,
+            password: dbPassword
+          }), 7000, 'Login admin tardó demasiado');
+          if (!error) {
+            adminMsg.textContent = '';
+            adminModal.classList.remove('show');
+            adminModal.setAttribute('aria-hidden', 'true');
+            configModal.classList.add('show');
+            configModal.setAttribute('aria-hidden', 'false');
+            activateAdminTab('juegos');
+            return;
+          }
+          console.warn('admin db auth failed, fallback to local admin panel:', error.message);
+        }
+
+        adminPanelUnlocked = true;
+        adminMsg.textContent = 'Acceso admin local habilitado. Si deseas guardar en base, inicia sesión con una cuenta admin válida de Supabase.';
+        adminMsg.style.color = '#ffd39a';
+        adminModal.classList.remove('show');
+        adminModal.setAttribute('aria-hidden', 'true');
+        configModal.classList.add('show');
+        configModal.setAttribute('aria-hidden', 'false');
+        activateAdminTab('juegos');
       });
 
-      closeConfig.addEventListener('click', () => {
+      closeConfig?.addEventListener('click', () => {
         configModal.classList.remove('show');
         configModal.setAttribute('aria-hidden', 'true');
       });
@@ -8049,13 +8575,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           tabPreciosOro.classList.add('active');
           editorPreciosOro.classList.remove('hidden');
           renderFactionOptionsAdmin();
+        renderBoostingAdminSections();
         } else if (tab === 'market') {
           if (tabMarketAdmin) tabMarketAdmin.classList.add('active');
           if (editorMarketAdmin) editorMarketAdmin.classList.remove('hidden');
           setActiveMarketType(activeMarketType || 'streaming');
           renderMarketAdminLists(activeMarketType || 'streaming');
         } else if (tab === 'tickets') {
-          tabTicketsAdmin.classList.add('active');
+          tabListaJuegosAdmin.classList.add('active');
           editorTicketsAdmin.classList.remove('hidden');
           renderAdminTickets();
         } else if (tab === 'cuentas') {
@@ -8064,6 +8591,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         } else if (tab === 'bosteo') {
           tabBosteo.classList.add('active');
           editorBosteo.classList.remove('hidden');
+          renderBoostingAdminSections();
         } else if (tab === 'reviews') {
           tabReviewsAdmin.classList.add('active');
           editorReviewsAdmin.classList.remove('hidden');
@@ -8078,7 +8606,6 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       tabListaServidoresAdmin.addEventListener('click', () => activateAdminTab('servidores'));
       tabPreciosOro.addEventListener('click', () => activateAdminTab('precios'));
       if (tabMarketAdmin) tabMarketAdmin.addEventListener('click', () => activateAdminTab('market'));
-      tabTicketsAdmin.addEventListener('click', () => activateAdminTab('tickets'));
       refreshAdminTicketsBtn?.addEventListener('click', () => renderAdminTickets(adminTicketsList));
       refreshProfileAdminTicketsBtn?.addEventListener('click', () => renderAdminTickets(profileAdminTicketsList));
       tabCuentas.addEventListener('click', () => activateAdminTab('cuentas'));
@@ -8685,6 +9212,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         if (boostLevelForm) boostLevelForm.classList.add('hidden');
       }
       boostBackBtn?.addEventListener('click', backToBoostOptions);
+      boostingBackTopBtn?.addEventListener('click', closeBoostingOptionsPanel);
       boostFormBackBottomBtn?.addEventListener('click', backToBoostOptions);
       accountsBackBottomBtn?.addEventListener('click', closeAccountsPanel);
       boostServer?.addEventListener('change', () => { renderBoostPriceList(); updateBoostCalculation(); });
@@ -8721,7 +9249,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       giftcardsSearch?.addEventListener('input', renderGiftcardsSection);
       p2pSearch?.addEventListener('input', renderP2PSection);
       function closeStreamingOrderModal() {
-        navigateBackToCategories(activeDetailParentPage || activeMarketType || 'streaming');
+        const parent = activeDetailParentPage || activeMarketType || 'streaming';
+        streamingModal?.classList.remove('show');
+        streamingModal?.setAttribute('aria-hidden', 'true');
+        digitalHistoryOpen = false;
+        showPage(parent);
+        const hashMap = { streaming: '#streaming', giftcards: '#giftcards', p2p: '#p2p' };
+        const targetHash = hashMap[parent] || '#streaming';
+        if (location.hash !== targetHash) history.replaceState({}, '', targetHash);
       }
       closeStreamingModal?.addEventListener('click', closeStreamingOrderModal);
       streamingBottomBackBtn?.addEventListener('click', closeStreamingOrderModal);
@@ -8780,7 +9315,7 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         if (e.target === accountFormModal) closeAccountModal();
       });
 
-      guardarServidorJuego.addEventListener('click', () => {
+      guardarServidorJuego.addEventListener('click', async () => {
         const game = serverGameSelect.value.trim();
         const server = serverNameInput.value.trim();
         if (!game || !server) {
@@ -8797,7 +9332,8 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         renderServerByGame();
         refreshServerSelect(precioJuegoAdd, precioServidorAdd);
         refreshServerSelect(precioJuegoEdit, precioServidorEdit);
-        showAdminNotice(`Servidor agregado a ${game}: ${server}`, 'ok');
+        const remote = await saveGameServersRemote();
+        showAdminNotice(remote.ok ? `Servidor agregado y guardado: ${game} / ${server}` : `Servidor agregado en panel, pero no se pudo guardar en base.`, remote.ok ? 'ok' : 'warn');
       });
 
       serverGameSelect.addEventListener('change', () => {
@@ -8871,50 +9407,141 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       precioServidorEdit.addEventListener('change', renderPriceOptions);
       precioPaqueteEdit.addEventListener('change', () => {
         const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
-        if (!selected) return;
+        if (!selected) {
+          showAdminNotice('Selecciona un paquete para eliminar.', 'warn');
+          return;
+        }
         const [game, server, amount] = selected.value.split('|');
         const found = goldPrices.find((item) => item.game === game && item.server === server && String(item.amount) === amount);
         if (found) precioValorEdit.value = String(found.price);
       });
 
-      guardarPrecioOro.addEventListener('click', () => {
+      
+      async function saveGameServersRemote() {
+        if (!supabaseClient) return { ok:false, reason:'offline' };
+        const payload = {
+          key: 'game_servers_json',
+          image_url: JSON.stringify(gameServers || [])
+        };
+        const { error } = await supabaseClient
+          .from('app_assets')
+          .upsert(payload, { onConflict: 'key' });
+        if (error) return { ok:false, reason:error.message || 'error' };
+        return { ok:true };
+      }
+
+      async function loadGameServersRemote() {
+        if (!supabaseClient) return;
+        const { data, error } = await supabaseClient
+          .from('app_assets')
+          .select('key,image_url')
+          .eq('key', 'game_servers_json')
+          .maybeSingle();
+        if (error || !data?.image_url) return;
+        try {
+          const parsed = JSON.parse(data.image_url);
+          if (Array.isArray(parsed) && parsed.length) {
+            gameServers.splice(0, gameServers.length, ...parsed);
+          }
+        } catch (_) {}
+      }
+async function saveGoldPriceRemote({ game, server, amount, price, sortOrder = 0 }) {
+        if (!supabaseClient) return { ok: false, reason: 'offline' };
+        const payload = {
+          game,
+          server,
+          package_name: `${amount}`,
+          price_usd: Number(price),
+          sort_order: Number(sortOrder) || Number(amount) || 0
+        };
+        const { error } = await supabaseClient
+          .from('gold_catalog_entries')
+          .upsert(payload, { onConflict: 'game,server,package_name' });
+        if (error) return { ok: false, reason: error.message || 'error' };
+        return { ok: true };
+      }
+
+      async function deleteGoldPriceRemote({ game, server, amount }) {
+        if (!supabaseClient) return { ok: false, reason: 'offline' };
+        const { error } = await supabaseClient
+          .from('gold_catalog_entries')
+          .delete()
+          .eq('game', game)
+          .eq('server', server)
+          .eq('package_name', String(amount));
+        if (error) return { ok: false, reason: error.message || 'error' };
+        return { ok: true };
+      }
+
+      function extractNumericAmount(value) {
+        const raw = String(value ?? '').trim();
+        const match = raw.match(/\d+(?:[.,]\d+)?/);
+        if (!match) return 0;
+        return Number(match[0].replace(',', '.')) || 0;
+      }
+
+      guardarPrecioOro.addEventListener('click', async () => {
         const game = precioJuegoAdd.value;
         const server = precioServidorAdd.value;
-        const amount = Number(precioCantidadAdd.value);
+        const amount = String(precioCantidadAdd.value || "").trim();
         const price = Number(precioValorAdd.value);
-        if (!game || !server || !amount || !price) return;
-        const existing = goldPrices.find((item) => item.game === game && item.server === server && item.amount === amount);
+        if (!game || !server || !amount || !price) {
+          showAdminNotice('Completa juego, servidor, cantidad y precio para guardar.', 'warn');
+          return;
+        }
+        const existing = goldPrices.find((item) => item.game === game && item.server === server && String(item.amount) === amount);
         if (existing) {
           existing.price = price;
         } else {
           goldPrices.push({ game, server, amount, price });
         }
-        goldPrices.sort((a, b) => (a.sortOrder || Number(a.amount) || 0) - (b.sortOrder || Number(b.amount) || 0));
+        goldPrices.sort((a, b) => (a.sortOrder || extractNumericAmount(a.amount)) - (b.sortOrder || extractNumericAmount(b.amount)));
+        const numericSort = extractNumericAmount(amount);
+        const remote = await saveGoldPriceRemote({ game, server, amount, price, sortOrder: numericSort });
         renderPriceOptions();
-        showAdminNotice(`Precio guardado: ${game} / ${server} / ${amount}`, 'ok');
+        if (!remote.ok) {
+          showAdminNotice('Precio guardado en panel. No se pudo sincronizar en base, intenta nuevamente.', 'warn');
+        } else {
+          showAdminNotice(`Precio guardado y sincronizado: ${game} / ${server} / ${amount}`, 'ok');
+        }
       });
 
-      guardarEdicionPrecio.addEventListener('click', () => {
+      guardarEdicionPrecio.addEventListener('click', async () => {
         const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
-        if (!selected) return;
+        if (!selected) {
+          showAdminNotice('Selecciona un paquete para eliminar.', 'warn');
+          return;
+        }
         const [game, server, amount] = selected.value.split('|');
         const newPrice = Number(precioValorEdit.value);
         const found = goldPrices.find((item) => item.game === game && item.server === server && String(item.amount) === amount);
-        if (!found || !newPrice) return;
+        if (!found || !newPrice) {
+          showAdminNotice('Precio inválido. Verifica el valor antes de guardar.', 'warn');
+          return;
+        }
         found.price = newPrice;
+        const numericSortEdit = extractNumericAmount(found.sortOrder || amount);
+        const remote = await saveGoldPriceRemote({ game, server, amount, price: newPrice, sortOrder: numericSortEdit });
         renderPriceOptions();
-        showAdminNotice('Precio actualizado.', 'ok');
+        showAdminNotice(remote.ok ? 'Precio actualizado y sincronizado.' : 'Precio actualizado en panel, pero sin sincronizar en base.', remote.ok ? 'ok' : 'warn');
       });
 
-      eliminarPrecio.addEventListener('click', () => {
+      eliminarPrecio.addEventListener('click', async () => {
         const selected = precioPaqueteEdit.options[precioPaqueteEdit.selectedIndex];
-        if (!selected) return;
+        if (!selected) {
+          showAdminNotice('Selecciona un paquete para eliminar.', 'warn');
+          return;
+        }
         const [game, server, amount] = selected.value.split('|');
         const idx = goldPrices.findIndex((item) => item.game === game && item.server === server && String(item.amount) === amount);
-        if (idx < 0) return;
+        if (idx < 0) {
+          showAdminNotice('No se encontró el precio seleccionado.', 'warn');
+          return;
+        }
         goldPrices.splice(idx, 1);
+        const remote = await deleteGoldPriceRemote({ game, server, amount });
         renderPriceOptions();
-        showAdminNotice('Precio eliminado.', 'warn');
+        showAdminNotice(remote.ok ? 'Precio eliminado y sincronizado.' : 'Precio eliminado del panel, pero no se pudo borrar en base.', remote.ok ? 'warn' : 'warn');
       });
 
       verCategoriasOro?.addEventListener('click', () => {
@@ -9211,23 +9838,13 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       });
 
       cerrarSesionAdmin.addEventListener('click', async () => {
-        if (currentUser?.id !== LOCAL_ADMIN_ID) await updatePresence(false);
-        if (supabaseClient && currentUser?.id !== LOCAL_ADMIN_ID) await supabaseClient.auth.signOut();
-        currentUser = null;
-        currentProfile = null;
-        adminPanelUnlocked = false;
-        updateProfileAdminUi();
-        toggleUserButtons();
-        await renderActiveSellersStatus();
-        showAdminNotice('Sección cerrada ✨ ¡Buen trabajo, admin!', 'ok');
-        setTimeout(() => {
-          configModal.classList.remove('show');
-          configModal.setAttribute('aria-hidden', 'true');
-          adminModal.classList.add('show');
-          adminModal.setAttribute('aria-hidden', 'false');
-          adminMsg.textContent = 'Sesión cerrada correctamente.';
-          adminMsg.style.color = '#8fdcff';
-        }, 450);
+        await performLogoutUi();
+        configModal.classList.remove('show');
+        configModal.setAttribute('aria-hidden', 'true');
+        openAuth('login');
+        authMsg.textContent = 'Sesión cerrada correctamente. Inicia sesión para continuar.';
+        authMsg.style.color = '#8fdcff';
+        showAuthNotice('👋 Sesión cerrada. Vuelve a ingresar cuando quieras.');
       });
 
       const i18nMessages = {
@@ -9270,10 +9887,10 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
           pageTitle: 'TradeHud | MMORPG Gold Buying and Selling'
         }
       };
-      let currentLanguage = localStorage.getItem('tradehud_language') || 'es';
+      let currentLanguage = window.__tradehudLanguage || 'es';
       function applyLanguage(lang = 'es') {
         currentLanguage = i18nMessages[lang] ? lang : 'es';
-        localStorage.setItem('tradehud_language', currentLanguage);
+        window.__tradehudLanguage = currentLanguage;
         document.documentElement.lang = currentLanguage;
         document.title = i18nMessages[currentLanguage]?.pageTitle || i18nMessages.es.pageTitle;
         document.querySelectorAll('[data-i18n]').forEach((el) => {
@@ -9300,6 +9917,14 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         });
       });
       applyLanguage(currentLanguage);
+
+      async function restoreProfileDrawerState() {
+        if (!currentUser) return;
+        if (sessionStorage.getItem('tradehud_profile_open') !== '1') return;
+        const savedSection = sessionStorage.getItem('tradehud_profile_section') || 'info';
+        await openProfileDrawer(savedSection);
+      }
+
 
       let googleTranslateRetryTimer = null;
       let googleTranslateMutationTimer = null;
@@ -9522,6 +10147,21 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
         });
       }
 
+      document.querySelectorAll('[data-featured-gold-game]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const gameName = button.dataset.featuredGoldGame;
+          const gameIndex = games.findIndex((game) => game.name === gameName);
+          if (gameIndex < 0) {
+            showAuthNotice('Esta categoría todavía no está disponible.', 'warn');
+            return;
+          }
+          showPage('oro');
+          openGamePage(gameIndex);
+          openGoldOrderPanel(games[gameIndex]);
+          requestAnimationFrame(() => goldOrderPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+        });
+      });
+
       if (reviewForm) {
         reviewForm.addEventListener('submit', async (event) => {
           event.preventDefault();
@@ -9562,32 +10202,38 @@ Abre un ticket para consultar la tasa actual y realizar tu operación. ¡Tu liqu
       }
 
       if (factionGameSelect) factionGameSelect.addEventListener('change', renderFactionOptionsAdmin);
-      if (disableFactionCheck) disableFactionCheck.addEventListener('change', () => {
-        const config = getFactionConfig(factionGameSelect.value);
+      if (disableFactionCheck) disableFactionCheck.addEventListener('change', async () => {
+        const gameName = factionGameSelect.value;
+        const config = getFactionConfig(gameName);
         config.disabled = disableFactionCheck.checked;
         saveFactionConfig();
-        saveFactionConfigRemote(factionGameSelect.value);
-        renderFactionGameSelect(factionGameSelect.value);
+        await saveFactionConfigRemote(gameName);
+        renderFactionGameSelect(gameName);
         renderFactionOptionsAdmin();
+        renderBoostingAdminSections();
       });
-      if (addFactionOptionBtn) addFactionOptionBtn.addEventListener('click', () => {
+      if (addFactionOptionBtn) addFactionOptionBtn.addEventListener('click', async () => {
         const value = newFactionOption.value.trim();
         if (!value) return;
-        const config = getFactionConfig(factionGameSelect.value);
+        const gameName = factionGameSelect.value;
+        const config = getFactionConfig(gameName);
         config.options = [...new Set([...(config.options || []), value])];
         newFactionOption.value = '';
         saveFactionConfig();
-        saveFactionConfigRemote(factionGameSelect.value);
+        await saveFactionConfigRemote(gameName);
         renderFactionOptionsAdmin();
+        renderBoostingAdminSections();
       });
-      if (factionOptionsList) factionOptionsList.addEventListener('click', (event) => {
+      if (factionOptionsList) factionOptionsList.addEventListener('click', async (event) => {
         const btn = event.target.closest('[data-remove-faction]');
         if (!btn) return;
-        const config = getFactionConfig(factionGameSelect.value);
+        const gameName = factionGameSelect.value;
+        const config = getFactionConfig(gameName);
         config.options.splice(Number(btn.dataset.removeFaction), 1);
         saveFactionConfig();
-        saveFactionConfigRemote(factionGameSelect.value);
+        await saveFactionConfigRemote(gameName);
         renderFactionOptionsAdmin();
+        renderBoostingAdminSections();
       });
 
       loadReviews();
