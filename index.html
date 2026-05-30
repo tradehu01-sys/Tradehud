@@ -14,7 +14,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://i.imgur.com/qi2Wg8a.png" />
 
-    <link rel="icon" type="image/svg+xml" sizes="any" href="https://tradeshud.com/favicon.svg" />
+    <link rel="icon" type="image/png" href="https://i.imgur.com/qi2Wg8a.png" />
     <script>
       (function seedTradeHubTranslateCookie(){
         var lang = 'es';
@@ -635,8 +635,16 @@
         background: transparent;
         object-fit: cover;
         display: block;
+        animation: goldFeatureJump 2.8s ease-in-out infinite;
+        will-change: transform;
       }
+      .gold-feature-link:nth-child(2) img { animation-delay: .35s; }
+      .gold-feature-link:hover img { animation-play-state: paused; }
       .gold-feature-link strong { display: block; padding: .72rem 0 0; font-size: 1.1rem; line-height: 1.25; }
+      @keyframes goldFeatureJump {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-14px); }
+      }
       @media (max-width: 760px) {
         .gold-feature-showcase { grid-template-columns: 1fr; gap: 1rem; }
         .gold-feature-link img { height: 245px; }
